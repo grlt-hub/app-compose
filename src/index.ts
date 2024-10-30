@@ -19,7 +19,6 @@ type ExtractDeps<D extends Container<string, AnyObject>[]> = {
 
 // todo: compose fn to wrap em all
 // todo: add optDeps overload
-// fixme: add tuple for []
 // fixme: id not empty string
 type Params<
   Id extends string,

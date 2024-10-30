@@ -9,15 +9,6 @@ test('without dependencies', () => {
   expectTypeOf<EnableFn>().toEqualTypeOf<ContainerParams['enable']>();
 });
 
-test('without dependencies', () => {
-  type Container = typeof createContainer<'', {}, []>;
-  type ContainerParams = Parameters<Container>[0];
-
-  type EnableFn = ((_: never, MISMATCH_0: Mismatch) => Promise<boolean> | boolean) | undefined;
-
-  expectTypeOf<EnableFn>().toEqualTypeOf<ContainerParams['enable']>();
-});
-
 test('with one strict dependency', () => {
   const a = createContainer({
     id: 'a',
@@ -54,4 +45,10 @@ test('with some strict dependencies', () => {
     | undefined;
 
   expectTypeOf<EnableFn>().toEqualTypeOf<ContainerParams['enable']>();
+});
+
+test('with dependencies empty list', () => {
+  // @ts-expect-error
+  // '[]' does not satisfy the constraint 'void | NonEmptyList<AnyContaier>'
+  type Container = typeof createContainer<'', {}, []>;
 });
