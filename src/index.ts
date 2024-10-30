@@ -6,45 +6,45 @@ type Status = 'idle' | 'pending' | 'done' | 'fail' | 'off';
 type StartResult<T> = Promise<T> | T;
 type EnableResult = Promise<boolean> | boolean;
 
-type Feature<Id extends string, API extends AnyObject> = {
+type Container<Id extends string, API extends AnyObject> = {
   id: Id;
   $status: Store<Status>;
   api: API;
 };
-type AnyFeature = Feature<any, any>;
+type AnyContainer = Container<any, any>;
 
-type ExtractDeps<D extends Feature<string, AnyObject>[]> = {
+type ExtractDeps<D extends Container<string, AnyObject>[]> = {
   [K in D[number] as K['id']]: K['api'];
 };
 
-const ERROR_EMPTY_STRING_FEATURE_ID = 'Feature ID cannot be an empty string.';
+const ERROR_EMPTY_STRING_FEATURE_ID = 'Container ID cannot be an empty string.';
 
-// todo: tests for id not empty string (typeof and plain createFeature)
+// todo: tests for id not empty string (typeof and plain createContainer)
 // todo: compose fn to wrap em all
 // todo: add optDeps overload
 // todo: use nanoid for ids inside unit tests (not for types tests)
 type Params<
   Id extends string,
   API extends AnyObject,
-  Deps extends NonEmptyTuple<AnyFeature> | void = void,
+  Deps extends NonEmptyTuple<AnyContainer> | void = void,
 > = '' extends Id
   ? typeof ERROR_EMPTY_STRING_FEATURE_ID
   : Deps extends void
     ? {
         id: Id;
-        onStart: (_: void) => StartResult<Pick<Feature<Id, API>, 'api'>>;
+        onStart: (_: void) => StartResult<Pick<Container<Id, API>, 'api'>>;
         enable?: (_: void) => EnableResult;
       }
     : {
         id: Id;
         dependsOn: Exclude<Deps, void>;
-        onStart: (_: ExtractDeps<Exclude<Deps, void>>) => StartResult<Pick<Feature<Id, API>, 'api'>>;
+        onStart: (_: ExtractDeps<Exclude<Deps, void>>) => StartResult<Pick<Container<Id, API>, 'api'>>;
         enable?: (_: ExtractDeps<Exclude<Deps, void>>) => EnableResult;
       };
 
-const createFeature = <Id extends string, API extends AnyObject, Deps extends NonEmptyTuple<AnyFeature> | void = void>(
+const createContainer = <Id extends string, API extends AnyObject, Deps extends NonEmptyTuple<AnyContainer> | void = void>(
   params: Params<Id, API, Deps>,
-): Feature<Id, API> => {
+): Container<Id, API> => {
   const $status = createStore<Status>('idle');
 
   if (params === ERROR_EMPTY_STRING_FEATURE_ID) {
@@ -58,4 +58,4 @@ const createFeature = <Id extends string, API extends AnyObject, Deps extends No
   };
 };
 
-export { createFeature };
+export { createContainer };
