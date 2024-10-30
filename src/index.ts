@@ -1,7 +1,8 @@
 import { createStore, type Store } from 'effector';
 
 type AnyObject = Record<string, unknown>;
-type NonEmptyList<T = unknown> = [T, ...T[]];
+type NonEmptyTuple<T = unknown> = [T, ...T[]];
+type NonEmptyString<T extends string> = T extends '' ? never : T;
 type Status = 'idle' | 'pending' | 'done' | 'fail' | 'off';
 type StartResult<T> = Promise<T> | T;
 type EnableResult = Promise<boolean> | boolean;
@@ -24,7 +25,7 @@ type ExtractDeps<D extends Container<string, AnyObject>[]> = {
 type Params<
   Id extends string,
   API extends AnyObject,
-  Deps extends NonEmptyList<AnyContaier> | void = void,
+  Deps extends NonEmptyTuple<AnyContaier> | void = void,
 > = Deps extends void
   ? {
       id: Id;
@@ -41,7 +42,7 @@ type Params<
 const createContainer = <
   Id extends string,
   API extends AnyObject,
-  Deps extends NonEmptyList<AnyContaier> | void = void,
+  Deps extends NonEmptyTuple<AnyContaier> | void = void,
 >(
   params: Params<Id, API, Deps>,
 ): Container<Id, API> => {
