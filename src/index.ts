@@ -17,10 +17,9 @@ type ExtractDeps<D extends Container<string, AnyObject>[]> = {
   [K in D[number] as K['id']]: K['api'];
 };
 
-// todo: add test for feature deps api onStart
-
 // todo: compose fn to wrap em all
 // todo: add optDeps overload
+// todo: use nanoid for ids inside unit tests (not for types tests)
 // fixme: id not empty string
 type Params<
   Id extends string,

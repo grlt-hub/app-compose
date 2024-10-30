@@ -23,7 +23,7 @@ test('with one strict dependency', () => {
   expectTypeOf<EnableFn>().toEqualTypeOf<ContainerParams['enable']>();
 });
 
-test('with some strict dependencies', () => {
+test('with multiple strict dependencies', () => {
   const a = createContainer({
     id: 'a',
     onStart: () => ({ api: { t: () => true } }),
