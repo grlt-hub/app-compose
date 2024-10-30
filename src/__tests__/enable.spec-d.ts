@@ -1,54 +1,58 @@
-import { createContainer } from '../index';
+import { createFeature } from '../index';
 
 test('without dependencies', () => {
-  type Container = typeof createContainer<'', {}>;
-  type ContainerParams = Parameters<Container>[0];
+  type Feature = typeof createFeature<'_', {}>;
+  type FeatureParams = Parameters<Feature>[0];
 
   type EnableFn = ((_: void) => Promise<boolean> | boolean) | undefined;
 
-  expectTypeOf<EnableFn>().toEqualTypeOf<ContainerParams['enable']>();
+  expectTypeOf<EnableFn>().toEqualTypeOf<FeatureParams['enable']>();
 });
 
 test('with one strict dependency', () => {
-  const a = createContainer({
+  const a = createFeature({
     id: 'a',
     onStart: () => ({ api: { t: () => true } }),
   });
 
-  type Container = typeof createContainer<'', {}, [typeof a]>;
-  type ContainerParams = Parameters<Container>[0];
+  type Feature = typeof createFeature<'_', {}, [typeof a]>;
+  type FeatureParams = Parameters<Feature>[0];
 
-  type EnableFn = ((_: { a: { t: () => true } }) => Promise<boolean> | boolean) | undefined;
+  type EnableFn = ((_: { [a.id]: { t: () => true } }) => Promise<boolean> | boolean) | undefined;
 
-  expectTypeOf<EnableFn>().toEqualTypeOf<ContainerParams['enable']>();
+  expectTypeOf<EnableFn>().toEqualTypeOf<FeatureParams['enable']>();
 });
 
 test('with multiple strict dependencies', () => {
-  const a = createContainer({
+  const a = createFeature({
     id: 'a',
     onStart: () => ({ api: { t: () => true } }),
   });
-  const b = createContainer({
+  const b = createFeature({
     id: 'b',
     onStart: () => ({ api: { f: () => false } }),
   });
-  const c = createContainer({
+  const c = createFeature({
     id: 'd',
     onStart: () => ({ api: { nil: null } }),
   });
 
-  type Container = typeof createContainer<'', {}, [typeof a, typeof b, typeof c]>;
-  type ContainerParams = Parameters<Container>[0];
+  type Feature = typeof createFeature<'_', {}, [typeof a, typeof b, typeof c]>;
+  type FeatureParams = Parameters<Feature>[0];
 
   type EnableFn =
-    | ((_: { a: { t: () => true }; b: { f: () => false }; d: { nil: null } }) => Promise<boolean> | boolean)
+    | ((_: {
+        [a.id]: { t: () => true };
+        [b.id]: { f: () => false };
+        [c.id]: { nil: null };
+      }) => Promise<boolean> | boolean)
     | undefined;
 
-  expectTypeOf<EnableFn>().toEqualTypeOf<ContainerParams['enable']>();
+  expectTypeOf<EnableFn>().toEqualTypeOf<FeatureParams['enable']>();
 });
 
 test('with dependencies empty list', () => {
   // @ts-expect-error
   // '[]' does not satisfy the constraint 'void | NonEmptyList<AnyContaier>'
-  type Container = typeof createContainer<'', {}, []>;
+  type Feature = typeof createFeature<'', {}, []>;
 });

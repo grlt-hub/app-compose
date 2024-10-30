@@ -1,7 +1,7 @@
-import { createContainer } from '../index';
+import { createFeature } from '../index';
 
 test('without dependencies', () => {
-  type Container = typeof createContainer<'', {}>;
+  type Container = typeof createFeature<'d', {}>;
   type ContainerParams = Parameters<Container>[0];
 
   type Params = void | undefined;
@@ -10,12 +10,12 @@ test('without dependencies', () => {
 });
 
 test('with single dependency', () => {
-  const a = createContainer({
+  const a = createFeature({
     id: 'a',
     onStart: () => ({ api: { t: () => true } }),
   });
 
-  type Container = typeof createContainer<'', {}, [typeof a]>;
+  type Container = typeof createFeature<'_', {}, [typeof a]>;
   type ContainerParams = Parameters<Container>[0];
 
   type Params = { [a.id]: { t: () => true } };
@@ -24,12 +24,12 @@ test('with single dependency', () => {
 });
 
 test('with one strict dependency', () => {
-  const a = createContainer({
+  const a = createFeature({
     id: 'a',
     onStart: () => ({ api: { t: () => true } }),
   });
 
-  type Container = typeof createContainer<'', {}, [typeof a]>;
+  type Container = typeof createFeature<'_', {}, [typeof a]>;
   type ContainerParams = Parameters<Container>[0];
 
   type Params = { [a.id]: { t: () => true } };
@@ -38,20 +38,20 @@ test('with one strict dependency', () => {
 });
 
 test('with multiple strict dependency', () => {
-  const a = createContainer({
+  const a = createFeature({
     id: 'a',
     onStart: () => ({ api: { t: () => true } }),
   });
-  const b = createContainer({
+  const b = createFeature({
     id: 'b',
     onStart: () => ({ api: { f: () => false } }),
   });
-  const c = createContainer({
+  const c = createFeature({
     id: 'd',
     onStart: () => ({ api: { nil: null } }),
   });
 
-  type Container = typeof createContainer<'', {}, [typeof a, typeof b, typeof c]>;
+  type Container = typeof createFeature<'_', {}, [typeof a, typeof b, typeof c]>;
   type ContainerParams = Parameters<Container>[0];
 
   type Params = {
