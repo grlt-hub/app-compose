@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "strict": true,
+    "noImplicitAny": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "lib": ["esnext"],
+    "resolveJsonModule": true,
+    "importHelpers": true,
+    "moduleResolution": "Node",
+    "module": "esnext",
+    "isolatedModules": true,
+    "skipLibCheck": true,
+    "removeComments": false,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "noUncheckedIndexedAccess": true,
+    "declaration": true,
+    "strictNullChecks": true,
+    "types": ["vitest/globals"],
+    "verbatimModuleSyntax": true
+  }
+}

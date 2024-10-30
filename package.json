@@ -1,0 +1,27 @@
+{
+  "name": "container",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "vitest"
+  },
+  "author": "Viktor Pasynok",
+  "license": "MIT",
+  "devDependencies": {
+    "@vitest/coverage-v8": "2.1.4",
+    "prettier": "3.3.3",
+    "prettier-plugin-organize-imports": "4.1.0",
+    "tslib": "2.8.0",
+    "typescript": "5.6.3",
+    "vite-tsconfig-paths": "5.0.1"
+  },
+  "peerDependencies": {
+    "effector": "23"
+  },
+  "volta": {
+    "node": "22.9.0",
+    "npm": "10.8.3"
+  }
+}
