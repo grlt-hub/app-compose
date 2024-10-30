@@ -17,6 +17,8 @@ type ExtractDeps<D extends Container<string, AnyObject>[]> = {
   [K in D[number] as K['id']]: K['api'];
 };
 
+// todo: add test for feature deps api onStart
+
 // todo: compose fn to wrap em all
 // todo: add optDeps overload
 // fixme: id not empty string
@@ -37,9 +39,6 @@ type Params<
       enable?: (_: ExtractDeps<Exclude<Deps, void>>) => EnableResult;
     };
 
-const apis = new Map();
-
-// cache on start ??
 const createContainer = <
   Id extends string,
   API extends AnyObject,
@@ -49,15 +48,6 @@ const createContainer = <
 ): Container<Id, API> => {
   const $status = createStore<Status>('idle');
 
-  // @ts-expect-error for now
-  apis.set(params.id, params.onStart('dependsOn' in params ? params.dependsOn : undefined));
-
-  // onStart -> returns api
-  // return it full
-  // ???
-
-  // no deps
-  // has deps
   return {
     id: params.id,
     $status,
