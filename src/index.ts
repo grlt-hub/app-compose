@@ -19,6 +19,7 @@ type ExtractDeps<D extends Container<string, AnyObject>[]> = {
 
 const ERROR_EMPTY_STRING_FEATURE_ID = 'Container ID cannot be an empty string.';
 
+// todo: resolve features graph
 // todo: compose fn to wrap em all
 // todo: add optDeps overload
 // todo: use nanoid for ids inside unit tests (not for types tests)
