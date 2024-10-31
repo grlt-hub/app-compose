@@ -19,7 +19,6 @@ type ExtractDeps<D extends Container<string, AnyObject>[]> = {
 
 const ERROR_EMPTY_STRING_FEATURE_ID = 'Container ID cannot be an empty string.';
 
-// todo: tests for id not empty string (typeof and plain createContainer)
 // todo: compose fn to wrap em all
 // todo: add optDeps overload
 // todo: use nanoid for ids inside unit tests (not for types tests)
@@ -42,7 +41,11 @@ type Params<
         enable?: (_: ExtractDeps<Exclude<Deps, void>>) => EnableResult;
       };
 
-const createContainer = <Id extends string, API extends AnyObject, Deps extends NonEmptyTuple<AnyContainer> | void = void>(
+const createContainer = <
+  Id extends string,
+  API extends AnyObject,
+  Deps extends NonEmptyTuple<AnyContainer> | void = void,
+>(
   params: Params<Id, API, Deps>,
 ): Container<Id, API> => {
   const $status = createStore<Status>('idle');
