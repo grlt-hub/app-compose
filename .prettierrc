@@ -1,34 +1,26 @@
 {
+  "plugins": ["prettier-plugin-organize-imports"],
   "printWidth": 120,
   "parser": "typescript",
   "useTabs": false,
   "singleQuote": true,
   "jsxSingleQuote": true,
   "trailingComma": "all",
-  "overrides": [
-    {
-      "files": ["*.json"],
-      "options": {
-        "parser": "json"
-      }
-    },
-    {
-      "files": ["*.yml"],
-      "options": {
-        "parser": "yaml"
-      }
-    },
-    {
-      "files": ["*.mdx"],
-      "options": {
-        "parser": "markdown"
-      }
-    },
-    {
-      "files": ["*.md"],
-      "options": {
-        "parser": "markdown"
-      }
+  "overrides": [{
+    "files": ["*.json"],
+    "options": {
+      "parser": "json"
     }
-  ]
+  }, {
+    "files": ["*.yml"],
+    "options": {
+      "parser": "yaml"
+    }
+  }, {
+    "files": ["*.mdx"],
+    "options": {
+      "parser": "markdown"
+    }
+  }],
+  "organizeImportsSkipDestructiveCodeActions": true
 }

@@ -19,35 +19,61 @@ type ExtractDeps<D extends Container<string, AnyObject>[]> = {
 
 const ERROR_EMPTY_STRING_FEATURE_ID = 'Container ID cannot be an empty string.';
 
+// todo: id's of deps and optDeps must be uniq
 // todo: resolve features graph
-// todo: compose fn to wrap em all
-// todo: add optDeps overload
+// todo: compose fn to wrap em all | like basic compose fn + passing api (no need to save em all. just reverse pipe)
 // todo: use nanoid for ids inside unit tests (not for types tests)
 type Params<
   Id extends string,
   API extends AnyObject,
   Deps extends NonEmptyTuple<AnyContainer> | void = void,
+  OptionalDeps extends NonEmptyTuple<AnyContainer> | void = void,
 > = '' extends Id
   ? typeof ERROR_EMPTY_STRING_FEATURE_ID
   : Deps extends void
-    ? {
-        id: Id;
-        onStart: (_: void) => StartResult<Pick<Container<Id, API>, 'api'>>;
-        enable?: (_: void) => EnableResult;
-      }
-    : {
-        id: Id;
-        dependsOn: Exclude<Deps, void>;
-        onStart: (_: ExtractDeps<Exclude<Deps, void>>) => StartResult<Pick<Container<Id, API>, 'api'>>;
-        enable?: (_: ExtractDeps<Exclude<Deps, void>>) => EnableResult;
-      };
+    ? OptionalDeps extends void
+      ? {
+          id: Id;
+          onStart: () => StartResult<Pick<Container<Id, API>, 'api'>>;
+          enable?: () => EnableResult;
+        }
+      : {
+          id: Id;
+          optionalDependsOn: Exclude<OptionalDeps, void>;
+          onStart: (
+            _: void,
+            optionalDeps: Partial<ExtractDeps<Exclude<OptionalDeps, void>>>,
+          ) => StartResult<Pick<Container<Id, API>, 'api'>>;
+          enable?: (_: void, optionalDeps: Partial<ExtractDeps<Exclude<OptionalDeps, void>>>) => EnableResult;
+        }
+    : OptionalDeps extends void
+      ? {
+          id: Id;
+          dependsOn: Exclude<Deps, void>;
+          onStart: (deps: ExtractDeps<Exclude<Deps, void>>) => StartResult<Pick<Container<Id, API>, 'api'>>;
+          enable?: (deps: ExtractDeps<Exclude<Deps, void>>) => EnableResult;
+        }
+      : {
+          id: Id;
+          dependsOn: Exclude<Deps, void>;
+          optionalDependsOn: Exclude<OptionalDeps, void>;
+          onStart: (
+            deps: ExtractDeps<Exclude<Deps, void>>,
+            optionalDeps: Partial<ExtractDeps<Exclude<OptionalDeps, void>>>,
+          ) => StartResult<Pick<Container<Id, API>, 'api'>>;
+          enable?: (
+            deps: ExtractDeps<Exclude<Deps, void>>,
+            optionalDeps: Partial<ExtractDeps<Exclude<OptionalDeps, void>>>,
+          ) => EnableResult;
+        };
 
 const createContainer = <
   Id extends string,
   API extends AnyObject,
   Deps extends NonEmptyTuple<AnyContainer> | void = void,
+  OptionalDeps extends NonEmptyTuple<AnyContainer> | void = void,
 >(
-  params: Params<Id, API, Deps>,
+  params: Params<Id, API, Deps, OptionalDeps>,
 ): Container<Id, API> => {
   const $status = createStore<Status>('idle');
 
