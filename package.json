@@ -1,9 +1,10 @@
 {
-  "name": "container",
-  "version": "1.0.0",
+  "name": "@grlt-hub/feature-compose",
+  "version": "0.0.1",
   "description": "",
   "type": "module",
   "main": "index.js",
+  "private": false,
   "scripts": {
     "test": "vitest"
   },
