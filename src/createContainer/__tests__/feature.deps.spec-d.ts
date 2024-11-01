@@ -1,4 +1,4 @@
-import { createContainer } from '../../index';
+import { createContainer } from '../index';
 import type { ExtractEnableFn, ExtractOnStartFn, ParameterCount } from './types';
 
 const __ = {
