@@ -22,6 +22,8 @@ const ERROR = {
   CONTAINER_ID_NOT_UNIQ: 'Container ID must be unique.',
 } as const;
 
+// todo: return on start and enable fn instead of API
+// todo: create composer fn
 // todo: resolve features graph
 // todo: compose fn to wrap em all | like basic compose fn + passing api (no need to save em all. just reverse pipe)
 // todo: think about dynamic feature stop
