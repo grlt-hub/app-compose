@@ -1,6 +1,6 @@
 import { createContainer } from '../index';
 
-describe('feature.id not empty string', () => {
+describe('container.id not empty string', () => {
   test('happy', () => {
     createContainer({
       id: 'a',
@@ -10,7 +10,7 @@ describe('feature.id not empty string', () => {
 
   test('unhappy', () => {
     createContainer({
-      // @ts-expect-error feature id cannot be an empty string
+      // @ts-expect-error container.id cannot be an empty string
       id: '',
       onStart: () => ({ api: {} }),
     });

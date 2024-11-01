@@ -18,7 +18,7 @@ type ExtractDeps<D extends Container<string, AnyObject>[]> = {
 };
 
 const ERROR = {
-  EMPTY_STRING_FEATURE_ID: 'Container ID cannot be an empty string.',
+  EMPTY_STRING_CONTAINER_ID: 'Container ID cannot be an empty string.',
   CONTAINER_ID_NOT_UNIQ: 'Container ID must be unique.',
 } as const;
 
@@ -32,7 +32,7 @@ type Params<
   Deps extends NonEmptyTuple<AnyContainer> | void = void,
   OptionalDeps extends NonEmptyTuple<AnyContainer> | void = void,
 > = '' extends Id
-  ? { id: never; error: typeof ERROR.EMPTY_STRING_FEATURE_ID }
+  ? { id: never; error: typeof ERROR.EMPTY_STRING_CONTAINER_ID }
   : Deps extends void
     ? OptionalDeps extends void
       ? {
@@ -81,7 +81,7 @@ const createContainer = <
   params: Params<Id, API, Deps, OptionalDeps>,
 ): Container<Id, API> => {
   if (params.id === '') {
-    throw new Error(ERROR.EMPTY_STRING_FEATURE_ID);
+    throw new Error(ERROR.EMPTY_STRING_CONTAINER_ID);
   }
 
   if (IDS_SET.has(params.id)) {

@@ -2,7 +2,7 @@ import { createContainer, IDS_SET } from '../index';
 
 const onStart = () => ({ api: {} });
 
-describe('feature.id not empty string', () => {
+describe('container.id not empty string', () => {
   beforeEach(() => IDS_SET.clear());
 
   test('happy', () => {
@@ -12,7 +12,7 @@ describe('feature.id not empty string', () => {
   test('unhappy', () => {
     expect(() =>
       createContainer({
-        // @ts-expect-error feature id cannot be an empty string
+        // @ts-expect-error container.id cannot be an empty string
         id: '',
         onStart: () => ({ api: {} }),
       }),
@@ -20,7 +20,7 @@ describe('feature.id not empty string', () => {
   });
 });
 
-describe('feature.id is uniq', () => {
+describe('container.id is uniq', () => {
   beforeEach(() => IDS_SET.clear());
 
   test('happy', () => {
