@@ -24,7 +24,6 @@ const ERROR = {
 
 // todo: resolve features graph
 // todo: compose fn to wrap em all | like basic compose fn + passing api (no need to save em all. just reverse pipe)
-// todo: use nanoid for ids inside unit tests (not for types tests)
 // todo: think about dynamic feature stop
 type Params<
   Id extends string,
