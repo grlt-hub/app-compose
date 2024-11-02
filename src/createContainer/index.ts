@@ -7,23 +7,19 @@ type Status = 'idle' | 'pending' | 'done' | 'fail' | 'off';
 type StartResult<T> = Promise<{ api: T }> | { api: T };
 type EnableResult = Promise<boolean> | boolean;
 
-type Container<Id extends string, API extends AnyObject> = {
+type AnyStartFn = (...x: any) => StartResult<any>;
+
+type Container<Id extends string, StartFn extends AnyStartFn> = {
   id: Id;
   $status: Store<Status>;
-  api: API;
+  start: StartFn;
 };
-type AnyContainer = Container<any, any>;
+type AnyContainer = Container<any, AnyStartFn>;
 
-type ExtractDeps<D extends Container<string, AnyObject>[]> = {
-  [K in D[number] as K['id']]: K['api'];
+type ExtractDeps<D extends Container<string, AnyStartFn>[]> = {
+  [K in D[number] as K['id']]: Awaited<ReturnType<K['start']>>['api'];
 };
 
-// todo: return on start and enable fn instead of API
-// todo: create composer fn
-// todo: resolve features graph
-// todo: avoid cycle deps
-// todo: compose fn to wrap em all | like basic compose fn + passing api (no need to save em all. just reverse pipe)
-// todo: think about dynamic feature stop
 type Params<
   Id extends string,
   API extends AnyObject,
@@ -35,27 +31,27 @@ type Params<
     ? OptionalDeps extends void
       ? {
           id: Id;
-          onStart: () => StartResult<API>;
+          start: () => StartResult<API>;
           enable?: () => EnableResult;
         }
       : {
           id: Id;
           optionalDependsOn: Exclude<OptionalDeps, void>;
-          onStart: (_: void, optionalDeps: Partial<ExtractDeps<Exclude<OptionalDeps, void>>>) => StartResult<API>;
+          start: (_: void, optionalDeps: Partial<ExtractDeps<Exclude<OptionalDeps, void>>>) => StartResult<API>;
           enable?: (_: void, optionalDeps: Partial<ExtractDeps<Exclude<OptionalDeps, void>>>) => EnableResult;
         }
     : OptionalDeps extends void
       ? {
           id: Id;
           dependsOn: Exclude<Deps, void>;
-          onStart: (deps: ExtractDeps<Exclude<Deps, void>>) => StartResult<API>;
+          start: (deps: ExtractDeps<Exclude<Deps, void>>) => StartResult<API>;
           enable?: (deps: ExtractDeps<Exclude<Deps, void>>) => EnableResult;
         }
       : {
           id: Id;
           dependsOn: Exclude<Deps, void>;
           optionalDependsOn: Exclude<OptionalDeps, void>;
-          onStart: (
+          start: (
             deps: ExtractDeps<Exclude<Deps, void>>,
             optionalDeps: Partial<ExtractDeps<Exclude<OptionalDeps, void>>>,
           ) => StartResult<API>;
@@ -65,8 +61,16 @@ type Params<
           ) => EnableResult;
         };
 
+const paramsContainsEmptyString = (x: { id: string }): x is ContainerIdEmptyStringError => x.id === '';
+
+// todo: to compose
 const IDS_SET = new Set();
 
+// todo: return enable fn ?
+// todo: create composer fn
+// todo: avoid cycle deps
+// todo: compose fn to wrap em all | like basic compose fn + passing api (no need to save em all. just reverse pipe)
+// todo: think about dynamic feature stop
 const createContainer = <
   Id extends string,
   API extends AnyObject,
@@ -75,11 +79,9 @@ const createContainer = <
 >(
   params: Params<Id, API, Deps, OptionalDeps>,
 ) => {
-  if (params.id === '') {
+  if (paramsContainsEmptyString(params)) {
     throw new Error(ERROR.CONTAINER_ID_EMPTY_STRING);
   }
-
-  params as Exclude<typeof params, ContainerIdEmptyStringError>;
 
   if (IDS_SET.has(params.id)) {
     throw new Error(ERROR.CONTAINER_ID_NOT_UNIQ);
@@ -87,13 +89,15 @@ const createContainer = <
     IDS_SET.add(params.id);
   }
 
+  type ValidParams = Exclude<typeof params, ContainerIdEmptyStringError>;
+
   const $status = createStore<Status>('idle');
 
   return {
     id: params.id,
     $status,
-    api: {} as API,
-  } as Container<Id, API>;
+    start: params.start,
+  } as Container<Id, ValidParams['start']>;
 };
 
 export { createContainer, IDS_SET };
