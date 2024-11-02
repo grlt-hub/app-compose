@@ -18,9 +18,11 @@ type ExtractDeps<D extends Container<string, AnyObject>[]> = {
 };
 
 const ERROR = {
-  EMPTY_STRING_CONTAINER_ID: 'Container ID cannot be an empty string.',
+  CONTAINER_ID_EMPTY_STRING: 'Container ID cannot be an empty string.',
   CONTAINER_ID_NOT_UNIQ: 'Container ID must be unique.',
 } as const;
+
+type ContainerIdEmptyStringError = { id: never; error: typeof ERROR.CONTAINER_ID_EMPTY_STRING };
 
 // todo: return on start and enable fn instead of API
 // todo: create composer fn
@@ -34,7 +36,7 @@ type Params<
   Deps extends NonEmptyTuple<AnyContainer> | void = void,
   OptionalDeps extends NonEmptyTuple<AnyContainer> | void = void,
 > = '' extends Id
-  ? { id: never; error: typeof ERROR.EMPTY_STRING_CONTAINER_ID }
+  ? ContainerIdEmptyStringError
   : Deps extends void
     ? OptionalDeps extends void
       ? {
@@ -80,7 +82,7 @@ const createContainer = <
   params: Params<Id, API, Deps, OptionalDeps>,
 ) => {
   if (params.id === '') {
-    throw new Error(ERROR.EMPTY_STRING_CONTAINER_ID);
+    throw new Error(ERROR.CONTAINER_ID_EMPTY_STRING);
   }
 
   if (IDS_SET.has(params.id)) {
