@@ -5,9 +5,8 @@ type AnyObject = Record<string, unknown>;
 type NonEmptyTuple<T = unknown> = [T, ...T[]];
 type Status = 'idle' | 'pending' | 'done' | 'fail' | 'off';
 type StartResult<T> = Promise<{ api: T }> | { api: T };
-type EnableResult = Promise<boolean> | boolean;
-
 type AnyStartFn = (...x: any) => StartResult<any>;
+type EnableResult = Promise<boolean> | boolean;
 
 type Container<Id extends string, StartFn extends AnyStartFn> = {
   id: Id;
