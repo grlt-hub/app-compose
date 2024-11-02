@@ -17,7 +17,9 @@ type Container<Id extends string, StartFn extends AnyStartFn> = {
 type AnyContainer = Container<any, AnyStartFn>;
 
 type ExtractDeps<D extends Container<string, AnyStartFn>[]> = {
-  [K in D[number] as K['id']]: Awaited<ReturnType<K['start']>>['api'];
+  [K in D[number] as Awaited<ReturnType<K['start']>>['api'] extends Record<string, never> ? never : K['id']]: Awaited<
+    ReturnType<K['start']>
+  >['api'];
 };
 
 type Params<
@@ -62,8 +64,12 @@ type Params<
         };
 
 const containerIdEmptyString = (x: { id: string }): x is ContainerIdEmptyStringError => x.id === '';
+const depsToSet = (x: NonEmptyTuple<AnyContainer> | void) => new Set((x || []).map((i) => i.id));
 
+// todo: dep.id can not be same as optDep
 // todo: return enable fn ?
+// todo: test enable fn returns bool | promise<bool>
+// todo: test extract deps (omit deps with empty api)
 const createContainer = <
   Id extends string,
   API extends AnyObject,

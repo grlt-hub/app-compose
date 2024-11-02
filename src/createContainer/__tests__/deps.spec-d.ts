@@ -169,7 +169,11 @@ describe('void | optDeps', () => {
     type Container = typeof createContainer<'_', {}, void, [typeof __.a, typeof __.b, typeof __.c]>;
 
     type Deps = void;
-    type OptDeps = { [__.a.id]?: { t: () => true }; [__.b.id]?: { f: () => false }; [__.c.id]?: { nil: null } };
+    type OptDeps = {
+      [__.a.id]?: { t: () => true };
+      [__.b.id]?: { f: () => false };
+      [__.c.id]?: { nil: null };
+    };
 
     {
       type startFn = ExtractstartFn<Container>;
