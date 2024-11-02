@@ -61,16 +61,9 @@ type Params<
           ) => EnableResult;
         };
 
-const paramsContainsEmptyString = (x: { id: string }): x is ContainerIdEmptyStringError => x.id === '';
-
-// todo: to compose
-const IDS_SET = new Set();
+const containerIdEmptyString = (x: { id: string }): x is ContainerIdEmptyStringError => x.id === '';
 
 // todo: return enable fn ?
-// todo: create compose.up fn
-// todo: avoid cycle deps
-// todo: compose fn to wrap em all | like basic compose fn + passing api (no need to save em all. just reverse pipe)
-// todo: think about dynamic feature stop
 const createContainer = <
   Id extends string,
   API extends AnyObject,
@@ -79,14 +72,8 @@ const createContainer = <
 >(
   params: Params<Id, API, Deps, OptionalDeps>,
 ) => {
-  if (paramsContainsEmptyString(params)) {
+  if (containerIdEmptyString(params)) {
     throw new Error(ERROR.CONTAINER_ID_EMPTY_STRING);
-  }
-
-  if (IDS_SET.has(params.id)) {
-    throw new Error(ERROR.CONTAINER_ID_NOT_UNIQ);
-  } else {
-    IDS_SET.add(params.id);
   }
 
   type ValidParams = Exclude<typeof params, ContainerIdEmptyStringError>;
@@ -100,4 +87,4 @@ const createContainer = <
   } as Container<Id, ValidParams['start']>;
 };
 
-export { createContainer, IDS_SET };
+export { createContainer, type AnyContainer };

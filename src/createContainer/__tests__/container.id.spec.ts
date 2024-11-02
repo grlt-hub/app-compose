@@ -1,11 +1,9 @@
-import { createContainer, IDS_SET } from '../index';
-import { genContainerId } from './genContainerId';
+import { genContainerId } from '../../__fixtures__';
+import { createContainer } from '../index';
 
 const start = () => ({ api: {} });
 
 describe('container.id not empty string', () => {
-  beforeEach(() => IDS_SET.clear());
-
   test('happy', () => {
     expect(() => createContainer({ id: genContainerId(), start })).not.toThrowError();
   });
@@ -18,21 +16,5 @@ describe('container.id not empty string', () => {
         start: () => ({ api: {} }),
       }),
     ).toThrowError('Container ID cannot be an empty string.');
-  });
-});
-
-describe('container.id is uniq', () => {
-  beforeEach(() => IDS_SET.clear());
-
-  test('happy', () => {
-    expect(() => createContainer({ id: genContainerId(), start })).not.toThrowError();
-    expect(() => createContainer({ id: genContainerId(), start })).not.toThrowError();
-  });
-
-  test('unhappy', () => {
-    const id = genContainerId();
-
-    expect(() => createContainer({ id, start })).not.toThrowError();
-    expect(() => createContainer({ id, start })).toThrowError('Container ID must be unique.');
   });
 });
