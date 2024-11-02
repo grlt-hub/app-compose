@@ -65,7 +65,7 @@ type Params<
 const containerIdEmptyString = (x: { id: string }): x is ContainerIdEmptyStringError => x.id === '';
 const depsToSet = (x: NonEmptyTuple<AnyContainer> | void) => new Set((x || []).map((i) => i.id));
 
-// todo: dep.id can not be same as optDep
+// todo: dep.id can not be same as optDep (as runtime) + on types if it possible
 // todo: return enable fn ?
 // todo: test enable fn returns bool | promise<bool>
 // todo: test extract deps (omit deps with empty api)
