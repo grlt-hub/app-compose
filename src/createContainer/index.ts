@@ -67,7 +67,7 @@ const paramsContainsEmptyString = (x: { id: string }): x is ContainerIdEmptyStri
 const IDS_SET = new Set();
 
 // todo: return enable fn ?
-// todo: create composer fn
+// todo: create compose.up fn
 // todo: avoid cycle deps
 // todo: compose fn to wrap em all | like basic compose fn + passing api (no need to save em all. just reverse pipe)
 // todo: think about dynamic feature stop
