@@ -3,7 +3,7 @@ import { createStore, type Store } from 'effector';
 type AnyObject = Record<string, unknown>;
 type NonEmptyTuple<T = unknown> = [T, ...T[]];
 type Status = 'idle' | 'pending' | 'done' | 'fail' | 'off';
-type StartResult<T> = Promise<T> | T;
+type StartResult<T> = Promise<{ api: T }> | { api: T };
 type EnableResult = Promise<boolean> | boolean;
 
 type Container<Id extends string, API extends AnyObject> = {
@@ -39,23 +39,20 @@ type Params<
     ? OptionalDeps extends void
       ? {
           id: Id;
-          onStart: () => StartResult<Pick<Container<Id, API>, 'api'>>;
+          onStart: () => StartResult<API>;
           enable?: () => EnableResult;
         }
       : {
           id: Id;
           optionalDependsOn: Exclude<OptionalDeps, void>;
-          onStart: (
-            _: void,
-            optionalDeps: Partial<ExtractDeps<Exclude<OptionalDeps, void>>>,
-          ) => StartResult<Pick<Container<Id, API>, 'api'>>;
+          onStart: (_: void, optionalDeps: Partial<ExtractDeps<Exclude<OptionalDeps, void>>>) => StartResult<API>;
           enable?: (_: void, optionalDeps: Partial<ExtractDeps<Exclude<OptionalDeps, void>>>) => EnableResult;
         }
     : OptionalDeps extends void
       ? {
           id: Id;
           dependsOn: Exclude<Deps, void>;
-          onStart: (deps: ExtractDeps<Exclude<Deps, void>>) => StartResult<Pick<Container<Id, API>, 'api'>>;
+          onStart: (deps: ExtractDeps<Exclude<Deps, void>>) => StartResult<API>;
           enable?: (deps: ExtractDeps<Exclude<Deps, void>>) => EnableResult;
         }
       : {
@@ -65,7 +62,7 @@ type Params<
           onStart: (
             deps: ExtractDeps<Exclude<Deps, void>>,
             optionalDeps: Partial<ExtractDeps<Exclude<OptionalDeps, void>>>,
-          ) => StartResult<Pick<Container<Id, API>, 'api'>>;
+          ) => StartResult<API>;
           enable?: (
             deps: ExtractDeps<Exclude<Deps, void>>,
             optionalDeps: Partial<ExtractDeps<Exclude<OptionalDeps, void>>>,
@@ -81,7 +78,7 @@ const createContainer = <
   OptionalDeps extends NonEmptyTuple<AnyContainer> | void = void,
 >(
   params: Params<Id, API, Deps, OptionalDeps>,
-): Container<Id, API> => {
+) => {
   if (params.id === '') {
     throw new Error(ERROR.EMPTY_STRING_CONTAINER_ID);
   }
@@ -98,7 +95,7 @@ const createContainer = <
     id: params.id,
     $status,
     api: {} as API,
-  };
+  } as Container<Id, API>;
 };
 
 export { createContainer, IDS_SET };
