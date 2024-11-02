@@ -1,4 +1,5 @@
 import { createStore, type Store } from 'effector';
+import { type ContainerIdEmptyStringError, ERROR } from './errors';
 
 type AnyObject = Record<string, unknown>;
 type NonEmptyTuple<T = unknown> = [T, ...T[]];
@@ -16,13 +17,6 @@ type AnyContainer = Container<any, any>;
 type ExtractDeps<D extends Container<string, AnyObject>[]> = {
   [K in D[number] as K['id']]: K['api'];
 };
-
-const ERROR = {
-  CONTAINER_ID_EMPTY_STRING: 'Container ID cannot be an empty string.',
-  CONTAINER_ID_NOT_UNIQ: 'Container ID must be unique.',
-} as const;
-
-type ContainerIdEmptyStringError = { id: never; error: typeof ERROR.CONTAINER_ID_EMPTY_STRING };
 
 // todo: return on start and enable fn instead of API
 // todo: create composer fn
@@ -84,6 +78,8 @@ const createContainer = <
   if (params.id === '') {
     throw new Error(ERROR.CONTAINER_ID_EMPTY_STRING);
   }
+
+  params as Exclude<typeof params, ContainerIdEmptyStringError>;
 
   if (IDS_SET.has(params.id)) {
     throw new Error(ERROR.CONTAINER_ID_NOT_UNIQ);
