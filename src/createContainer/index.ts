@@ -74,4 +74,4 @@ const createContainer = <
   };
 };
 
-export { createContainer, type AnyContainer };
+export { CONTAINER_STATUS, createContainer, type AnyContainer, type ContainerStatus };
