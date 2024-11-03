@@ -1,6 +1,5 @@
 import { genContainerId } from '../../__fixtures__';
 import { createContainer } from '../index';
-import { ERROR } from '../validate';
 
 const start = () => ({ api: {} });
 
@@ -30,25 +29,24 @@ describe('container deps are uniq', () => {
   });
 
   test('unhappy', () => {
+    const id = 'pu-pu-pu';
+
     {
-      const id = genContainerId();
-      expect(() => createContainer({ id, start, dependsOn: [__.a], optionalDependsOn: [__.a] })).toThrowError(
-        ERROR.depsIntersection([__.a.id], id),
-      );
+      expect(() =>
+        createContainer({ id, start, dependsOn: [__.a], optionalDependsOn: [__.a] }),
+      ).toThrowErrorMatchingSnapshot();
     }
 
     {
-      const id = genContainerId();
       expect(() =>
         createContainer({ id, start, dependsOn: [__.a, __.b, __.c], optionalDependsOn: [__.b] }),
-      ).toThrowError(ERROR.depsIntersection([__.b.id], id));
+      ).toThrowErrorMatchingSnapshot();
     }
 
     {
-      const id = genContainerId();
       expect(() =>
         createContainer({ id, start, dependsOn: [__.b], optionalDependsOn: [__.a, __.b, __.c] }),
-      ).toThrowError(ERROR.depsIntersection([__.b.id], id));
+      ).toThrowErrorMatchingSnapshot();
     }
   });
 });

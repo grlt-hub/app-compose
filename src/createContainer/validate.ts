@@ -44,4 +44,4 @@ const validate = <P extends ValidateParams>(params: P) => {
   return params as InferValidParams<P>;
 };
 
-export { ERROR, validate, type ContainerIdEmptyStringError };
+export { validate, type ContainerIdEmptyStringError };

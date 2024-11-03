@@ -6,12 +6,14 @@
   "main": "index.js",
   "private": false,
   "scripts": {
-    "test": "vitest"
+    "test": "vitest",
+    "knip": "knip"
   },
   "author": "Viktor Pasynok",
   "license": "MIT",
   "devDependencies": {
     "@vitest/coverage-v8": "2.1.4",
+    "knip": "5.36.2",
     "nanoid": "5.0.8",
     "prettier": "3.3.3",
     "prettier-plugin-organize-imports": "4.1.0",
