@@ -1,8 +1,8 @@
 import { createStore } from 'effector';
-import type { AnyAPI, AnyContainer, AnyDeps, AnyStartFn, Container, EnableResult, StartResult, Status } from './types';
+import type { AnyAPI, AnyContainer, AnyDeps, EnableResult, StartResult, Status } from './types';
 import { type ContainerIdEmptyStringError, validate } from './validate';
 
-type ExtractDeps<D extends Container<string, AnyStartFn>[]> = {
+type ExtractDeps<D extends AnyContainer[]> = {
   [K in D[number] as Awaited<ReturnType<K['start']>>['api'] extends Record<string, never> ? never : K['id']]: Awaited<
     ReturnType<K['start']>
   >['api'];

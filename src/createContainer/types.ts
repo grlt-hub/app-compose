@@ -1,4 +1,4 @@
-import { type Store } from 'effector';
+import { type StoreWritable } from 'effector';
 
 type NonEmptyTuple<T = unknown> = [T, ...T[]];
 type AnyObject = Record<string, unknown>;
@@ -6,18 +6,18 @@ type AnyObject = Record<string, unknown>;
 type Status = 'idle' | 'pending' | 'done' | 'fail' | 'off';
 type AnyAPI = AnyObject | null;
 type StartResult<T> = Promise<{ api: T }> | { api: T };
-type AnyStartFn = (...x: any) => StartResult<any>;
+type AnyStartFn = (...x: any) => StartResult<AnyAPI>;
 type EnableResult = Promise<boolean> | boolean;
 
-type Container<Id extends string, StartFn extends AnyStartFn> = {
-  id: Id;
-  $status: Store<Status>;
-  start: StartFn;
+type AnyContainer = {
+  id: string;
+  $status: StoreWritable<Status>;
+  start: AnyStartFn;
   dependsOn?: AnyContainer[];
   optionalDependsOn?: AnyContainer[];
+  enable?: (..._: any) => EnableResult;
 };
-type AnyContainer = Container<string, AnyStartFn>;
 
 type AnyDeps = NonEmptyTuple<AnyContainer> | void;
 
-export type { AnyAPI, AnyContainer, AnyDeps, AnyStartFn, Container, EnableResult, StartResult, Status };
+export type { AnyAPI, AnyContainer, AnyDeps, AnyStartFn, EnableResult, StartResult, Status };
