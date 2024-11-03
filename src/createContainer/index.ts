@@ -49,8 +49,7 @@ type Params<
           ) => EnableResult;
         };
 
-// todo: return enable fn ?
-// todo: own change status
+// // compose.up -> wait for all deps -> check enable -> set status -> start if pending
 const createContainer = <
   Id extends string,
   API extends AnyAPI,
@@ -61,6 +60,8 @@ const createContainer = <
 ) => {
   const params = validate(__params);
   const $status = createStore<Status>('idle');
+
+  // 'fail' | 'off' <-- allowed for optDeps
 
   return {
     id: params.id,
