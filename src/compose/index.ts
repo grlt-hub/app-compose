@@ -16,8 +16,6 @@ const statusIs = {
   idle: (s: ContainerStatus) => s === CONTAINER_STATUS.idle,
 };
 
-// todo: tons of tests
-// todo: clearNode extra stores and variables on container fail|off|done, and on all up
 const upFn = (containers: AnyContainer[]) => {
   const CONTAINER_IDS = new Set<string>();
 
@@ -26,6 +24,23 @@ const upFn = (containers: AnyContainer[]) => {
   }
 
   let apis: Record<string, Awaited<ReturnType<AnyContainer['start']>>['api']> = {};
+
+  const containersStatuses = containers.reduce<Record<AnyContainer['id'], AnyContainer['$status']>>((acc, x) => {
+    acc[x.id] = x.$status;
+    return acc;
+  }, {});
+
+  const $result = combine(containersStatuses, (kv) => {
+    const statusList = Object.values(kv);
+    const done = statusList.every((s) => /^(done|fail|off)$/.test(s));
+    const hasErrors = statusList.some(statusIs.fail);
+
+    return {
+      done,
+      hasErrors,
+      statuses: kv,
+    };
+  });
 
   for (const container of containers) {
     const $strictDepsResolving: Store<ContainerStatus> = combine(
@@ -74,11 +89,20 @@ const upFn = (containers: AnyContainer[]) => {
     $depsDone.watch((x) => {
       if (x) enableFx();
     });
-
-    // fixme: container.$status.watch(off | fail) ->  clear stores (clearNode)
   }
 
-  // after start
+  return new Promise((resolve, reject) => {
+    $result.watch((x) => {
+      if (x.done === true) {
+        // fixme: clear all nodes
+        if (x.hasErrors) {
+          reject(x.statuses);
+        }
+
+        resolve(x.statuses);
+      }
+    });
+  });
 };
 
 // todo: think about dynamic feature stop
