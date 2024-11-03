@@ -5,6 +5,7 @@ describe('start fn', () => {
   describe('api is obj', () => {
     test('happy', () => {
       typeof createContainer<'_', {}>;
+      typeof createContainer<'_', null>;
     });
 
     test('unhappy', () => {
@@ -18,8 +19,6 @@ describe('start fn', () => {
       typeof createContainer<'_', boolean>;
       // @ts-expect-error
       typeof createContainer<'_', undefined>;
-      // @ts-expect-error
-      typeof createContainer<'_', null>;
       // @ts-expect-error
       typeof createContainer<'_', Symbol>;
       // @ts-expect-error
