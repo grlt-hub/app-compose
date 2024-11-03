@@ -176,6 +176,22 @@ describe('compose.up', () => {
       dependsOn: [marketplace],
       start: () => ({ api: { list: ['one', 'two'] } }),
     });
+    const idk = createContainer({
+      id: 'idk',
+      start: () => {
+        throw new Error('_');
+      },
+    });
+    const hiddenEntity = createContainer({
+      id: 'hidden-entity',
+      start: () => ({ api: null }),
+      enable: () => false,
+    });
+    const hiddenFeature = createContainer({
+      id: 'hidden-feature',
+      dependsOn: [hiddenEntity],
+      start: () => ({ api: null }),
+    });
 
     expect(
       compose.up(
@@ -188,6 +204,9 @@ describe('compose.up', () => {
           accountTransfers,
           marketplace,
           purchases,
+          idk,
+          hiddenFeature,
+          hiddenEntity,
         ]),
       ),
     ).rejects.toStrictEqual({
@@ -202,6 +221,9 @@ describe('compose.up', () => {
         [accountTransfers.id]: CONTAINER_STATUS.off,
         [marketplace.id]: CONTAINER_STATUS.fail,
         [purchases.id]: CONTAINER_STATUS.fail,
+        [idk.id]: CONTAINER_STATUS.fail,
+        [hiddenEntity.id]: CONTAINER_STATUS.off,
+        [hiddenFeature.id]: CONTAINER_STATUS.off,
       },
     });
   });
