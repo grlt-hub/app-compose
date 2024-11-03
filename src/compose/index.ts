@@ -43,7 +43,9 @@ const upFn = (containers: AnyContainer[], config?: { debug?: boolean }) => {
   });
 
   if (config?.debug) {
-    $result.watch((x) => console.debug(x.statuses));
+    $result.watch((x) => {
+      console.debug(`[${new Date().toISOString()}] app-compose:`, JSON.stringify(x.statuses, null, 2));
+    });
   }
 
   for (const container of containers) {

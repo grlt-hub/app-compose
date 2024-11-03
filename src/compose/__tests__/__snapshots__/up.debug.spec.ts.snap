@@ -1,0 +1,67 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`up.debug 1`] = `
+[
+  "[2024-01-01T00:00:00.000Z] app-compose:",
+  "{
+  "a": "idle",
+  "b": "idle",
+  "c": "idle"
+}",
+]
+`;
+
+exports[`up.debug 2`] = `
+[
+  "[2024-01-01T00:00:00.000Z] app-compose:",
+  "{
+  "a": "pending",
+  "b": "idle",
+  "c": "idle"
+}",
+]
+`;
+
+exports[`up.debug 3`] = `
+[
+  "[2024-01-01T00:00:00.000Z] app-compose:",
+  "{
+  "a": "pending",
+  "b": "idle",
+  "c": "pending"
+}",
+]
+`;
+
+exports[`up.debug 4`] = `
+[
+  "[2024-01-01T00:00:00.000Z] app-compose:",
+  "{
+  "a": "done",
+  "b": "idle",
+  "c": "pending"
+}",
+]
+`;
+
+exports[`up.debug 5`] = `
+[
+  "[2024-01-01T00:00:00.000Z] app-compose:",
+  "{
+  "a": "done",
+  "b": "idle",
+  "c": "done"
+}",
+]
+`;
+
+exports[`up.debug 6`] = `
+[
+  "[2024-01-01T00:00:00.000Z] app-compose:",
+  "{
+  "a": "done",
+  "b": "off",
+  "c": "done"
+}",
+]
+`;
