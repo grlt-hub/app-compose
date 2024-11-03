@@ -1,4 +1,4 @@
-import { combine, createEffect, createStore, launch, sample, type Store } from 'effector';
+import { combine, createEffect, launch, sample, type Store } from 'effector';
 import { type AnyContainer, CONTAINER_STATUS, type ContainerStatus } from '../createContainer';
 
 const validateContainerId = (id: string, set: Set<string>) => {
@@ -8,7 +8,13 @@ const validateContainerId = (id: string, set: Set<string>) => {
   set.add(id);
 };
 
-const READY_DEPS_LIST = [createStore<ContainerStatus>(CONTAINER_STATUS.done)];
+const statusIs = {
+  off: (s: ContainerStatus) => s === CONTAINER_STATUS.off,
+  fail: (s: ContainerStatus) => s === CONTAINER_STATUS.fail,
+  pending: (s: ContainerStatus) => s === CONTAINER_STATUS.pending,
+  done: (s: ContainerStatus) => s === CONTAINER_STATUS.done,
+  idle: (s: ContainerStatus) => s === CONTAINER_STATUS.idle,
+};
 
 // todo: tons of tests
 // todo: simplify  if (x.some((s) => s === CONTAINER_STATUS.off)) return CONTAINER_STATUS.off;
@@ -23,54 +29,51 @@ const upFn = (containers: AnyContainer[]) => {
   let apis: Record<string, Awaited<ReturnType<AnyContainer['start']>>['api']> = {};
 
   for (const container of containers) {
-    const $strictDepsResolvingStatus: Store<ContainerStatus> = combine(
-      container.dependsOn ? container.dependsOn.map((d) => d.$status) : READY_DEPS_LIST,
+    const $strictDepsResolving: Store<ContainerStatus> = combine(
+      (container.dependsOn ?? []).map((d) => d.$status),
       (x) => {
-        if (x.some((s) => s === CONTAINER_STATUS.off)) return CONTAINER_STATUS.off;
-        if (x.some((s) => s === CONTAINER_STATUS.fail)) return CONTAINER_STATUS.fail;
-        if (x.some((s) => s === CONTAINER_STATUS.pending)) return CONTAINER_STATUS.pending;
+        if (x.some(statusIs.off)) return CONTAINER_STATUS.off;
+        if (x.some(statusIs.fail)) return CONTAINER_STATUS.fail;
+        if (x.some(statusIs.pending)) return CONTAINER_STATUS.pending;
 
-        if (x.every((s) => s === CONTAINER_STATUS.done)) return CONTAINER_STATUS.done;
+        if (x.every(statusIs.done) || x.length === 0) return CONTAINER_STATUS.done;
 
         return CONTAINER_STATUS.idle;
       },
     );
-    const $optionalDepsResolvingStatus: Store<ContainerStatus> = combine(
-      container.optionalDependsOn ? container.optionalDependsOn.map((d) => d.$status) : READY_DEPS_LIST,
-      (x) => {
-        if (x.some((s) => s === CONTAINER_STATUS.pending)) return CONTAINER_STATUS.pending;
-        if (x.some((s) => s === CONTAINER_STATUS.idle)) return CONTAINER_STATUS.idle;
+    const $optionalDepsResolving: Store<ContainerStatus> = combine(
+      (container.optionalDependsOn ?? []).map((d) => d.$status),
+      (l) => {
+        if (l.some(statusIs.pending)) return CONTAINER_STATUS.pending;
+        if (l.some(statusIs.idle)) return CONTAINER_STATUS.idle;
 
         return CONTAINER_STATUS.done;
       },
     );
-    const $depsReady = combine([$strictDepsResolvingStatus, $optionalDepsResolvingStatus], (s) =>
-      s.every((x) => x === CONTAINER_STATUS.done),
-    );
+    const $depsDone = combine([$strictDepsResolving, $optionalDepsResolving], (l) => l.every(statusIs.done));
 
+    const enableFx = createEffect(async () => (container.enable ? await container.enable(apis, apis) : true));
     const startFx = createEffect(async () => {
       apis[container.id] = (await container.start(apis, apis))['api'];
     });
 
+    sample({
+      clock: enableFx.doneData,
+      fn: (x) => (x ? CONTAINER_STATUS.pending : CONTAINER_STATUS.off),
+      target: container.$status,
+    });
+    sample({ clock: enableFx.failData, fn: () => CONTAINER_STATUS.fail, target: container.$status });
+    sample({ clock: container.$status, filter: statusIs.pending, target: startFx });
     sample({ clock: startFx.finally, fn: (x) => x.status, target: container.$status });
-    sample({ clock: container.$status, filter: (x) => x === CONTAINER_STATUS.pending, target: startFx });
 
-    $strictDepsResolvingStatus.watch((s) => {
-      if (s === CONTAINER_STATUS.off || s === CONTAINER_STATUS.fail) {
+    $strictDepsResolving.watch((s) => {
+      if (statusIs.off(s) || statusIs.fail(s)) {
         launch(container.$status, s);
       }
     });
 
-    $depsReady.watch(async (x) => {
-      if (x) {
-        try {
-          const isEnabled = container.enable ? await container.enable(apis, apis) : true;
-
-          launch(container.$status, isEnabled ? CONTAINER_STATUS.pending : CONTAINER_STATUS.off);
-        } catch {
-          launch(container.$status, CONTAINER_STATUS.fail);
-        }
-      }
+    $depsDone.watch((x) => {
+      if (x) enableFx();
     });
 
     // fixme: container.$status.watch(off | fail) ->  clear stores (clearNode)
@@ -79,7 +82,7 @@ const upFn = (containers: AnyContainer[]) => {
   // after start
 };
 
+// todo: think about dynamic feature stop
 const compose = { up: upFn };
 
 export { compose };
-// todo: think about dynamic feature stop
