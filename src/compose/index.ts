@@ -17,7 +17,6 @@ const statusIs = {
 };
 
 // todo: tons of tests
-// todo: simplify  if (x.some((s) => s === CONTAINER_STATUS.off)) return CONTAINER_STATUS.off;
 // todo: clearNode extra stores and variables on container fail|off|done, and on all up
 const upFn = (containers: AnyContainer[]) => {
   const CONTAINER_IDS = new Set<string>();
