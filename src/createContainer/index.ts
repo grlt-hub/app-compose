@@ -61,9 +61,8 @@ const createContainer = <
   const $status = createStore<Status>('idle');
 
   return {
-    id: params.id,
+    ...params,
     $status,
-    start: params.start,
   };
 };
 
