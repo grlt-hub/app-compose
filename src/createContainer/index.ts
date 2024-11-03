@@ -1,19 +1,6 @@
-import { createStore, type Store } from 'effector';
-import { type ContainerIdEmptyStringError, ERROR } from './errors';
-
-type AnyObject = Record<string, unknown>;
-type NonEmptyTuple<T = unknown> = [T, ...T[]];
-type Status = 'idle' | 'pending' | 'done' | 'fail' | 'off';
-type StartResult<T> = Promise<{ api: T }> | { api: T };
-type AnyStartFn = (...x: any) => StartResult<any>;
-type EnableResult = Promise<boolean> | boolean;
-
-type Container<Id extends string, StartFn extends AnyStartFn> = {
-  id: Id;
-  $status: Store<Status>;
-  start: StartFn;
-};
-type AnyContainer = Container<any, AnyStartFn>;
+import { createStore } from 'effector';
+import type { AnyAPI, AnyContainer, AnyDeps, AnyStartFn, Container, EnableResult, StartResult, Status } from './types';
+import { type ContainerIdEmptyStringError, validate } from './validate';
 
 type ExtractDeps<D extends Container<string, AnyStartFn>[]> = {
   [K in D[number] as Awaited<ReturnType<K['start']>>['api'] extends Record<string, never> ? never : K['id']]: Awaited<
@@ -23,9 +10,9 @@ type ExtractDeps<D extends Container<string, AnyStartFn>[]> = {
 
 type Params<
   Id extends string,
-  API extends AnyObject,
-  Deps extends NonEmptyTuple<AnyContainer> | void = void,
-  OptionalDeps extends NonEmptyTuple<AnyContainer> | void = void,
+  API extends AnyAPI,
+  Deps extends AnyDeps = void,
+  OptionalDeps extends AnyDeps = void,
 > = '' extends Id
   ? ContainerIdEmptyStringError
   : Deps extends void
@@ -62,33 +49,23 @@ type Params<
           ) => EnableResult;
         };
 
-const containerIdEmptyString = (x: { id: string }): x is ContainerIdEmptyStringError => x.id === '';
-
-// todo: dep.id can not be same as optDep (as runtime) + on types
 // todo: return enable fn ?
-// todo: test enable fn returns bool | promise<bool>
-// todo: test extract deps (omit deps with empty api)
 const createContainer = <
   Id extends string,
-  API extends AnyObject,
-  Deps extends NonEmptyTuple<AnyContainer> | void = void,
-  OptionalDeps extends NonEmptyTuple<AnyContainer> | void = void,
+  API extends AnyAPI,
+  Deps extends AnyDeps = void,
+  OptionalDeps extends AnyDeps = void,
 >(
-  params: Params<Id, API, Deps, OptionalDeps>,
+  __params: Params<Id, API, Deps, OptionalDeps>,
 ) => {
-  if (containerIdEmptyString(params)) {
-    throw new Error(ERROR.CONTAINER_ID_EMPTY_STRING);
-  }
-
-  type ValidParams = Exclude<typeof params, ContainerIdEmptyStringError>;
-
+  const params = validate(__params);
   const $status = createStore<Status>('idle');
 
   return {
     id: params.id,
     $status,
     start: params.start,
-  } as Container<Id, ValidParams['start']>;
+  };
 };
 
 export { createContainer, type AnyContainer };

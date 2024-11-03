@@ -18,6 +18,10 @@ const __ = {
     id: 'c',
     start: () => ({ api: { __: undefined } }),
   }),
+  withEmptyAPI: createContainer({
+    id: 'emptyApi',
+    start: () => ({ api: {} }),
+  }),
 };
 
 describe('void | void', () => {
@@ -58,7 +62,7 @@ describe('dep | void', () => {
     }
   });
   test('multiple | void', () => {
-    type Container = typeof createContainer<'_', {}, [typeof __.a, typeof __.b, typeof __.c]>;
+    type Container = typeof createContainer<'_', {}, [typeof __.a, typeof __.b, typeof __.c, typeof __.withEmptyAPI]>;
 
     type Deps = { [__.a.id]: { t: () => true }; [__.b.id]: { f: () => false }; [__.c.id]: { nil: null } };
 
@@ -100,7 +104,7 @@ describe('deps | optDeps', () => {
   });
 
   test('one | multiple', () => {
-    type Container = typeof createContainer<'_', {}, [typeof __.a], [typeof __.b, typeof __.c]>;
+    type Container = typeof createContainer<'_', {}, [typeof __.a], [typeof __.b, typeof __.c, typeof __.withEmptyAPI]>;
 
     type Deps = { [__.a.id]: { t: () => true } };
     type OptDeps = { [__.b.id]?: { f: () => false }; [__.c.id]?: { nil: null } };
@@ -122,7 +126,12 @@ describe('deps | optDeps', () => {
   });
 
   test('multiple | multiple', () => {
-    type Container = typeof createContainer<'_', {}, [typeof __.a, typeof __.b], [typeof __.c, typeof __.d]>;
+    type Container = typeof createContainer<
+      '_',
+      {},
+      [typeof __.a, typeof __.b, typeof __.withEmptyAPI],
+      [typeof __.c, typeof __.d]
+    >;
 
     type Deps = { [__.a.id]: { t: () => true }; [__.b.id]: { f: () => false } };
     type OptDeps = { [__.c.id]?: { nil: null }; [__.d.id]?: { __: undefined } };
