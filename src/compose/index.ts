@@ -16,7 +16,7 @@ const statusIs = {
   idle: (s: ContainerStatus) => s === CONTAINER_STATUS.idle,
 };
 
-const upFn = (containers: AnyContainer[]) => {
+const upFn = (containers: AnyContainer[], config?: { debug?: boolean }) => {
   const CONTAINER_IDS = new Set<string>();
 
   for (const container of containers) {
@@ -41,6 +41,10 @@ const upFn = (containers: AnyContainer[]) => {
       statuses: kv,
     };
   });
+
+  if (config?.debug) {
+    $result.watch((x) => console.debug(x.statuses));
+  }
 
   for (const container of containers) {
     const $strictDepsResolving: Store<ContainerStatus> = combine(
