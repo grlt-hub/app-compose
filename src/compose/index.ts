@@ -96,10 +96,10 @@ const upFn = (containers: AnyContainer[]) => {
       if (x.done === true) {
         // fixme: clear all nodes
         if (x.hasErrors) {
-          reject(x.statuses);
+          reject(x);
         }
 
-        resolve(x.statuses);
+        resolve(x);
       }
     });
   });
