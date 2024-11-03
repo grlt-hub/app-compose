@@ -1,4 +1,4 @@
-import { CONTAINER_STATUS, createContainer, type AnyContainer } from '../../createContainer';
+import { createContainer } from '../../createContainer';
 import { compose } from '../index';
 
 test('up.debug', async () => {
