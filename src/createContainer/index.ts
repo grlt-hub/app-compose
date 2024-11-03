@@ -1,6 +1,14 @@
 import { createStore } from 'effector';
-import type { AnyAPI, AnyContainer, AnyDeps, EnableResult, StartResult, Status } from './types';
-import { type ContainerIdEmptyStringError, validate } from './validate';
+import {
+  CONTAINER_STATUS,
+  type AnyAPI,
+  type AnyContainer,
+  type AnyDeps,
+  type ContainerStatus,
+  type EnableResult,
+  type StartResult,
+} from './types';
+import { validate, type ContainerIdEmptyStringError } from './validate';
 
 type ExtractDeps<D extends AnyContainer[]> = {
   [K in D[number] as Awaited<ReturnType<K['start']>>['api'] extends Record<string, never> ? never : K['id']]: Awaited<
@@ -58,7 +66,7 @@ const createContainer = <
   __params: Params<Id, API, Deps, OptionalDeps>,
 ) => {
   const params = validate(__params);
-  const $status = createStore<Status>('idle');
+  const $status = createStore<ContainerStatus>(CONTAINER_STATUS.idle);
 
   return {
     ...params,
