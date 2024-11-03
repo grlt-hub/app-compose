@@ -105,7 +105,6 @@ const upFn = (containers: AnyContainer[]) => {
   });
 };
 
-// todo: think about dynamic feature stop
 const compose = { up: upFn };
 
 export { compose };
