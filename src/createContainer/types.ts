@@ -13,6 +13,8 @@ type Container<Id extends string, StartFn extends AnyStartFn> = {
   id: Id;
   $status: Store<Status>;
   start: StartFn;
+  dependsOn?: AnyContainer[];
+  optionalDependsOn?: AnyContainer[];
 };
 type AnyContainer = Container<string, AnyStartFn>;
 
