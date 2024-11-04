@@ -17,7 +17,7 @@
       "parser": "yaml"
     }
   }, {
-    "files": ["*.mdx"],
+    "files": ["*.mdx", "*.md"],
     "options": {
       "parser": "markdown"
     }
