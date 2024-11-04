@@ -23,8 +23,10 @@ The library offers convenient functions for creating and composing modules into 
 
 ## Install
 
+```sh
 npm i @grlt-hub/app-compose
 # Or Yarn
 yarn add @grlt-hub/app-compose
 # Or pnpm
 pnpm add @grlt-hub/app-compose
+```
