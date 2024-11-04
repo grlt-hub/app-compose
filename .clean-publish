@@ -1,0 +1,16 @@
+  {
+  "files": [
+    ".editorconfig",
+    ".gitignore",
+    ".prettierrc",
+    "lefthook.yml",
+    "src",
+    ".npmrc",
+    "knip.json",
+    "tsconfig.json",
+    "Makefile"
+  ],
+  "fields": ["devDependencies", "scripts", "engines", "volta" ],
+  "packageManager": "npm",
+  "access": "public"
+}

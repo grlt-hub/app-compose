@@ -1,6 +1,6 @@
 {
   "name": "@grlt-hub/app-compose",
-  "version": "0.0.1-next.0",
+  "version": "0.0.1-next.3",
   "description": "",
   "type": "module",
   "private": false,
@@ -8,18 +8,12 @@
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": ["/README.md", "/package.json", "/dist"],
-  "scripts": {
-    "build": "rm -rf ./dist && tsup src/index.ts --minify --format esm --dts",
-    "test": "vitest --coverage",
-    "size": "size-limit",
-    "lint": "knip && npm run size",
-    "prepublishOnly": "npm run build && npm run lint && npm t"
-  },
   "author": "Viktor Pasynok",
   "license": "MIT",
   "devDependencies": {
     "@size-limit/preset-small-lib": "11.1.6",
     "@vitest/coverage-v8": "2.1.4",
+    "clean-publish": "5.1.0",
     "knip": "5.36.2",
     "nanoid": "5.0.8",
     "prettier": "3.3.3",
