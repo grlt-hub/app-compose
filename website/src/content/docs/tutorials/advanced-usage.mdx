@@ -15,7 +15,7 @@ import { createContainer, compose } from '@grlt-hub/app-compose';
 
 const user = createContainer({
   id: 'user',
-  onStart: () => {
+  start: () => {
     console.log('User data loaded');
     return { api: { userId: 'user123' } };
   },
@@ -24,7 +24,7 @@ const user = createContainer({
 const accounts = createContainer({
   id: 'accounts',
   dependsOn: [user],
-  onStart: (deps) => {
+  start: (deps) => {
     console.log('Accounts loaded for user:', deps.user.userId);
     return { api: null };
   },

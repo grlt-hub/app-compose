@@ -1,0 +1,37 @@
+---
+title: Manage Dependencies
+sidebar:
+  order: 1
+---
+
+In this guide, we’ll look at how to manage dependencies between containers using the `dependsOn` and `optionalDependsOn` options. Defining dependencies allows you to control the order in which containers start, ensuring that necessary data or functionality is available when each container initializes.
+
+We’ll explore:
+
+- `dependsOn`: Strict dependencies that must be initialized before the container starts.
+- `optionalDependsOn`: Flexible dependencies that are used if available but are not required.
+
+By configuring these dependencies, you can create modular and interdependent components that execute in the correct order and adapt based on available data.
+
+## Strict Dependency (`dependsOn`)
+
+When a container has a strict dependency defined by `dependsOn`, it relies on the successful initialization of that dependency to start. Here’s how `dependsOn` affects container statuses:
+
+- **If the dependency is** `done`: The container will proceed to start, as all strict dependencies have completed successfully.
+- **If the dependency is** `fail`: If a container’s dependency is in the `fail` status, the dependent container will also `fail`. This strict relationship ensures that any error in a required dependency is propagated to dependent containers.
+  - Example: If `Container A` depends on `Container B` via `dependsOn` and `Container B` has a `fail` status, then `Container A` will also be marked as `fail`.
+- **If the dependency is** `off`: If the dependency is in the `off` status (disabled), then the dependent container will also be marked as `off`. This prevents the container from running if a required dependency is explicitly turned off.
+  - Example: If `Container C` depends on `Container D` via `dependsOn` and `Container D` is `off`, then `Container C` will also be `off`.
+
+## Optional Dependency (`optionalDependsOn`)
+
+The `optionalDependsOn` option allows you to define dependencies that are not strictly required for the container to start. This means the container will attempt to start regardless of the final status of these dependencies. Here’s how `optionalDependsOn` affects container statuses:
+
+- **If the dependency is** `done`: The container will start and use any data or resources provided by the `optionalDependsOn` dependency.
+  - **Example**: If `Container E` optionally depends on `Container F`, and `Container F` is `done`, then `Container E` will start and can access `Container F`'s data.
+- **If the dependency is** `fail`: The container will still attempt to start even if the optional dependency fails. This flexibility allows the container to function independently without failing due to non-critical errors.
+  - **Example**: If `Container G` optionally depends on `Container H`, and `Container H` has a `fail` status, then `Container G` will still try to start without data from `Container H`.
+- **If the dependency is** `off`: Similar to a `fail` status, the container will still attempt to start without the optional dependency. This enables the container to run without being affected by dependencies that are explicitly turned off.
+  - **Example**: If `Container I` optionally depends on `Container J`, and `Container J` is `off`, then `Container I` will start as usual.
+
+Using `optionalDependsOn` provides flexibility, allowing containers to run even when some dependencies are unavailable. This approach is useful for non-critical dependencies, where the container can perform its primary function regardless of the state of these optional dependencies.

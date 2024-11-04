@@ -228,3 +228,144 @@ describe('compose.up', () => {
     });
   });
 });
+
+describe('edge cases', () => {
+  test('dependsOn failed', () => {
+    const a = createContainer({
+      id: genContainerId(),
+      start: () => ({ api: null }),
+      enable: () => {
+        throw new Error('');
+      },
+    });
+    const b = createContainer({
+      id: genContainerId(),
+      dependsOn: [a],
+      start: () => ({ api: null }),
+    });
+
+    expect(compose.up([a, b])).rejects.toStrictEqual({
+      done: true,
+      hasErrors: true,
+      statuses: {
+        [a.id]: 'fail',
+        [b.id]: 'fail',
+      },
+    });
+  });
+  test('optionalDependsOn failed', () => {
+    const a = createContainer({
+      id: genContainerId(),
+      start: () => ({ api: null }),
+      enable: () => {
+        throw new Error('');
+      },
+    });
+    const b = createContainer({
+      id: genContainerId(),
+      optionalDependsOn: [a],
+      start: () => ({ api: null }),
+    });
+
+    expect(compose.up([a, b])).rejects.toStrictEqual({
+      done: true,
+      hasErrors: true,
+      statuses: {
+        [a.id]: 'fail',
+        [b.id]: 'done',
+      },
+    });
+  });
+
+  test('dependsOn failed | optionalDependsOn done', () => {
+    const a = createContainer({
+      id: genContainerId(),
+      start: () => ({ api: null }),
+      enable: () => {
+        throw new Error('');
+      },
+    });
+    const b = createContainer({
+      id: genContainerId(),
+      start: () => ({ api: null }),
+    });
+    const c = createContainer({
+      id: genContainerId(),
+      dependsOn: [a],
+      optionalDependsOn: [b],
+      start: () => ({ api: null }),
+    });
+
+    expect(compose.up([a, b, c])).rejects.toStrictEqual({
+      done: true,
+      hasErrors: true,
+      statuses: {
+        [a.id]: 'fail',
+        [b.id]: 'done',
+        [c.id]: 'fail',
+      },
+    });
+  });
+
+  test('dependsOn done | optionalDependsOn failed', () => {
+    const a = createContainer({
+      id: genContainerId(),
+      start: () => ({ api: null }),
+      enable: () => {
+        throw new Error('');
+      },
+    });
+    const b = createContainer({
+      id: genContainerId(),
+      start: () => ({ api: null }),
+    });
+    const c = createContainer({
+      id: genContainerId(),
+      dependsOn: [b],
+      optionalDependsOn: [a],
+      start: () => ({ api: null }),
+    });
+
+    expect(compose.up([a, b, c])).rejects.toStrictEqual({
+      done: true,
+      hasErrors: true,
+      statuses: {
+        [a.id]: 'fail',
+        [b.id]: 'done',
+        [c.id]: 'done',
+      },
+    });
+  });
+  test('dependsOn failed | optionalDependsOn failed', () => {
+    const a = createContainer({
+      id: genContainerId(),
+      start: () => ({ api: null }),
+      enable: () => {
+        throw new Error('');
+      },
+    });
+    const b = createContainer({
+      id: genContainerId(),
+      start: () => ({ api: null }),
+      enable: () => {
+        throw new Error('');
+      },
+    });
+    const c = createContainer({
+      id: genContainerId(),
+      dependsOn: [b],
+      optionalDependsOn: [a],
+      start: () => ({ api: null }),
+    });
+
+    expect(compose.up([a, b, c])).rejects.toStrictEqual({
+      done: true,
+      hasErrors: true,
+      statuses: {
+        [a.id]: 'fail',
+        [b.id]: 'fail',
+        [c.id]: 'fail',
+      },
+    });
+  });
+});

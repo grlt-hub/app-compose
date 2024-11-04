@@ -1,0 +1,220 @@
+---
+title: Use enable
+sidebar:
+  order: 0
+---
+
+In this guide, we’ll explore the `enable` function, which allows you to control whether a container should start based on specific conditions. By configuring `enable`, you can ensure that certain containers only initialize when needed, providing greater flexibility and control over application resources and dependencies.
+
+We’ll explore:
+
+- **Container Statuses**: An overview of possible statuses and what each one represents.
+- How `enable` interacts with container statuses.
+- Practical examples showing how to set up `enable` with different conditions.
+
+Using `enable` effectively allows you to create more dynamic container workflows, optimizing the execution and resource usage of your application.
+
+## Container Statuses
+
+Containers can have the following statuses based on their execution state and the state of their dependencies:
+
+- **idle**: The container is inactive and has not yet started.
+- **pending**: The container is ready to start and is waiting for its turn. This status indicates that all dependencies (both strict and optional) have reached a final state of either `done`, `fail`, or `off`.
+- **done**: The container has started successfully and is fully operational.
+- **fail**: The container attempted to start but encountered an error, either directly or due to a failed strict dependency.
+- **off**: The container is disabled and will not attempt to start.
+
+Understanding these statuses helps in diagnosing and managing the execution flow of containers, especially in complex configurations with multiple dependencies.
+
+## How `enable` Interacts with Container Statuses
+
+The `enable` function provides conditional control over whether a container should start. Here’s how `enable` interacts with container statuses, based on dependency resolutions and the value returned by `enable`.
+
+- **When** `enable` is evaluated: The `enable` function is only called once all strict dependencies are in the `done` status, and optional dependencies (if any) are in one of the final statuses (`done`, `fail`, or `off`). If a strict dependency is `off`, the container itself will also be set to `off`. If a strict dependency has a `fail` status, the container will inherit this `fail` status as well.
+
+- **Return value of** `enable`:
+  - `true` or `Promise<true>`: If `enable` returns `true` (or a promise that resolves to true), the container will proceed to call its `start` function. This means the container will transition to `pending` and then to `done` upon successful execution.
+  - `false` or `Promise<false>`: If `enable` returns `false` (or a promise that resolves to false), the container status will be set to `off`, and `start` will not be called.
+- **Default behavior**: `enable` is optional. If `enable` is not defined for a container, it defaults to returning `true`, allowing the container to proceed to `start` as soon as its dependencies are resolved.
+
+Using `enable` provides fine-grained control over the execution of containers based on specific conditions. This mechanism helps manage complex workflows, ensuring containers start only when all necessary dependencies are available and conditions are met.
+
+## Examples: Using `enable` for Conditional Execution
+
+### Example 1: Basic enable Condition
+
+In this example, we’ll create a container that only starts if a certain condition is met. The `enable` function will check this condition and return `true` or `false`.
+
+```ts
+import { createContainer, compose } from '@grlt-hub/app-compose';
+
+const featureToggle = createContainer({
+  id: 'featureToggle',
+  start: () => {
+    console.log('Feature toggle loaded');
+    return { api: { isEnabled: true } };
+  },
+});
+
+const newFeature = createContainer({
+  id: 'newFeature',
+  dependsOn: [featureToggle],
+  enable: (deps) => deps.featureToggle.isEnabled,
+  start: () => {
+    console.log('New feature started');
+    return { api: {} };
+  },
+});
+
+await compose.up([featureToggle, newFeature]);
+```
+
+#### Expected Result
+
+If `featureToggle` is `done` and `isEnabled` is `true`, then `newFeature` will `start`, printing:
+
+```sh
+Feature toggle loaded
+New feature started
+```
+
+If `isEnabled` is `false`, then newFeature will remain `off` and not print anything about starting.
+
+### Example 2: `enable` with Dependencies and Async Conditions
+
+This example demonstrates using an asynchronous `enable` to control execution based on a network request. The container will only start if the user has permissions loaded from an API.
+
+```ts
+import { createContainer, compose } from '@grlt-hub/app-compose';
+
+const userPermissions = createContainer({
+  id: 'userPermissions',
+  start: async () => {
+    const permissions = await api.fetchUserPermissions();
+    console.log('Permissions loaded:', permissions);
+    return { api: { canAccessFeature: permissions.includes('feature_access') } };
+  },
+});
+
+const restrictedFeature = createContainer({
+  id: 'restrictedFeature',
+  dependsOn: [userPermissions],
+  enable: async (depsApi) => {
+    return depsApi.userPermissions.canAccessFeature;
+  },
+  start: () => {
+    console.log('Restricted feature started');
+    return { api: {} };
+  },
+});
+
+await compose.up([userPermissions, restrictedFeature]);
+```
+
+#### Expected Result
+
+If the user has permission `(feature_access)`, restrictedFeature will `start`
+
+```sh
+Permissions loaded: ['feature_access']
+Restricted feature started
+```
+
+If the user lacks the permission, `restrictedFeature` will be set to `off` and won’t start:
+
+```sh
+Permissions loaded: []
+```
+
+### Example 3: Optional `enable` Condition
+
+If no `enable` function is provided, it defaults to returning `true`. This allows a container to `start` as soon as all dependencies are resolved.
+
+```ts
+import { createContainer, compose } from '@grlt-hub/app-compose';
+
+const settings = createContainer({
+  id: 'settings',
+  start: () => {
+    console.log('Settings loaded');
+    return { api: {} };
+  },
+});
+
+const dashboard = createContainer({
+  id: 'dashboard',
+  dependsOn: [settings],
+  start: () => {
+    console.log('Dashboard started');
+    return { api: {} };
+  },
+});
+
+await compose.up([settings, dashboard]);
+```
+
+#### Expected Result:
+
+In this case, since `enable` is not defined, the container defaults to `true`, allowing dashboard to start as soon as `settings` is `done`:
+
+```sh
+Settings loaded
+Dashboard started
+```
+
+### Example 4: Using enable with optionalDependsOn
+
+In this example, we’ll create a container that has an optional dependency and uses `enable` to check if the optional dependency is available before starting. The container will only start if the optional dependency provides the necessary data.
+
+```ts
+import { createContainer, compose } from '@grlt-hub/app-compose';
+
+const optionalFeature = createContainer({
+  id: 'optionalFeature',
+  start: () => {
+    console.log('Optional feature loaded');
+    return { api: { isAvailable: true } };
+  },
+});
+
+const mainComponent = createContainer({
+  id: 'mainComponent',
+  optionalDependsOn: [optionalFeature],
+  enable: (_, optionalDepsApi) => {
+    // Start only if optionalFeature is available and isAvailable is true
+    return optionalDepsApi.optionalFeature?.isAvailable || false;
+  },
+  start: () => {
+    console.log('Main component started with optional feature');
+    return { api: {} };
+  },
+});
+
+await compose.up([optionalFeature, mainComponent]);
+```
+
+#### Expected Result
+
+If `optionalFeature` is available and `isAvailable` is `true`, then `mainComponent` will start with access to the optional feature:
+
+```sh
+Optional feature loaded
+Main component started with optional feature
+```
+
+If `optionalFeature` is unavailable or `isAvailable` is `false`, then mainComponent will be set to off and won’t start:
+
+```sh
+Optional feature loaded (or absent)
+```
+
+## Summary
+
+In this guide, we explored how to use the `enable` function to control the conditional execution of containers. By configuring `enable`, you can ensure that containers only start when necessary conditions are met, allowing for more efficient resource usage and flexible workflows. Key takeaways include:
+
+- **Conditional Execution**: The `enable` function controls whether a container should start, based on custom conditions.
+- **Interaction with Dependencies**: `enable` is only evaluated when all strict dependencies are `done`, and optional dependencies (if any) have resolved to `done`, `fail`, or `off`. If a strict dependency is `off` or `fail`, the container inherits that status.
+- **Return Values**: `enable` should return a `boolean` or a `Promise<boolean>`. Returning `true` allows the container to proceed to `start`, while `false` sets it to `off`.
+- **Default Behavior**: `enable` is optional; if not specified, it defaults to `true`, allowing the container to `start` when dependencies are met.
+
+With `enable`, you can create dynamic and responsive container setups, optimizing the execution flow based on application requirements and dependency availability.
