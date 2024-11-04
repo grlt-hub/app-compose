@@ -2,7 +2,7 @@ import starlight from '@astrojs/starlight';
 import { defineConfig } from 'astro/config';
 
 export default defineConfig({
-  site: 'https://github.com/grlt-hub',
+  site: 'https://grlt-hub.github.io',
   base: '/app-compose',
   integrations: [
     starlight({

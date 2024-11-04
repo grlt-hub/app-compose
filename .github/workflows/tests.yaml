@@ -6,11 +6,13 @@ on:
     paths-ignore:
       - '**/*.md'
       - '**/*.mdx'
+      - './website/**/*.*'
   pull_request:
     branches: [main]
     paths-ignore:
       - '**/*.md'
       - '**/*.mdx'
+      - './website/**/*.*'
 
 jobs:
   build:
