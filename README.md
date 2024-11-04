@@ -15,6 +15,7 @@ Modern applications require a modular structure to ensure **flexibility** and ad
 ```ts
 import { createContainer, compose } from '@grlt-hub/app-compose';
 
+// wrap the module in a container
 const user = createContainer({
   id: 'user',
   start: async () => {
@@ -23,6 +24,7 @@ const user = createContainer({
     return { api: { data } };
   },
 });
+
 const accounts = createContainer({
   id: 'accounts',
   dependsOn: [user],
@@ -34,6 +36,7 @@ const accounts = createContainer({
   enable: ({ user }) => user.data.id !== null
 });
 
+// start the containers
 await compose.up([user, accounts])
 
 // { user: 'idle', accounts: 'idle' }
