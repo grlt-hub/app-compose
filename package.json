@@ -1,7 +1,6 @@
 {
   "name": "@grlt-hub/app-compose",
   "version": "0.0.1-next.3",
-  "description": "",
   "type": "module",
   "private": false,
   "main": "dist/index.js",
@@ -32,5 +31,12 @@
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/grlt-hub/app-compose.git"
+  },
+  "homepage": "https://github.com/grlt-hub/app-compose/blob/main/README.md",
+  "description": "",
+  "keywords": []
 }
