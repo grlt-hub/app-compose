@@ -39,7 +39,7 @@ const accounts = createContainer({
 const wallets = createContainer({
   id: 'wallets',
   dependsOn: [accounts],
-  start: async () => ({ api: null }),
+  start: () => ({ api: null }),
 });
 
 // start the containers
