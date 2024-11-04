@@ -24,7 +24,7 @@ const user = createContainer({
   id: 'user',
   start: async () => {
     const data = await fetchUser();
-    //
+
     return { api: { data } };
   },
 });
