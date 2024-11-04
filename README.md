@@ -46,7 +46,7 @@ const wallets = createContainer({
   start: () => ({ api: null }),
 });
 
-// start the containers
+// up the containers
 await compose.up([user, wallets, accounts]);
 
 // { user: 'idle', accounts: 'idle', wallets: 'idle' }
