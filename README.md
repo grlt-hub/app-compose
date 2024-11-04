@@ -4,7 +4,7 @@ Create scalable, module-based applications with ease.
 
 ## Motivation
 
-Modern applications require a modular structure to ensure **flexibility** and adapt to **business needs**. Building a truly modular system inevitably brings the challenge of bringing all components together. In this process, it’s critical to manage the **load flow**: loading one module first, then another, while controlling their dependencies. Complexity increases when it becomes necessary to disable parts of the system **without leaving traces** in the code (such as `if/else` statements) and **without disrupting** the operation of other components.
+Modern applications require a modular structure to ensure **flexibility** and adapt to **business needs**. Building a truly modular system inevitably brings the challenge of bringing all components together. In this process, it’s critical to manage the **connection flow**: loading one module first, then another, while controlling their dependencies. Complexity increases when it becomes necessary to disable parts of the system **without leaving traces** in the code (such as `if/else` statements) and **without disrupting** the operation of other components.
 
 `app-compose` provides the ability not only to flexibly **disable modules on demand** but also to completely exclude their code from loading when they are turned off. Moreover, all dependencies of a disabled module are also automatically excluded, which helps **save resources** and maintain high **application performance**.
 
