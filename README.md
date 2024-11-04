@@ -10,6 +10,45 @@ Modern applications require a modular structure to ensure **flexibility** and ad
 
 ### How does this library solve this problem?
 
+#### Example
+
+```ts
+import { createContainer, compose } from '@grlt-hub/app-compose';
+
+const user = createContainer({
+  id: 'user',
+  start: async () => {
+    const data = await fetchUser();
+
+    return { api: { data } };
+  },
+});
+const accounts = createContainer({
+  id: 'accounts',
+  dependsOn: [user]
+  start: async ({ user }) => {
+    const data = await fetchAccounts({ id: user.data.id });
+
+    return { api: { data } };
+  },
+  enable: ({ user }) => user.data.id !== null
+});
+
+await compose.up([user, accounts])
+
+// { user: 'idle', accounts: 'idle' }
+// { user: 'pending', accounts: 'idle' }
+// { user: 'done', accounts: 'idle' }
+//
+/* if user.data.id exists */
+  // { user: 'done', accounts: 'pending' }
+  // { user: 'done', accounts: 'done' }
+/* else */
+  // { user: 'done', accounts: 'off' }
+
+// compose.up done
+```
+
 The library offers convenient functions for creating and composing modules into a single system. Each module is encapsulated in a **container** with a clear configuration, including parameters like _id_, _dependsOn_, _optionalDependsOn_, _start_, and _enable_. Developers describe containers and launch them using `compose.up` fn, without the need to worry about the **order of execution**. This approach makes working with containers **intuitive** and close to **natural language**.
 
 ## Strengths of the Library
