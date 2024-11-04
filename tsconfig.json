@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
+    "target": "es2019",
     "strict": true,
     "noImplicitAny": true,
     "allowSyntheticDefaultImports": true,

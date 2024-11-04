@@ -3,21 +3,30 @@
   "version": "0.0.1-next.0",
   "description": "",
   "type": "module",
-  "main": "index.js",
   "private": false,
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": ["/README.md", "/package.json", "/dist"],
   "scripts": {
+    "build": "rm -rf ./dist && tsup src/index.ts --minify --format esm --dts",
     "test": "vitest --coverage",
-    "knip": "knip"
+    "size": "size-limit",
+    "lint": "knip && npm run size",
+    "prepublishOnly": "npm run build && npm t"
   },
   "author": "Viktor Pasynok",
   "license": "MIT",
   "devDependencies": {
+    "@size-limit/preset-small-lib": "11.1.6",
     "@vitest/coverage-v8": "2.1.4",
     "knip": "5.36.2",
     "nanoid": "5.0.8",
     "prettier": "3.3.3",
     "prettier-plugin-organize-imports": "4.1.0",
+    "size-limit": "11.1.6",
     "tslib": "2.8.1",
+    "tsup": "8.3.5",
     "typescript": "5.6.3"
   },
   "peerDependencies": {
