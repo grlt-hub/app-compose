@@ -39,7 +39,7 @@ The `enable` function provides conditional control over whether a container shou
 
 Using `enable` provides fine-grained control over the execution of containers based on specific conditions. This mechanism helps manage complex workflows, ensuring containers start only when all necessary dependencies are available and conditions are met.
 
-## Examples: Using `enable` for Conditional Execution
+## Examples
 
 ### Example 1: Basic enable Condition
 
@@ -153,7 +153,7 @@ const dashboard = createContainer({
 await compose.up([settings, dashboard]);
 ```
 
-#### Expected Result:
+#### Expected Result
 
 In this case, since `enable` is not defined, the container defaults to `true`, allowing dashboard to start as soon as `settings` is `done`:
 
