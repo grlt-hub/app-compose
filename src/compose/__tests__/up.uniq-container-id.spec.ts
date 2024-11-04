@@ -14,7 +14,7 @@ describe('container.id is uniq', () => {
   test('unhappy', () => {
     const id = genContainerId();
 
-    expect(() => compose.up([createContainer(id), createContainer(id)])).toThrowError(
+    expect(() => compose.up([createContainer(id), createContainer(id)])).rejects.toThrowError(
       `Duplicate container ID found: ${id}`,
     );
   });
