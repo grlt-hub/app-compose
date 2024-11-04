@@ -57,6 +57,7 @@ await compose.up([user, wallets, accounts]);
 /** { user: 'done',    accounts: 'pending',  wallets: 'idle' } **/
 /** { user: 'done',    accounts: 'done',     wallets: 'pending' } **/
 /** { user: 'done',    accounts: 'done',     wallets: 'done' } **/
+//
 /* else */
 /** { user: 'done',    accounts: 'off',      wallets: 'off' } **/
 //
