@@ -87,4 +87,4 @@ pnpm add @grlt-hub/app-compose
 
 ## Documentation
 
-For additional information, guides and api reference visit our [documentation site]()
+For additional information, guides and api reference visit [documentation site](https://grlt-hub.github.io/app-compose/).

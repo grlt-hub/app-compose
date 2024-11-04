@@ -5,7 +5,7 @@
     "**/__fixtures__/**",
     "vitest.config.ts",
     "tsconfig.json",
-    "**/websitre/**"
+    "**/website/**"
   ],
   "entry": ["**/__tests__/**", "./src/index.ts"],
   "exclude": ["dependencies", "binaries"]
