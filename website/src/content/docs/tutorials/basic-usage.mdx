@@ -1,0 +1,41 @@
+---
+title: Basic Usage
+sidebar:
+  order: 1
+---
+
+In this section, we will create a simple container using `createContainer` and run it with `compose.up`. This example will show you how to quickly get started with the library and understand its basic principles.
+
+The container we create will include an identifier and an `onStart` function that runs upon initialization. You will see how `compose.up` brings containers together and manages their execution.
+
+## Example
+
+Here’s a basic example of creating and running a container.
+
+```ts
+import { createContainer, compose } from '@grlt-hub/app-compose';
+
+const user = createContainer({
+  id: 'user',
+  onStart: () => {
+    console.log('User container started');
+    return { api: null };
+  },
+});
+
+compose.up([user]);
+```
+
+> Note: Every container's start function should return an object in the format `{ api: object | null }`. This structure helps standardize how data is provided to other containers that depend on it.
+
+## Expected Result
+
+When you run this code, you should see the following output in the console:
+
+```sh
+User container started
+```
+
+## Summary
+
+In this example, we demonstrated how to create a simple container with `createContainer` and initialize it with `compose.up`. This provides a foundation for working with containers and managing execution in your application. In the following sections, we’ll explore more advanced usage and features, including handling dependencies and managing asynchronous operations.

@@ -75,16 +75,6 @@ The library offers convenient functions for creating and composing modules into 
 - Ensures high performance, suitable for **scalable applications**.
 - Follows **semantic versioning** (semver), guaranteeing **stability** and **predictability** of changes with each release.
 
-## Install
-
-```sh
-npm i @grlt-hub/app-compose
-# Or Yarn
-yarn add @grlt-hub/app-compose
-# Or pnpm
-pnpm add @grlt-hub/app-compose
-```
-
 ## Documentation
 
 For additional information, guides and api reference visit [documentation site](https://grlt-hub.github.io/app-compose/).

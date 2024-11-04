@@ -11,9 +11,10 @@ export default defineConfig({
         github: 'https://github.com/grlt-hub/app-compose',
       },
       sidebar: [
+        { label: 'Introduction', link: '/' },
         {
-          label: 'Getting started',
-          items: [{ label: 'Introduction', link: '/' }],
+          label: 'Tutorials',
+          autogenerate: { directory: 'tutorials' },
         },
       ],
       tableOfContents: {
