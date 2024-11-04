@@ -16,6 +16,10 @@ export default defineConfig({
           label: 'Tutorials',
           autogenerate: { directory: 'tutorials' },
         },
+        {
+          label: 'How-to Guides',
+          autogenerate: { directory: 'how-to-guides' },
+        },
       ],
       tableOfContents: {
         maxHeadingLevel: 4,
