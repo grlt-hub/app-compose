@@ -13,7 +13,7 @@
     "test": "vitest --coverage",
     "size": "size-limit",
     "lint": "knip && npm run size",
-    "prepublishOnly": "npm run build && npm t"
+    "prepublishOnly": "npm run build && npm run lint && npm t"
   },
   "author": "Viktor Pasynok",
   "license": "MIT",
