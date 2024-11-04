@@ -16,7 +16,7 @@ Here’s a basic example of creating and running a container.
 import { createContainer, compose } from '@grlt-hub/app-compose';
 
 const user = createContainer({
-  id: 'user',
+  id: 'user', // Each container's id must be unique to avoid conflicts
   onStart: () => {
     console.log('User container started');
     return { api: null };
