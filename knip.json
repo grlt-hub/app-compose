@@ -1,5 +1,12 @@
 {
-  "ignore": ["**/dist/**", "**/__tests__/**", "**/__fixtures__/**", "vitest.config.ts", "tsconfig.json"],
+  "ignore": [
+    "**/dist/**",
+    "**/__tests__/**",
+    "**/__fixtures__/**",
+    "vitest.config.ts",
+    "tsconfig.json",
+    "./websitre/**"
+  ],
   "entry": ["**/__tests__/**", "./src/index.ts"],
   "exclude": ["dependencies", "binaries"]
 }
