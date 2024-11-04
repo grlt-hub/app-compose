@@ -6,11 +6,11 @@ Create scalable, module-based applications with ease.
 
 Modern applications require a modular structure to ensure **flexibility** and adapt to **business needs**. Building a truly modular system inevitably brings the challenge of bringing all components together. In this process, it’s critical to manage the **load flow**: loading one module first, then another, while controlling their dependencies. Complexity increases when it becomes necessary to disable parts of the system **without leaving traces** in the code (such as `if/else` statements) and **without disrupting** the operation of other components.
 
-`App-compose` provides the ability not only to flexibly **disable modules on demand** but also to completely exclude their code from loading when they are turned off. Moreover, all dependencies of a disabled module are also automatically excluded, which helps **save resources** and maintain high **application performance**.
+`app-compose` provides the ability not only to flexibly **disable modules on demand** but also to completely exclude their code from loading when they are turned off. Moreover, all dependencies of a disabled module are also automatically excluded, which helps **save resources** and maintain high **application performance**.
 
-## Why does this library simplify development?
+### How does this library solve this problem?
 
-The library offers convenient functions for creating and composing modules into a single system. Each module is encapsulated in a **container** with a clear configuration, including parameters like _id_, _dependsOn_, _optionalDependsOn_, _start_, and _enable_. Developers describe containers and launch them using `compose.up`, without the need to worry about the **order of execution**. This approach makes working with containers **intuitive** and close to **natural language**.
+The library offers convenient functions for creating and composing modules into a single system. Each module is encapsulated in a **container** with a clear configuration, including parameters like _id_, _dependsOn_, _optionalDependsOn_, _start_, and _enable_. Developers describe containers and launch them using `compose.up` fn, without the need to worry about the **order of execution**. This approach makes working with containers **intuitive** and close to **natural language**.
 
 ## Strengths of the Library
 
