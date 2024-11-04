@@ -25,7 +25,7 @@ const user = createContainer({
 });
 const accounts = createContainer({
   id: 'accounts',
-  dependsOn: [user]
+  dependsOn: [user],
   start: async ({ user }) => {
     const data = await fetchAccounts({ id: user.data.id });
 
@@ -40,7 +40,7 @@ await compose.up([user, accounts])
 // { user: 'pending', accounts: 'idle' }
 // { user: 'done', accounts: 'idle' }
 //
-/* if user.data.id exists */
+/* if user.data.id !== null */
   // { user: 'done', accounts: 'pending' }
   // { user: 'done', accounts: 'done' }
 /* else */
