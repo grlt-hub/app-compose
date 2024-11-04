@@ -41,10 +41,10 @@ await compose.up([user, accounts])
 // { user: 'done', accounts: 'idle' }
 //
 /* if user.data.id !== null */
-  // { user: 'done', accounts: 'pending' }
-  // { user: 'done', accounts: 'done' }
+/** { user: 'done', accounts: 'pending' } **/
+/** { user: 'done', accounts: 'done' } **/
 /* else */
-  // { user: 'done', accounts: 'off' }
+/** { user: 'done', accounts: 'off' } **/
 
 // compose.up done
 ```
