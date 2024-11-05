@@ -3,3 +3,41 @@ title: createContainer
 sidebar:
   order: 0
 ---
+
+`createContainer` is a function that creates and returns a container to manage modules in the application. Containers specify dependencies, define initialization conditions, and control the order of module startup.
+
+## Syntax
+
+```ts
+createContainer(config: ContainerConfig): Container
+```
+
+## Parameters
+
+- _config_: `ContainerConfig` — configuration object for the container
+
+  - **id** (`string`) - Required. Unique identifier of the container.
+  - **start** (`(deps?: DepsApi, optDeps?: OptionalDepsApi) => { api: {} }`) - Required. Initialization function of the container, invoked upon activation. Accepts strict (`dependsOn`) and optional (`optionalDependsOn`) dependencies and returns an object `{ api: {} }`.
+  - **enable** (`() => boolean | Promise<boolean>`) - Optional. Function that determines if the container will be activated. Returns `true` to activate the container, and `false` to set the container to `off`.
+  - **dependsOn** (`Container[]`) - Optional. List of strict dependencies. These containers must be in the `done` status for the current container to transition to `pending`.
+  - **optionalDependsOn** (`Container[]`) - Optional. List of optional dependencies. These containers can be in the `done`, `fail`, or `off` status for the current container to activate.
+
+## Example
+
+```ts
+const userContainer = createContainer({
+  id: 'user',
+  start: (deps, optDeps) => {
+    // Dependencies from authDeps can be used here if provided
+    return { api: { getUser: () => ({ id: 1, name: 'John Doe' }) } };
+  },
+  enable: () => true, // Container is always enabled
+  deps: ['auth'], // Dependency on the auth container
+  optDeps: ['settings'], // Optional dependency on the settings container
+});
+```
+
+## Features and Notes
+
+- **Optional enable parameter**: If `enable` is not specified, the container is considered activated by default.
+- **Dependency handling**: `dependsOn` and `optionalDependsOn` control the activation order and conditions, referring to other containers.
