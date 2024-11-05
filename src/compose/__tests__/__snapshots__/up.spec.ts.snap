@@ -1,0 +1,13 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`custom execution order 1`] = `
+[
+  "Awesome feature loaded",
+]
+`;
+
+exports[`custom execution order 2`] = `
+[
+  "Not so awesome feature loaded",
+]
+`;

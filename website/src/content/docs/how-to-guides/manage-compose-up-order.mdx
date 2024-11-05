@@ -1,0 +1,90 @@
+---
+title: Manage Execution Order in compose.up
+sidebar:
+  order: 5
+---
+
+The `compose.up` function automatically manages the initialization order of containers based on dependencies (`dependsOn` and `optionalDependsOn`). However, there are cases where you might want to control the startup sequence more precisely—for example, by loading high-priority features first, followed by lower-priority ones.
+
+In this guide, we’ll explore:
+
+- **Automatic Ordering with Dependencies**: How `compose.up` naturally handles dependencies.
+- **Custom Execution Order**: How to enforce a specific order using priority containers.
+
+## Automatic Ordering with Dependencies
+
+By default, `compose.up` initializes containers according to their defined dependencies, regardless of the order in which they’re passed. Containers listed in `dependsOn` must complete before the container starts, and optional dependencies are accessed if available. This approach ensures that containers load with their dependencies in place.
+
+```ts
+const userContainer = createContainer({
+  id: 'user',
+  start: () => ({ api: { userId: 'user123' } }),
+});
+
+const settingsContainer = createContainer({
+  id: 'settings',
+  dependsOn: [userContainer],
+  start: () => ({ api: { theme: 'dark' } }),
+});
+
+await compose.up([settingsContainer, userContainer]);
+```
+
+Even if `settingsContainer` is listed first, `compose.up` will start `userContainer` first because it’s required by `settingsContainer`.
+
+## Custom Execution Order with Priority Containers
+
+To control execution order more precisely, you can create "priority" containers. Place the most critical containers in the first priority container and less important ones in the second. Then set up an optional dependency from the second priority container to the first. This arrangement ensures that `compose.up` treats the first priority container as a soft prerequisite for the second, so it initializes first.
+
+This approach is a trade-off: by using priority containers, you avoid linking each secondary feature to every high-priority container individually. This keeps the code cleaner and reduces unnecessary dependencies.
+
+```ts
+const highPriorityFeatures = createContainer({
+  id: 'highPriority',
+  start: () => ({ api: {} }),
+});
+
+const lowPriorityFeatures = createContainer({
+  id: 'lowPriority',
+  optionalDependsOn: [highPriorityFeatures],
+  start: () => ({ api: {} }),
+});
+
+const awesomeFeature = createContainer({
+  id: 'awesomeFeature',
+  dependsOn: [highPriorityFeatures],
+  start: () => {
+    console.log('Awesome feature loaded');
+    return { api: {} };
+  },
+});
+
+const notSoAwesomeFeature = createContainer({
+  id: 'notSoAwesomeFeature',
+  dependsOn: [lowPriorityFeatures],
+  start: () => {
+    console.log('Not so awesome feature loaded');
+    return { api: {} };
+  },
+});
+
+await compose.up([lowPriorityFeatures, notSoAwesomeFeature, highPriorityFeatures, awesomeFeature]);
+```
+
+### Expected Result
+
+The `highPriorityFeatures` container initializes first, followed by `lowPriorityFeatures`, ensuring that important features load before secondary ones:
+
+```
+Awesome feature loaded
+Not so awesome feature loaded
+```
+
+## Summary
+
+In this guide, we explored ways to manage execution order in `compose.up`:
+
+- **Automatic Dependency Handling**: `compose.up` automatically respects dependencies (`dependsOn` and `optionalDependsOn`), initializing containers in the correct sequence.
+- **Custom Execution with Priority Containers**: By creating priority containers and using optional dependencies, you can control the initialization sequence, ensuring high-priority containers start before lower-priority ones.
+
+This approach provides flexibility in managing execution order, even in complex setups where precise control is required.

@@ -369,3 +369,47 @@ describe('edge cases', () => {
     });
   });
 });
+
+test('custom execution order', async () => {
+  const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+  const fixedDate = new Date('2024-01-01T00:00:00.000Z');
+
+  vi.setSystemTime(fixedDate);
+
+  const highPriorityFeatures = createContainer({
+    id: 'highPriority',
+    start: () => ({ api: {} }),
+  });
+
+  const lowPriorityFeatures = createContainer({
+    id: 'lowPriority',
+    optionalDependsOn: [highPriorityFeatures],
+    start: () => ({ api: {} }),
+  });
+
+  const awesomeFeature = createContainer({
+    id: 'awesomeFeature',
+    dependsOn: [highPriorityFeatures],
+    start: () => {
+      console.log('Awesome feature loaded');
+      return { api: {} };
+    },
+  });
+
+  const notSoAwesomeFeature = createContainer({
+    id: 'notSoAwesomeFeature',
+    dependsOn: [lowPriorityFeatures],
+    start: () => {
+      console.log('Not so awesome feature loaded');
+      return { api: {} };
+    },
+  });
+
+  await compose.up([lowPriorityFeatures, notSoAwesomeFeature, highPriorityFeatures, awesomeFeature]);
+
+  expect(consoleLogSpy.mock.calls[0]).toMatchSnapshot();
+  expect(consoleLogSpy.mock.calls[1]).toMatchSnapshot();
+
+  consoleLogSpy.mockRestore();
+  vi.useRealTimers();
+});
