@@ -177,5 +177,6 @@ In this guide, we explored how to use `dependsOn` and `optionalDependsOn` to man
 
 - **Strict Dependencies** (`dependsOn`): Containers with strict dependencies only start once all required dependencies have reached a `done` status. If any strict dependency is `off`, the container will also be set to `off`. If a strict dependency fails, the container will inherit the `fail` status.
 - **Optional Dependencies** (`optionalDependsOn`): Containers with optional dependencies attempt to start regardless of the status of those dependencies. If optional dependencies are available, the container can access their data; if not, it will still function independently.
+- **Accessing Dependencies**: In `start` and `enable`, dependencies and optional dependencies are accessible as the first and second parameters, respectively. This allows containers to flexibly retrieve data based on both strict and optional dependencies.
 
 By configuring strict and optional dependencies, you can control the order and conditions under which containers start, creating modular and interdependent components. This setup ensures that containers have access to the necessary resources and data, improving both flexibility and reliability.
