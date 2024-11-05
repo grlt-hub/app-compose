@@ -35,3 +35,133 @@ The `optionalDependsOn` option allows you to define dependencies that are not st
   - **Example**: If `Container I` optionally depends on `Container J`, and `Container J` is `off`, then `Container I` will start as usual.
 
 Using `optionalDependsOn` provides flexibility, allowing containers to run even when some dependencies are unavailable. This approach is useful for non-critical dependencies, where the container can perform its primary function regardless of the state of these optional dependencies.
+
+## Examples
+
+### Example 1: Using `dependsOn` for _Strict Dependencies_
+
+In this example, we set up two containers, where one (`accountContainer`) depends on the other (`userContainer`). The `accountContainer` will not start until the `userContainer` has successfully completed.
+
+```ts
+import { createContainer, compose } from '@grlt-hub/app-compose';
+
+const userContainer = createContainer({
+  id: 'user',
+  start: () => {
+    console.log('User data loaded');
+    return { api: { userId: 'user123' } };
+  },
+});
+
+const accountContainer = createContainer({
+  id: 'account',
+  dependsOn: [userContainer],
+  start: (depsApi) => {
+    console.log('Account loaded for user:', depsApi.user.userId);
+    return { api: {} };
+  },
+});
+
+await compose.up([userContainer, accountContainer]);
+```
+
+#### Expected Result
+
+In this example, `accountContainer` can access data from `userContainer`, as it waits for `userContainer` to complete:
+
+```sh
+User data loaded
+Account loaded for user: user123
+```
+
+### Example 2: Using `optionalDependsOn` for _Flexible Dependencies_
+
+In this example, `notificationContainer` has an optional dependency on `userContainer`. If `userContainer` completes successfully, `notificationContainer` can access user data. If `userContainer` does not complete or is turned off, `notificationContainer` will still start but without user data.
+
+```ts
+const notificationContainer = createContainer({
+  id: 'notification',
+  optionalDependsOn: [userContainer],
+  start: (_, optionalDepsApi) => {
+    if (optionalDepsApi.user) {
+      console.log('Notifications loaded for user:', optionalDepsApi.user.userId);
+    } else {
+      console.log('Notifications loaded without user context');
+    }
+    return { api: {} };
+  },
+});
+
+await compose.up([userContainer, notificationContainer]);
+```
+
+#### Expected Result
+
+If `userContainer` completes successfully, `notificationContainer` will access `userId`. If `userContainer` is unavailable, `notificationContainer` will start independently:
+
+```sh
+User data loaded
+Notifications loaded for user: user123
+```
+
+or, if `userContainer` is unavailable:
+
+```sh
+Notifications loaded without user context
+```
+
+### Example 3: Using _Both_ `dependsOn` and `optionalDependsOn`
+
+In this example, `dashboardContainer` depends on `settingsContainer` as a strict dependency and on `userContainer` as an optional dependency. It will only start after `settingsContainer` completes but can use `userContainer` if available.
+
+```ts
+const settingsContainer = createContainer({
+  id: 'settings',
+  start: () => {
+    console.log('Settings loaded');
+    return { api: { theme: 'dark' } };
+  },
+});
+
+const dashboardContainer = createContainer({
+  id: 'dashboard',
+  dependsOn: [settingsContainer],
+  optionalDependsOn: [userContainer],
+  start: (depsApi, optionalDepsApi) => {
+    console.log('Dashboard started with settings:', depsApi.settings.theme);
+    if (optionalDepsApi.user) {
+      console.log('Dashboard has user context:', optionalDepsApi.user.userId);
+    }
+    return { api: {} };
+  },
+});
+
+await compose.up([settingsContainer, userContainer, dashboardContainer]);
+```
+
+#### Expected Result
+
+If both `settingsContainer` and `userContainer` complete successfully, `dashboardContainer` will receive data from both:
+
+```sh
+Settings loaded
+User data loaded
+Dashboard started with settings: dark
+Dashboard has user context: user123
+```
+
+If `userContainer` is unavailable, `dashboardContainer` will still start with `settingsContainer`:
+
+```sh
+Settings loaded
+Dashboard started with settings: dark
+```
+
+## Summary
+
+In this guide, we explored how to use `dependsOn` and `optionalDependsOn` to manage container dependencies. Key takeaways include:
+
+- **Strict Dependencies** (`dependsOn`): Containers with strict dependencies only start once all required dependencies have reached a `done` status. If any strict dependency is `off`, the container will also be set to `off`. If a strict dependency fails, the container will inherit the `fail` status.
+- **Optional Dependencies** (`optionalDependsOn`): Containers with optional dependencies attempt to start regardless of the status of those dependencies. If optional dependencies are available, the container can access their data; if not, it will still function independently.
+
+By configuring strict and optional dependencies, you can control the order and conditions under which containers start, creating modular and interdependent components. This setup ensures that containers have access to the necessary resources and data, improving both flexibility and reliability.
