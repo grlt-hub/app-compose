@@ -3,3 +3,64 @@ title: Use with React
 sidebar:
   order: 6
 ---
+
+This page shows how to integrate `compose.up` with React for dynamic rendering of components managed by containers.
+
+## Simple Example
+
+Here, we create a `logoContainer` that manages the `Logo` feature. The container returns a UI component as part of its `api`, allowing flexible control over its rendering.
+
+```tsx title="logo.tsx"
+import { createContainer } from '@grlt-hub/app-compose';
+
+const Logo = () => <img src='/logo.svg' className='logo react' alt='React logo' />;
+
+const logoContainer = createContainer({
+  id: 'logo',
+  start: () => ({ api: { ui: Logo } }),
+  enable: () => confirm('Turn on Logo?'),
+});
+
+export { logoContainer };
+```
+
+And `main.tsx` file with `layoutContainer` and `compose.up`
+
+```tsx title="main.tsx"
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import { compose, createContainer } from '@grlt-hub/app-compose';
+import { logoContainer } from './logo.tsx';
+
+const layoutContainer = createContainer({
+  id: 'layout',
+  dependsOn: [logoContainer],
+  start: (deps) => {
+    const Layout = () => (
+      <div>
+        <deps.logo.ui />
+      </div>
+    );
+
+    createRoot(document.getElementById('root')!).render(
+      <StrictMode>
+        <Layout />
+      </StrictMode>,
+    );
+
+    return { api: null };
+  },
+});
+
+await compose.up([logoContainer, layoutContainer]);
+```
+
+### Explanation
+
+- `logoContainer`: This container manages the `Logo` feature and includes an enable method that prompts for confirmation before enabling. If the user confirms, the component becomes available for rendering.
+- `layoutContainer`: This container depends on `logoContainer` and renders its UI as part of the `Layout` component. This setup allows flexible control over the initialization order and rendering of child components.
+- Calling `compose.up`: This is called asynchronously to initialize the containers.
+
+### Limitations of This Approach
+
+This approach works well for pages with a relatively simple component structure and minimal nesting. However, for more complex setups with deeply nested components, you might need a higher level of flexibility. To achieve this, you can use a slot-based concept, which is not natively available in React but is supported by the `grlt-hub` ecosystem through the [@grlt-hub/react-slots](https://github.com/grlt-hub/react-slots) package.

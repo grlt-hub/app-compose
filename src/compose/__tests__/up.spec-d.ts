@@ -25,10 +25,6 @@ describe('compose.up', () => {
         [a.id]: StoreValue<typeof a.$status>;
         [b.id]: StoreValue<typeof b.$status>;
       };
-      apis: {
-        [a.id]?: { t: () => true };
-        [b.id]?: { f: () => false };
-      };
     };
 
     expectTypeOf<UpResult>().toEqualTypeOf<typeof upResult>();

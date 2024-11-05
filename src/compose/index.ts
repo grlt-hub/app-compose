@@ -19,16 +19,10 @@ const statusIs = {
 type Statuses<T extends AnyContainer[]> = {
   [K in T[number]['id']]: ContainerStatus;
 };
-type APIs<T extends AnyContainer[]> = {
-  [K in T[number] as K['id']]?: K extends { start: (...args: any[]) => any }
-    ? Awaited<ReturnType<K['start']>>['api']
-    : never;
-};
 
 type UpResult<T extends AnyContainer[]> = {
   hasErrors: boolean;
   statuses: Statuses<T>;
-  apis: APIs<T>;
 };
 
 const upFn = async <T extends AnyContainer[]>(containers: T, config?: { debug?: boolean }): Promise<UpResult<T>> => {
@@ -120,13 +114,10 @@ const upFn = async <T extends AnyContainer[]>(containers: T, config?: { debug?: 
   return new Promise((resolve, reject) => {
     $result.watch((x) => {
       if (x.done === true) {
-        nodesToClear.forEach((x) => clearNode(x, { deep: true }));
-        const res = {
-          hasErrors: x.hasErrors,
-          statuses: x.statuses,
-          apis,
-        };
         apis = {};
+        nodesToClear.forEach((x) => clearNode(x, { deep: true }));
+
+        const res = { hasErrors: x.hasErrors, statuses: x.statuses };
 
         if (x.hasErrors) {
           reject(res);

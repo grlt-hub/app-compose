@@ -24,7 +24,6 @@ describe('compose.up', () => {
       expect(compose.up([a])).resolves.toStrictEqual({
         hasErrors: false,
         statuses: { [a.id]: CONTAINER_STATUS.done },
-        apis: { [a.id]: null },
       });
     });
     test('enabled=true', () => {
@@ -33,7 +32,6 @@ describe('compose.up', () => {
       expect(compose.up([a])).resolves.toStrictEqual({
         hasErrors: false,
         statuses: { [a.id]: CONTAINER_STATUS.done },
-        apis: { [a.id]: null },
       });
     });
     test('enabled=Promise<true>', () => {
@@ -46,7 +44,6 @@ describe('compose.up', () => {
       expect(compose.up([a])).resolves.toStrictEqual({
         hasErrors: false,
         statuses: { [a.id]: CONTAINER_STATUS.done },
-        apis: { [a.id]: null },
       });
     });
     test('enabled=false', () => {
@@ -55,7 +52,6 @@ describe('compose.up', () => {
       expect(compose.up([a])).resolves.toStrictEqual({
         hasErrors: false,
         statuses: { [a.id]: CONTAINER_STATUS.off },
-        apis: {},
       });
     });
     test('enabled=Promise<false>', () => {
@@ -68,7 +64,6 @@ describe('compose.up', () => {
       expect(compose.up([a])).resolves.toStrictEqual({
         hasErrors: false,
         statuses: { [a.id]: CONTAINER_STATUS.off },
-        apis: {},
       });
     });
   });
@@ -82,7 +77,6 @@ describe('compose.up', () => {
         expect(compose.up([a, b, c])).resolves.toStrictEqual({
           hasErrors: false,
           statuses: { [a.id]: CONTAINER_STATUS.done, [b.id]: CONTAINER_STATUS.done, [c.id]: CONTAINER_STATUS.done },
-          apis: { [a.id]: null, [b.id]: null, [c.id]: null },
         });
       });
       test('NOT all enabled', () => {
@@ -93,7 +87,6 @@ describe('compose.up', () => {
         expect(compose.up([a, b, c])).resolves.toStrictEqual({
           hasErrors: false,
           statuses: { [a.id]: CONTAINER_STATUS.done, [b.id]: CONTAINER_STATUS.off, [c.id]: CONTAINER_STATUS.done },
-          apis: { [a.id]: null, [c.id]: null },
         });
       });
     });
@@ -116,7 +109,6 @@ describe('compose.up', () => {
       expect(compose.up([a, b, c])).resolves.toStrictEqual({
         hasErrors: false,
         statuses: { [a.id]: CONTAINER_STATUS.done, [b.id]: CONTAINER_STATUS.off, [c.id]: CONTAINER_STATUS.done },
-        apis: { [a.id]: null, [c.id]: null },
       });
     });
   });
@@ -153,7 +145,7 @@ describe('compose.up', () => {
     const accountsList = createContainer({
       id: 'accounts-list',
       dependsOn: [accountsEntity],
-      start: () => ({ api: { select: null } }),
+      start: () => ({ api: { select: (x: number) => x } }),
       enable: (d) => d.accounts.list.length > 0,
     });
     const accountTransfers = createContainer({
@@ -224,17 +216,6 @@ describe('compose.up', () => {
         [hiddenEntity.id]: CONTAINER_STATUS.off,
         [hiddenFeature.id]: CONTAINER_STATUS.off,
       },
-      apis: {
-        [accountsEntity.id]: {
-          list: ['usd', 'eur'],
-        },
-        [accountsList.id]: {
-          select: null,
-        },
-        [userEntity.id]: {
-          id: '777',
-        },
-      },
     });
   });
 });
@@ -260,7 +241,6 @@ describe('edge cases', () => {
         [a.id]: 'fail',
         [b.id]: 'fail',
       },
-      apis: {},
     });
   });
   test('optionalDependsOn failed', () => {
@@ -282,9 +262,6 @@ describe('edge cases', () => {
       statuses: {
         [a.id]: 'fail',
         [b.id]: 'done',
-      },
-      apis: {
-        [b.id]: null,
       },
     });
   });
@@ -315,9 +292,6 @@ describe('edge cases', () => {
         [b.id]: 'done',
         [c.id]: 'fail',
       },
-      apis: {
-        [b.id]: null,
-      },
     });
   });
 
@@ -346,10 +320,6 @@ describe('edge cases', () => {
         [a.id]: 'fail',
         [b.id]: 'done',
         [c.id]: 'done',
-      },
-      apis: {
-        [b.id]: null,
-        [c.id]: null,
       },
     });
   });
@@ -382,7 +352,6 @@ describe('edge cases', () => {
         [b.id]: 'fail',
         [c.id]: 'fail',
       },
-      apis: {},
     });
   });
 });
