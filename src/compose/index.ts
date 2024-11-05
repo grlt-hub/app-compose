@@ -1,4 +1,4 @@
-import { clearNode, combine, createEffect, launch, sample, type Store } from 'effector';
+import { clearNode, combine, createEffect, launch, sample, type Store, type StoreValue } from 'effector';
 import { type AnyContainer, CONTAINER_STATUS, type ContainerStatus } from '../createContainer';
 
 const validateContainerId = (id: string, set: Set<string>) => {
@@ -16,7 +16,22 @@ const statusIs = {
   idle: (s: ContainerStatus) => s === CONTAINER_STATUS.idle,
 };
 
-const upFn = async (containers: AnyContainer[], config?: { debug?: boolean }) => {
+type Statuses<T extends AnyContainer[]> = {
+  [K in T[number]['id']]: ContainerStatus;
+};
+type APIs<T extends AnyContainer[]> = {
+  [K in T[number] as K['id']]?: K extends { start: (...args: any[]) => any }
+    ? Awaited<ReturnType<K['start']>>['api']
+    : never;
+};
+
+type UpResult<T extends AnyContainer[]> = {
+  hasErrors: boolean;
+  statuses: Statuses<T>;
+  apis: APIs<T>;
+};
+
+const upFn = async <T extends AnyContainer[]>(containers: T, config?: { debug?: boolean }): Promise<UpResult<T>> => {
   const CONTAINER_IDS = new Set<string>();
 
   for (const container of containers) {
@@ -105,14 +120,20 @@ const upFn = async (containers: AnyContainer[], config?: { debug?: boolean }) =>
   return new Promise((resolve, reject) => {
     $result.watch((x) => {
       if (x.done === true) {
-        apis = {};
         nodesToClear.forEach((x) => clearNode(x, { deep: true }));
+        const res = {
+          hasErrors: x.hasErrors,
+          statuses: x.statuses,
+          apis,
+        };
+        apis = {};
 
         if (x.hasErrors) {
-          reject(x);
+          reject(res);
         }
 
-        resolve(x);
+        // @ts-expect-error
+        resolve(res);
       }
     });
   });

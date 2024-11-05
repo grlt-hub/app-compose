@@ -22,18 +22,18 @@ describe('compose.up', () => {
       const a = createContainer({ id: genContainerId(), start: () => ({ api: null }) });
 
       expect(compose.up([a])).resolves.toStrictEqual({
-        done: true,
         hasErrors: false,
         statuses: { [a.id]: CONTAINER_STATUS.done },
+        apis: { [a.id]: null },
       });
     });
     test('enabled=true', () => {
       const a = createContainer({ id: genContainerId(), start: () => ({ api: null }), enable: T });
 
       expect(compose.up([a])).resolves.toStrictEqual({
-        done: true,
         hasErrors: false,
         statuses: { [a.id]: CONTAINER_STATUS.done },
+        apis: { [a.id]: null },
       });
     });
     test('enabled=Promise<true>', () => {
@@ -44,18 +44,18 @@ describe('compose.up', () => {
       });
 
       expect(compose.up([a])).resolves.toStrictEqual({
-        done: true,
         hasErrors: false,
         statuses: { [a.id]: CONTAINER_STATUS.done },
+        apis: { [a.id]: null },
       });
     });
     test('enabled=false', () => {
       const a = createContainer({ id: genContainerId(), start: () => ({ api: null }), enable: F });
 
       expect(compose.up([a])).resolves.toStrictEqual({
-        done: true,
         hasErrors: false,
         statuses: { [a.id]: CONTAINER_STATUS.off },
+        apis: {},
       });
     });
     test('enabled=Promise<false>', () => {
@@ -66,9 +66,9 @@ describe('compose.up', () => {
       });
 
       expect(compose.up([a])).resolves.toStrictEqual({
-        done: true,
         hasErrors: false,
         statuses: { [a.id]: CONTAINER_STATUS.off },
+        apis: {},
       });
     });
   });
@@ -80,9 +80,9 @@ describe('compose.up', () => {
         const c = createContainer({ id: genContainerId(), start: () => ({ api: null }) });
 
         expect(compose.up([a, b, c])).resolves.toStrictEqual({
-          done: true,
           hasErrors: false,
           statuses: { [a.id]: CONTAINER_STATUS.done, [b.id]: CONTAINER_STATUS.done, [c.id]: CONTAINER_STATUS.done },
+          apis: { [a.id]: null, [b.id]: null, [c.id]: null },
         });
       });
       test('NOT all enabled', () => {
@@ -91,9 +91,9 @@ describe('compose.up', () => {
         const c = createContainer({ id: genContainerId(), start: () => ({ api: null }) });
 
         expect(compose.up([a, b, c])).resolves.toStrictEqual({
-          done: true,
           hasErrors: false,
           statuses: { [a.id]: CONTAINER_STATUS.done, [b.id]: CONTAINER_STATUS.off, [c.id]: CONTAINER_STATUS.done },
+          apis: { [a.id]: null, [c.id]: null },
         });
       });
     });
@@ -114,9 +114,9 @@ describe('compose.up', () => {
       });
 
       expect(compose.up([a, b, c])).resolves.toStrictEqual({
-        done: true,
         hasErrors: false,
         statuses: { [a.id]: CONTAINER_STATUS.done, [b.id]: CONTAINER_STATUS.off, [c.id]: CONTAINER_STATUS.done },
+        apis: { [a.id]: null, [c.id]: null },
       });
     });
   });
@@ -153,7 +153,7 @@ describe('compose.up', () => {
     const accountsList = createContainer({
       id: 'accounts-list',
       dependsOn: [accountsEntity],
-      start: () => ({ api: { select: (x: string) => x } }),
+      start: () => ({ api: { select: null } }),
       enable: (d) => d.accounts.list.length > 0,
     });
     const accountTransfers = createContainer({
@@ -210,7 +210,6 @@ describe('compose.up', () => {
         ]),
       ),
     ).rejects.toStrictEqual({
-      done: true,
       hasErrors: true,
       statuses: {
         [userEntity.id]: CONTAINER_STATUS.done,
@@ -224,6 +223,17 @@ describe('compose.up', () => {
         [idk.id]: CONTAINER_STATUS.fail,
         [hiddenEntity.id]: CONTAINER_STATUS.off,
         [hiddenFeature.id]: CONTAINER_STATUS.off,
+      },
+      apis: {
+        [accountsEntity.id]: {
+          list: ['usd', 'eur'],
+        },
+        [accountsList.id]: {
+          select: null,
+        },
+        [userEntity.id]: {
+          id: '777',
+        },
       },
     });
   });
@@ -245,12 +255,12 @@ describe('edge cases', () => {
     });
 
     expect(compose.up([a, b])).rejects.toStrictEqual({
-      done: true,
       hasErrors: true,
       statuses: {
         [a.id]: 'fail',
         [b.id]: 'fail',
       },
+      apis: {},
     });
   });
   test('optionalDependsOn failed', () => {
@@ -268,11 +278,13 @@ describe('edge cases', () => {
     });
 
     expect(compose.up([a, b])).rejects.toStrictEqual({
-      done: true,
       hasErrors: true,
       statuses: {
         [a.id]: 'fail',
         [b.id]: 'done',
+      },
+      apis: {
+        [b.id]: null,
       },
     });
   });
@@ -297,12 +309,14 @@ describe('edge cases', () => {
     });
 
     expect(compose.up([a, b, c])).rejects.toStrictEqual({
-      done: true,
       hasErrors: true,
       statuses: {
         [a.id]: 'fail',
         [b.id]: 'done',
         [c.id]: 'fail',
+      },
+      apis: {
+        [b.id]: null,
       },
     });
   });
@@ -327,12 +341,15 @@ describe('edge cases', () => {
     });
 
     expect(compose.up([a, b, c])).rejects.toStrictEqual({
-      done: true,
       hasErrors: true,
       statuses: {
         [a.id]: 'fail',
         [b.id]: 'done',
         [c.id]: 'done',
+      },
+      apis: {
+        [b.id]: null,
+        [c.id]: null,
       },
     });
   });
@@ -359,13 +376,13 @@ describe('edge cases', () => {
     });
 
     expect(compose.up([a, b, c])).rejects.toStrictEqual({
-      done: true,
       hasErrors: true,
       statuses: {
         [a.id]: 'fail',
         [b.id]: 'fail',
         [c.id]: 'fail',
       },
+      apis: {},
     });
   });
 });
