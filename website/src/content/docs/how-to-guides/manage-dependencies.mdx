@@ -36,6 +36,20 @@ The `optionalDependsOn` option allows you to define dependencies that are not st
 
 Using `optionalDependsOn` provides flexibility, allowing containers to run even when some dependencies are unavailable. This approach is useful for non-critical dependencies, where the container can perform its primary function regardless of the state of these optional dependencies.
 
+## Accessing Dependencies
+
+```ts
+type StartFn = (dependsOn, optionalDependsOn) => Promise<StartResult> | StartResult;
+type EnableFn = (dependsOn, optionalDependsOn) => Promise<boolean> | boolean;
+```
+
+In both the `start` and `enable` functions, you can access dependencies and optional dependencies through the function parameters:
+
+- **Strict Dependencies** (`dependsOn`) are accessible as the first parameter in `start` and `enable`. This provides the APIs of all required dependencies that have been resolved.
+- **Optional Dependencies** (`optionalDependsOn`) are available as the second parameter in `start` and `enable`. These are accessible if the optional dependencies are resolved, but the container can still start if they are unavailable.
+
+By using these parameters, you can conditionally access dependency data as needed, allowing your containers to respond flexibly to the availability of required and optional dependencies.
+
 ## Examples
 
 ### Example 1: Using `dependsOn` for _Strict Dependencies_
