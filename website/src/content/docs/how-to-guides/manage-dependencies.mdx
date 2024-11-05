@@ -57,7 +57,7 @@ By using these parameters, you can conditionally access dependency data as neede
 
 In this example, we set up two containers, where one (`accountContainer`) depends on the other (`userContainer`). The `accountContainer` will not start until the `userContainer` has successfully completed.
 
-```ts
+```ts {13}
 import { createContainer, compose } from '@grlt-hub/app-compose';
 
 const userContainer = createContainer({
@@ -93,7 +93,7 @@ Account loaded for user: user123
 
 In this example, `notificationContainer` has an optional dependency on `userContainer`. If `userContainer` completes successfully, `notificationContainer` can access user data. If `userContainer` does not complete or is turned off, `notificationContainer` will still start but without user data.
 
-```ts
+```ts {3}
 const notificationContainer = createContainer({
   id: 'notification',
   optionalDependsOn: [userContainer],
@@ -129,7 +129,7 @@ Notifications loaded without user context
 
 In this example, `dashboardContainer` depends on `settingsContainer` as a strict dependency and on `userContainer` as an optional dependency. It will only start after `settingsContainer` completes but can use `userContainer` if available.
 
-```ts
+```ts {11-12}
 const settingsContainer = createContainer({
   id: 'settings',
   start: () => {

@@ -19,7 +19,7 @@ Using `start` effectively allows containers to initialize with necessary data an
 
 For simple tasks that don’t involve asynchronous operations, `start` can be used synchronously. Here’s an example of a container that initializes with basic configuration data:
 
-```ts
+```ts {5}
 import { createContainer, compose } from '@grlt-hub/app-compose';
 
 const configContainer = createContainer({
@@ -45,7 +45,7 @@ Configuration loaded
 
 If `start` needs to perform asynchronous tasks, such as fetching data from an API, you can make it asynchronous by defining it as an `async` function. Here’s an example:
 
-```ts
+```ts {5}
 import { createContainer, compose } from '@grlt-hub/app-compose';
 
 const dataContainer = createContainer({
@@ -73,7 +73,7 @@ Data loaded: { ... }
 
 The `start` function should always return an object with an `api` key, which provides data or functions that might be needed elsewhere in the application. Here’s an example of how to structure this return value:
 
-```ts
+```ts {4}
 const settingsContainer = createContainer({
   id: 'settings',
   start: () => {

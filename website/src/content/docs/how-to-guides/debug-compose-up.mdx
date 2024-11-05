@@ -15,7 +15,7 @@ This feature is especially useful when troubleshooting dependencies and monitori
 
 The `compose.up` function accepts an optional second argument, a configuration object, which can include `debug`. When `debug: true` is set, `compose.up` will output each container's status as it changes. Here’s how to enable debugging:
 
-```ts
+```ts {9}
 import { createContainer, compose } from '@grlt-hub/app-compose';
 
 const start: () => { api: {} };

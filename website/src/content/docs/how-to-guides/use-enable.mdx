@@ -45,7 +45,7 @@ Using `enable` provides fine-grained control over the execution of containers ba
 
 In this example, we’ll create a container that only starts if a certain condition is met. The `enable` function will check this condition and return `true` or `false`.
 
-```ts
+```ts {14}
 import { createContainer, compose } from '@grlt-hub/app-compose';
 
 const featureToggle = createContainer({
@@ -84,7 +84,7 @@ If `isEnabled` is `false`, then newFeature will remain `off` and not print anyth
 
 This example demonstrates using an asynchronous `enable` to control execution based on a network request. The container will only start if the user has permissions loaded from an API.
 
-```ts
+```ts {15}
 import { createContainer, compose } from '@grlt-hub/app-compose';
 
 const userPermissions = createContainer({
@@ -166,7 +166,7 @@ Dashboard started
 
 In this example, we’ll create a container that has an optional dependency and uses `enable` to check if the optional dependency is available before starting. The container will only start if the optional dependency provides the necessary data.
 
-```ts
+```ts {14}
 import { createContainer, compose } from '@grlt-hub/app-compose';
 
 const optionalFeature = createContainer({

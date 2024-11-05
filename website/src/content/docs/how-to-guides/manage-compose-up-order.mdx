@@ -51,7 +51,7 @@ To control execution order more precisely, you can create "priority" containers.
 
 This approach is a trade-off: by using priority containers, you avoid linking each secondary feature to every high-priority container individually. This keeps the code cleaner and reduces unnecessary dependencies.
 
-```ts
+```ts {14,23}
 const highPriorityFeatures = createContainer({
   id: 'highPriority',
   start: () => ({ api: {} }),

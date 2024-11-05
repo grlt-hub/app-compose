@@ -18,7 +18,7 @@ With these techniques, you can create asynchronous flows that allow containers t
 
 For containers that need to perform asynchronous operations, `start` can be defined as an `async` function. Here’s an example where `start` fetches data from an API:
 
-```ts
+```ts {5}
 import { createContainer, compose } from '@grlt-hub/app-compose';
 
 const userContainer = createContainer({
@@ -46,7 +46,7 @@ User data loaded: { ... }
 
 The `enable` function can also handle asynchronous conditions by returning a promise. This allows you to delay container initialization until specific conditions are met based on asynchronous checks.
 
-```ts
+```ts {5}
 import { createContainer, compose } from '@grlt-hub/app-compose';
 
 const restrictedFeatureContainer = createContainer({
@@ -84,7 +84,7 @@ If the `permissions` do not grant access, `restrictedFeatureContainer` will rema
 
 When working with multiple containers, you might want to wait until all containers complete their `start` or `enable` tasks. Since `compose.up` returns a `promise`, you can `await` it to ensure that all containers have finished their initialization.
 
-```ts
+```ts {19}
 const configContainer = createContainer({
   id: 'config',
   start: async () => {
