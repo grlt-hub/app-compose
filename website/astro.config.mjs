@@ -6,7 +6,7 @@ export default defineConfig({
   base: '/app-compose',
   integrations: [
     starlight({
-      title: '@grlt-hub/app-compose',
+      title: 'app-compose',
       social: {
         github: 'https://github.com/grlt-hub/app-compose',
       },
