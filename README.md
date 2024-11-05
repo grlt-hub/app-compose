@@ -81,4 +81,5 @@ For additional information, guides and api reference visit [documentation site](
 
 ## Community
 
+- [Discord](https://discord.gg/Q4DFKnxp)
 - [Telegram](https://t.me/grlt_hub_app_compose)

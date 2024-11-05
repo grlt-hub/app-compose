@@ -8,6 +8,7 @@ export default defineConfig({
     starlight({
       title: 'app-compose',
       social: {
+        discord: 'https://discord.gg/Q4DFKnxp',
         github: 'https://github.com/grlt-hub/app-compose',
       },
       sidebar: [
