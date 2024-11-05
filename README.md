@@ -78,3 +78,7 @@ The library offers convenient functions for creating and composing modules into 
 ## Documentation
 
 For additional information, guides and api reference visit [documentation site](https://grlt-hub.github.io/app-compose/).
+
+## Community
+
+- [Telegram](https://t.me/grlt_hub_app_compose)
