@@ -1,7 +1,7 @@
 ---
 title: Manage Dependencies
 sidebar:
-  order: 1
+  order: 2
 ---
 
 In this guide, we’ll look at how to manage dependencies between containers using the `dependsOn` and `optionalDependsOn` options. Defining dependencies allows you to control the order in which containers start, ensuring that necessary data or functionality is available when each container initializes.
@@ -10,6 +10,7 @@ We’ll explore:
 
 - `dependsOn`: Strict dependencies that must be initialized before the container starts.
 - `optionalDependsOn`: Flexible dependencies that are used if available but are not required.
+- how to access dependencies
 
 By configuring these dependencies, you can create modular and interdependent components that execute in the correct order and adapt based on available data.
 

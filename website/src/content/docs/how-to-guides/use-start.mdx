@@ -1,0 +1,100 @@
+---
+title: Use start
+sidebar:
+  order: 1
+---
+
+The `start` function in each container defines its initialization logic. Whether you’re loading data, setting up configurations, or performing calculations, `start` manages the container's setup when it’s ready to launch. In this guide, we’ll cover:
+
+We’ll explore:
+
+- **Synchronous and Asynchronous Execution**: How to use `start` for both synchronous and asynchronous tasks.
+- **Return Value**: The structure of the object returned by `start`, including the `api` key.
+
+Using `start` effectively allows containers to initialize with necessary data and handle any required asynchronous operations.
+
+## Examples
+
+### Example 1: Synchronous Execution in `start`
+
+For simple tasks that don’t involve asynchronous operations, `start` can be used synchronously. Here’s an example of a container that initializes with basic configuration data:
+
+```ts
+import { createContainer, compose } from '@grlt-hub/app-compose';
+
+const configContainer = createContainer({
+  id: 'config',
+  start: () => {
+    console.log('Configuration loaded');
+    return { api: { theme: 'dark' } };
+  },
+});
+
+await compose.up([dataContainer]);
+```
+
+#### Expected Result
+
+The `configContainer` initializes and logs its status:
+
+```sh
+Configuration loaded
+```
+
+### Example 2: Asynchronous Execution in `start`
+
+If `start` needs to perform asynchronous tasks, such as fetching data from an API, you can make it asynchronous by defining it as an `async` function. Here’s an example:
+
+```ts
+import { createContainer, compose } from '@grlt-hub/app-compose';
+
+const dataContainer = createContainer({
+  id: 'data',
+  start: async () => {
+    const response = await fetch('/api/data');
+    const data = await response.json();
+    console.log('Data loaded:', data);
+    return { api: { data } };
+  },
+});
+
+await compose.up([dataContainer]);
+```
+
+#### Expected Result
+
+The `dataContainer` waits until the data is loaded and then completes its initialization:
+
+```sh
+Data loaded: { ... }
+```
+
+### Example 3: Return Value of `start`
+
+The `start` function should always return an object with an `api` key, which provides data or functions that might be needed elsewhere in the application. Here’s an example of how to structure this return value:
+
+```ts
+const settingsContainer = createContainer({
+  id: 'settings',
+  start: () => {
+    return { api: { setting1: true, setting2: 'value' } };
+  },
+});
+```
+
+#### Expected Result
+
+In this example, `settingsContainer` returns configuration settings within the `api` key, making them available for use.
+
+```sh
+{ setting1: true, setting2: 'value' }
+```
+
+## Summary
+
+In this guide, we explored how to use the `start` function to initialize containers. Key takeaways include:
+
+- **Synchronous and Asynchronous Execution**: `start` can handle both simple, synchronous tasks and more complex asynchronous operations, such as data fetching. To execute asynchronous tasks, simply define `start` as an `async` function.
+- **Return Value**: The `start` function should always return an object containing an `api` key. This `api` key provides data or functionality that may be needed elsewhere in the application, helping to maintain a consistent structure across containers.
+
+By effectively using `start`, you can set up containers with the required data and manage initialization processes, whether they are synchronous or asynchronous.
