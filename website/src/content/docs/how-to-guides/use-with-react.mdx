@@ -66,3 +66,100 @@ await compose.up([logoContainer, layoutContainer]);
 This approach works well for pages with a relatively simple component structure and minimal nesting. However, for more complex setups with deeply nested components, you might need a higher level of flexibility. To achieve this, you can use a slot-based concept, which is not natively available in React but is supported by the `grlt-hub` ecosystem through the [@grlt-hub/react-slots](https://github.com/grlt-hub/react-slots) package.
 
 ## Example Using Slots
+
+This example demonstrates how to use `app-compose` with React by incorporating slots for flexible component positioning. Using the `@grlt-hub/react-slots` package, we create a layout that includes a footer component inserted dynamically into a predefined slot.
+
+Here, we create the `copyrightContainer` with a simple component that displays a copyright message. This component will be dynamically inserted into the layout.
+
+```tsx title="copyright.tsx"
+import { createContainer } from '@grlt-hub/app-compose';
+
+const Component = () => <code>All rights reserved.</code>;
+
+const copyrightContainer = createContainer({
+  id: 'copyright',
+  start: () => ({
+    api: { ui: Component },
+  }),
+});
+
+export { copyrightContainer };
+```
+
+In `layoutContainer`, we define a layout with a `Bottom` slot, into which other components can be inserted. The slot `Slots.Bottom` serves as a placeholder in the layout for dynamically added components.
+
+```tsx title="layout.tsx"
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import { createContainer } from '@grlt-hub/app-compose';
+import { createSlotIdentifier, createSlots } from '@grlt-hub/react-slots';
+
+const layoutContainer = createContainer({
+  id: 'layout',
+  start: () => {
+    const { slotsApi, Slots } = createSlots({ Bottom: createSlotIdentifier() } as const);
+
+    createRoot(document.getElementById('root')!).render(
+      <StrictMode>
+        <div>
+          Hello
+          <Slots.Bottom />
+        </div>
+      </StrictMode>,
+    );
+
+    return {
+      api: { slotsApi },
+    };
+  },
+});
+
+export { layoutContainer };
+```
+
+In `footerContainer`, we create a footer component that depends on `layoutContainer` and optionally on `copyrightContainer`. If the copyright component is available, it will be rendered within the footer. The footer itself is dynamically inserted into the `Bottom` slot of the layout.
+
+```tsx title="footer.tsx"
+import { type PropsWithChildren, type FC } from 'react';
+import { layoutContainer } from './layout';
+import { copyrightContainer } from './copyright';
+import { createContainer } from '@grlt-hub/app-compose';
+
+const Component: FC<PropsWithChildren> = ({ children }) => <footer>{children}</footer>;
+
+const footerContainer = createContainer({
+  id: 'footer',
+  dependsOn: [layoutContainer],
+  optionalDependsOn: [copyrightContainer],
+  start: (deps, optDeps) => {
+    deps.layout.slotsApi.insert.into.Bottom({
+      component: () => <Component>{optDeps.copyright?.ui ? <optDeps.copyright.ui /> : 'No copyright'}</Component>,
+    });
+
+    return { api: null };
+  },
+});
+
+export { footerContainer };
+```
+
+And up 'em all
+
+```ts
+import { compose } from '@grlt-hub/app-compose';
+
+import { layoutContainer } from './layout';
+import { copyrightContainer } from './copyright';
+import { footerContainer } from './footer';
+
+await compose.up([layoutContainer, copyrightContainer, footerContainer]);
+```
+
+### Explanation
+
+- **Slot-Based Layout**: The layout defines a `Bottom` slot that serves as a placeholder for dynamically inserted components.
+- **Dynamic Footer**: The footer component is created in a separate container and inserted into the `Bottom` slot of the layout.
+- **Optional Dependencies**: The footer component conditionally depends on `copyrightContainer`. If the copyright component is available, it is rendered inside the footer.
+- **Initialization with** `compose.up`: All containers are initialized using `compose.up`, ensuring that dependencies are resolved and components are rendered in the correct order.
+
+This example demonstrates how to achieve a flexible, slot-based structure in React using `app-compose` and [@grlt-hub/react-slots](https://github.com/grlt-hub/react-slots), enabling more complex and modular component arrangements.

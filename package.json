@@ -1,6 +1,6 @@
 {
   "name": "@grlt-hub/app-compose",
-  "version": "1.0.0-next.3",
+  "version": "1.0.0-next.4",
   "type": "module",
   "private": false,
   "main": "dist/index.js",

@@ -3,3 +3,43 @@ title: Dynamically Load Features
 sidebar:
   order: 7
 ---
+
+In some cases, certain features in your application may be disabled, either by configuration or based on user interaction. With `app-compose`, you can use dynamic imports to load the code for these features only when their containers are enabled. This approach helps reduce the initial bundle size and optimize application performance by loading code only when it’s needed.
+
+## Example
+
+Here, the `featureModuleContainer` container uses a dynamic `import()` to load `FeatureComponent` only when `enable` returns `true`. This approach ensures that `FeatureComponent` is loaded only if the feature is enabled.
+
+```ts title="featureModuleContainer.ts"
+import { createContainer } from '@grlt-hub/app-compose';
+
+const featureModuleContainer = createContainer({
+  id: 'featureModule',
+  start: async () => {
+    const { FeatureComponent } = await import('./FeatureComponent');
+    return { api: { ui: FeatureComponent } };
+  },
+  enable: () => process.env.FEATURE_MODULE_ENABLED === 'true',
+});
+
+export { featureModuleContainer };
+```
+
+In `main.ts`, `compose.up` initializes the `featureModuleContainer`. If `FEATURE_MODULE_ENABLED` is set to `true`, `FeatureComponent` is dynamically loaded and made available in the container’s API.
+
+```ts title="main.ts"
+import { compose } from '@grlt-hub/app-compose';
+import { featureModuleContainer } from './featureModuleContainer';
+
+await compose.up([featureModuleContainer]);
+```
+
+## Explanation
+
+- **Dynamic Import**: The `import()` statement inside the `start` function loads `FeatureComponent` only when the container is enabled.
+- **Conditional Enablement**: The `enable` function checks the environment variable `FEATURE_MODULE_ENABLED`, which controls whether the feature should be loaded.
+- **Optimized Loading**: This approach ensures that code for disabled features isn’t bundled or loaded until explicitly needed.
+
+## Conclusion
+
+Using dynamic imports with `app-compose` allows you to load code only for enabled features, optimizing resource usage and improving application load time. This approach is especially beneficial for larger applications with features that may be conditionally enabled or disabled.
