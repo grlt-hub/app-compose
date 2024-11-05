@@ -1,0 +1,126 @@
+---
+title: Handle Asynchronous Operations
+sidebar:
+  order: 3
+---
+
+In this guide, we’ll explore how to manage asynchronous tasks within containers using `start`, `compose.up`, and `enable`. Whether loading data, performing API calls, or handling other asynchronous operations, this guide will cover:
+
+- **Async functions in** `start`: Handling asynchronous tasks inside the `start` function.
+- **Awaiting** `compose.up`: Using `await` with `compose.up` to ensure all containers complete their tasks before proceeding.
+- **Asynchronou** `enable`: Setting up conditional starts with asynchronous checks in `enable`.
+
+With these techniques, you can create asynchronous flows that allow containers to fully initialize before advancing to the next steps.
+
+## Examples
+
+### Example 1: Using async Functions in `start`
+
+For containers that need to perform asynchronous operations, `start` can be defined as an `async` function. Here’s an example where `start` fetches data from an API:
+
+```ts
+import { createContainer, compose } from '@grlt-hub/app-compose';
+
+const userContainer = createContainer({
+  id: 'user',
+  start: async () => {
+    const response = await fetch('/api/user');
+    const userData = await response.json();
+    console.log('User data loaded:', userData);
+    return { api: { userData } };
+  },
+});
+
+await compose.up([userContainer]);
+```
+
+#### Expected Result
+
+The `userContainer` will complete its initialization once `start` finishes fetching and processing data:
+
+```sh
+User data loaded: { ... }
+```
+
+### Example 2: Asynchronous `enable`
+
+The `enable` function can also handle asynchronous conditions by returning a promise. This allows you to delay container initialization until specific conditions are met based on asynchronous checks.
+
+```ts
+import { createContainer, compose } from '@grlt-hub/app-compose';
+
+const restrictedFeatureContainer = createContainer({
+  id: 'restrictedFeature',
+  enable: async (depsApi) => {
+    const permissions = await response.json();
+    if (permissions.includes('access_restricted_feature')) {
+      console.log('Permission exists');
+      return true;
+    }
+
+    return false;
+  },
+  start: () => {
+    console.log('Restricted feature started');
+    return { api: {} };
+  },
+});
+
+await compose.up([restrictedFeatureContainer]);
+```
+
+#### Expected Result
+
+If `permissions` loads and includes access permissions, `restrictedFeatureContainer` will start:
+
+```sh
+Permission exists
+Restricted feature started
+```
+
+If the `permissions` do not grant access, `restrictedFeatureContainer` will remain `off`.
+
+### Example 3: Awaiting compose.up
+
+When working with multiple containers, you might want to wait until all containers complete their `start` or `enable` tasks. Since `compose.up` returns a `promise`, you can `await` it to ensure that all containers have finished their initialization.
+
+```ts
+const configContainer = createContainer({
+  id: 'config',
+  start: async () => {
+    const response = await fetch('/api/config');
+    const configData = await response.json();
+    console.log('Config loaded:', configData);
+    return { api: { configData } };
+  },
+});
+
+const settingsContainer = createContainer({
+  id: 'settings',
+  start: () => {
+    console.log('Settings initialized');
+    return { api: { theme: 'dark' } };
+  },
+});
+
+await compose.up([configContainer, settingsContainer]);
+```
+
+##### Expected Result
+
+Using `await compose.up`, you ensure that both `configContainer` and `settingsContainer` have completed before proceeding:
+
+```sh
+Config loaded: { ... }
+Settings initialized
+```
+
+## Summary
+
+In this guide, we covered how to handle asynchronous operations in containers:
+
+- **Async** `start`: Allows containers to complete tasks such as data fetching.
+- **Async** `enable`: Lets you conditionally `start` containers based on asynchronous checks.
+- **Awaiting** `compose.up`: Ensures all containers complete before moving on.
+
+By using `start` and `enable` in combination with `compose.up`, you can manage asynchronous flows effectively, ensuring each container fully initializes before proceeding and creating reliable, sequential workflows.
