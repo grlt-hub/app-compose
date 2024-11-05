@@ -3,3 +3,81 @@ title: compose.up
 sidebar:
   order: 1
 ---
+
+`compose.up` is the primary function used to initialize list of containers, ensuring they are set up in the correct order based on their dependencies. This function manages the execution flow and provides optional debugging output.
+
+## Syntax
+
+```ts
+compose.up(containers: Container[], config?: { debug?: boolean }): Promise<{
+  hasErrors: boolean;
+  statuses: Record<Container['id'], Container['status']>;
+}>
+```
+
+## Parameters
+
+- **containers** (`Container[]`): An array of containers to initialize. Each container in the array is processed based on its dependencies (`dependsOn` and `optionalDependsOn`), regardless of the order in which it appears.
+- **config** (optional, `{ debug?: boolean }`): An optional configuration object with the following property:
+  - **debug** (`boolean`): If `true`, `compose.up` will output detailed status updates to the console each time a container’s status changes. This is useful for tracking initialization and troubleshooting dependency issues.
+
+## Return Value
+
+`compose.up` returns a promise that resolves to an object with the following structure:
+
+- **hasErrors** (`boolean`): Indicates whether any container encountered an error during initialization.
+- **statuses** (`Record<Container['id'], Container['status']>`): An object that maps each container ID to its final status (`idle`, `pending`, `done`, `fail`, or `off`).
+
+## Example
+
+```ts
+import { createContainer, compose } from '@grlt-hub/app-compose';
+
+const userContainer = createContainer({
+  id: 'user',
+  start: async () => {
+    return { api: { userId: 'user123' } };
+  },
+});
+
+const settingsContainer = createContainer({
+  id: 'settings',
+  dependsOn: [userContainer],
+  start: () => {
+    return { api: { theme: 'dark' } };
+  },
+});
+
+await compose.up([userContainer, settingsContainer], { debug: true });
+```
+
+### Expected Resolution Order
+
+```sh
+userContainer: idle
+settingsContainer: idle
+###
+userContainer: pending
+settingsContainer: idle
+###
+userContainer: done
+settingsContainer: pending
+###
+userContainer: done
+settingsContainer: done
+```
+
+### Expected Console Output
+
+```sh
+[2024-01-01T00:00:00.000Z] app-compose:
+{
+  "user": "done",
+  "settings": "done"
+}
+```
+
+## Notes
+
+- `compose.up` automatically handles dependencies based on the configuration of each container.
+- The function only begins each container when its required dependencies are fully initialized (`done` status).
