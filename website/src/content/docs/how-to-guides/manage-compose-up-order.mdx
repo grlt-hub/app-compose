@@ -18,19 +18,32 @@ By default, `compose.up` initializes containers according to their defined depen
 ```ts
 const userContainer = createContainer({
   id: 'user',
-  start: () => ({ api: { userId: 'user123' } }),
+  start: () => {
+    console.log('userContainer done');
+    return { api: { userId: 'user123' } };
+  },
 });
 
 const settingsContainer = createContainer({
   id: 'settings',
   dependsOn: [userContainer],
-  start: () => ({ api: { theme: 'dark' } }),
+  start: () => {
+    console.log('settingsContainer done');
+    return { api: { theme: 'dark' } };
+  },
 });
 
 await compose.up([settingsContainer, userContainer]);
 ```
 
+### Expected Result
+
 Even if `settingsContainer` is listed first, `compose.up` will start `userContainer` first because it’s required by `settingsContainer`.
+
+```sh
+userContainer done
+settingsContainer done
+```
 
 ## Custom Execution Order with Priority Containers
 
