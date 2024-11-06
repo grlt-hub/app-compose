@@ -30,6 +30,7 @@ export default defineConfig({
       tableOfContents: {
         maxHeadingLevel: 4,
       },
+      lastUpdated: true
     }),
   ],
 });
