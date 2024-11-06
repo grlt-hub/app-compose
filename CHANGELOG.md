@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org).
 
 ### Added
 
-- `compose.graph` fn
+- [the ability to visualize](https://grlt-hub.github.io/app-compose/how-to-guides/visualize-the-system/) the system composed of containers effectively (including transitive dependencies and their paths)
 
 ## 1.0.0
 
