@@ -1,4 +1,4 @@
-import { genContainerId } from '../../../../__fixtures__';
+import { randomUUID } from 'node:crypto';
 import { CONTAINER_STATUS, createContainer, type AnyContainer } from '../../../../createContainer';
 import { upFn } from '../../index';
 
@@ -19,7 +19,7 @@ const shuffle = <T extends AnyContainer[]>(list: T): T => {
 describe('upFn', () => {
   describe('single | without any deps', () => {
     test('enabled=true by default', () => {
-      const a = createContainer({ id: genContainerId(), start: () => ({ api: null }) });
+      const a = createContainer({ id: randomUUID(), start: () => ({ api: null }) });
 
       expect(upFn([a])).resolves.toStrictEqual({
         hasErrors: false,
@@ -27,7 +27,7 @@ describe('upFn', () => {
       });
     });
     test('enabled=true', () => {
-      const a = createContainer({ id: genContainerId(), start: () => ({ api: null }), enable: T });
+      const a = createContainer({ id: randomUUID(), start: () => ({ api: null }), enable: T });
 
       expect(upFn([a])).resolves.toStrictEqual({
         hasErrors: false,
@@ -36,7 +36,7 @@ describe('upFn', () => {
     });
     test('enabled=Promise<true>', () => {
       const a = createContainer({
-        id: genContainerId(),
+        id: randomUUID(),
         start: () => ({ api: null }),
         enable: () => Promise.resolve(true),
       });
@@ -47,7 +47,7 @@ describe('upFn', () => {
       });
     });
     test('enabled=false', () => {
-      const a = createContainer({ id: genContainerId(), start: () => ({ api: null }), enable: F });
+      const a = createContainer({ id: randomUUID(), start: () => ({ api: null }), enable: F });
 
       expect(upFn([a])).resolves.toStrictEqual({
         hasErrors: false,
@@ -56,7 +56,7 @@ describe('upFn', () => {
     });
     test('enabled=Promise<false>', () => {
       const a = createContainer({
-        id: genContainerId(),
+        id: randomUUID(),
         start: () => ({ api: null }),
         enable: () => Promise.resolve(false),
       });
@@ -70,9 +70,9 @@ describe('upFn', () => {
   describe('multiple', () => {
     describe('independent', () => {
       test('all enabled', () => {
-        const a = createContainer({ id: genContainerId(), start: () => ({ api: null }) });
-        const b = createContainer({ id: genContainerId(), start: () => ({ api: null }) });
-        const c = createContainer({ id: genContainerId(), start: () => ({ api: null }) });
+        const a = createContainer({ id: randomUUID(), start: () => ({ api: null }) });
+        const b = createContainer({ id: randomUUID(), start: () => ({ api: null }) });
+        const c = createContainer({ id: randomUUID(), start: () => ({ api: null }) });
 
         expect(upFn([a, b, c])).resolves.toStrictEqual({
           hasErrors: false,
@@ -80,9 +80,9 @@ describe('upFn', () => {
         });
       });
       test('NOT all enabled', () => {
-        const a = createContainer({ id: genContainerId(), start: () => ({ api: null }) });
-        const b = createContainer({ id: genContainerId(), enable: F, start: () => ({ api: null }) });
-        const c = createContainer({ id: genContainerId(), start: () => ({ api: null }) });
+        const a = createContainer({ id: randomUUID(), start: () => ({ api: null }) });
+        const b = createContainer({ id: randomUUID(), enable: F, start: () => ({ api: null }) });
+        const c = createContainer({ id: randomUUID(), start: () => ({ api: null }) });
 
         expect(upFn([a, b, c])).resolves.toStrictEqual({
           hasErrors: false,
@@ -92,15 +92,15 @@ describe('upFn', () => {
     });
 
     test('depended', () => {
-      const a = createContainer({ id: genContainerId(), start: () => ({ api: null }) });
+      const a = createContainer({ id: randomUUID(), start: () => ({ api: null }) });
       const b = createContainer({
-        id: genContainerId(),
+        id: randomUUID(),
         dependsOn: [a],
         start: () => ({ api: null }),
         enable: F,
       });
       const c = createContainer({
-        id: genContainerId(),
+        id: randomUUID(),
         optionalDependsOn: [b],
         start: () => ({ api: null }),
         enable: T,
@@ -223,14 +223,14 @@ describe('upFn', () => {
 describe('edge cases', () => {
   test('dependsOn failed', () => {
     const a = createContainer({
-      id: genContainerId(),
+      id: randomUUID(),
       start: () => ({ api: null }),
       enable: () => {
         throw new Error('');
       },
     });
     const b = createContainer({
-      id: genContainerId(),
+      id: randomUUID(),
       dependsOn: [a],
       start: () => ({ api: null }),
     });
@@ -245,14 +245,14 @@ describe('edge cases', () => {
   });
   test('optionalDependsOn failed', () => {
     const a = createContainer({
-      id: genContainerId(),
+      id: randomUUID(),
       start: () => ({ api: null }),
       enable: () => {
         throw new Error('');
       },
     });
     const b = createContainer({
-      id: genContainerId(),
+      id: randomUUID(),
       optionalDependsOn: [a],
       start: () => ({ api: null }),
     });
@@ -268,18 +268,18 @@ describe('edge cases', () => {
 
   test('dependsOn failed | optionalDependsOn done', () => {
     const a = createContainer({
-      id: genContainerId(),
+      id: randomUUID(),
       start: () => ({ api: null }),
       enable: () => {
         throw new Error('');
       },
     });
     const b = createContainer({
-      id: genContainerId(),
+      id: randomUUID(),
       start: () => ({ api: null }),
     });
     const c = createContainer({
-      id: genContainerId(),
+      id: randomUUID(),
       dependsOn: [a],
       optionalDependsOn: [b],
       start: () => ({ api: null }),
@@ -297,18 +297,18 @@ describe('edge cases', () => {
 
   test('dependsOn done | optionalDependsOn failed', () => {
     const a = createContainer({
-      id: genContainerId(),
+      id: randomUUID(),
       start: () => ({ api: null }),
       enable: () => {
         throw new Error('');
       },
     });
     const b = createContainer({
-      id: genContainerId(),
+      id: randomUUID(),
       start: () => ({ api: null }),
     });
     const c = createContainer({
-      id: genContainerId(),
+      id: randomUUID(),
       dependsOn: [b],
       optionalDependsOn: [a],
       start: () => ({ api: null }),
@@ -325,21 +325,21 @@ describe('edge cases', () => {
   });
   test('dependsOn failed | optionalDependsOn failed', () => {
     const a = createContainer({
-      id: genContainerId(),
+      id: randomUUID(),
       start: () => ({ api: null }),
       enable: () => {
         throw new Error('');
       },
     });
     const b = createContainer({
-      id: genContainerId(),
+      id: randomUUID(),
       start: () => ({ api: null }),
       enable: () => {
         throw new Error('');
       },
     });
     const c = createContainer({
-      id: genContainerId(),
+      id: randomUUID(),
       dependsOn: [b],
       optionalDependsOn: [a],
       start: () => ({ api: null }),

@@ -1,10 +1,10 @@
-import { genContainerId } from '../../../../__fixtures__';
+import { randomUUID } from 'node:crypto';
 import { createContainer as __createContainer } from '../../../../createContainer';
 import { upFn } from '../../index';
 
 const start = () => ({ api: {} });
 
-const createContainer = (id: ReturnType<typeof genContainerId> = genContainerId()) => __createContainer({ id, start });
+const createContainer = (id: ReturnType<typeof randomUUID> = randomUUID()) => __createContainer({ id, start });
 
 describe('container.id is uniq', () => {
   test('happy', () => {
@@ -12,7 +12,7 @@ describe('container.id is uniq', () => {
   });
 
   test('unhappy', () => {
-    const id = genContainerId();
+    const id = randomUUID();
 
     expect(() => upFn([createContainer(id), createContainer(id)])).rejects.toThrowError(
       `Duplicate container ID found: ${id}`,

@@ -1,14 +1,14 @@
-import { genContainerId } from '../../../__fixtures__';
+import { randomUUID } from 'node:crypto';
 import { createContainer } from '../../../createContainer';
 import { graphFn } from '../index';
 
 const start = () => ({ api: null });
 
 test('example from doc', () => {
-  const a = createContainer({ id: genContainerId(), start });
-  const b = createContainer({ id: genContainerId(), dependsOn: [a], start });
-  const c = createContainer({ id: genContainerId(), optionalDependsOn: [b], start });
-  const d = createContainer({ id: genContainerId(), dependsOn: [c], optionalDependsOn: [b], start });
+  const a = createContainer({ id: randomUUID(), start });
+  const b = createContainer({ id: randomUUID(), dependsOn: [a], start });
+  const c = createContainer({ id: randomUUID(), optionalDependsOn: [b], start });
+  const d = createContainer({ id: randomUUID(), dependsOn: [c], optionalDependsOn: [b], start });
 
   const graph = graphFn([a, b, c, d]);
 

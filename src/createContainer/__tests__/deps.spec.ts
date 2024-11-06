@@ -1,4 +1,4 @@
-import { genContainerId } from '../../__fixtures__';
+import { randomUUID } from 'node:crypto';
 import { createContainer } from '../index';
 
 const start = () => ({ api: {} });
@@ -21,11 +21,11 @@ const __ = {
 describe('container deps are uniq', () => {
   test('happy', () => {
     expect(() =>
-      createContainer({ id: genContainerId(), start, dependsOn: [__.a], optionalDependsOn: [__.b] }),
+      createContainer({ id: randomUUID(), start, dependsOn: [__.a], optionalDependsOn: [__.b] }),
     ).not.toThrowError();
-    expect(() => createContainer({ id: genContainerId(), start, dependsOn: [__.a] })).not.toThrowError();
-    expect(() => createContainer({ id: genContainerId(), start, optionalDependsOn: [__.b] })).not.toThrowError();
-    expect(() => createContainer({ id: genContainerId(), start })).not.toThrowError();
+    expect(() => createContainer({ id: randomUUID(), start, dependsOn: [__.a] })).not.toThrowError();
+    expect(() => createContainer({ id: randomUUID(), start, optionalDependsOn: [__.b] })).not.toThrowError();
+    expect(() => createContainer({ id: randomUUID(), start })).not.toThrowError();
   });
 
   test('unhappy', () => {

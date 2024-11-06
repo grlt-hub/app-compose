@@ -1,11 +1,11 @@
-import { genContainerId } from '../../__fixtures__';
+import { randomUUID } from 'node:crypto';
 import { createContainer } from '../index';
 
 const start = () => ({ api: {} });
 
 describe('container.id not empty string', () => {
   test('happy', () => {
-    expect(() => createContainer({ id: genContainerId(), start })).not.toThrowError();
+    expect(() => createContainer({ id: randomUUID(), start })).not.toThrowError();
   });
 
   test('unhappy', () => {
