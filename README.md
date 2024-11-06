@@ -76,7 +76,7 @@ The library offers convenient functions for creating and composing modules into 
 - Covered by **100% tests**, including **type tests**.
 - Ensures high performance, suitable for **scalable applications**.
 - Includes **debugging tools** to facilitate the development process.
-- Offers the ability to **visualize and manage** the system composed of containers effectively.
+- Offers the ability to **visualize the system** composed of containers effectively (including transitive dependencies and their paths).
 - Follows **semantic versioning** (semver), guaranteeing **stability** and **predictability** of changes with each release.
 
 ## Documentation
