@@ -11,6 +11,7 @@ export default defineConfig({
       social: {
         discord: 'https://discord.gg/Q4DFKnxp',
         github: 'https://github.com/grlt-hub/app-compose',
+        telegram: 'https://t.me/grlt_hub_app_compose',
       },
       sidebar: [
         { label: 'Introduction', link: '/' },
