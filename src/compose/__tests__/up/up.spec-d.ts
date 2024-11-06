@@ -1,6 +1,6 @@
 import type { StoreValue } from 'effector';
-import { createContainer, type AnyContainer } from '../../createContainer';
-import { compose } from '../index';
+import { type AnyContainer, createContainer } from '../../../createContainer';
+import { compose } from '../../../index';
 
 describe('compose.up', () => {
   test('parameters', () => {

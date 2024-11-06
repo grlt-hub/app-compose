@@ -1,6 +1,6 @@
-import { genContainerId } from '../../__fixtures__';
-import { createContainer as __createContainer } from '../../createContainer';
-import { compose } from '../index';
+import { genContainerId } from '../../../__fixtures__';
+import { createContainer as __createContainer } from '../../../createContainer';
+import { compose } from '../../index';
 
 const start = () => ({ api: {} });
 

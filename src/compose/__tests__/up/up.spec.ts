@@ -1,6 +1,6 @@
-import { genContainerId } from '../../__fixtures__';
-import { CONTAINER_STATUS, createContainer, type AnyContainer } from '../../createContainer';
-import { compose } from '../index';
+import { genContainerId } from '../../../__fixtures__';
+import { CONTAINER_STATUS, createContainer, type AnyContainer } from '../../../createContainer';
+import { compose } from '../../index';
 
 const T = () => true;
 const F = () => false;
