@@ -7,7 +7,7 @@ export default defineConfig({
   integrations: [
     starlight({
       title: 'app-compose',
-      description: 'Create scalable, module-based applications with ease.'
+      description: 'Create scalable, module-based applications with ease.',
       social: {
         discord: 'https://discord.gg/Q4DFKnxp',
         github: 'https://github.com/grlt-hub/app-compose',
@@ -30,7 +30,7 @@ export default defineConfig({
       tableOfContents: {
         maxHeadingLevel: 4,
       },
-      lastUpdated: true
+      lastUpdated: true,
     }),
   ],
 });
