@@ -1,10 +1,10 @@
 import type { StoreValue } from 'effector';
-import { type AnyContainer, createContainer } from '../../../createContainer';
-import { compose } from '../../../index';
+import { type AnyContainer, createContainer } from '../../../../createContainer';
+import { upFn } from '../../index';
 
-describe('compose.up', () => {
+describe('upFn', () => {
   test('parameters', () => {
-    expectTypeOf<Parameters<typeof compose.up>[0]>().toEqualTypeOf<AnyContainer[]>();
+    expectTypeOf<Parameters<typeof upFn>[0]>().toEqualTypeOf<AnyContainer[]>();
   });
 
   test('return type', async () => {
@@ -17,7 +17,7 @@ describe('compose.up', () => {
       start: () => ({ api: { f: () => false } }),
     });
 
-    const upResult = await compose.up([a, b]);
+    const upResult = await upFn([a, b]);
 
     type UpResult = {
       hasErrors: boolean;

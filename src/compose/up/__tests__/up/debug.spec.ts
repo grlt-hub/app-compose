@@ -1,5 +1,5 @@
-import { createContainer } from '../../../createContainer';
-import { compose } from '../../../index';
+import { createContainer } from '../../../../createContainer';
+import { upFn } from '../../index';
 
 test('up.debug', async () => {
   const consoleLogSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
@@ -11,7 +11,7 @@ test('up.debug', async () => {
   const b = createContainer({ id: 'b', dependsOn: [a], enable: () => false, start: () => ({ api: null }) });
   const c = createContainer({ id: 'c', start: () => ({ api: null }) });
 
-  await compose.up([a, b, c], { debug: true });
+  await upFn([a, b, c], { debug: true });
 
   expect(consoleLogSpy.mock.calls[0]).toMatchSnapshot();
   expect(consoleLogSpy.mock.calls[1]).toMatchSnapshot();

@@ -1,6 +1,6 @@
-import { genContainerId } from '../../../__fixtures__';
-import { CONTAINER_STATUS, createContainer, type AnyContainer } from '../../../createContainer';
-import { compose } from '../../index';
+import { genContainerId } from '../../../../__fixtures__';
+import { CONTAINER_STATUS, createContainer, type AnyContainer } from '../../../../createContainer';
+import { upFn } from '../../index';
 
 const T = () => true;
 const F = () => false;
@@ -16,12 +16,12 @@ const shuffle = <T extends AnyContainer[]>(list: T): T => {
   return result;
 };
 
-describe('compose.up', () => {
+describe('upFn', () => {
   describe('single | without any deps', () => {
     test('enabled=true by default', () => {
       const a = createContainer({ id: genContainerId(), start: () => ({ api: null }) });
 
-      expect(compose.up([a])).resolves.toStrictEqual({
+      expect(upFn([a])).resolves.toStrictEqual({
         hasErrors: false,
         statuses: { [a.id]: CONTAINER_STATUS.done },
       });
@@ -29,7 +29,7 @@ describe('compose.up', () => {
     test('enabled=true', () => {
       const a = createContainer({ id: genContainerId(), start: () => ({ api: null }), enable: T });
 
-      expect(compose.up([a])).resolves.toStrictEqual({
+      expect(upFn([a])).resolves.toStrictEqual({
         hasErrors: false,
         statuses: { [a.id]: CONTAINER_STATUS.done },
       });
@@ -41,7 +41,7 @@ describe('compose.up', () => {
         enable: () => Promise.resolve(true),
       });
 
-      expect(compose.up([a])).resolves.toStrictEqual({
+      expect(upFn([a])).resolves.toStrictEqual({
         hasErrors: false,
         statuses: { [a.id]: CONTAINER_STATUS.done },
       });
@@ -49,7 +49,7 @@ describe('compose.up', () => {
     test('enabled=false', () => {
       const a = createContainer({ id: genContainerId(), start: () => ({ api: null }), enable: F });
 
-      expect(compose.up([a])).resolves.toStrictEqual({
+      expect(upFn([a])).resolves.toStrictEqual({
         hasErrors: false,
         statuses: { [a.id]: CONTAINER_STATUS.off },
       });
@@ -61,7 +61,7 @@ describe('compose.up', () => {
         enable: () => Promise.resolve(false),
       });
 
-      expect(compose.up([a])).resolves.toStrictEqual({
+      expect(upFn([a])).resolves.toStrictEqual({
         hasErrors: false,
         statuses: { [a.id]: CONTAINER_STATUS.off },
       });
@@ -74,7 +74,7 @@ describe('compose.up', () => {
         const b = createContainer({ id: genContainerId(), start: () => ({ api: null }) });
         const c = createContainer({ id: genContainerId(), start: () => ({ api: null }) });
 
-        expect(compose.up([a, b, c])).resolves.toStrictEqual({
+        expect(upFn([a, b, c])).resolves.toStrictEqual({
           hasErrors: false,
           statuses: { [a.id]: CONTAINER_STATUS.done, [b.id]: CONTAINER_STATUS.done, [c.id]: CONTAINER_STATUS.done },
         });
@@ -84,7 +84,7 @@ describe('compose.up', () => {
         const b = createContainer({ id: genContainerId(), enable: F, start: () => ({ api: null }) });
         const c = createContainer({ id: genContainerId(), start: () => ({ api: null }) });
 
-        expect(compose.up([a, b, c])).resolves.toStrictEqual({
+        expect(upFn([a, b, c])).resolves.toStrictEqual({
           hasErrors: false,
           statuses: { [a.id]: CONTAINER_STATUS.done, [b.id]: CONTAINER_STATUS.off, [c.id]: CONTAINER_STATUS.done },
         });
@@ -106,7 +106,7 @@ describe('compose.up', () => {
         enable: T,
       });
 
-      expect(compose.up([a, b, c])).resolves.toStrictEqual({
+      expect(upFn([a, b, c])).resolves.toStrictEqual({
         hasErrors: false,
         statuses: { [a.id]: CONTAINER_STATUS.done, [b.id]: CONTAINER_STATUS.off, [c.id]: CONTAINER_STATUS.done },
       });
@@ -186,7 +186,7 @@ describe('compose.up', () => {
     });
 
     expect(
-      compose.up(
+      upFn(
         shuffle([
           userEntity,
           registration,
@@ -235,7 +235,7 @@ describe('edge cases', () => {
       start: () => ({ api: null }),
     });
 
-    expect(compose.up([a, b])).rejects.toStrictEqual({
+    expect(upFn([a, b])).rejects.toStrictEqual({
       hasErrors: true,
       statuses: {
         [a.id]: 'fail',
@@ -257,7 +257,7 @@ describe('edge cases', () => {
       start: () => ({ api: null }),
     });
 
-    expect(compose.up([a, b])).rejects.toStrictEqual({
+    expect(upFn([a, b])).rejects.toStrictEqual({
       hasErrors: true,
       statuses: {
         [a.id]: 'fail',
@@ -285,7 +285,7 @@ describe('edge cases', () => {
       start: () => ({ api: null }),
     });
 
-    expect(compose.up([a, b, c])).rejects.toStrictEqual({
+    expect(upFn([a, b, c])).rejects.toStrictEqual({
       hasErrors: true,
       statuses: {
         [a.id]: 'fail',
@@ -314,7 +314,7 @@ describe('edge cases', () => {
       start: () => ({ api: null }),
     });
 
-    expect(compose.up([a, b, c])).rejects.toStrictEqual({
+    expect(upFn([a, b, c])).rejects.toStrictEqual({
       hasErrors: true,
       statuses: {
         [a.id]: 'fail',
@@ -345,7 +345,7 @@ describe('edge cases', () => {
       start: () => ({ api: null }),
     });
 
-    expect(compose.up([a, b, c])).rejects.toStrictEqual({
+    expect(upFn([a, b, c])).rejects.toStrictEqual({
       hasErrors: true,
       statuses: {
         [a.id]: 'fail',
@@ -391,7 +391,7 @@ test('custom execution order', async () => {
     },
   });
 
-  await compose.up([lowPriorityFeatures, notSoAwesomeFeature, highPriorityFeatures, awesomeFeature]);
+  await upFn([lowPriorityFeatures, notSoAwesomeFeature, highPriorityFeatures, awesomeFeature]);
 
   expect(consoleLogSpy.mock.calls[0]).toMatchSnapshot();
   expect(consoleLogSpy.mock.calls[1]).toMatchSnapshot();

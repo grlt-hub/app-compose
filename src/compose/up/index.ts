@@ -1,5 +1,5 @@
 import { clearNode, combine, createEffect, launch, sample, type Store } from 'effector';
-import { type AnyContainer, CONTAINER_STATUS, type ContainerStatus } from '../createContainer';
+import { type AnyContainer, CONTAINER_STATUS, type ContainerStatus } from '../../createContainer';
 
 const validateContainerId = (id: string, set: Set<string>) => {
   if (set.has(id)) {
