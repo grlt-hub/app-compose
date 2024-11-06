@@ -37,7 +37,7 @@
     "type": "git",
     "url": "https://github.com/grlt-hub/app-compose.git"
   },
-  "homepage": "https://github.com/grlt-hub/app-compose/blob/main/README.md",
+  "homepage": "https://grlt-hub.github.io/app-compose/",
   "description": "Create scalable, module-based applications with ease.",
   "keywords": [
     "grlt",
