@@ -1,0 +1,60 @@
+---
+title: compose.graph
+sidebar:
+  order: 2
+---
+
+`compose.up` is the primary function used to visualize the system composed of containers.
+
+## Syntax
+
+```ts
+compose.graph(containers: AnyContainer[]): Record<AnyContainer['id'], {
+  strict: AnyContainer['id'],
+  optional: AnyContainer['id'],
+  transitive: {
+    strict: {id: AnyContainer['id'], path: string}[],
+    optional: {id: AnyContainer['id'], path: string}[],
+  }
+}>
+```
+
+## Parameters
+
+- **containers** (`Container[]`): An array of containers to visualize.
+
+## Return Value
+
+The output of `compose.graph` provides a detailed breakdown of each container:
+
+- **Direct Dependencies**:
+  - **Strict**: Lists containers that are `strict` dependencies of the current container.
+  - **Optional**: Lists containers that are `optional` dependencies of the current container.
+- **Transitive Dependencies**:
+  - **Strict**: Lists containers that are `strict` dependencies, inherited through a chain of dependencies.
+  - **Optional**: Lists containers that are `optional` dependencies, inherited through a chain of dependencies.
+- **Transitive Dependency Paths**:
+  - Each transitive dependency includes a path that describes how the dependency is reached, which is helpful for tracing and debugging.
+
+## Rules for Classifying Dependencies
+
+1. **Direct Dependencies**:
+
+   - A dependency is considered **direct** if it is explicitly declared in the `dependsOn` or `optionalDependsOn` lists of a container.
+   - Direct dependencies are categorized as:
+     - **Strict**: If they are listed in `dependsOn`.
+     - **Optional**: If they are listed in `optionalDependsOn`.
+
+2. **Transitive Dependencies**:
+
+   - A dependency is considered **transitive** if it is inherited through a chain of dependencies from another container, rather than being directly listed.
+   - **Classification of Transitive Dependencies**:
+     - If a dependency path begins from a **strict** direct dependency, all subsequent dependencies in the chain are also **strict**.
+     - If a dependency path begins from an **optional** direct dependency, all subsequent dependencies in the chain are **optional**, regardless of their original type.
+
+3. **Propagation of Dependency Type**:
+   - The strictness of a transitive dependency is determined by the type of the initial direct dependency in the chain:
+     - If the initial direct dependency is **strict**, the entire chain is considered **strict**.
+     - If the initial direct dependency is **optional**, the entire chain is considered **optional**.
+
+These rules ensures that the classification of dependencies is consistent and reflects both direct and inherited relationships in a system.

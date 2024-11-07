@@ -85,29 +85,6 @@ The output of `compose.graph` provides a detailed breakdown of each container:
 - Ensure that all containers are defined with proper `dependsOn` and `optionalDependsOn` attributes.
 - The `compose.graph` function does not modify your containers; it only provides a visualization of the dependencies.
 
-## Rules for Classifying Dependencies
-
-1. **Direct Dependencies**:
-
-   - A dependency is considered **direct** if it is explicitly declared in the `dependsOn` or `optionalDependsOn` lists of a container.
-   - Direct dependencies are categorized as:
-     - **Strict**: If they are listed in `dependsOn`.
-     - **Optional**: If they are listed in `optionalDependsOn`.
-
-2. **Transitive Dependencies**:
-
-   - A dependency is considered **transitive** if it is inherited through a chain of dependencies from another container, rather than being directly listed.
-   - **Classification of Transitive Dependencies**:
-     - If a dependency path begins from a **strict** direct dependency, all subsequent dependencies in the chain are also **strict**.
-     - If a dependency path begins from an **optional** direct dependency, all subsequent dependencies in the chain are **optional**, regardless of their original type.
-
-3. **Propagation of Dependency Type**:
-   - The strictness of a transitive dependency is determined by the type of the initial direct dependency in the chain:
-     - If the initial direct dependency is **strict**, the entire chain is considered **strict**.
-     - If the initial direct dependency is **optional**, the entire chain is considered **optional**.
-
-These rules ensures that the classification of dependencies is consistent and reflects both direct and inherited relationships in a system.
-
 ## Conclusion
 
 Using `compose.graph` allows you to have a comprehensive understanding of the container-based architecture of your application. This tool is essential for debugging, optimizing, and documenting the dependencies and interactions between various parts of your system.
