@@ -1,5 +1,5 @@
-import { createContainer } from '../../../../createContainer';
-import { upFn } from '../../index';
+import { createContainer } from '../../../createContainer';
+import { upFn } from '../index';
 
 describe('up.apis = true', () => {
   test('all enabled', async () => {

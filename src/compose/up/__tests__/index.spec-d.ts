@@ -1,6 +1,6 @@
 import type { StoreValue } from 'effector';
-import { type AnyContainer, createContainer } from '../../../../createContainer';
-import { upFn } from '../../index';
+import { type AnyContainer, createContainer } from '../../../createContainer';
+import { upFn } from '../index';
 
 describe('upFn', () => {
   test('parameters', () => {

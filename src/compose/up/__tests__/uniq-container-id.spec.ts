@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
-import { createContainer as __createContainer } from '../../../../createContainer';
-import { upFn } from '../../index';
+import { createContainer as __createContainer } from '../../../createContainer';
+import { upFn } from '../index';
 
 const start = () => ({ api: {} });
 

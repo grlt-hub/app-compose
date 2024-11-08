@@ -1,5 +1,5 @@
-import { createContainer } from '../../../../createContainer';
-import { upFn } from '../../index';
+import { createContainer } from '../../../createContainer';
+import { upFn } from '../index';
 
 test('up.debug = true', async () => {
   const consoleLogSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});

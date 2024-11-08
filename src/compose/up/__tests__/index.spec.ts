@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
-import { CONTAINER_STATUS, createContainer, type AnyContainer } from '../../../../createContainer';
-import { upFn } from '../../index';
+import { CONTAINER_STATUS, createContainer, type AnyContainer } from '../../../createContainer';
+import { upFn } from '../index';
 
 const T = () => true;
 const F = () => false;

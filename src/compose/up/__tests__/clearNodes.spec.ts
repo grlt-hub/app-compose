@@ -1,6 +1,6 @@
 import { allSettled, createEvent, createStore, fork, sample } from 'effector';
-import { createContainer } from '../../../../createContainer';
-import { upFn } from '../../index';
+import { createContainer } from '../../../createContainer';
+import { upFn } from '../index';
 
 test('up.clearNodes | all containers resolved and API is available to use', async () => {
   const scope = fork();

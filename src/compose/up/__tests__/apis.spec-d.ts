@@ -1,5 +1,5 @@
-import { createContainer } from '../../../../createContainer';
-import { upFn } from '../../index';
+import { createContainer } from '../../../createContainer';
+import { upFn } from '../index';
 
 test('up.apis = true', async () => {
   const a = createContainer({

@@ -22,7 +22,7 @@ const b = createContainer({ id: 'b', dependsOn: [a], start });
 const c = createContainer({ id: 'c', optionalDependsOn: [b], start });
 const d = createContainer({ id: 'd', dependsOn: [c], optionalDependsOn: [b], start });
 
-const graph = graphFn([a, b, c, d]);
+const graph = compose.graph([a, b, c, d]);
 
 console.log(graph);
 ```
