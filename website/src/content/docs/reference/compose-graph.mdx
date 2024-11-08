@@ -9,7 +9,14 @@ sidebar:
 ## Syntax
 
 ```ts
-compose.graph(containers: AnyContainer[]): Record<AnyContainer['id'], {
+type Config = {
+  autoResolveDeps?: {
+    strict: true;
+    optional?: boolean;
+  };
+}
+
+compose.graph(containers: AnyContainer[], config?: Config): Record<AnyContainer['id'], {
   strict: AnyContainer['id'],
   optional: AnyContainer['id'],
   transitive: {
@@ -22,7 +29,7 @@ compose.graph(containers: AnyContainer[]): Record<AnyContainer['id'], {
 ## Parameters
 
 - **containers** (`Container[]`): An array of containers to visualize.
-- **config** (optional, `{ debug?: boolean, apis?: boolean, autoResolveDeps?: { strict: true, optional?: boolean } }`): An optional configuration object with the following properties:
+- **config** (optional, `{ autoResolveDeps?: { strict: true, optional?: boolean } }`): An optional configuration object with the following properties:
   - **autoResolveDeps** (`{ strict: true, optional?: boolean }`): Allows automatic resolution of dependencies. If `strict` is set to `true`, all strict dependencies are resolved automatically. The `optional` property, if set to `true`, enables automatic resolution of optional dependencies as well, eliminating the need to manually pass them to `compose.up`.
 
 ## Return Value

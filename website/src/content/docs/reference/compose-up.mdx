@@ -9,7 +9,16 @@ sidebar:
 ## Syntax
 
 ```ts
-compose.up(containers: Container[], config?: { debug?: boolean, apis?: boolean }): Promise<{
+type Config = {
+  apis?: boolean;
+  debug?: boolean;
+  autoResolveDeps?: {
+    strict: true;
+    optional?: boolean;
+  };
+};
+
+compose.up(containers: Container[], config?: Config): Promise<{
   hasErrors: boolean;
   statuses: Record<Container['id'], Container['status']>;
 }>
