@@ -1,7 +1,7 @@
 import { createContainer } from '../../../../createContainer';
 import { upFn } from '../../index';
 
-test('up.debug', async () => {
+test('up.debug = true', async () => {
   const consoleLogSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
   const fixedDate = new Date('2024-01-01T00:00:00.000Z');
 

@@ -20,12 +20,30 @@ type Statuses<T extends AnyContainer[]> = {
   [K in T[number]['id']]: ContainerStatus;
 };
 
-type UpResult<T extends AnyContainer[]> = {
-  hasErrors: boolean;
-  statuses: Statuses<T>;
+type APIs<T extends AnyContainer[]> = {
+  [K in T[number] as K['id']]?: Awaited<ReturnType<K['start']>>['api'];
 };
 
-const upFn = async <T extends AnyContainer[]>(containers: T, config?: { debug?: boolean }): Promise<UpResult<T>> => {
+type Config = {
+  apis?: true;
+  debug?: boolean;
+};
+
+type UpResult<T extends AnyContainer[], C extends Config | undefined> = undefined extends C
+  ? {
+      hasErrors: boolean;
+      statuses: Statuses<T>;
+    }
+  : {
+      apis: APIs<T>;
+      hasErrors: boolean;
+      statuses: Statuses<T>;
+    };
+
+const upFn = async <T extends AnyContainer[], C extends Config | undefined>(
+  containers: T,
+  config?: C,
+): Promise<UpResult<T, C>> => {
   const CONTAINER_IDS = new Set<string>();
 
   for (const container of containers) {
@@ -114,10 +132,15 @@ const upFn = async <T extends AnyContainer[]>(containers: T, config?: { debug?: 
   return new Promise((resolve, reject) => {
     $result.watch((x) => {
       if (x.done === true) {
-        apis = {};
         nodesToClear.forEach((x) => clearNode(x, { deep: true }));
 
-        const res = { hasErrors: x.hasErrors, statuses: x.statuses };
+        const returnApi = config?.apis === true;
+
+        if (!returnApi) {
+          apis = {};
+        }
+
+        const res = { hasErrors: x.hasErrors, statuses: x.statuses, ...(returnApi ? { apis } : {}) };
 
         if (x.hasErrors) {
           reject(res);
