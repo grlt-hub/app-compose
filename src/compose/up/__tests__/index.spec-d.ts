@@ -29,4 +29,35 @@ describe('upFn', () => {
 
     expectTypeOf<UpResult>().toEqualTypeOf<typeof upResult>();
   });
+
+  test('config', () => {
+    const a = createContainer({
+      id: 'a',
+      start: () => ({ api: { t: () => true } }),
+    });
+
+    test('empty', async () => {
+      const upResult = await upFn([a]);
+
+      expectTypeOf<keyof typeof upResult>().toEqualTypeOf<'hasErrors' | 'statuses'>();
+    });
+
+    test('only debug', async () => {
+      const upResult = await upFn([a], { debug: true });
+
+      expectTypeOf<keyof typeof upResult>().toEqualTypeOf<'hasErrors' | 'statuses'>();
+    });
+
+    test('only apis', async () => {
+      const upResult = await upFn([a], { apis: true });
+
+      expectTypeOf<keyof typeof upResult>().toEqualTypeOf<'hasErrors' | 'statuses' | 'apis'>();
+    });
+
+    test('debug + apis', async () => {
+      const upResult = await upFn([a], { debug: true, apis: true });
+
+      expectTypeOf<keyof typeof upResult>().toEqualTypeOf<'hasErrors' | 'statuses' | 'apis'>();
+    });
+  });
 });

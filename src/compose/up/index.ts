@@ -25,8 +25,12 @@ type APIs<T extends AnyContainer[]> = {
 };
 
 type Config = {
-  apis?: true;
+  apis?: boolean;
   debug?: boolean;
+  autoResolveDeps?: {
+    strict: boolean;
+    optional: boolean;
+  };
 };
 
 type UpResult<T extends AnyContainer[], C extends Config | undefined> = undefined extends C
@@ -34,11 +38,16 @@ type UpResult<T extends AnyContainer[], C extends Config | undefined> = undefine
       hasErrors: boolean;
       statuses: Statuses<T>;
     }
-  : {
-      apis: APIs<T>;
-      hasErrors: boolean;
-      statuses: Statuses<T>;
-    };
+  : NonNullable<C>['apis'] extends true
+    ? {
+        apis: APIs<T>;
+        hasErrors: boolean;
+        statuses: Statuses<T>;
+      }
+    : {
+        hasErrors: boolean;
+        statuses: Statuses<T>;
+      };
 
 const upFn = async <T extends AnyContainer[], C extends Config | undefined>(
   containers: T,
