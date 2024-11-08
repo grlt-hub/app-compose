@@ -1,6 +1,6 @@
 import type { AnyContainer } from '../createContainer';
 
-const travserseDependencies = (containers: AnyContainer[]): AnyContainer[] => {
+const travserseDependencies = (containers: AnyContainer[], includeOptional = false): AnyContainer[] => {
   const result = new Set<AnyContainer>();
 
   const traverse = (container: AnyContainer) => {
@@ -8,6 +8,10 @@ const travserseDependencies = (containers: AnyContainer[]): AnyContainer[] => {
     result.add(container);
 
     container.dependsOn?.forEach(traverse);
+
+    if (includeOptional) {
+      container.optionalDependsOn?.forEach(traverse);
+    }
   };
 
   containers.forEach(traverse);
