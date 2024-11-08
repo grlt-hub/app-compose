@@ -1,5 +1,6 @@
 import { clearNode, combine, createEffect, launch, sample, type Store } from 'effector';
 import { type AnyContainer, CONTAINER_STATUS, type ContainerStatus } from '../../createContainer';
+import { travserseDependencies } from '../travserseDependencies';
 
 const validateContainerId = (id: string, set: Set<string>) => {
   if (set.has(id)) {
@@ -49,14 +50,18 @@ type UpResult<T extends AnyContainer[], C extends Config | undefined> = undefine
         statuses: Statuses<T>;
       };
 
-const getConfig = (config: Config | undefined): Config =>
+const getConfig = (config: Config | undefined): NonNullable<Config> =>
   Object.assign({ apis: false, debug: false, autoResolveDeps: { strict: false, optional: false } }, config ?? {});
 
 const upFn = async <T extends AnyContainer[], C extends Config | undefined>(
-  containers: T,
+  __containers: T,
   __config?: C,
 ): Promise<UpResult<T, C>> => {
   const config = getConfig(__config);
+
+  const containers = config.autoResolveDeps?.strict
+    ? travserseDependencies(__containers, config.autoResolveDeps.optional)
+    : __containers;
 
   const CONTAINER_IDS = new Set<string>();
 
