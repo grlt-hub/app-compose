@@ -1,0 +1,84 @@
+---
+title: Automatically Resolve Dependencies
+sidebar:
+  order: 2
+  badge:
+    text: New
+    variant: tip
+---
+
+By default, `compose.up` expects a list of all containers that should be initialized. This approach requires manual effort but ensures that the result of `compose.up` is explicit and predictable. However, managing this manually can be inconvenient and cumbersome, especially in large applications. To simplify this, `app-compose` offers an option for automatic dependency resolution, allowing you to omit many containers from the input list of `compose.up`or `compose.graph`.
+
+## Description of `autoResolveDeps`
+
+The `autoResolveDeps` option provides an easy way to automatically resolve container dependencies. It has the following properties:
+
+- **strict** (`true`): This is a required property. When set to true, all strict dependencies (`dependsOn`) are automatically resolved, ensuring that containers with required dependencies are initialized properly without the need to manually list them in `compose.up`.
+- **optional** (`boolean`, optional): This property controls whether optional dependencies (`optionalDependsOn`) should also be resolved automatically. If set to `true`, both strict and optional dependencies will be resolved. If omitted or set to `false`, only strict dependencies will be automatically resolved.
+
+## Advantages
+
+- `autoResolveDeps` simplifies dependency management by resolving dependencies automatically.
+- Reduces the need to manually list every container in `compose.up` or `compose.graph`.
+- Makes your code cleaner and more maintainable.
+- Minimizes the risk of errors in large dependency graphs.
+- Works for both strict (`dependsOn`) and optional (`optionalDependsOn`) dependencies.
+- Useful for both initializing containers (`compose.up`) and visualizing dependencies (`compose.graph`).
+
+## Example
+
+### Before
+
+```ts
+import { compose, createContainer } from 'app-compose';
+
+const userEntity = createContainer({
+  id: 'userEntity',
+  api: () => ({ api: null }),
+});
+
+const settingsEntity = createContainer({
+  id: 'settingsEntity',
+  dependsOn: [userEntity],
+  api: () => ({ api: null }),
+});
+
+const myAwesomeFeature = createContainer({
+  id: 'myAwesomeFeature',
+  dependsOn: [userEntity, settingsEntity],
+  api: () => ({ api: null }),
+});
+
+compose.up([userEntity, settingsEntity, myAwesomeFeature]);
+```
+
+In this case, all containers must be explicitly listed, which becomes cumbersome as the number of dependencies grows.
+
+### After
+
+```ts {20}
+import { compose, createContainer } from 'app-compose';
+
+const userEntity = createContainer({
+  id: 'userEntity',
+  api: () => ({ api: null }),
+});
+
+const settingsEntity = createContainer({
+  id: 'settingsEntity',
+  dependsOn: [userEntity],
+  api: () => ({ api: null }),
+});
+
+const myAwesomeFeature = createContainer({
+  id: 'myAwesomeFeature',
+  dependsOn: [userEntity, settingsEntity],
+  api: () => ({ api: null }),
+});
+
+compose.up([myAwesomeFeature], { autoResolveDeps: { strict: true, optional: true } });
+```
+
+Here, only `myAwesomeFeature` needs to be provided. `compose.up` will automatically resolve and include `userEntity` and `settingsEntity` as dependencies, significantly reducing the manual effort required to maintain the list of containers.
+
+This feature not only simplifies the initialization process but also makes your code cleaner and easier to manage, especially as your dependency graph evolves.

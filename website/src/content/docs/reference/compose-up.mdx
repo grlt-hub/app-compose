@@ -79,7 +79,6 @@ userContainer: done
 settingsContainer: done
 ```
 
-## Notes
+## How `autoResolveDeps` Works
 
-- `compose.up` automatically handles dependencies based on the configuration of each container.
-- The function only begins each container when its required dependencies are fully initialized (`done` status).
+When `autoResolveDeps` is used, `compose.up` will automatically identify and include all necessary dependencies for each container. This feature is particularly useful when dealing with complex dependency graphs where manually listing all containers is error-prone and difficult to manage.
