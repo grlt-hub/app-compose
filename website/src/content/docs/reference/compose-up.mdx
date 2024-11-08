@@ -9,7 +9,7 @@ sidebar:
 ## Syntax
 
 ```ts
-compose.up(containers: Container[], config?: { debug?: boolean }): Promise<{
+compose.up(containers: Container[], config?: { debug?: boolean, apis?: boolean }): Promise<{
   hasErrors: boolean;
   statuses: Record<Container['id'], Container['status']>;
 }>
@@ -20,6 +20,7 @@ compose.up(containers: Container[], config?: { debug?: boolean }): Promise<{
 - **containers** (`Container[]`): An array of containers to initialize. Each container in the array is processed based on its dependencies (`dependsOn` and `optionalDependsOn`), regardless of the order in which it appears.
 - **config** (optional, `{ debug?: boolean }`): An optional configuration object with the following property:
   - **debug** (`boolean`): If `true`, `compose.up` will output detailed status updates to the console each time a container’s status changes. This is useful for tracking initialization and troubleshooting dependency issues.
+  - **apis** (`boolean`): If set to `true`, the returned result from `compose.up` will include an `apis` object. In this object, each key is the `id` of a container, and the corresponding value is the `api` from the container's `start` function.
 
 ## Return Value
 
@@ -27,6 +28,7 @@ compose.up(containers: Container[], config?: { debug?: boolean }): Promise<{
 
 - **hasErrors** (`boolean`): Indicates whether any container encountered an error during initialization.
 - **statuses** (`Record<Container['id'], Container['status']>`): An object that maps each container ID to its final status (`idle`, `pending`, `done`, `fail`, or `off`).
+- **apis** (`Record<Container['id'], Container['api']>`): If `compose.up.config` set to `true`
 
 ## Example
 
