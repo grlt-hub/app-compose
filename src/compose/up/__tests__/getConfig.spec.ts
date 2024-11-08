@@ -16,10 +16,10 @@ describe('getConfig', () => {
     });
   });
   test('autoResolveDeps.optional=true | apis=true', () => {
-    expect(getConfig({ apis: true, autoResolveDeps: { optional: true, strict: false } })).toStrictEqual({
+    expect(getConfig({ apis: true, autoResolveDeps: { optional: true, strict: true } })).toStrictEqual({
       apis: true,
       debug: false,
-      autoResolveDeps: { strict: false, optional: true },
+      autoResolveDeps: { strict: true, optional: true },
     });
   });
 });
