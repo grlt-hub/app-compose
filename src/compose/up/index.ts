@@ -29,8 +29,8 @@ type Config = {
   apis?: boolean;
   debug?: boolean;
   autoResolveDeps?: {
-    strict: boolean;
-    optional: boolean;
+    strict: true;
+    optional?: boolean;
   };
 };
 
@@ -50,7 +50,7 @@ type UpResult<T extends AnyContainer[], C extends Config | undefined> = undefine
         statuses: Statuses<T>;
       };
 
-const getConfig = (config: Config | undefined): NonNullable<Config> =>
+const getConfig = (config: Config | undefined): Required<NonNullable<Config>> =>
   Object.assign({ apis: false, debug: false, autoResolveDeps: { strict: false, optional: false } }, config ?? {});
 
 const upFn = async <T extends AnyContainer[], C extends Config | undefined>(
