@@ -58,7 +58,7 @@ const upFn = async <T extends AnyContainer[]>(containers: T, config?: { debug?: 
   let nodesToClear: Parameters<typeof clearNode>[0][] = [$result];
   let apis: Record<string, Awaited<ReturnType<AnyContainer['start']>>['api']> = {};
 
-  await Promise.all(
+  await Promise.allSettled(
     containers.map(async (container) => {
       const $strictDepsResolving: Store<ContainerStatus> = combine(
         (container.dependsOn ?? []).map((d) => d.$status),
