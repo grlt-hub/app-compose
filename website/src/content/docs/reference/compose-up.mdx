@@ -20,7 +20,7 @@ compose.up(containers: Container[], config?: { debug?: boolean, apis?: boolean }
 - **containers** (`Container[]`): An array of containers to initialize. Each container in the array is processed based on its dependencies (`dependsOn` and `optionalDependsOn`), regardless of the order in which it appears.
 - **config** (optional, `{ debug?: boolean }`): An optional configuration object with the following property:
   - **debug** (`boolean`): If `true`, `compose.up` will output detailed status updates to the console each time a container’s status changes. This is useful for tracking initialization and troubleshooting dependency issues.
-  - **apis** (`boolean`): If set to `true`, the returned result from `compose.up` will include an `apis` object. In this object, each key is the `id` of a container, and the corresponding value is the `api` from the container's `start` function.
+  - **apis** (`boolean`): If set to `true`, the returned result from `compose.up` will include an `apis` object. In this object, each key is the `id` of a container, and the corresponding value is the `api` from the container's `start` function. The keys in `apis` are always **optional** because, at the type level, we cannot determine if a container has transitioned to the `done` status.
 
 ## Return Value
 
