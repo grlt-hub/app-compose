@@ -42,24 +42,27 @@ const layoutContainer = createContainer({
       </div>
     );
 
-    createRoot(document.getElementById('root')!).render(
-      <StrictMode>
-        <Layout />
-      </StrictMode>,
-    );
-
-    return { api: null };
+    return { api: { ui: Layout } };
   },
 });
 
-await compose.up([logoContainer, layoutContainer]);
+const { apis } = await compose.up([logoContainer, layoutContainer], { apis: true });
+
+if (apis.layout) {
+  createRoot(document.getElementById('root')!).render(
+    <StrictMode>
+      <apis.layout.ui />
+    </StrictMode>,
+  );
+}
 ```
 
 ### Explanation
 
 - `logoContainer`: This container manages the `Logo` feature and includes an enable method that prompts for confirmation before enabling. If the user confirms, the component becomes available for rendering.
-- `layoutContainer`: This container depends on `logoContainer` and renders its UI as part of the `Layout` component. This setup allows flexible control over the initialization order and rendering of child components.
+- `layoutContainer`: This container depends on `logoContainer` and renders its UI as part of the `Layout` component. This setup allows flexible control over the initialization order.
 - Calling `compose.up`: This is called asynchronously to initialize the containers.
+- Calling `createRoot`: For components rendering.
 
 ### Limitations of This Approach
 
