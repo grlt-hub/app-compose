@@ -7,11 +7,7 @@ const travserseDependencies = (containers: AnyContainer[]): AnyContainer[] => {
     if (result.has(container)) return;
     result.add(container);
 
-    const dependsOn = container.dependsOn;
-
-    if (dependsOn) {
-      dependsOn.forEach(traverse);
-    }
+    container.dependsOn?.forEach(traverse);
   };
 
   containers.forEach(traverse);
