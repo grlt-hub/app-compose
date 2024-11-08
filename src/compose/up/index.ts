@@ -49,10 +49,15 @@ type UpResult<T extends AnyContainer[], C extends Config | undefined> = undefine
         statuses: Statuses<T>;
       };
 
+const getConfig = (config: Config | undefined): Config =>
+  Object.assign({ apis: false, debug: false, autoResolveDeps: { strict: false, optional: false } }, config ?? {});
+
 const upFn = async <T extends AnyContainer[], C extends Config | undefined>(
   containers: T,
-  config?: C,
+  __config?: C,
 ): Promise<UpResult<T, C>> => {
+  const config = getConfig(__config);
+
   const CONTAINER_IDS = new Set<string>();
 
   for (const container of containers) {
@@ -162,4 +167,4 @@ const upFn = async <T extends AnyContainer[], C extends Config | undefined>(
   });
 };
 
-export { upFn };
+export { getConfig, upFn };
