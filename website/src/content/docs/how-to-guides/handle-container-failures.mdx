@@ -1,0 +1,46 @@
+---
+title: Handle Container Failures
+sidebar:
+  order: 12
+  badge:
+    text: New
+    variant: tip
+---
+
+In app-compose, containers may fail to initialize properly due to errors in their logic or issues with dependencies. Handling these failures is essential to ensure your application can respond gracefully, log errors, or attempt recovery.
+
+## Why Handle Failures?
+
+- **Error Logging**: Capture and log errors for debugging and monitoring.
+- **Graceful Degradation**: Allow the application to continue running in a limited capacity instead of crashing.
+- **Recovery Mechanisms**: Trigger fallback strategies or alerts when critical components fail.
+
+## Handling Failures with `compose.up`
+
+You can pass an `onFail` function in the `compose.up` configuration to handle container failures globally. The `onFail` function is called whenever any container transitions to the fail state, providing the container's `id` and the `error`:
+
+```ts {16}
+import { compose, createContainer } from 'app-compose';
+
+const dependency = createContainer({
+  id: 'dependency',
+  start: () => {
+    throw new Error('Error in dependency start');
+  },
+});
+
+const feature = createContainer({
+  id: 'feature',
+  dependsOn: [dependency],
+  start: () => ({ api: null }),
+});
+
+await upFn([dependency, feature], { onFail: console.error });
+
+// { id: 'dependency', error: Error('Error in dependency start') }
+// { id: 'feature', error: Error('Strict dependency failed') }
+```
+
+## Summary
+
+- Use the `onFail` option in `compose.up` for centralized error handling. It provides a way to react to container failures efficiently and ensure the application remains robust and reliable.

@@ -16,6 +16,7 @@ type Config = {
     strict: true;
     optional?: boolean;
   };
+  onFail?: (_: { id: AnyContainer['id']; error: Error }) => unknown
 };
 
 compose.up(containers: Container[], config?: Config): Promise<{
@@ -31,6 +32,7 @@ compose.up(containers: Container[], config?: Config): Promise<{
   - **debug** (`boolean`): If `true`, `compose.up` will output detailed status updates to the console each time a container’s status changes. This is useful for tracking initialization and troubleshooting dependency issues.
   - **apis** (`boolean`): If set to `true`, the returned result from `compose.up` will include an `apis` object. In this object, each key is the `id` of a container, and the corresponding value is the `api` from the container's `start` function. The keys in `apis` are always **optional** because, at the type level, we cannot determine if a container has transitioned to the `done` status.
   - **autoResolveDeps** (`{ strict: true, optional?: boolean }`): Allows automatic resolution of dependencies. If `strict` is set to `true`, all strict dependencies are resolved automatically. The `optional` property, if set to `true`, enables automatic resolution of optional dependencies as well, eliminating the need to manually pass them to `compose.up`.
+  - **onFail** (`function`): An optional callback that is called when a container transitions to the `fail` state. Receives an object with the container's `id` and the `error` that caused the failure. This is useful for logging, error tracking, or triggering recovery mechanisms.
 
 ## Return Value
 
