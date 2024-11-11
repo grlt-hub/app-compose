@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org).
 ### Added
 
 - `onFail` option to `compose.up` config for handling container failures, allowing centralized error tracking and custom recovery actions.
+  [How to](https://grlt-hub.github.io/app-compose/how-to-guides/handle-container-failures/)
 
 ## 1.3.0
 
