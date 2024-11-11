@@ -100,21 +100,17 @@ const upFn = async <T extends AnyContainer[], C extends Config>(
 
   await Promise.allSettled(
     containers.map((container) => {
-      const $strictDepsResolving: Store<ContainerStatus> = combine(
-        (container.dependsOn ?? []).map((d) => d.$status),
-        (x) => {
-          if (x.some(statusIs.off)) return CONTAINER_STATUS.off;
-          if (x.some(statusIs.fail)) return CONTAINER_STATUS.fail;
-          if (x.some(statusIs.pending)) return CONTAINER_STATUS.pending;
+      const $strictDepsResolving = combine(container.dependsOn?.map((d) => d.$status) || [], (x) => {
+        if (x.some(statusIs.off)) return CONTAINER_STATUS.off;
+        if (x.some(statusIs.fail)) return CONTAINER_STATUS.fail;
+        if (x.some(statusIs.pending)) return CONTAINER_STATUS.pending;
 
-          if (x.every(statusIs.done) || x.length === 0) return CONTAINER_STATUS.done;
+        if (x.every(statusIs.done) || x.length === 0) return CONTAINER_STATUS.done;
 
-          return CONTAINER_STATUS.idle;
-        },
-      );
-      const $optionalDepsResolving: Store<ContainerStatus> = combine(
-        (container.optionalDependsOn ?? []).map((d) => d.$status),
-        (l) => (l.some(statusIs.pending) || l.some(statusIs.idle) ? CONTAINER_STATUS.idle : CONTAINER_STATUS.done),
+        return CONTAINER_STATUS.idle;
+      });
+      const $optionalDepsResolving = combine(container.optionalDependsOn?.map((d) => d.$status) || [], (l) =>
+        l.some(statusIs.pending) || l.some(statusIs.idle) ? CONTAINER_STATUS.idle : CONTAINER_STATUS.done,
       );
       const $depsDone = combine([$strictDepsResolving, $optionalDepsResolving], (l) => l.every(statusIs.done));
 
