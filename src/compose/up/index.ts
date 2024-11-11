@@ -74,11 +74,9 @@ const upFn = async <T extends AnyContainer[], C extends Config>(
   const $result = combine(containersStatuses, (kv) => {
     const statusList = Object.values(kv);
     const done = statusList.every((s) => /^(done|fail|off)$/.test(s));
-    const hasErrors = statusList.some(statusIs.fail);
 
     return {
       done,
-      hasErrors,
       statuses: kv,
     };
   });
@@ -151,9 +149,13 @@ const upFn = async <T extends AnyContainer[], C extends Config>(
         apis = {};
       }
 
-      const res = { hasErrors: x.hasErrors, statuses: x.statuses, ...(config.apis ? { apis } : {}) };
+      const res = {
+        hasErrors: Object.values(x.statuses).some(statusIs.fail),
+        statuses: x.statuses,
+        ...(config.apis ? { apis } : {}),
+      };
 
-      if (x.hasErrors) {
+      if (res.hasErrors) {
         reject(res);
       }
 
