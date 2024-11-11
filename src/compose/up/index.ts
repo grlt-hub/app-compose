@@ -1,6 +1,6 @@
 import { clearNode, combine, createEffect, launch, sample, type Store } from 'effector';
 import { type AnyContainer, CONTAINER_STATUS, type ContainerStatus } from '../../createContainer';
-import { travserseDependencies } from '../travserseDependencies';
+import { getContainers } from '../getContainers';
 
 const validateContainerId = (id: string, set: Set<string>) => {
   if (set.has(id)) {
@@ -50,18 +50,15 @@ type UpResult<T extends AnyContainer[], C extends Config | undefined> = undefine
         statuses: Statuses<T>;
       };
 
-const getConfig = (config: Config | undefined): Required<NonNullable<Config>> =>
+const normalizeConfig = (config?: Config): Required<NonNullable<Config>> =>
   Object.assign({ apis: false, debug: false, autoResolveDeps: { strict: false, optional: false } }, config ?? {});
 
-const upFn = async <T extends AnyContainer[], C extends Config | undefined>(
+const upFn = async <T extends AnyContainer[], C extends Config>(
   __containers: T,
   __config?: C,
 ): Promise<UpResult<T, C>> => {
-  const config = getConfig(__config);
-
-  const containers = config.autoResolveDeps?.strict
-    ? travserseDependencies(__containers, config.autoResolveDeps.optional)
-    : __containers;
+  const config = normalizeConfig(__config);
+  const containers = getContainers({ containers: __containers, autoResolveDeps: config.autoResolveDeps });
 
   const CONTAINER_IDS = new Set<string>();
 
@@ -144,32 +141,31 @@ const upFn = async <T extends AnyContainer[], C extends Config | undefined>(
         if (x) enableFx();
       });
 
-      nodesToClear = [...nodesToClear, $strictDepsResolving, $optionalDepsResolving, $depsDone, enableFx, startFx];
+      nodesToClear.push($strictDepsResolving, $optionalDepsResolving, $depsDone, enableFx, startFx);
     }),
   );
 
   return new Promise((resolve, reject) => {
     $result.watch((x) => {
-      if (x.done === true) {
-        nodesToClear.forEach((x) => clearNode(x, { deep: true }));
+      if (!x.done) return;
 
-        const returnApi = config?.apis === true;
+      nodesToClear.forEach((x) => clearNode(x, { deep: true }));
+      nodesToClear = [];
 
-        if (!returnApi) {
-          apis = {};
-        }
-
-        const res = { hasErrors: x.hasErrors, statuses: x.statuses, ...(returnApi ? { apis } : {}) };
-
-        if (x.hasErrors) {
-          reject(res);
-        }
-
-        // @ts-expect-error
-        resolve(res);
+      if (!config.apis) {
+        apis = {};
       }
+
+      const res = { hasErrors: x.hasErrors, statuses: x.statuses, ...(config.apis ? { apis } : {}) };
+
+      if (x.hasErrors) {
+        reject(res);
+      }
+
+      // @ts-expect-error
+      resolve(res);
     });
   });
 };
 
-export { getConfig, upFn };
+export { normalizeConfig, upFn };

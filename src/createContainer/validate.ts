@@ -4,13 +4,10 @@ type ValidateParams = { id: string; dependsOn?: AnyDeps; optionalDependsOn?: Any
 
 const ERROR = {
   CONTAINER_ID_EMPTY_STRING: 'Container ID cannot be an empty string.',
-  depsIntersection: (intersection: string[], containerId: AnyContainer['id']) => {
-    return `
-      Dependency conflict detected in container '${containerId}':
-      The following dependencies are listed as both required and optional: [${intersection.join(', ')}].
-
-      Each dependency should be listed only once, as either required or optional.`;
-  },
+  depsIntersection: (intersection: string[], containerId: AnyContainer['id']) =>
+    `Dependency conflict detected in container '${containerId}':\n` +
+    `The following dependencies are listed as both required and optional: [${intersection.join(', ')}].\n\n` +
+    'Each dependency should be listed only once, as either required or optional.',
 } as const;
 type ContainerIdEmptyStringError = { id: never; error: typeof ERROR.CONTAINER_ID_EMPTY_STRING };
 
@@ -30,7 +27,7 @@ const validateDepsIntersection = (params: ValidateParams) => {
 
   const intersection = depIds.intersection(optDepsIds);
 
-  if (intersection.size > 0) {
+  if (intersection.size) {
     throw new Error(ERROR.depsIntersection(Array.from(intersection), params.id));
   }
 };

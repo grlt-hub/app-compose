@@ -1,5 +1,5 @@
 import { type AnyContainer } from '../../createContainer';
-import { travserseDependencies } from '../travserseDependencies';
+import { getContainers } from '../getContainers';
 import { getTransitiveDependencies, type TransitiveDependency } from './getTransitiveDependencies';
 
 type Graph = Record<
@@ -21,14 +21,12 @@ type Config = {
   };
 };
 
-const getConfig = (config: Config | undefined): Required<NonNullable<Config>> =>
+const normalizeConfig = (config?: Config): Required<NonNullable<Config>> =>
   Object.assign({ autoResolveDeps: { strict: false, optional: false } }, config ?? {});
 
-const graphFn = (__containers: AnyContainer[], __config?: Config | undefined) => {
-  const config = getConfig(__config);
-  const containers = config.autoResolveDeps?.strict
-    ? travserseDependencies(__containers, config.autoResolveDeps.optional)
-    : __containers;
+const graphFn = (__containers: AnyContainer[], __config?: Config) => {
+  const config = normalizeConfig(__config);
+  const containers = getContainers({ containers: __containers, autoResolveDeps: config.autoResolveDeps });
 
   return containers.reduce<Graph>((acc, container) => {
     const dependsOn = (container.dependsOn || []).map((x) => x.id);

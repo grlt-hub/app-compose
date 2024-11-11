@@ -1,10 +1,10 @@
 import { randomUUID } from 'node:crypto';
 import { createContainer } from '../../createContainer';
-import { travserseDependencies } from '../travserseDependencies';
+import { travserseDependencies } from '../getContainers';
 
 describe('travserseDependencies', () => {
   const start = () => ({ api: null });
- 
+
   const containerA = createContainer({ id: randomUUID(), start });
   const containerB = createContainer({ id: randomUUID(), dependsOn: [containerA], start });
   const containerC = createContainer({

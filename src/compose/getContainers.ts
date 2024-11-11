@@ -19,4 +19,15 @@ const travserseDependencies = (containers: AnyContainer[], includeOptional = fal
   return Array.from(result);
 };
 
-export { travserseDependencies };
+type GetContainersParams = {
+  containers: AnyContainer[];
+  autoResolveDeps: {
+    strict: true;
+    optional?: boolean;
+  };
+};
+
+const getContainers = ({ containers, autoResolveDeps }: GetContainersParams) =>
+  autoResolveDeps.strict ? travserseDependencies(containers, autoResolveDeps.optional) : containers;
+
+export { getContainers, travserseDependencies };

@@ -1,25 +1,22 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`container deps are uniq > unhappy 1`] = `
-[Error: 
-      Dependency conflict detected in container 'pu-pu-pu':
-      The following dependencies are listed as both required and optional: [a].
+[Error: Dependency conflict detected in container 'pu-pu-pu':
+The following dependencies are listed as both required and optional: [a].
 
-      Each dependency should be listed only once, as either required or optional.]
+Each dependency should be listed only once, as either required or optional.]
 `;
 
 exports[`container deps are uniq > unhappy 2`] = `
-[Error: 
-      Dependency conflict detected in container 'pu-pu-pu':
-      The following dependencies are listed as both required and optional: [b].
+[Error: Dependency conflict detected in container 'pu-pu-pu':
+The following dependencies are listed as both required and optional: [b].
 
-      Each dependency should be listed only once, as either required or optional.]
+Each dependency should be listed only once, as either required or optional.]
 `;
 
 exports[`container deps are uniq > unhappy 3`] = `
-[Error: 
-      Dependency conflict detected in container 'pu-pu-pu':
-      The following dependencies are listed as both required and optional: [b].
+[Error: Dependency conflict detected in container 'pu-pu-pu':
+The following dependencies are listed as both required and optional: [b].
 
-      Each dependency should be listed only once, as either required or optional.]
+Each dependency should be listed only once, as either required or optional.]
 `;

@@ -1,7 +1,7 @@
-import { getConfig } from '../index';
+import { normalizeConfig } from '../index';
 
-describe('getConfig', () => {
-  type Config = ReturnType<typeof getConfig>;
+describe('normalizeConfig', () => {
+  type Config = ReturnType<typeof normalizeConfig>;
 
   expectTypeOf<Config>().toEqualTypeOf<{
     apis: boolean;
