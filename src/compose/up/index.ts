@@ -129,10 +129,13 @@ const upFn = async <T extends AnyContainer[], C extends Config>(
         target: container.$status,
       });
       sample({ clock: enableFx.failData, fn: () => CONTAINER_STATUS.fail, target: container.$status });
-      sample({ clock: enableFx.fail, fn: (x) => ({ error: x.error, id: container.id }), target: onFailFx });
       sample({ clock: container.$status, filter: statusIs.pending, target: startFx });
       sample({ clock: startFx.finally, fn: (x) => x.status, target: container.$status });
-      sample({ clock: startFx.fail, fn: (x) => ({ error: x.error, id: container.id }), target: onFailFx });
+      sample({
+        clock: [startFx.fail, enableFx.fail],
+        fn: (x) => ({ error: x.error, id: container.id }),
+        target: onFailFx,
+      });
 
       $strictDepsResolving.watch((s) => {
         if (statusIs.fail(s)) {
@@ -181,4 +184,4 @@ const upFn = async <T extends AnyContainer[], C extends Config>(
   });
 };
 
-export { normalizeConfig, upFn,defaultOnFail };
+export { defaultOnFail, normalizeConfig, upFn };
