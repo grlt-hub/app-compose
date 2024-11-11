@@ -108,12 +108,7 @@ const upFn = async <T extends AnyContainer[], C extends Config>(
       );
       const $optionalDepsResolving: Store<ContainerStatus> = combine(
         (container.optionalDependsOn ?? []).map((d) => d.$status),
-        (l) => {
-          if (l.some(statusIs.pending)) return CONTAINER_STATUS.pending;
-          if (l.some(statusIs.idle)) return CONTAINER_STATUS.idle;
-
-          return CONTAINER_STATUS.done;
-        },
+        (l) => (l.some(statusIs.pending) || l.some(statusIs.idle) ? CONTAINER_STATUS.idle : CONTAINER_STATUS.done),
       );
       const $depsDone = combine([$strictDepsResolving, $optionalDepsResolving], (l) => l.every(statusIs.done));
 
