@@ -32,6 +32,7 @@ type Config = {
     strict: true;
     optional?: boolean;
   };
+  onFail?: (_: { id: AnyContainer['id']; error: Error }) => unknown;
 };
 
 type UpResult<T extends AnyContainer[], C extends Config | undefined> = undefined extends C
@@ -50,8 +51,14 @@ type UpResult<T extends AnyContainer[], C extends Config | undefined> = undefine
         statuses: Statuses<T>;
       };
 
+const defaultOnFail = () => {};
+const defaultFailError = new Error('Strict dependency failed');
+
 const normalizeConfig = (config?: Config): Required<NonNullable<Config>> =>
-  Object.assign({ apis: false, debug: false, autoResolveDeps: { strict: false, optional: false } }, config ?? {});
+  Object.assign(
+    { apis: false, debug: false, autoResolveDeps: { strict: false, optional: false }, onFail: defaultOnFail },
+    config ?? {},
+  );
 
 const upFn = async <T extends AnyContainer[], C extends Config>(
   __containers: T,
@@ -66,6 +73,7 @@ const upFn = async <T extends AnyContainer[], C extends Config>(
     validateContainerId(container.id, CONTAINER_IDS);
   }
 
+  const onFailFx = createEffect(config.onFail);
   const containersStatuses = containers.reduce<Record<AnyContainer['id'], AnyContainer['$status']>>((acc, x) => {
     acc[x.id] = x.$status;
     return acc;
@@ -87,7 +95,7 @@ const upFn = async <T extends AnyContainer[], C extends Config>(
     });
   }
 
-  let nodesToClear: Parameters<typeof clearNode>[0][] = [$result];
+  let nodesToClear: Parameters<typeof clearNode>[0][] = [$result, onFailFx];
   let apis: Record<string, Awaited<ReturnType<AnyContainer['start']>>['api']> = {};
 
   await Promise.allSettled(
@@ -121,11 +129,19 @@ const upFn = async <T extends AnyContainer[], C extends Config>(
         target: container.$status,
       });
       sample({ clock: enableFx.failData, fn: () => CONTAINER_STATUS.fail, target: container.$status });
+      sample({ clock: enableFx.fail, fn: (x) => ({ error: x.error, id: container.id }), target: onFailFx });
       sample({ clock: container.$status, filter: statusIs.pending, target: startFx });
       sample({ clock: startFx.finally, fn: (x) => x.status, target: container.$status });
+      sample({ clock: startFx.fail, fn: (x) => ({ error: x.error, id: container.id }), target: onFailFx });
 
       $strictDepsResolving.watch((s) => {
-        if (statusIs.off(s) || statusIs.fail(s)) {
+        if (statusIs.fail(s)) {
+          launch(container.$status, s);
+          onFailFx({ id: container.id, error: defaultFailError });
+          return;
+        }
+
+        if (statusIs.off(s)) {
           launch(container.$status, s);
         }
       });
@@ -165,4 +181,4 @@ const upFn = async <T extends AnyContainer[], C extends Config>(
   });
 };
 
-export { normalizeConfig, upFn };
+export { normalizeConfig, upFn,defaultOnFail };
