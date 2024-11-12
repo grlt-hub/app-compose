@@ -1,0 +1,92 @@
+---
+title: Use wtih a feature toggle
+sidebar:
+  order: 5
+  badge:
+    text: New
+    variant: tip
+---
+
+Feature toggles are an essential part of modern front-end applications, allowing you to control the activation and deactivation of features dynamically. This guide will demonstrate how to set up and use feature toggles with `app-compose`.
+
+## Example
+
+### Independent Feature Toggle
+
+In this example, the feature toggle does not depend on any external data and is self-contained.
+
+```ts
+const fetchToggles = () => ({ referral: false });
+
+const featureToggle = createContainer({
+  id: 'featureToggle',
+  start: async () => {
+    const data = await fetchToggles();
+
+    return { api: { data } };
+  },
+});
+
+const referral = createContainer({
+  id: 'referral',
+  dependsOn: [featureToggle],
+  enable: (deps) => deps.featureToggle.data.referral,
+  start: () => ({ api: null }),
+});
+
+await compose.up([featureToggle, referral]);
+```
+
+**Explanation:**
+
+- `fetchToggles`: Fetches the feature toggles and returns an object indicating whether each feature is enabled or disabled.
+- `featureToggle`: A container that fetches the toggles. The data is made available via its `api`.
+- `referral`: A container that depends on `featureToggle`. It checks if the `referral` feature is enabled using the `enable` method. If the feature is not enabled, the `referral` container will not start.
+
+### With External Dependency
+
+In this scenario, the feature toggle logic depends on external data, such as a user ID.
+
+```ts
+const fetchToggles = (id) => ({ referral: id % 2 === 0 });
+const fetchUser = () => ({ id: 420 });
+
+const userEntity = createContainer({
+  id: 'user',
+  start: async () => {
+    const data = await fetchUser();
+
+    return { api: { data } };
+  },
+});
+
+const featureToggle = createContainer({
+  id: 'featureToggle',
+  dependsOn: [userEntity],
+  start: async (deps) => {
+    const data = await fetchToggles(deps.user.data.id);
+
+    return { api: { data } };
+  },
+});
+
+const referral = createContainer({
+  id: 'referral',
+  dependsOn: [featureToggle],
+  enable: (deps) => deps.featureToggle.data.referral,
+  start: () => ({ api: null }),
+});
+
+await compose.up([userEntity, featureToggle, referral]);
+```
+
+**Explanation**:
+
+- `fetchUser`: Fetches the user information, such as the user ID.
+- `userEntity`: A container that provides user data via its `api`.
+- `featureToggle`: This container depends on `userEntity` to get the user ID. It then fetches the feature toggles based on this ID.
+- `referral`: A container that depends on `featureToggle` and only starts if the `referral` feature is enabled for the current user.
+
+## Conclusion
+
+Using `app-compose`, you can easily manage feature toggles and their dependencies. Whether the feature toggle is independent or depends on external data, this approach ensures clean and maintainable code.
