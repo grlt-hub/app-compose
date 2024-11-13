@@ -30,7 +30,7 @@ The `autoResolveDeps` option provides an easy way to automatically resolve conta
 ### Before
 
 ```ts
-import { compose, createContainer } from 'app-compose';
+import { compose, createContainer } from '@grlt-hub/app-compose';
 
 const userEntity = createContainer({
   id: 'userEntity',
@@ -57,7 +57,7 @@ In this case, all containers must be explicitly listed, which becomes cumbersome
 ### After
 
 ```ts {20}
-import { compose, createContainer } from 'app-compose';
+import { compose, createContainer } from '@grlt-hub/app-compose';
 
 const userEntity = createContainer({
   id: 'userEntity',

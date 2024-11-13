@@ -20,7 +20,7 @@ In app-compose, containers may fail to initialize properly due to errors in thei
 You can pass an `onFail` function in the `compose.up` configuration to handle container failures globally. The `onFail` function is called whenever any container transitions to the fail state, providing the container's `id` and the `error`:
 
 ```ts {16}
-import { compose, createContainer } from 'app-compose';
+import { compose, createContainer } from '@grlt-hub/app-compose';
 
 const dependency = createContainer({
   id: 'dependency',
