@@ -1,4 +1,4 @@
-import { clearNode, combine, createEffect, launch, sample, type Store } from 'effector';
+import { clearNode, combine, createDomain, launch, sample } from 'effector';
 import { type AnyContainer, CONTAINER_STATUS, type ContainerStatus } from '../../createContainer';
 import { getContainers } from '../getContainers';
 
@@ -73,7 +73,9 @@ const upFn = async <T extends AnyContainer[], C extends Config>(
     validateContainerId(container.id, CONTAINER_IDS);
   }
 
-  const onFailFx = createEffect(config.onFail);
+  const domain = createDomain('compose.upFn');
+
+  const onFailFx = domain.createEffect(config.onFail);
   const containersStatuses = containers.reduce<Record<AnyContainer['id'], AnyContainer['$status']>>((acc, x) => {
     acc[x.id] = x.$status;
     return acc;
@@ -95,7 +97,7 @@ const upFn = async <T extends AnyContainer[], C extends Config>(
     });
   }
 
-  let nodesToClear: Parameters<typeof clearNode>[0][] = [$result, onFailFx];
+  let nodesToClear: Parameters<typeof clearNode>[0][] = [domain, $result, onFailFx];
   let apis: Record<string, Awaited<ReturnType<AnyContainer['start']>>['api']> = {};
 
   await Promise.allSettled(
@@ -114,8 +116,8 @@ const upFn = async <T extends AnyContainer[], C extends Config>(
       );
       const $depsDone = combine([$strictDepsResolving, $optionalDepsResolving], (l) => l.every(statusIs.done));
 
-      const enableFx = createEffect(async () => (container.enable ? await container.enable(apis, apis) : true));
-      const startFx = createEffect(async () => {
+      const enableFx = domain.createEffect(async () => (container.enable ? await container.enable(apis, apis) : true));
+      const startFx = domain.createEffect(async () => {
         apis[container.id] = (await container.start(apis, apis))['api'];
       });
 
@@ -149,7 +151,7 @@ const upFn = async <T extends AnyContainer[], C extends Config>(
         if (x) enableFx();
       });
 
-      nodesToClear.push($strictDepsResolving, $optionalDepsResolving, $depsDone, enableFx, startFx);
+      nodesToClear.push($strictDepsResolving, $optionalDepsResolving, $depsDone);
     }),
   );
 
