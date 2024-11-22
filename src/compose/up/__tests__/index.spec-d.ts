@@ -10,10 +10,12 @@ describe('upFn', () => {
   test('return type', async () => {
     const a = createContainer({
       id: 'a',
+      domain: '_',
       start: () => ({ api: { t: () => true } }),
     });
     const b = createContainer({
       id: 'b',
+      domain: '_',
       start: () => ({ api: { f: () => false } }),
     });
 
@@ -33,6 +35,7 @@ describe('upFn', () => {
   test('config', () => {
     const a = createContainer({
       id: 'a',
+      domain: '_',
       start: () => ({ api: { t: () => true } }),
     });
 

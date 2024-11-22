@@ -6,14 +6,17 @@ const start = () => ({ api: {} });
 const __ = {
   a: createContainer({
     id: 'a',
+    domain: randomUUID(),
     start: () => ({ api: { t: () => true } }),
   }),
   b: createContainer({
     id: 'b',
+    domain: randomUUID(),
     start: () => ({ api: { f: () => false } }),
   }),
   c: createContainer({
     id: 'd',
+    domain: randomUUID(),
     start: () => ({ api: { nil: null } }),
   }),
 };
@@ -21,31 +24,36 @@ const __ = {
 describe('container deps are uniq', () => {
   test('happy', () => {
     expect(() =>
-      createContainer({ id: randomUUID(), start, dependsOn: [__.a], optionalDependsOn: [__.b] }),
+      createContainer({ id: randomUUID(), domain: randomUUID(), start, dependsOn: [__.a], optionalDependsOn: [__.b] }),
     ).not.toThrowError();
-    expect(() => createContainer({ id: randomUUID(), start, dependsOn: [__.a] })).not.toThrowError();
-    expect(() => createContainer({ id: randomUUID(), start, optionalDependsOn: [__.b] })).not.toThrowError();
-    expect(() => createContainer({ id: randomUUID(), start })).not.toThrowError();
+    expect(() =>
+      createContainer({ id: randomUUID(), domain: randomUUID(), start, dependsOn: [__.a] }),
+    ).not.toThrowError();
+    expect(() =>
+      createContainer({ id: randomUUID(), domain: randomUUID(), start, optionalDependsOn: [__.b] }),
+    ).not.toThrowError();
+    expect(() => createContainer({ id: randomUUID(), domain: randomUUID(), start })).not.toThrowError();
   });
 
   test('unhappy', () => {
     const id = 'pu-pu-pu';
+    const domain = 'up-up-up';
 
     {
       expect(() =>
-        createContainer({ id, start, dependsOn: [__.a], optionalDependsOn: [__.a] }),
+        createContainer({ id, domain, start, dependsOn: [__.a], optionalDependsOn: [__.a] }),
       ).toThrowErrorMatchingSnapshot();
     }
 
     {
       expect(() =>
-        createContainer({ id, start, dependsOn: [__.a, __.b, __.c], optionalDependsOn: [__.b] }),
+        createContainer({ id, domain, start, dependsOn: [__.a, __.b, __.c], optionalDependsOn: [__.b] }),
       ).toThrowErrorMatchingSnapshot();
     }
 
     {
       expect(() =>
-        createContainer({ id, start, dependsOn: [__.b], optionalDependsOn: [__.a, __.b, __.c] }),
+        createContainer({ id, domain, start, dependsOn: [__.b], optionalDependsOn: [__.a, __.b, __.c] }),
       ).toThrowErrorMatchingSnapshot();
     }
   });

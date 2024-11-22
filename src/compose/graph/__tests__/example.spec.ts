@@ -5,10 +5,10 @@ import { graphFn } from '../index';
 const start = () => ({ api: null });
 
 test('example from doc', () => {
-  const a = createContainer({ id: randomUUID(), start });
-  const b = createContainer({ id: randomUUID(), dependsOn: [a], start });
-  const c = createContainer({ id: randomUUID(), optionalDependsOn: [b], start });
-  const d = createContainer({ id: randomUUID(), dependsOn: [c], optionalDependsOn: [b], start });
+  const a = createContainer({ id: randomUUID(), domain: randomUUID(), start });
+  const b = createContainer({ id: randomUUID(), domain: randomUUID(), dependsOn: [a], start });
+  const c = createContainer({ id: randomUUID(), domain: randomUUID(), optionalDependsOn: [b], start });
+  const d = createContainer({ id: randomUUID(), domain: randomUUID(), dependsOn: [c], optionalDependsOn: [b], start });
 
   const graph = graphFn([a, b, c, d]);
 

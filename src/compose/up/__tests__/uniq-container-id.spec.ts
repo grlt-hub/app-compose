@@ -4,7 +4,10 @@ import { upFn } from '../index';
 
 const start = () => ({ api: {} });
 
-const createContainer = (id: ReturnType<typeof randomUUID> = randomUUID()) => __createContainer({ id, start });
+const createContainer = (
+  id: ReturnType<typeof randomUUID> = randomUUID(),
+  domain: ReturnType<typeof randomUUID> = randomUUID(),
+) => __createContainer({ id, domain, start });
 
 describe('container.id is uniq', () => {
   test('happy', () => {

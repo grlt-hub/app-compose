@@ -19,7 +19,7 @@ const shuffle = <T extends AnyContainer[]>(list: T): T => {
 describe('upFn', () => {
   describe('single | without any deps', () => {
     test('enabled=true by default', () => {
-      const a = createContainer({ id: randomUUID(), start: () => ({ api: null }) });
+      const a = createContainer({ id: randomUUID(), domain: randomUUID(), start: () => ({ api: null }) });
 
       expect(upFn([a])).resolves.toStrictEqual({
         hasErrors: false,
@@ -27,7 +27,7 @@ describe('upFn', () => {
       });
     });
     test('enabled=true', () => {
-      const a = createContainer({ id: randomUUID(), start: () => ({ api: null }), enable: T });
+      const a = createContainer({ id: randomUUID(), domain: randomUUID(), start: () => ({ api: null }), enable: T });
 
       expect(upFn([a])).resolves.toStrictEqual({
         hasErrors: false,
@@ -37,6 +37,7 @@ describe('upFn', () => {
     test('enabled=Promise<true>', () => {
       const a = createContainer({
         id: randomUUID(),
+        domain: randomUUID(),
         start: () => ({ api: null }),
         enable: () => Promise.resolve(true),
       });
@@ -47,7 +48,7 @@ describe('upFn', () => {
       });
     });
     test('enabled=false', () => {
-      const a = createContainer({ id: randomUUID(), start: () => ({ api: null }), enable: F });
+      const a = createContainer({ id: randomUUID(), domain: randomUUID(), start: () => ({ api: null }), enable: F });
 
       expect(upFn([a])).resolves.toStrictEqual({
         hasErrors: false,
@@ -57,6 +58,7 @@ describe('upFn', () => {
     test('enabled=Promise<false>', () => {
       const a = createContainer({
         id: randomUUID(),
+        domain: randomUUID(),
         start: () => ({ api: null }),
         enable: () => Promise.resolve(false),
       });
@@ -70,9 +72,9 @@ describe('upFn', () => {
   describe('multiple', () => {
     describe('independent', () => {
       test('all enabled', () => {
-        const a = createContainer({ id: randomUUID(), start: () => ({ api: null }) });
-        const b = createContainer({ id: randomUUID(), start: () => ({ api: null }) });
-        const c = createContainer({ id: randomUUID(), start: () => ({ api: null }) });
+        const a = createContainer({ id: randomUUID(), domain: randomUUID(), start: () => ({ api: null }) });
+        const b = createContainer({ id: randomUUID(), domain: randomUUID(), start: () => ({ api: null }) });
+        const c = createContainer({ id: randomUUID(), domain: randomUUID(), start: () => ({ api: null }) });
 
         expect(upFn([a, b, c])).resolves.toStrictEqual({
           hasErrors: false,
@@ -80,9 +82,9 @@ describe('upFn', () => {
         });
       });
       test('NOT all enabled', () => {
-        const a = createContainer({ id: randomUUID(), start: () => ({ api: null }) });
-        const b = createContainer({ id: randomUUID(), enable: F, start: () => ({ api: null }) });
-        const c = createContainer({ id: randomUUID(), start: () => ({ api: null }) });
+        const a = createContainer({ id: randomUUID(), domain: randomUUID(), start: () => ({ api: null }) });
+        const b = createContainer({ id: randomUUID(), domain: randomUUID(), enable: F, start: () => ({ api: null }) });
+        const c = createContainer({ id: randomUUID(), domain: randomUUID(), start: () => ({ api: null }) });
 
         expect(upFn([a, b, c])).resolves.toStrictEqual({
           hasErrors: false,
@@ -92,15 +94,17 @@ describe('upFn', () => {
     });
 
     test('depended', () => {
-      const a = createContainer({ id: randomUUID(), start: () => ({ api: null }) });
+      const a = createContainer({ id: randomUUID(), domain: randomUUID(), start: () => ({ api: null }) });
       const b = createContainer({
         id: randomUUID(),
+        domain: randomUUID(),
         dependsOn: [a],
         start: () => ({ api: null }),
         enable: F,
       });
       const c = createContainer({
         id: randomUUID(),
+        domain: randomUUID(),
         optionalDependsOn: [b],
         start: () => ({ api: null }),
         enable: T,
@@ -116,16 +120,19 @@ describe('upFn', () => {
   test('like real app example', () => {
     const userEntity = createContainer({
       id: 'user',
+      domain: randomUUID(),
       start: () => ({ api: { id: '777' } }),
     });
     const registration = createContainer({
       id: 'registration',
+      domain: randomUUID(),
       dependsOn: [userEntity],
       start: () => ({ api: { register: null } }),
       enable: (d) => d.user.id === null,
     });
     const quotesEntity = createContainer({
       id: 'quotesEntity',
+      domain: randomUUID(),
       optionalDependsOn: [userEntity],
       start: () => ({ api: { register: null } }),
       enable: async (_, d) => {
@@ -139,23 +146,27 @@ describe('upFn', () => {
     });
     const accountsEntity = createContainer({
       id: 'accounts',
+      domain: randomUUID(),
       dependsOn: [userEntity],
       start: () => ({ api: { list: ['usd', 'eur'] } }),
     });
     const accountsList = createContainer({
       id: 'accounts-list',
+      domain: randomUUID(),
       dependsOn: [accountsEntity],
       start: () => ({ api: { select: (x: number) => x } }),
       enable: (d) => d.accounts.list.length > 0,
     });
     const accountTransfers = createContainer({
       id: 'account-transfers',
+      domain: randomUUID(),
       dependsOn: [accountsEntity],
       start: () => ({ api: { transfer: null } }),
       enable: (d) => d.accounts.list.includes('usdt'),
     });
     const marketplace = createContainer({
       id: 'marketplace',
+      domain: randomUUID(),
       dependsOn: [userEntity],
       optionalDependsOn: [accountsEntity],
       start: () => {
@@ -165,22 +176,26 @@ describe('upFn', () => {
     });
     const purchases = createContainer({
       id: 'purchases',
+      domain: randomUUID(),
       dependsOn: [marketplace],
       start: () => ({ api: { list: ['one', 'two'] } }),
     });
     const idk = createContainer({
       id: 'idk',
+      domain: randomUUID(),
       start: () => {
         throw new Error('_');
       },
     });
     const hiddenEntity = createContainer({
       id: 'hidden-entity',
+      domain: randomUUID(),
       start: () => ({ api: null }),
       enable: () => false,
     });
     const hiddenFeature = createContainer({
       id: 'hidden-feature',
+      domain: randomUUID(),
       dependsOn: [hiddenEntity],
       start: () => ({ api: null }),
     });
@@ -224,6 +239,7 @@ describe('edge cases', () => {
   test('dependsOn failed', () => {
     const a = createContainer({
       id: randomUUID(),
+      domain: randomUUID(),
       start: () => ({ api: null }),
       enable: () => {
         throw new Error('');
@@ -231,6 +247,7 @@ describe('edge cases', () => {
     });
     const b = createContainer({
       id: randomUUID(),
+      domain: randomUUID(),
       dependsOn: [a],
       start: () => ({ api: null }),
     });
@@ -246,6 +263,7 @@ describe('edge cases', () => {
   test('optionalDependsOn failed', () => {
     const a = createContainer({
       id: randomUUID(),
+      domain: randomUUID(),
       start: () => ({ api: null }),
       enable: () => {
         throw new Error('');
@@ -253,6 +271,7 @@ describe('edge cases', () => {
     });
     const b = createContainer({
       id: randomUUID(),
+      domain: randomUUID(),
       optionalDependsOn: [a],
       start: () => ({ api: null }),
     });
@@ -269,6 +288,7 @@ describe('edge cases', () => {
   test('dependsOn failed | optionalDependsOn done', () => {
     const a = createContainer({
       id: randomUUID(),
+      domain: randomUUID(),
       start: () => ({ api: null }),
       enable: () => {
         throw new Error('');
@@ -276,10 +296,12 @@ describe('edge cases', () => {
     });
     const b = createContainer({
       id: randomUUID(),
+      domain: randomUUID(),
       start: () => ({ api: null }),
     });
     const c = createContainer({
       id: randomUUID(),
+      domain: randomUUID(),
       dependsOn: [a],
       optionalDependsOn: [b],
       start: () => ({ api: null }),
@@ -298,6 +320,7 @@ describe('edge cases', () => {
   test('dependsOn done | optionalDependsOn failed', () => {
     const a = createContainer({
       id: randomUUID(),
+      domain: randomUUID(),
       start: () => ({ api: null }),
       enable: () => {
         throw new Error('');
@@ -305,10 +328,12 @@ describe('edge cases', () => {
     });
     const b = createContainer({
       id: randomUUID(),
+      domain: randomUUID(),
       start: () => ({ api: null }),
     });
     const c = createContainer({
       id: randomUUID(),
+      domain: randomUUID(),
       dependsOn: [b],
       optionalDependsOn: [a],
       start: () => ({ api: null }),
@@ -326,6 +351,7 @@ describe('edge cases', () => {
   test('dependsOn failed | optionalDependsOn failed', () => {
     const a = createContainer({
       id: randomUUID(),
+      domain: randomUUID(),
       start: () => ({ api: null }),
       enable: () => {
         throw new Error('');
@@ -333,6 +359,7 @@ describe('edge cases', () => {
     });
     const b = createContainer({
       id: randomUUID(),
+      domain: randomUUID(),
       start: () => ({ api: null }),
       enable: () => {
         throw new Error('');
@@ -340,6 +367,7 @@ describe('edge cases', () => {
     });
     const c = createContainer({
       id: randomUUID(),
+      domain: randomUUID(),
       dependsOn: [b],
       optionalDependsOn: [a],
       start: () => ({ api: null }),
@@ -364,17 +392,20 @@ test('custom execution order', async () => {
 
   const highPriorityFeatures = createContainer({
     id: 'highPriority',
+    domain: randomUUID(),
     start: () => ({ api: {} }),
   });
 
   const lowPriorityFeatures = createContainer({
     id: 'lowPriority',
+    domain: randomUUID(),
     optionalDependsOn: [highPriorityFeatures],
     start: () => ({ api: {} }),
   });
 
   const awesomeFeature = createContainer({
     id: 'awesomeFeature',
+    domain: randomUUID(),
     dependsOn: [highPriorityFeatures],
     start: () => {
       console.log('Awesome feature loaded');
@@ -384,6 +415,7 @@ test('custom execution order', async () => {
 
   const notSoAwesomeFeature = createContainer({
     id: 'notSoAwesomeFeature',
+    domain: randomUUID(),
     dependsOn: [lowPriorityFeatures],
     start: () => {
       console.log('Not so awesome feature loaded');

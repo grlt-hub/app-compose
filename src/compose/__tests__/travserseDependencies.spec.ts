@@ -5,15 +5,16 @@ import { travserseDependencies } from '../getContainers';
 describe('travserseDependencies', () => {
   const start = () => ({ api: null });
 
-  const containerA = createContainer({ id: randomUUID(), start });
-  const containerB = createContainer({ id: randomUUID(), dependsOn: [containerA], start });
+  const containerA = createContainer({ id: randomUUID(), domain: randomUUID(), start });
+  const containerB = createContainer({ id: randomUUID(), domain: randomUUID(), dependsOn: [containerA], start });
   const containerC = createContainer({
     id: randomUUID(),
+    domain: randomUUID(),
     dependsOn: [containerB],
     optionalDependsOn: [containerA],
     start,
   });
-  const containerD = createContainer({ id: randomUUID(), dependsOn: [containerC], start });
+  const containerD = createContainer({ id: randomUUID(), domain: randomUUID(), dependsOn: [containerC], start });
 
   test('should return an empty list if an empty array of containers is passed', () => {
     expect(travserseDependencies([])).toEqual([]);

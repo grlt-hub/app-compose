@@ -6,20 +6,21 @@ const start = () => ({ api: null });
 
 test('handles all variations of dependencies', () => {
   // containers without dependencies
-  const noDeps1 = createContainer({ id: randomUUID(), start });
-  const noDeps2 = createContainer({ id: randomUUID(), start });
+  const noDeps1 = createContainer({ id: randomUUID(), domain: randomUUID(), start });
+  const noDeps2 = createContainer({ id: randomUUID(), domain: randomUUID(), start });
 
   // containers with strict dependencies
-  const strict1 = createContainer({ id: randomUUID(), dependsOn: [noDeps1], start });
-  const strict2 = createContainer({ id: randomUUID(), dependsOn: [strict1], start });
+  const strict1 = createContainer({ id: randomUUID(), domain: randomUUID(), dependsOn: [noDeps1], start });
+  const strict2 = createContainer({ id: randomUUID(), domain: randomUUID(), dependsOn: [strict1], start });
 
   // containers with optional dependencies
-  const optional1 = createContainer({ id: randomUUID(), optionalDependsOn: [noDeps2], start });
-  const optional2 = createContainer({ id: randomUUID(), optionalDependsOn: [strict2], start });
+  const optional1 = createContainer({ id: randomUUID(), domain: randomUUID(), optionalDependsOn: [noDeps2], start });
+  const optional2 = createContainer({ id: randomUUID(), domain: randomUUID(), optionalDependsOn: [strict2], start });
 
   // containers with mixed dependencies
   const mixed = createContainer({
     id: randomUUID(),
+    domain: randomUUID(),
     dependsOn: [strict1],
     optionalDependsOn: [optional1],
     start,

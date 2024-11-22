@@ -21,6 +21,7 @@ type AnyStartFn = (...x: any) => StartResult<AnyAPI>;
 
 type AnyContainer = {
   id: string;
+  domain: string;
   $status: StoreWritable<ContainerStatus>;
   start: AnyStartFn;
   dependsOn?: AnyContainer[];

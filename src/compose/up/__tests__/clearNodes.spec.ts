@@ -9,6 +9,7 @@ test('up.clearNodes | all containers resolved and API is available to use', asyn
 
   const a = createContainer({
     id: 'a',
+    domain: '_',
     start: () => ({
       api: {
         multiply: (x: number) => x * 2,
@@ -17,6 +18,7 @@ test('up.clearNodes | all containers resolved and API is available to use', asyn
   });
   const b = createContainer({
     id: 'b',
+    domain: '_',
     dependsOn: [a],
     start: (d) => {
       sample({

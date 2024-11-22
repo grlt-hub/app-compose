@@ -5,11 +5,13 @@ describe('up.apis = true', () => {
   test('all enabled', async () => {
     const a = createContainer({
       id: 'a',
+      domain: '_',
       start: () => ({ api: { t: () => true } }),
     });
 
     const b = createContainer({
       id: 'b',
+      domain: '_',
       optionalDependsOn: [a],
       start: (_, optDeps) => {
         return { api: { f: () => (optDeps.a?.t() ? 'enabled' : 'disabled') } };
@@ -34,12 +36,14 @@ describe('up.apis = true', () => {
   test('a disabled', async () => {
     const a = createContainer({
       id: 'a',
+      domain: '_',
       start: () => ({ api: { t: () => true } }),
       enable: () => false,
     });
 
     const b = createContainer({
       id: 'b',
+      domain: '_',
       optionalDependsOn: [a],
       start: (_, optDeps) => {
         return { api: { f: () => (optDeps.a?.t() ? 'enabled' : 'disabled') } };

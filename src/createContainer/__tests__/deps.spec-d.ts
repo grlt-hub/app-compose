@@ -4,29 +4,34 @@ import type { ExtractEnableFn, ExtractstartFn, ParameterCount } from './types';
 const __ = {
   a: createContainer({
     id: 'a',
+    domain: '_',
     start: () => ({ api: { t: () => true } }),
   }),
   b: createContainer({
     id: 'b',
+    domain: '_',
     start: () => ({ api: { f: () => false } }),
   }),
   c: createContainer({
     id: 'd',
+    domain: '_',
     start: () => ({ api: { nil: null } }),
   }),
   d: createContainer({
     id: 'c',
+    domain: '_',
     start: () => ({ api: { __: undefined } }),
   }),
   withEmptyAPI: createContainer({
     id: 'emptyApi',
+    domain: '_',
     start: () => ({ api: {} }),
   }),
 };
 
 describe('void | void', () => {
   test('basic', () => {
-    type Container = typeof createContainer<'_', {}>;
+    type Container = typeof createContainer<'_', '_', {}>;
 
     {
       type startFn = ExtractstartFn<Container>;
@@ -44,7 +49,7 @@ describe('void | void', () => {
 
 describe('dep | void', () => {
   test('one | void', () => {
-    type Container = typeof createContainer<'_', {}, [typeof __.a]>;
+    type Container = typeof createContainer<'_', '_', {}, [typeof __.a]>;
 
     type Deps = { [__.a.id]: { t: () => true } };
 
@@ -62,7 +67,12 @@ describe('dep | void', () => {
     }
   });
   test('multiple | void', () => {
-    type Container = typeof createContainer<'_', {}, [typeof __.a, typeof __.b, typeof __.c, typeof __.withEmptyAPI]>;
+    type Container = typeof createContainer<
+      '_',
+      '_',
+      {},
+      [typeof __.a, typeof __.b, typeof __.c, typeof __.withEmptyAPI]
+    >;
 
     type Deps = { [__.a.id]: { t: () => true }; [__.b.id]: { f: () => false }; [__.c.id]: { nil: null } };
 
@@ -83,7 +93,7 @@ describe('dep | void', () => {
 
 describe('deps | optDeps', () => {
   test('one | one', () => {
-    type Container = typeof createContainer<'_', {}, [typeof __.a], [typeof __.b]>;
+    type Container = typeof createContainer<'_', '_', {}, [typeof __.a], [typeof __.b]>;
 
     type Deps = { [__.a.id]: { t: () => true } };
     type OptDeps = { [__.b.id]?: { f: () => false } };
@@ -104,7 +114,13 @@ describe('deps | optDeps', () => {
   });
 
   test('one | multiple', () => {
-    type Container = typeof createContainer<'_', {}, [typeof __.a], [typeof __.b, typeof __.c, typeof __.withEmptyAPI]>;
+    type Container = typeof createContainer<
+      '_',
+      '_',
+      {},
+      [typeof __.a],
+      [typeof __.b, typeof __.c, typeof __.withEmptyAPI]
+    >;
 
     type Deps = { [__.a.id]: { t: () => true } };
     type OptDeps = { [__.b.id]?: { f: () => false }; [__.c.id]?: { nil: null } };
@@ -127,6 +143,7 @@ describe('deps | optDeps', () => {
 
   test('multiple | multiple', () => {
     type Container = typeof createContainer<
+      '_',
       '_',
       {},
       [typeof __.a, typeof __.b, typeof __.withEmptyAPI],
@@ -155,7 +172,7 @@ describe('deps | optDeps', () => {
 
 describe('void | optDeps', () => {
   test('void | one', () => {
-    type Container = typeof createContainer<'_', {}, void, [typeof __.a]>;
+    type Container = typeof createContainer<'_', '_', {}, void, [typeof __.a]>;
 
     type Deps = void;
     type OptDeps = { [__.a.id]?: { t: () => true } };
@@ -175,7 +192,7 @@ describe('void | optDeps', () => {
     }
   });
   test('void | multiple', () => {
-    type Container = typeof createContainer<'_', {}, void, [typeof __.a, typeof __.b, typeof __.c]>;
+    type Container = typeof createContainer<'_', '_', {}, void, [typeof __.a, typeof __.b, typeof __.c]>;
 
     type Deps = void;
     type OptDeps = {
@@ -205,6 +222,7 @@ describe('edge cases', () => {
     type Container = typeof createContainer<
       //
       '',
+      '_',
       {},
       // @ts-expect-error
       // '[]' does not satisfy the constraint 'void | NonEmptyList<AnyContaier>'
@@ -213,11 +231,12 @@ describe('edge cases', () => {
   });
 
   test('with optDeps empty list', () => {
-    type ValidContainer = typeof createContainer<'', {}, [typeof __.a]>;
+    type ValidContainer = typeof createContainer<'', '_', {}, [typeof __.a]>;
 
     type Container = typeof createContainer<
       //
       '',
+      '_',
       {},
       [typeof __.a],
       // @ts-expect-error

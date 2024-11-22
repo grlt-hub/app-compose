@@ -8,6 +8,7 @@ describe('container.onFail', () => {
 
     const container = createContainer({
       id: randomUUID(),
+      domain: randomUUID(),
       start: () => {
         throw new Error('Error in start');
       },
@@ -26,6 +27,7 @@ describe('container.onFail', () => {
 
     const container = createContainer({
       id: randomUUID(),
+      domain: randomUUID(),
       start: () => ({ api: null }),
       enable: () => {
         throw new Error('Error in enable');
@@ -45,6 +47,7 @@ describe('container.onFail', () => {
 
     const dependency = createContainer({
       id: randomUUID(),
+      domain: randomUUID(),
       start: () => {
         throw new Error('Error in dependency start');
       },
@@ -52,6 +55,7 @@ describe('container.onFail', () => {
 
     const container = createContainer({
       id: randomUUID(),
+      domain: randomUUID(),
       dependsOn: [dependency],
       start: () => ({ api: null }),
     });

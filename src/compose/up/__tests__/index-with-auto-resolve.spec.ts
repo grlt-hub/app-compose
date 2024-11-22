@@ -6,11 +6,13 @@ describe('compose.up with autoResolveDeps', () => {
   test('only strict deps', () => {
     const userEntity = createContainer({
       id: randomUUID(),
+      domain: randomUUID(),
       start: () => ({ api: { id: '123' } }),
     });
 
     const profileEntity = createContainer({
       id: randomUUID(),
+      domain: randomUUID(),
       dependsOn: [userEntity],
       start: () => ({ api: { name: 'John Doe' } }),
     });
@@ -27,17 +29,20 @@ describe('compose.up with autoResolveDeps', () => {
   test('with optional deps', () => {
     const userEntity = createContainer({
       id: randomUUID(),
+      domain: randomUUID(),
       start: () => ({ api: { id: '123' } }),
     });
 
     const profileEntity = createContainer({
       id: randomUUID(),
+      domain: randomUUID(),
       dependsOn: [userEntity],
       start: () => ({ api: { name: 'John Doe' } }),
     });
 
     const settingsEntity = createContainer({
       id: randomUUID(),
+      domain: randomUUID(),
       optionalDependsOn: [profileEntity],
       start: () => ({ api: { theme: 'dark' } }),
     });
@@ -55,17 +60,20 @@ describe('compose.up with autoResolveDeps', () => {
   test('with both deps', () => {
     const userEntity = createContainer({
       id: randomUUID(),
+      domain: randomUUID(),
       start: () => ({ api: { id: '123' } }),
     });
 
     const profileEntity = createContainer({
       id: randomUUID(),
+      domain: randomUUID(),
       dependsOn: [userEntity],
       start: () => ({ api: { name: 'John Doe' } }),
     });
 
     const settingsEntity = createContainer({
       id: randomUUID(),
+      domain: randomUUID(),
       dependsOn: [profileEntity],
       optionalDependsOn: [userEntity],
       start: () => ({ api: { theme: 'dark' } }),
@@ -84,6 +92,7 @@ describe('compose.up with autoResolveDeps', () => {
   test('with both deps | fail opt', () => {
     const userEntity = createContainer({
       id: randomUUID(),
+      domain: randomUUID(),
       start: () => {
         throw new Error('');
       },
@@ -91,12 +100,14 @@ describe('compose.up with autoResolveDeps', () => {
 
     const profileEntity = createContainer({
       id: randomUUID(),
+      domain: randomUUID(),
       dependsOn: [userEntity],
       start: () => ({ api: { name: 'John Doe' } }),
     });
 
     const settingsEntity = createContainer({
       id: randomUUID(),
+      domain: randomUUID(),
       dependsOn: [profileEntity],
       optionalDependsOn: [userEntity],
       start: () => ({ api: { theme: 'dark' } }),
@@ -115,17 +126,20 @@ describe('compose.up with autoResolveDeps', () => {
   test('strict deps with optional: false', () => {
     const userEntity = createContainer({
       id: randomUUID(),
+      domain: randomUUID(),
       start: () => ({ api: { id: '123' } }),
     });
 
     const profileEntity = createContainer({
       id: randomUUID(),
+      domain: randomUUID(),
       dependsOn: [userEntity],
       start: () => ({ api: { name: 'John Doe' } }),
     });
 
     const settingsEntity = createContainer({
       id: randomUUID(),
+      domain: randomUUID(),
       optionalDependsOn: [userEntity],
       start: () => ({ api: { theme: 'dark' } }),
     });
