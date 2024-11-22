@@ -18,11 +18,13 @@ describe('compose.up with autoResolveDeps', () => {
     });
 
     expect(upFn([profileEntity], { autoResolveDeps: { strict: true, optional: false } })).resolves.toStrictEqual({
-      hasErrors: false,
-      statuses: {
-        [userEntity.id]: CONTAINER_STATUS.done,
-        [profileEntity.id]: CONTAINER_STATUS.done,
+      data: {
+        statuses: {
+          [userEntity.id]: CONTAINER_STATUS.done,
+          [profileEntity.id]: CONTAINER_STATUS.done,
+        },
       },
+      ok: false,
     });
   });
 
@@ -48,11 +50,13 @@ describe('compose.up with autoResolveDeps', () => {
     });
 
     expect(upFn([settingsEntity], { autoResolveDeps: { strict: true, optional: true } })).resolves.toStrictEqual({
-      hasErrors: false,
-      statuses: {
-        [userEntity.id]: CONTAINER_STATUS.done,
-        [profileEntity.id]: CONTAINER_STATUS.done,
-        [settingsEntity.id]: CONTAINER_STATUS.done,
+      ok: false,
+      data: {
+        statuses: {
+          [userEntity.id]: CONTAINER_STATUS.done,
+          [profileEntity.id]: CONTAINER_STATUS.done,
+          [settingsEntity.id]: CONTAINER_STATUS.done,
+        },
       },
     });
   });
@@ -80,11 +84,13 @@ describe('compose.up with autoResolveDeps', () => {
     });
 
     expect(upFn([settingsEntity], { autoResolveDeps: { strict: true, optional: true } })).resolves.toStrictEqual({
-      hasErrors: false,
-      statuses: {
-        [userEntity.id]: CONTAINER_STATUS.done,
-        [profileEntity.id]: CONTAINER_STATUS.done,
-        [settingsEntity.id]: CONTAINER_STATUS.done,
+      ok: false,
+      data: {
+        statuses: {
+          [userEntity.id]: CONTAINER_STATUS.done,
+          [profileEntity.id]: CONTAINER_STATUS.done,
+          [settingsEntity.id]: CONTAINER_STATUS.done,
+        },
       },
     });
   });
@@ -114,11 +120,13 @@ describe('compose.up with autoResolveDeps', () => {
     });
 
     expect(upFn([settingsEntity], { autoResolveDeps: { strict: true, optional: true } })).rejects.toStrictEqual({
-      hasErrors: true,
-      statuses: {
-        [userEntity.id]: CONTAINER_STATUS.fail,
-        [profileEntity.id]: CONTAINER_STATUS.fail,
-        [settingsEntity.id]: CONTAINER_STATUS.fail,
+      ok: true,
+      data: {
+        statuses: {
+          [userEntity.id]: CONTAINER_STATUS.fail,
+          [profileEntity.id]: CONTAINER_STATUS.fail,
+          [settingsEntity.id]: CONTAINER_STATUS.fail,
+        },
       },
     });
   });
@@ -147,11 +155,13 @@ describe('compose.up with autoResolveDeps', () => {
     expect(
       upFn([profileEntity, settingsEntity], { autoResolveDeps: { strict: true, optional: false } }),
     ).resolves.toStrictEqual({
-      hasErrors: false,
-      statuses: {
-        [userEntity.id]: CONTAINER_STATUS.done,
-        [profileEntity.id]: CONTAINER_STATUS.done,
-        [settingsEntity.id]: CONTAINER_STATUS.done,
+      ok: false,
+      data: {
+        statuses: {
+          [userEntity.id]: CONTAINER_STATUS.done,
+          [profileEntity.id]: CONTAINER_STATUS.done,
+          [settingsEntity.id]: CONTAINER_STATUS.done,
+        },
       },
     });
   });

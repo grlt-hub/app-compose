@@ -22,16 +22,16 @@ describe('upFn', () => {
       const a = createContainer({ id: randomUUID(), domain: randomUUID(), start: () => ({ api: null }) });
 
       expect(upFn([a])).resolves.toStrictEqual({
-        hasErrors: false,
-        statuses: { [a.id]: CONTAINER_STATUS.done },
+        ok: false,
+        data: { statuses: { [a.id]: CONTAINER_STATUS.done } },
       });
     });
     test('enabled=true', () => {
       const a = createContainer({ id: randomUUID(), domain: randomUUID(), start: () => ({ api: null }), enable: T });
 
       expect(upFn([a])).resolves.toStrictEqual({
-        hasErrors: false,
-        statuses: { [a.id]: CONTAINER_STATUS.done },
+        ok: false,
+        data: { statuses: { [a.id]: CONTAINER_STATUS.done } },
       });
     });
     test('enabled=Promise<true>', () => {
@@ -43,16 +43,16 @@ describe('upFn', () => {
       });
 
       expect(upFn([a])).resolves.toStrictEqual({
-        hasErrors: false,
-        statuses: { [a.id]: CONTAINER_STATUS.done },
+        ok: false,
+        data: { statuses: { [a.id]: CONTAINER_STATUS.done } },
       });
     });
     test('enabled=false', () => {
       const a = createContainer({ id: randomUUID(), domain: randomUUID(), start: () => ({ api: null }), enable: F });
 
       expect(upFn([a])).resolves.toStrictEqual({
-        hasErrors: false,
-        statuses: { [a.id]: CONTAINER_STATUS.off },
+        ok: false,
+        data: { statuses: { [a.id]: CONTAINER_STATUS.off } },
       });
     });
     test('enabled=Promise<false>', () => {
@@ -64,8 +64,8 @@ describe('upFn', () => {
       });
 
       expect(upFn([a])).resolves.toStrictEqual({
-        hasErrors: false,
-        statuses: { [a.id]: CONTAINER_STATUS.off },
+        ok: false,
+        data: { statuses: { [a.id]: CONTAINER_STATUS.off } },
       });
     });
   });
@@ -77,8 +77,10 @@ describe('upFn', () => {
         const c = createContainer({ id: randomUUID(), domain: randomUUID(), start: () => ({ api: null }) });
 
         expect(upFn([a, b, c])).resolves.toStrictEqual({
-          hasErrors: false,
-          statuses: { [a.id]: CONTAINER_STATUS.done, [b.id]: CONTAINER_STATUS.done, [c.id]: CONTAINER_STATUS.done },
+          ok: false,
+          data: {
+            statuses: { [a.id]: CONTAINER_STATUS.done, [b.id]: CONTAINER_STATUS.done, [c.id]: CONTAINER_STATUS.done },
+          },
         });
       });
       test('NOT all enabled', () => {
@@ -87,8 +89,10 @@ describe('upFn', () => {
         const c = createContainer({ id: randomUUID(), domain: randomUUID(), start: () => ({ api: null }) });
 
         expect(upFn([a, b, c])).resolves.toStrictEqual({
-          hasErrors: false,
-          statuses: { [a.id]: CONTAINER_STATUS.done, [b.id]: CONTAINER_STATUS.off, [c.id]: CONTAINER_STATUS.done },
+          ok: false,
+          data: {
+            statuses: { [a.id]: CONTAINER_STATUS.done, [b.id]: CONTAINER_STATUS.off, [c.id]: CONTAINER_STATUS.done },
+          },
         });
       });
     });
@@ -111,8 +115,10 @@ describe('upFn', () => {
       });
 
       expect(upFn([a, b, c])).resolves.toStrictEqual({
-        hasErrors: false,
-        statuses: { [a.id]: CONTAINER_STATUS.done, [b.id]: CONTAINER_STATUS.off, [c.id]: CONTAINER_STATUS.done },
+        ok: false,
+        data: {
+          statuses: { [a.id]: CONTAINER_STATUS.done, [b.id]: CONTAINER_STATUS.off, [c.id]: CONTAINER_STATUS.done },
+        },
       });
     });
   });
@@ -217,19 +223,21 @@ describe('upFn', () => {
         ]),
       ),
     ).rejects.toStrictEqual({
-      hasErrors: true,
-      statuses: {
-        [userEntity.id]: CONTAINER_STATUS.done,
-        [registration.id]: CONTAINER_STATUS.off,
-        [quotesEntity.id]: CONTAINER_STATUS.off,
-        [accountsEntity.id]: CONTAINER_STATUS.done,
-        [accountsList.id]: CONTAINER_STATUS.done,
-        [accountTransfers.id]: CONTAINER_STATUS.off,
-        [marketplace.id]: CONTAINER_STATUS.fail,
-        [purchases.id]: CONTAINER_STATUS.fail,
-        [idk.id]: CONTAINER_STATUS.fail,
-        [hiddenEntity.id]: CONTAINER_STATUS.off,
-        [hiddenFeature.id]: CONTAINER_STATUS.off,
+      ok: true,
+      data: {
+        statuses: {
+          [userEntity.id]: CONTAINER_STATUS.done,
+          [registration.id]: CONTAINER_STATUS.off,
+          [quotesEntity.id]: CONTAINER_STATUS.off,
+          [accountsEntity.id]: CONTAINER_STATUS.done,
+          [accountsList.id]: CONTAINER_STATUS.done,
+          [accountTransfers.id]: CONTAINER_STATUS.off,
+          [marketplace.id]: CONTAINER_STATUS.fail,
+          [purchases.id]: CONTAINER_STATUS.fail,
+          [idk.id]: CONTAINER_STATUS.fail,
+          [hiddenEntity.id]: CONTAINER_STATUS.off,
+          [hiddenFeature.id]: CONTAINER_STATUS.off,
+        },
       },
     });
   });
@@ -253,10 +261,12 @@ describe('edge cases', () => {
     });
 
     expect(upFn([a, b])).rejects.toStrictEqual({
-      hasErrors: true,
-      statuses: {
-        [a.id]: 'fail',
-        [b.id]: 'fail',
+      ok: true,
+      data: {
+        statuses: {
+          [a.id]: 'fail',
+          [b.id]: 'fail',
+        },
       },
     });
   });
@@ -277,10 +287,12 @@ describe('edge cases', () => {
     });
 
     expect(upFn([a, b])).rejects.toStrictEqual({
-      hasErrors: true,
-      statuses: {
-        [a.id]: 'fail',
-        [b.id]: 'done',
+      ok: true,
+      data: {
+        statuses: {
+          [a.id]: 'fail',
+          [b.id]: 'done',
+        },
       },
     });
   });
@@ -308,11 +320,13 @@ describe('edge cases', () => {
     });
 
     expect(upFn([a, b, c])).rejects.toStrictEqual({
-      hasErrors: true,
-      statuses: {
-        [a.id]: 'fail',
-        [b.id]: 'done',
-        [c.id]: 'fail',
+      ok: true,
+      data: {
+        statuses: {
+          [a.id]: 'fail',
+          [b.id]: 'done',
+          [c.id]: 'fail',
+        },
       },
     });
   });
@@ -340,11 +354,13 @@ describe('edge cases', () => {
     });
 
     expect(upFn([a, b, c])).rejects.toStrictEqual({
-      hasErrors: true,
-      statuses: {
-        [a.id]: 'fail',
-        [b.id]: 'done',
-        [c.id]: 'done',
+      ok: true,
+      data: {
+        statuses: {
+          [a.id]: 'fail',
+          [b.id]: 'done',
+          [c.id]: 'done',
+        },
       },
     });
   });
@@ -374,11 +390,13 @@ describe('edge cases', () => {
     });
 
     expect(upFn([a, b, c])).rejects.toStrictEqual({
-      hasErrors: true,
-      statuses: {
-        [a.id]: 'fail',
-        [b.id]: 'fail',
-        [c.id]: 'fail',
+      ok: true,
+      data: {
+        statuses: {
+          [a.id]: 'fail',
+          [b.id]: 'fail',
+          [c.id]: 'fail',
+        },
       },
     });
   });

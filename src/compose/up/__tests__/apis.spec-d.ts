@@ -36,7 +36,9 @@ test('up.apis = true', async () => {
     start: () => ({ api: null }),
   });
 
-  const { apis } = await upFn([a, b, c, d, e], { apis: true });
+  const {
+    data: { apis },
+  } = await upFn([a, b, c, d, e], { apis: true });
 
   type ResultWithApis = {
     a?: { t: () => true };

@@ -20,16 +20,16 @@ describe('up.apis = true', () => {
 
     const result = await upFn([a, b], { apis: true });
 
-    expect(result.apis).toBeDefined();
-    expect(result.apis.a).toBeDefined();
-    expect(result.apis.b).toBeDefined();
+    expect(result.data.apis).toBeDefined();
+    expect(result.data.apis.a).toBeDefined();
+    expect(result.data.apis.b).toBeDefined();
 
-    if (result.apis.a) {
-      expect(result.apis.a.t()).toBe(true);
+    if (result.data.apis.a) {
+      expect(result.data.apis.a.t()).toBe(true);
     }
 
-    if (result.apis.b) {
-      expect(result.apis.b.f()).toBe('enabled');
+    if (result.data.apis.b) {
+      expect(result.data.apis.b.f()).toBe('enabled');
     }
   });
 
@@ -52,16 +52,16 @@ describe('up.apis = true', () => {
 
     const result = await upFn([a, b], { apis: true });
 
-    expect(result.apis).toBeDefined();
-    expect(result.apis.a).toBeUndefined();
-    expect(result.apis.b).toBeDefined();
+    expect(result.data.apis).toBeDefined();
+    expect(result.data.apis.a).toBeUndefined();
+    expect(result.data.apis.b).toBeDefined();
 
-    if (result.apis.a) {
-      expect(result.apis.a.t()).toBe(true);
+    if (result.data.apis.a) {
+      expect(result.data.apis.a.t()).toBe(true);
     }
 
-    if (result.apis.b) {
-      expect(result.apis.b.f()).toBe('disabled');
+    if (result.data.apis.b) {
+      expect(result.data.apis.b.f()).toBe('disabled');
     }
   });
 });

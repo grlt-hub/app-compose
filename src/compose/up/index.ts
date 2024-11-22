@@ -37,18 +37,24 @@ type Config = {
 
 type UpResult<T extends AnyContainer[], C extends Config | undefined> = undefined extends C
   ? {
-      hasErrors: boolean;
-      statuses: Statuses<T>;
+      ok: boolean;
+      data: {
+        statuses: Statuses<T>;
+      };
     }
   : NonNullable<C>['apis'] extends true
     ? {
-        apis: APIs<T>;
-        hasErrors: boolean;
-        statuses: Statuses<T>;
+        ok: boolean;
+        data: {
+          apis: APIs<T>;
+          statuses: Statuses<T>;
+        };
       }
     : {
-        hasErrors: boolean;
-        statuses: Statuses<T>;
+        ok: boolean;
+        data: {
+          statuses: Statuses<T>;
+        };
       };
 
 const defaultOnFail = () => {};
@@ -167,12 +173,14 @@ const upFn = async <T extends AnyContainer[], C extends Config>(
       }
 
       const res = {
-        hasErrors: Object.values(x.statuses).some(statusIs.fail),
-        statuses: x.statuses,
-        ...(config.apis ? { apis } : {}),
+        ok: Object.values(x.statuses).some(statusIs.fail),
+        data: {
+          statuses: x.statuses,
+          ...(config.apis ? { apis } : {}),
+        },
       };
 
-      if (res.hasErrors) {
+      if (res.ok) {
         reject(res);
       }
 
