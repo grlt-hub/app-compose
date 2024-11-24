@@ -22,7 +22,7 @@ describe('upFn', () => {
       const a = createContainer({ id: randomUUID(), domain: randomUUID(), start: () => ({ api: null }) });
 
       expect(upFn([a])).resolves.toStrictEqual({
-        ok: false,
+        ok: true,
         data: { statuses: { [a.id]: CONTAINER_STATUS.done } },
       });
     });
@@ -30,7 +30,7 @@ describe('upFn', () => {
       const a = createContainer({ id: randomUUID(), domain: randomUUID(), start: () => ({ api: null }), enable: T });
 
       expect(upFn([a])).resolves.toStrictEqual({
-        ok: false,
+        ok: true,
         data: { statuses: { [a.id]: CONTAINER_STATUS.done } },
       });
     });
@@ -43,7 +43,7 @@ describe('upFn', () => {
       });
 
       expect(upFn([a])).resolves.toStrictEqual({
-        ok: false,
+        ok: true,
         data: { statuses: { [a.id]: CONTAINER_STATUS.done } },
       });
     });
@@ -51,7 +51,7 @@ describe('upFn', () => {
       const a = createContainer({ id: randomUUID(), domain: randomUUID(), start: () => ({ api: null }), enable: F });
 
       expect(upFn([a])).resolves.toStrictEqual({
-        ok: false,
+        ok: true,
         data: { statuses: { [a.id]: CONTAINER_STATUS.off } },
       });
     });
@@ -64,7 +64,7 @@ describe('upFn', () => {
       });
 
       expect(upFn([a])).resolves.toStrictEqual({
-        ok: false,
+        ok: true,
         data: { statuses: { [a.id]: CONTAINER_STATUS.off } },
       });
     });
@@ -77,7 +77,7 @@ describe('upFn', () => {
         const c = createContainer({ id: randomUUID(), domain: randomUUID(), start: () => ({ api: null }) });
 
         expect(upFn([a, b, c])).resolves.toStrictEqual({
-          ok: false,
+          ok: true,
           data: {
             statuses: { [a.id]: CONTAINER_STATUS.done, [b.id]: CONTAINER_STATUS.done, [c.id]: CONTAINER_STATUS.done },
           },
@@ -89,7 +89,7 @@ describe('upFn', () => {
         const c = createContainer({ id: randomUUID(), domain: randomUUID(), start: () => ({ api: null }) });
 
         expect(upFn([a, b, c])).resolves.toStrictEqual({
-          ok: false,
+          ok: true,
           data: {
             statuses: { [a.id]: CONTAINER_STATUS.done, [b.id]: CONTAINER_STATUS.off, [c.id]: CONTAINER_STATUS.done },
           },
@@ -115,7 +115,7 @@ describe('upFn', () => {
       });
 
       expect(upFn([a, b, c])).resolves.toStrictEqual({
-        ok: false,
+        ok: true,
         data: {
           statuses: { [a.id]: CONTAINER_STATUS.done, [b.id]: CONTAINER_STATUS.off, [c.id]: CONTAINER_STATUS.done },
         },
@@ -223,7 +223,7 @@ describe('upFn', () => {
         ]),
       ),
     ).rejects.toStrictEqual({
-      ok: true,
+      ok: false,
       data: {
         statuses: {
           [userEntity.id]: CONTAINER_STATUS.done,
@@ -261,7 +261,7 @@ describe('edge cases', () => {
     });
 
     expect(upFn([a, b])).rejects.toStrictEqual({
-      ok: true,
+      ok: false,
       data: {
         statuses: {
           [a.id]: 'fail',
@@ -287,12 +287,9 @@ describe('edge cases', () => {
     });
 
     expect(upFn([a, b])).rejects.toStrictEqual({
-      ok: true,
+      ok: false,
       data: {
-        statuses: {
-          [a.id]: 'fail',
-          [b.id]: 'done',
-        },
+        statuses: { [a.id]: 'fail', [b.id]: 'done' },
       },
     });
   });
@@ -320,7 +317,7 @@ describe('edge cases', () => {
     });
 
     expect(upFn([a, b, c])).rejects.toStrictEqual({
-      ok: true,
+      ok: false,
       data: {
         statuses: {
           [a.id]: 'fail',
@@ -354,7 +351,7 @@ describe('edge cases', () => {
     });
 
     expect(upFn([a, b, c])).rejects.toStrictEqual({
-      ok: true,
+      ok: false,
       data: {
         statuses: {
           [a.id]: 'fail',
@@ -390,7 +387,7 @@ describe('edge cases', () => {
     });
 
     expect(upFn([a, b, c])).rejects.toStrictEqual({
-      ok: true,
+      ok: false,
       data: {
         statuses: {
           [a.id]: 'fail',

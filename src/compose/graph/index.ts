@@ -1,5 +1,5 @@
 import { type AnyContainer } from '../../createContainer';
-import { getContainers } from '../getContainers';
+import { getContainersGraph } from '../getContainersGraph';
 import { getTransitiveDependencies, type TransitiveDependency } from './getTransitiveDependencies';
 
 type Graph = Record<
@@ -14,23 +14,12 @@ type Graph = Record<
   }
 >;
 
-type Config = {
-  autoResolveDeps?: {
-    strict: true;
-    optional?: boolean;
-  };
-};
+const graphFn = (__containers: AnyContainer[]) => {
+  const graph = getContainersGraph(__containers);
 
-const normalizeConfig = (config?: Config): Required<NonNullable<Config>> =>
-  Object.assign({ autoResolveDeps: { strict: false, optional: false } }, config ?? {});
-
-const graphFn = (__containers: AnyContainer[], __config?: Config) => {
-  const config = normalizeConfig(__config);
-  const containers = getContainers({ containers: __containers, autoResolveDeps: config.autoResolveDeps });
-
-  return containers.reduce<Graph>((acc, container) => {
-    const dependsOn = (container.dependsOn || []).map((x) => x.id);
-    const optionalDependsOn = (container.optionalDependsOn || []).map((x) => x.id);
+  const data = graph.containersToBoot.reduce<Graph>((acc, container) => {
+    const dependsOn = container.dependsOn?.map((x) => x.id) || [];
+    const optionalDependsOn = container.optionalDependsOn.map((x) => x.id);
 
     const transitiveDependencies = getTransitiveDependencies(container);
 
@@ -45,6 +34,11 @@ const graphFn = (__containers: AnyContainer[], __config?: Config) => {
 
     return acc;
   }, {});
+
+  return {
+    data,
+    skippedContainers: graph.skippedContainers,
+  };
 };
 
 export { graphFn };

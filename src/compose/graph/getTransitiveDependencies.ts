@@ -10,7 +10,9 @@ const getTransitiveDependencies = (container: AnyContainer) => {
 
   // add only transitive dependencies to the stack
   (container.dependsOn || []).forEach((dep) => stack.push([dep, [container.id, dep.id], 'strict']));
-  (container.optionalDependsOn || []).forEach((dep) => stack.push([dep, [container.id, dep.id], 'optional']));
+  (container.optionalDependsOn as AnyContainer[]).forEach((dep) =>
+    stack.push([dep, [container.id, dep.id], 'optional']),
+  );
 
   while (stack.length > 0) {
     const [current, path, currentType] = stack.pop()!;
@@ -30,7 +32,7 @@ const getTransitiveDependencies = (container: AnyContainer) => {
       (current.dependsOn || []).forEach((nextDep) => {
         stack.push([nextDep, [...path, nextDep.id], currentType]);
       });
-      (current.optionalDependsOn || []).forEach((nextOptDep) => {
+      (current.optionalDependsOn as AnyContainer[]).forEach((nextOptDep) => {
         stack.push([nextOptDep, [...path, nextOptDep.id], 'optional']);
       });
     }

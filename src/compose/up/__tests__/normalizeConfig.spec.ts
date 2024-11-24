@@ -1,30 +1,27 @@
-import { defaultOnFail, normalizeConfig } from '../index';
+import { defaultOnContainerFail, normalizeConfig } from '../index';
 
 describe('normalizeConfig', () => {
   test('empty', () => {
     expect(normalizeConfig(undefined)).toStrictEqual({
       apis: false,
       debug: false,
-      autoResolveDeps: { strict: false, optional: false },
-      onFail: defaultOnFail,
+      onContainerFail: defaultOnContainerFail,
     });
   });
   test('debug=true', () => {
     expect(normalizeConfig({ debug: true })).toStrictEqual({
       apis: false,
       debug: true,
-      autoResolveDeps: { strict: false, optional: false },
-      onFail: defaultOnFail,
+      onContainerFail: defaultOnContainerFail,
     });
   });
-  test('autoResolveDeps.optional=true | apis=true', () => {
-    const onFail = console.log;
+  test('debug=true | apis=true', () => {
+    const onContainerFail = console.log;
 
-    expect(normalizeConfig({ apis: true, autoResolveDeps: { optional: true, strict: true }, onFail })).toStrictEqual({
+    expect(normalizeConfig({ apis: true, debug: true, onContainerFail })).toStrictEqual({
       apis: true,
-      debug: false,
-      autoResolveDeps: { strict: true, optional: true },
-      onFail,
+      debug: true,
+      onContainerFail,
     });
   });
 });

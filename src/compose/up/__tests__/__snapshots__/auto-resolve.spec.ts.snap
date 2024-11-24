@@ -1,0 +1,17 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`compose.up auto-resolve > basic optional include 1`] = `undefined`;
+
+exports[`compose.up auto-resolve > basic optional include 2`] = `undefined`;
+
+exports[`compose.up auto-resolve > basic optional skip 1`] = `
+[
+  {
+    "b": [
+      "a",
+    ],
+  },
+]
+`;
+
+exports[`compose.up auto-resolve > basic optional skip 2`] = `undefined`;

@@ -28,7 +28,7 @@ test('handles all variations of dependencies', () => {
 
   const graph = graphFn([noDeps1, noDeps2, strict1, strict2, optional1, optional2, mixed]);
 
-  expect(graph).toStrictEqual({
+  expect(graph.data).toStrictEqual({
     [noDeps1.id]: {
       strict: [],
       optional: [],
