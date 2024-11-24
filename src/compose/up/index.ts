@@ -190,4 +190,7 @@ const upFn = async <T extends AnyContainer[], C extends Config>(
   });
 };
 
-export { defaultOnContainerFail, normalizeConfig, upFn };
+type ContainerId = AnyContainer['id'];
+type ContainerDomain = AnyContainer['domain'];
+
+export { defaultOnContainerFail, normalizeConfig, upFn, type ContainerDomain, type ContainerId };

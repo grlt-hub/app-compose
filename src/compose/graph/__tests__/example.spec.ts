@@ -14,16 +14,19 @@ test('example from doc', () => {
 
   expect(graph.data).toStrictEqual({
     [a.id]: {
+      domain: a.domain,
       strict: [],
       optional: [],
       transitive: { strict: [], optional: [] },
     },
     [b.id]: {
+      domain: b.domain,
       strict: [a.id],
       optional: [],
       transitive: { strict: [], optional: [] },
     },
     [c.id]: {
+      domain: c.domain,
       strict: [],
       optional: [b.id],
       transitive: {
@@ -37,6 +40,7 @@ test('example from doc', () => {
       },
     },
     [d.id]: {
+      domain: d.domain,
       strict: [c.id],
       optional: [b.id],
       transitive: {

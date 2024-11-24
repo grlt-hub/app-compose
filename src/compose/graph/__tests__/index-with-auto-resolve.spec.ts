@@ -14,11 +14,13 @@ describe('graphFn exhaustive tests', () => {
     expect(graph.skippedContainers).toStrictEqual({});
     expect(graph.data).toStrictEqual({
       [noDeps1.id]: {
+        domain: noDeps1.domain,
         strict: [],
         optional: [],
         transitive: { strict: [], optional: [] },
       },
       [noDeps2.id]: {
+        domain: noDeps2.domain,
         strict: [],
         optional: [],
         transitive: { strict: [], optional: [] },
@@ -42,16 +44,19 @@ describe('graphFn exhaustive tests', () => {
     expect(graph.skippedContainers).toStrictEqual({});
     expect(graph.data).toStrictEqual({
       [noDeps1.id]: {
+        domain: noDeps1.domain,
         strict: [],
         optional: [],
         transitive: { strict: [], optional: [] },
       },
       [noDeps2.id]: {
+        domain: noDeps2.domain,
         strict: [],
         optional: [],
         transitive: { strict: [], optional: [] },
       },
       [strict1.id]: {
+        domain: strict1.domain,
         strict: [noDeps1.id],
         optional: [noDeps2.id],
         transitive: { strict: [], optional: [] },
@@ -75,6 +80,7 @@ describe('graphFn exhaustive tests', () => {
     });
     expect(graph.data).toStrictEqual({
       [optional1.id]: {
+        domain: optional1.domain,
         strict: [],
         optional: [],
         transitive: { strict: [], optional: [] },
@@ -113,21 +119,25 @@ describe('graphFn exhaustive tests', () => {
     });
     expect(graph.data).toStrictEqual({
       [noDeps1.id]: {
+        domain: noDeps1.domain,
         strict: [],
         optional: [],
         transitive: { strict: [], optional: [] },
       },
       [noDeps2.id]: {
+        domain: noDeps2.domain,
         strict: [],
         optional: [],
         transitive: { strict: [], optional: [] },
       },
       [strict1.id]: {
+        domain: strict1.domain,
         strict: [noDeps1.id],
         optional: [noDeps2.id],
         transitive: { strict: [], optional: [] },
       },
       [mixed.id]: {
+        domain: mixed.domain,
         strict: [strict1.id],
         optional: [],
         transitive: {
@@ -170,6 +180,7 @@ describe('graphFn exhaustive tests', () => {
     });
     expect(graph.data).toStrictEqual({
       [mixed.id]: {
+        domain: mixed.domain,
         strict: [],
         optional: [],
         transitive: { strict: [], optional: [] },

@@ -30,21 +30,25 @@ test('handles all variations of dependencies', () => {
 
   expect(graph.data).toStrictEqual({
     [noDeps1.id]: {
+      domain: noDeps1.domain,
       strict: [],
       optional: [],
       transitive: { strict: [], optional: [] },
     },
     [noDeps2.id]: {
+      domain: noDeps2.domain,
       strict: [],
       optional: [],
       transitive: { strict: [], optional: [] },
     },
     [strict1.id]: {
+      domain: strict1.domain,
       strict: [noDeps1.id],
       optional: [],
       transitive: { strict: [], optional: [] },
     },
     [strict2.id]: {
+      domain: strict2.domain,
       strict: [strict1.id],
       optional: [],
       transitive: {
@@ -58,11 +62,13 @@ test('handles all variations of dependencies', () => {
       },
     },
     [optional1.id]: {
+      domain: optional1.domain,
       strict: [],
       optional: [noDeps2.id],
       transitive: { strict: [], optional: [] },
     },
     [optional2.id]: {
+      domain: optional2.domain,
       strict: [],
       optional: [strict2.id],
       transitive: {
@@ -80,6 +86,7 @@ test('handles all variations of dependencies', () => {
       },
     },
     [mixed.id]: {
+      domain: mixed.domain,
       strict: [strict1.id],
       optional: [optional1.id],
       transitive: {
