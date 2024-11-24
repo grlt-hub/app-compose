@@ -2,6 +2,7 @@ import { defaultExclude, defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
+    setupFiles: './vitest.setup.ts',
     environment: 'node',
     typecheck: {
       enabled: true,

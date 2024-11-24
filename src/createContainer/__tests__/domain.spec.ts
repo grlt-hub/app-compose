@@ -11,12 +11,11 @@ describe('container.id not empty string', () => {
   test('unhappy', () => {
     expect(() =>
       createContainer({
+        id: randomUUID(),
         // @ts-expect-error container.id cannot be an empty string
-        id: '',
-
-        domain: randomUUID(),
+        domain: '',
         start: () => ({ api: {} }),
       }),
-    ).toThrowError('Container ID cannot be an empty string.');
+    ).toThrowError('Container Domain cannot be an empty string.');
   });
 });

@@ -4,6 +4,7 @@ describe('container.id not empty string', () => {
   test('happy', () => {
     createContainer({
       id: 'a',
+      domain: '_',
       start: () => ({ api: {} }),
     });
   });

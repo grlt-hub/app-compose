@@ -7,9 +7,15 @@ test('up.debug = true', async () => {
 
   vi.setSystemTime(fixedDate);
 
-  const a = createContainer({ id: 'a', start: () => ({ api: null }) });
-  const b = createContainer({ id: 'b', dependsOn: [a], enable: () => false, start: () => ({ api: null }) });
-  const c = createContainer({ id: 'c', start: () => ({ api: null }) });
+  const a = createContainer({ id: 'a', domain: '_', start: () => ({ api: null }) });
+  const b = createContainer({
+    id: 'b',
+    domain: '_',
+    dependsOn: [a],
+    enable: () => false,
+    start: () => ({ api: null }),
+  });
+  const c = createContainer({ id: 'c', domain: '_', start: () => ({ api: null }) });
 
   await upFn([a, b, c], { debug: true });
 

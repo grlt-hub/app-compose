@@ -10,20 +10,24 @@ describe('upFn', () => {
   test('return type', async () => {
     const a = createContainer({
       id: 'a',
+      domain: '_',
       start: () => ({ api: { t: () => true } }),
     });
     const b = createContainer({
       id: 'b',
+      domain: '_',
       start: () => ({ api: { f: () => false } }),
     });
 
     const upResult = await upFn([a, b]);
 
     type UpResult = {
-      hasErrors: boolean;
-      statuses: {
-        [a.id]: StoreValue<typeof a.$status>;
-        [b.id]: StoreValue<typeof b.$status>;
+      ok: boolean;
+      data: {
+        statuses: {
+          [a.id]: StoreValue<typeof a.$status>;
+          [b.id]: StoreValue<typeof b.$status>;
+        };
       };
     };
 
@@ -33,31 +37,40 @@ describe('upFn', () => {
   test('config', () => {
     const a = createContainer({
       id: 'a',
+      domain: '_',
       start: () => ({ api: { t: () => true } }),
     });
 
     test('empty', async () => {
       const upResult = await upFn([a]);
+      type Result = typeof upResult;
 
-      expectTypeOf<keyof typeof upResult>().toEqualTypeOf<'hasErrors' | 'statuses'>();
+      expectTypeOf<keyof Result>().toEqualTypeOf<'ok' | 'data'>();
+      expectTypeOf<keyof Result['data']>().toEqualTypeOf<'statuses'>();
     });
 
     test('only debug', async () => {
       const upResult = await upFn([a], { debug: true });
+      type Result = typeof upResult;
 
-      expectTypeOf<keyof typeof upResult>().toEqualTypeOf<'hasErrors' | 'statuses'>();
+      expectTypeOf<keyof Result>().toEqualTypeOf<'ok' | 'data'>();
+      expectTypeOf<keyof Result['data']>().toEqualTypeOf<'statuses'>();
     });
 
     test('only apis', async () => {
       const upResult = await upFn([a], { apis: true });
+      type Result = typeof upResult;
 
-      expectTypeOf<keyof typeof upResult>().toEqualTypeOf<'hasErrors' | 'statuses' | 'apis'>();
+      expectTypeOf<keyof Result>().toEqualTypeOf<'ok' | 'data'>();
+      expectTypeOf<keyof Result['data']>().toEqualTypeOf<'statuses' | 'apis'>();
     });
 
     test('debug + apis', async () => {
       const upResult = await upFn([a], { debug: true, apis: true });
+      type Result = typeof upResult;
 
-      expectTypeOf<keyof typeof upResult>().toEqualTypeOf<'hasErrors' | 'statuses' | 'apis'>();
+      expectTypeOf<keyof Result>().toEqualTypeOf<'ok' | 'data'>();
+      expectTypeOf<keyof Result['data']>().toEqualTypeOf<'statuses' | 'apis'>();
     });
   });
 });

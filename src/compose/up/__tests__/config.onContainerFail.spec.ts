@@ -4,28 +4,30 @@ import { upFn } from '../index';
 
 describe('container.onFail', () => {
   test('should call onFail when container fails by itself in start', async () => {
-    const onFail = vi.fn();
+    const onContainerFail = vi.fn();
 
     const container = createContainer({
       id: randomUUID(),
+      domain: randomUUID(),
       start: () => {
         throw new Error('Error in start');
       },
     });
 
     try {
-      await upFn([container], { onFail });
+      await upFn([container], { onContainerFail });
     } catch {}
 
-    expect(onFail).toHaveBeenCalledTimes(1);
-    expect(onFail).toHaveBeenCalledWith({ id: container.id, error: new Error('Error in start') });
+    expect(onContainerFail).toHaveBeenCalledTimes(1);
+    expect(onContainerFail).toHaveBeenCalledWith({ id: container.id, error: new Error('Error in start') });
   });
 
   test('should call onFail when container fails by itself in enable', async () => {
-    const onFail = vi.fn();
+    const onContainerFail = vi.fn();
 
     const container = createContainer({
       id: randomUUID(),
+      domain: randomUUID(),
       start: () => ({ api: null }),
       enable: () => {
         throw new Error('Error in enable');
@@ -33,18 +35,19 @@ describe('container.onFail', () => {
     });
 
     try {
-      await upFn([container], { onFail });
+      await upFn([container], { onContainerFail });
     } catch {}
 
-    expect(onFail).toHaveBeenCalledTimes(1);
-    expect(onFail).toHaveBeenCalledWith({ id: container.id, error: new Error('Error in enable') });
+    expect(onContainerFail).toHaveBeenCalledTimes(1);
+    expect(onContainerFail).toHaveBeenCalledWith({ id: container.id, error: new Error('Error in enable') });
   });
 
   test('should call onFail when dependency fails in start', async () => {
-    const onFail = vi.fn();
+    const onContainerFail = vi.fn();
 
     const dependency = createContainer({
       id: randomUUID(),
+      domain: randomUUID(),
       start: () => {
         throw new Error('Error in dependency start');
       },
@@ -52,16 +55,23 @@ describe('container.onFail', () => {
 
     const container = createContainer({
       id: randomUUID(),
+      domain: randomUUID(),
       dependsOn: [dependency],
       start: () => ({ api: null }),
     });
 
     try {
-      await upFn([container], { autoResolveDeps: { strict: true }, onFail });
+      await upFn([container], { onContainerFail });
     } catch {}
 
-    expect(onFail).toHaveBeenCalledTimes(2);
-    expect(onFail).toHaveBeenNthCalledWith(1, { id: dependency.id, error: new Error('Error in dependency start') });
-    expect(onFail).toHaveBeenNthCalledWith(2, { id: container.id, error: new Error('Strict dependency failed') });
+    expect(onContainerFail).toHaveBeenCalledTimes(2);
+    expect(onContainerFail).toHaveBeenNthCalledWith(1, {
+      id: dependency.id,
+      error: new Error('Error in dependency start'),
+    });
+    expect(onContainerFail).toHaveBeenNthCalledWith(2, {
+      id: container.id,
+      error: new Error('Strict dependency failed'),
+    });
   });
 });

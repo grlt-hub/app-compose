@@ -4,8 +4,8 @@ import type { AnyFn } from './types';
 describe('start fn', () => {
   describe('api is obj', () => {
     test('happy', () => {
-      typeof createContainer<'_', {}>;
-      typeof createContainer<'_', null>;
+      typeof createContainer<'_', '_', {}>;
+      typeof createContainer<'_', '_', null>;
     });
 
     test('unhappy', () => {
@@ -41,7 +41,7 @@ describe('start fn', () => {
   });
 
   test('return type', () => {
-    type StartResult = ReturnType<ReturnType<typeof createContainer<'_', { __: null }>>['start']>;
+    type StartResult = ReturnType<ReturnType<typeof createContainer<'_', '_', { __: null }>>['start']>;
     type ExpectedResult = { api: { __: null } } | Promise<{ api: { __: null } }>;
 
     expectTypeOf<ExpectedResult>().toEqualTypeOf<StartResult>();
