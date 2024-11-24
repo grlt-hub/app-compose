@@ -42,4 +42,4 @@ const getTransitiveDependencies = (container: AnyContainer, computeId: Compute, 
   return { strict, optional };
 };
 
-export { getTransitiveDependencies, type TransitiveDependency };
+export { getTransitiveDependencies };
