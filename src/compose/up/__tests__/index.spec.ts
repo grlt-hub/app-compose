@@ -18,23 +18,23 @@ const shuffle = <T extends AnyContainer[]>(list: T): T => {
 
 describe('upFn', () => {
   describe('single | without any deps', () => {
-    test('enabled=true by default', () => {
+    test('enabled=true by default', async () => {
       const a = createContainer({ id: randomUUID(), domain: randomUUID(), start: () => ({ api: null }) });
 
-      expect(upFn([a])).resolves.toStrictEqual({
+      await expect(upFn([a])).resolves.toStrictEqual({
         ok: true,
         data: { statuses: { [a.id]: CONTAINER_STATUS.done } },
       });
     });
-    test('enabled=true', () => {
+    test('enabled=true', async () => {
       const a = createContainer({ id: randomUUID(), domain: randomUUID(), start: () => ({ api: null }), enable: T });
 
-      expect(upFn([a])).resolves.toStrictEqual({
+      await expect(upFn([a])).resolves.toStrictEqual({
         ok: true,
         data: { statuses: { [a.id]: CONTAINER_STATUS.done } },
       });
     });
-    test('enabled=Promise<true>', () => {
+    test('enabled=Promise<true>', async () => {
       const a = createContainer({
         id: randomUUID(),
         domain: randomUUID(),
@@ -42,20 +42,20 @@ describe('upFn', () => {
         enable: () => Promise.resolve(true),
       });
 
-      expect(upFn([a])).resolves.toStrictEqual({
+      await expect(upFn([a])).resolves.toStrictEqual({
         ok: true,
         data: { statuses: { [a.id]: CONTAINER_STATUS.done } },
       });
     });
-    test('enabled=false', () => {
+    test('enabled=false', async () => {
       const a = createContainer({ id: randomUUID(), domain: randomUUID(), start: () => ({ api: null }), enable: F });
 
-      expect(upFn([a])).resolves.toStrictEqual({
+      await expect(upFn([a])).resolves.toStrictEqual({
         ok: true,
         data: { statuses: { [a.id]: CONTAINER_STATUS.off } },
       });
     });
-    test('enabled=Promise<false>', () => {
+    test('enabled=Promise<false>', async () => {
       const a = createContainer({
         id: randomUUID(),
         domain: randomUUID(),
@@ -63,7 +63,7 @@ describe('upFn', () => {
         enable: () => Promise.resolve(false),
       });
 
-      expect(upFn([a])).resolves.toStrictEqual({
+      await expect(upFn([a])).resolves.toStrictEqual({
         ok: true,
         data: { statuses: { [a.id]: CONTAINER_STATUS.off } },
       });
@@ -71,24 +71,24 @@ describe('upFn', () => {
   });
   describe('multiple', () => {
     describe('independent', () => {
-      test('all enabled', () => {
+      test('all enabled', async () => {
         const a = createContainer({ id: randomUUID(), domain: randomUUID(), start: () => ({ api: null }) });
         const b = createContainer({ id: randomUUID(), domain: randomUUID(), start: () => ({ api: null }) });
         const c = createContainer({ id: randomUUID(), domain: randomUUID(), start: () => ({ api: null }) });
 
-        expect(upFn([a, b, c])).resolves.toStrictEqual({
+        await expect(upFn([a, b, c])).resolves.toStrictEqual({
           ok: true,
           data: {
             statuses: { [a.id]: CONTAINER_STATUS.done, [b.id]: CONTAINER_STATUS.done, [c.id]: CONTAINER_STATUS.done },
           },
         });
       });
-      test('NOT all enabled', () => {
+      test('NOT all enabled', async () => {
         const a = createContainer({ id: randomUUID(), domain: randomUUID(), start: () => ({ api: null }) });
         const b = createContainer({ id: randomUUID(), domain: randomUUID(), enable: F, start: () => ({ api: null }) });
         const c = createContainer({ id: randomUUID(), domain: randomUUID(), start: () => ({ api: null }) });
 
-        expect(upFn([a, b, c])).resolves.toStrictEqual({
+        await expect(upFn([a, b, c])).resolves.toStrictEqual({
           ok: true,
           data: {
             statuses: { [a.id]: CONTAINER_STATUS.done, [b.id]: CONTAINER_STATUS.off, [c.id]: CONTAINER_STATUS.done },
@@ -97,7 +97,7 @@ describe('upFn', () => {
       });
     });
 
-    test('depended', () => {
+    test('depended', async () => {
       const a = createContainer({ id: randomUUID(), domain: randomUUID(), start: () => ({ api: null }) });
       const b = createContainer({
         id: randomUUID(),
@@ -114,7 +114,7 @@ describe('upFn', () => {
         enable: T,
       });
 
-      expect(upFn([a, b, c])).resolves.toStrictEqual({
+      await expect(upFn([a, b, c])).resolves.toStrictEqual({
         ok: true,
         data: {
           statuses: { [a.id]: CONTAINER_STATUS.done, [b.id]: CONTAINER_STATUS.off, [c.id]: CONTAINER_STATUS.done },
@@ -123,7 +123,7 @@ describe('upFn', () => {
     });
   });
 
-  test('like real app example', () => {
+  test('like real app example', async () => {
     const userEntity = createContainer({
       id: 'user',
       domain: randomUUID(),
@@ -206,7 +206,7 @@ describe('upFn', () => {
       start: () => ({ api: null }),
     });
 
-    expect(
+    await expect(
       upFn(
         shuffle([
           userEntity,
@@ -244,7 +244,7 @@ describe('upFn', () => {
 });
 
 describe('edge cases', () => {
-  test('dependsOn failed', () => {
+  test('dependsOn failed', async () => {
     const a = createContainer({
       id: randomUUID(),
       domain: randomUUID(),
@@ -260,7 +260,7 @@ describe('edge cases', () => {
       start: () => ({ api: null }),
     });
 
-    expect(upFn([a, b])).rejects.toStrictEqual({
+    await expect(upFn([a, b])).rejects.toStrictEqual({
       ok: false,
       data: {
         statuses: {
@@ -270,7 +270,7 @@ describe('edge cases', () => {
       },
     });
   });
-  test('optionalDependsOn failed', () => {
+  test('optionalDependsOn failed', async () => {
     const a = createContainer({
       id: randomUUID(),
       domain: randomUUID(),
@@ -286,7 +286,7 @@ describe('edge cases', () => {
       start: () => ({ api: null }),
     });
 
-    expect(upFn([a, b])).rejects.toStrictEqual({
+    await expect(upFn([a, b])).rejects.toStrictEqual({
       ok: false,
       data: {
         statuses: { [a.id]: 'fail', [b.id]: 'done' },
@@ -294,7 +294,7 @@ describe('edge cases', () => {
     });
   });
 
-  test('dependsOn failed | optionalDependsOn done', () => {
+  test('dependsOn failed | optionalDependsOn done', async () => {
     const a = createContainer({
       id: randomUUID(),
       domain: randomUUID(),
@@ -316,7 +316,7 @@ describe('edge cases', () => {
       start: () => ({ api: null }),
     });
 
-    expect(upFn([a, b, c])).rejects.toStrictEqual({
+    await expect(upFn([a, b, c])).rejects.toStrictEqual({
       ok: false,
       data: {
         statuses: {
@@ -328,7 +328,7 @@ describe('edge cases', () => {
     });
   });
 
-  test('dependsOn done | optionalDependsOn failed', () => {
+  test('dependsOn done | optionalDependsOn failed', async () => {
     const a = createContainer({
       id: randomUUID(),
       domain: randomUUID(),
@@ -350,7 +350,7 @@ describe('edge cases', () => {
       start: () => ({ api: null }),
     });
 
-    expect(upFn([a, b, c])).rejects.toStrictEqual({
+    await expect(upFn([a, b, c])).rejects.toStrictEqual({
       ok: false,
       data: {
         statuses: {
@@ -361,7 +361,7 @@ describe('edge cases', () => {
       },
     });
   });
-  test('dependsOn failed | optionalDependsOn failed', () => {
+  test('dependsOn failed | optionalDependsOn failed', async () => {
     const a = createContainer({
       id: randomUUID(),
       domain: randomUUID(),
@@ -386,7 +386,7 @@ describe('edge cases', () => {
       start: () => ({ api: null }),
     });
 
-    expect(upFn([a, b, c])).rejects.toStrictEqual({
+    await expect(upFn([a, b, c])).rejects.toStrictEqual({
       ok: false,
       data: {
         statuses: {
