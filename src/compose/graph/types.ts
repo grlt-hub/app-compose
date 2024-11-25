@@ -28,4 +28,4 @@ type DomainsGraph = Record<
   }
 >;
 
-export type { ContainersGraph, DomainsGraph, TransitiveDependency };
+export type { ContainerDomain, ContainersGraph, DomainsGraph, TransitiveDependency };

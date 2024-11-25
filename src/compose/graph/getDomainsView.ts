@@ -1,4 +1,3 @@
-import type { AnyContainer } from '../../createContainer';
 import type { ContainersGraph, DomainsGraph } from './types';
 
 const getDomainsView = (graph: ContainersGraph) =>
