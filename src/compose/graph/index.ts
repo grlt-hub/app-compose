@@ -21,7 +21,7 @@ type Result<T extends View = 'containers'> = T extends 'domains'
       data: ContainersGraph;
       skippedContainers: Skipped;
       dependsOn: (_: AnyContainer[]) => ContainersGraph;
-      requiredBy: (_: AnyContainer['domain'][]) => ContainersGraph;
+      requiredBy: (_: AnyContainer[]) => ContainersGraph;
     };
 
 const graphFn = <T extends View = 'containers'>(__containers: AnyContainer[], config?: { view?: T }): Result<T> => {
