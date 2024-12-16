@@ -1,6 +1,8 @@
+import tsconfigPaths from 'vite-tsconfig-paths';
 import { defaultExclude, defineConfig } from 'vitest/config';
 
 export default defineConfig({
+  plugins: [tsconfigPaths()],
   test: {
     setupFiles: './vitest.setup.ts',
     environment: 'node',
@@ -15,7 +17,7 @@ export default defineConfig({
     globals: true,
     reporters: 'dot',
     coverage: {
-      extension: ['.ts', '.tsx'],
+      extension: ['.ts'],
       all: true,
       include: ['src/**/*'],
       exclude: [...defaultExclude, './src/**/__fixtures__/**', 'src/**/__tests__/**', './src/index.ts'],

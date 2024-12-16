@@ -30,6 +30,8 @@ type AnyContainer = {
 };
 
 type AnyDeps = NonEmptyTuple<AnyContainer> | void;
+type ContainerId = AnyContainer['id'];
+type ContainerDomain = AnyContainer['domain'];
 
 export { CONTAINER_STATUS };
-export type { AnyAPI, AnyContainer, AnyDeps, ContainerStatus, EnableResult, StartResult };
+export type { AnyAPI, AnyContainer, AnyDeps, ContainerDomain, ContainerId, ContainerStatus, EnableResult, StartResult };

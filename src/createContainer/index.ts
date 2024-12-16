@@ -82,4 +82,5 @@ const createContainer = <
   };
 };
 
+export { type ContainerDomain, type ContainerId } from './types';
 export { CONTAINER_STATUS, createContainer, type AnyContainer, type ContainerStatus };

@@ -19,6 +19,9 @@
     "declaration": true,
     "strictNullChecks": true,
     "types": ["vitest/globals"],
-    "verbatimModuleSyntax": true
+    "verbatimModuleSyntax": true,
+    "paths": {
+      "@createContainer": ["./src/createContainer"]
+    }
   }
 }

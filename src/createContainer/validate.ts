@@ -5,7 +5,7 @@ type ValidateParams = Pick<AnyContainer, 'id' | 'domain' | 'dependsOn' | 'option
 const ERROR = {
   CONTAINER_ID_EMPTY_STRING: 'Container ID cannot be an empty string.',
   CONTAINER_DOMAIN_NAME_EMPTY_STRING: 'Container Domain cannot be an empty string.',
-  depsIntersection: (intersection: string[], containerId: AnyContainer['id']) =>
+  depsIntersection: (intersection: string[], containerId: ValidateParams['id']) =>
     `Dependency conflict detected in container '${containerId}':\n` +
     `The following dependencies are listed as both required and optional: [${intersection.join(', ')}].\n\n` +
     'Each dependency should be listed only once, as either required or optional.',
