@@ -1,5 +1,4 @@
 import { type AnyContainer, type ContainerId } from '../createContainer';
-import { createGraphFn, createUpFn } from './commands';
 import { getContainersToBoot } from './getContainersToBoot';
 import { printSkippedContainers } from './printSkippedContainers';
 
@@ -19,11 +18,6 @@ const compose = <T extends AnyContainer[]>(inputContainers: T) => {
   }
 
   printSkippedContainers(skippedContainers);
-
-  return {
-    up: createUpFn(containersToBoot),
-    graph: createGraphFn(containersToBoot, skippedContainers),
-  };
 };
 
 export { compose };
