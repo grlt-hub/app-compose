@@ -21,6 +21,7 @@
     "types": ["vitest/globals"],
     "verbatimModuleSyntax": true,
     "paths": {
+      "@randomContainer": ["./src/compose/__fixtures__/createRandomContainer"],
       "@createContainer": ["./src/createContainer"],
       "@shared": ["./src/shared"]
     }

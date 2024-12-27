@@ -1,18 +1,5 @@
-import { createContainer } from '@createContainer';
-import { randomUUID } from 'node:crypto';
+import { createRandomContainer } from '@randomContainer';
 import { prepareStages } from '../index';
-
-const basicContainer = createContainer({
-  id: '_',
-  domain: '_',
-  start: () => ({ api: null }),
-});
-
-const createRandomContainer = (overrides = {}) => ({
-  ...basicContainer,
-  id: randomUUID(),
-  ...overrides,
-});
 
 describe('prepareStages', () => {
   test('single stage with strict and optional dependencies', () => {

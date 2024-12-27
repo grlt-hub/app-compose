@@ -1,13 +1,10 @@
-import { createContainer } from '@createContainer';
-import { randomUUID } from 'node:crypto';
+import { createRandomContainer } from '@randomContainer';
 import { getContainersToBoot } from '../getContainersToBoot';
-
-const start = () => ({ api: null });
 
 describe('getContainersToBoot exhaustive manual tests', () => {
   test('handles containers with no dependencies', () => {
-    const a = createContainer({ id: randomUUID(), domain: '_', start });
-    const b = createContainer({ id: randomUUID(), domain: '_', start });
+    const a = createRandomContainer();
+    const b = createRandomContainer();
 
     const inputContainers = [a, b];
     const result = getContainersToBoot(inputContainers);
@@ -20,8 +17,8 @@ describe('getContainersToBoot exhaustive manual tests', () => {
   });
 
   test('manual resolves strict dependencies correctly', () => {
-    const a = createContainer({ id: randomUUID(), domain: '_', start });
-    const b = createContainer({ id: randomUUID(), domain: '_', dependsOn: [a], start });
+    const a = createRandomContainer();
+    const b = createRandomContainer({ dependsOn: [a] });
 
     const inputContainers = [a, b];
     const result = getContainersToBoot(inputContainers);
@@ -34,8 +31,8 @@ describe('getContainersToBoot exhaustive manual tests', () => {
   });
 
   test('auto resolves strict dependencies correctly', () => {
-    const a = createContainer({ id: randomUUID(), domain: '_', start });
-    const b = createContainer({ id: randomUUID(), domain: '_', dependsOn: [a], start });
+    const a = createRandomContainer();
+    const b = createRandomContainer({ dependsOn: [a] });
 
     const inputContainers = [b];
     const result = getContainersToBoot(inputContainers);
@@ -48,8 +45,8 @@ describe('getContainersToBoot exhaustive manual tests', () => {
   });
 
   test('handles optional dependencies correctly | one', () => {
-    const a = createContainer({ id: randomUUID(), domain: '_', start });
-    const b = createContainer({ id: randomUUID(), domain: '_', optionalDependsOn: [a], start });
+    const a = createRandomContainer();
+    const b = createRandomContainer({ optionalDependsOn: [a] });
 
     const inputContainers = [b];
     const result = getContainersToBoot(inputContainers);
@@ -60,9 +57,9 @@ describe('getContainersToBoot exhaustive manual tests', () => {
     });
   });
   test('handles optional dependencies correctly | two', () => {
-    const a = createContainer({ id: randomUUID(), domain: '_', start });
-    const x = createContainer({ id: randomUUID(), domain: '_', start });
-    const b = createContainer({ id: randomUUID(), domain: '_', optionalDependsOn: [a, x], start });
+    const a = createRandomContainer();
+    const x = createRandomContainer();
+    const b = createRandomContainer({ optionalDependsOn: [a, x] });
 
     const inputContainers = [b];
     const result = getContainersToBoot(inputContainers);
@@ -74,9 +71,9 @@ describe('getContainersToBoot exhaustive manual tests', () => {
   });
 
   test('handles optional dependencies correctly | two | one not skipped', () => {
-    const a = createContainer({ id: randomUUID(), domain: '_', start });
-    const x = createContainer({ id: randomUUID(), domain: '_', start });
-    const b = createContainer({ id: randomUUID(), domain: '_', optionalDependsOn: [a, x], start });
+    const a = createRandomContainer();
+    const x = createRandomContainer();
+    const b = createRandomContainer({ optionalDependsOn: [a, x] });
 
     const inputContainers = [b, a];
     const result = getContainersToBoot(inputContainers);
@@ -91,10 +88,10 @@ describe('getContainersToBoot exhaustive manual tests', () => {
   });
 
   test('resolves transitive dependencies up to depth 3', () => {
-    const a = createContainer({ id: randomUUID(), domain: '_', start });
-    const b = createContainer({ id: randomUUID(), domain: '_', dependsOn: [a], start });
-    const c = createContainer({ id: randomUUID(), domain: '_', dependsOn: [b], start });
-    const d = createContainer({ id: randomUUID(), domain: '_', dependsOn: [c], start });
+    const a = createRandomContainer();
+    const b = createRandomContainer({ dependsOn: [a] });
+    const c = createRandomContainer({ dependsOn: [b] });
+    const d = createRandomContainer({ dependsOn: [c] });
 
     const inputContainers = [a, b, c, d];
     const result = getContainersToBoot(inputContainers);
@@ -109,10 +106,10 @@ describe('getContainersToBoot exhaustive manual tests', () => {
   });
 
   test('skips optional dependencies in transitive chains | one', () => {
-    const a = createContainer({ id: randomUUID(), domain: '_', start });
-    const b = createContainer({ id: randomUUID(), domain: '_', optionalDependsOn: [a], start });
-    const c = createContainer({ id: randomUUID(), domain: '_', optionalDependsOn: [b], start });
-    const d = createContainer({ id: randomUUID(), domain: '_', optionalDependsOn: [c], start });
+    const a = createRandomContainer();
+    const b = createRandomContainer({ optionalDependsOn: [a] });
+    const c = createRandomContainer({ optionalDependsOn: [b] });
+    const d = createRandomContainer({ optionalDependsOn: [c] });
 
     const inputContainers = [d];
     const result = getContainersToBoot(inputContainers);
@@ -124,10 +121,10 @@ describe('getContainersToBoot exhaustive manual tests', () => {
   });
 
   test('skips optional dependencies in transitive chains | two', () => {
-    const a = createContainer({ id: randomUUID(), domain: '_', start });
-    const b = createContainer({ id: randomUUID(), domain: '_', optionalDependsOn: [a], start });
-    const c = createContainer({ id: randomUUID(), domain: '_', optionalDependsOn: [b], start });
-    const d = createContainer({ id: randomUUID(), domain: '_', optionalDependsOn: [c], start });
+    const a = createRandomContainer();
+    const b = createRandomContainer({ optionalDependsOn: [a] });
+    const c = createRandomContainer({ optionalDependsOn: [b] });
+    const d = createRandomContainer({ optionalDependsOn: [c] });
 
     const inputContainers = [d, c];
     const result = getContainersToBoot(inputContainers);
@@ -142,10 +139,10 @@ describe('getContainersToBoot exhaustive manual tests', () => {
   });
 
   test('handles mixed strict and optional dependencies', () => {
-    const a = createContainer({ id: randomUUID(), domain: '_', start });
-    const b = createContainer({ id: randomUUID(), domain: '_', dependsOn: [a], start });
-    const c = createContainer({ id: randomUUID(), domain: '_', dependsOn: [b], optionalDependsOn: [a], start });
-    const d = createContainer({ id: randomUUID(), domain: '_', optionalDependsOn: [c], start });
+    const a = createRandomContainer();
+    const b = createRandomContainer({ dependsOn: [a] });
+    const c = createRandomContainer({ dependsOn: [b], optionalDependsOn: [a] });
+    const d = createRandomContainer({ optionalDependsOn: [c] });
 
     const inputContainers = [a, b, c, d];
     const result = getContainersToBoot(inputContainers);
