@@ -1,23 +1,16 @@
-import { type AnyContainer, type ContainerId } from '../createContainer';
-import { getContainersToBoot } from './getContainersToBoot';
-import { printSkippedContainers } from './printSkippedContainers';
+import { type AnyContainer, type ContainerId } from '@createContainer';
+import { prepareStages } from './prepareStages';
 
-const validateContainerId = (id: ContainerId, set: Set<ContainerId>) => {
-  if (set.has(id)) {
-    throw new Error(`[app-compose] Duplicate container ID found: ${id}`);
-  }
-  set.add(id);
+const compose = <T extends AnyContainer[]>(...rawStages: T[]) => {
+  const contaiderIds = new Set<ContainerId>();
+
+  const stages = prepareStages({ rawStages, contaiderIds });
+
+  // филтьтрануть skipped по contaiderIds. если оно есть в запуске => не скипнуто :thinking_face:
+
+  return stages;
+
+  // вернуть не только up и graph, а ещё и stages. чтобы понимать порядок фактического запуска
 };
 
-const compose = <T extends AnyContainer[]>(inputContainers: T) => {
-  const { containersToBoot, skippedContainers } = getContainersToBoot(inputContainers);
-  const CONTAINER_IDS = new Set<ContainerId>();
-
-  for (const container of containersToBoot) {
-    validateContainerId(container.id, CONTAINER_IDS);
-  }
-
-  printSkippedContainers(skippedContainers);
-};
-
-export { compose };
+export { compose, prepareStages };

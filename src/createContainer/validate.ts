@@ -1,3 +1,4 @@
+import { isEmpty, isNil } from '@shared';
 import type { AnyContainer } from './types';
 
 type ValidateParams = Pick<AnyContainer, 'id' | 'domain' | 'dependsOn' | 'optionalDependsOn'>;
@@ -10,6 +11,7 @@ const ERROR = {
     `The following dependencies are listed as both required and optional: [${intersection.join(', ')}].\n\n` +
     'Each dependency should be listed only once, as either required or optional.',
 } as const;
+
 type ContainerIdEmptyStringError = ValidateParams & { id: never; error: typeof ERROR.CONTAINER_ID_EMPTY_STRING };
 type ContainerDomainNameEmptyStringError = ValidateParams & {
   domain: never;
@@ -17,19 +19,19 @@ type ContainerDomainNameEmptyStringError = ValidateParams & {
 };
 
 const validateContainerId = (x: ValidateParams) => {
-  if (x.id === '' || !x.id) {
+  if (isNil(x.id) || isEmpty(x.id)) {
     throw new Error(ERROR.CONTAINER_ID_EMPTY_STRING);
   }
 };
 
 const validateDomainName = (x: ValidateParams) => {
-  if (x.domain === '' || !x.domain) {
+  if (isNil(x.domain) || isEmpty(x.domain)) {
     throw new Error(ERROR.CONTAINER_DOMAIN_NAME_EMPTY_STRING);
   }
 };
 
 const validateDepsIntersection = (params: ValidateParams) => {
-  if (!params.dependsOn || !params.optionalDependsOn) {
+  if (isNil(params.dependsOn) || isNil(params.optionalDependsOn)) {
     return;
   }
 

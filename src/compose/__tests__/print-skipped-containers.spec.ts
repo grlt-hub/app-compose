@@ -7,7 +7,7 @@ describe('printSkippedContainers', () => {
     const consoleGroupEndSpy = vi.spyOn(console, 'groupEnd').mockImplementation(() => {});
     const consoleGroupCollapsedSpy = vi.spyOn(console, 'groupCollapsed').mockImplementation(() => {});
 
-    printSkippedContainers({});
+    printSkippedContainers({}, 0);
 
     expect(consoleGroupSpy).not.toHaveBeenCalled();
     expect(consoleLogSpy).not.toHaveBeenCalled();
@@ -29,12 +29,12 @@ describe('printSkippedContainers', () => {
       containerC: ['dep3'],
     };
 
-    printSkippedContainers(skipped);
+    printSkippedContainers(skipped, 0);
 
     // Verify that groups are opened correctly
     {
       expect(consoleGroupSpy).toHaveBeenCalledWith(
-        '%c[app-compose] Skipped Containers',
+        '%c[app-compose] Skipped Containers (stage 0)',
         'color: #E2A03F; font-weight: bold;',
       );
     }
@@ -58,7 +58,7 @@ describe('printSkippedContainers', () => {
     {
       expect(consoleLogSpy).toHaveBeenCalledWith(
         '%c' +
-          'All skipped containers are optional.If they are expected to work, please include them in the list when calling `compose` function',
+          'All skipped containers are optional. If they are expected to work, please include them in the list when calling `compose` function',
         'color: #888888; font-style: italic;',
       );
     }

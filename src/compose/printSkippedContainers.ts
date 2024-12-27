@@ -1,9 +1,9 @@
-import type { ContainerId } from '../createContainer';
+import type { ContainerId } from '@createContainer';
 
 const explanationMessage =
-  'All skipped containers are optional.If they are expected to work, please include them in the list when calling `compose` function';
+  'All skipped containers are optional. If they are expected to work, please include them in the list when calling `compose` function';
 
-export const printSkippedContainers = (skipped: Record<ContainerId, ContainerId[]>) => {
+export const printSkippedContainers = (skipped: Record<ContainerId, ContainerId[]>, stage: number) => {
   if (Object.keys(skipped).length === 0) {
     return;
   }
@@ -18,7 +18,7 @@ export const printSkippedContainers = (skipped: Record<ContainerId, ContainerId[
     }
   }
 
-  console.group('%c[app-compose] Skipped Containers', 'color: #E2A03F; font-weight: bold;');
+  console.group(`%c[app-compose] Skipped Containers (stage ${stage})`, 'color: #E2A03F; font-weight: bold;');
 
   for (const [depId, containers] of Object.entries(dependenciesMap)) {
     console.groupCollapsed(`%c- ${depId}`, 'color: #61afef;');

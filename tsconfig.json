@@ -21,7 +21,8 @@
     "types": ["vitest/globals"],
     "verbatimModuleSyntax": true,
     "paths": {
-      "@createContainer": ["./src/createContainer"]
+      "@createContainer": ["./src/createContainer"],
+      "@shared": ["./src/shared"]
     }
   }
 }

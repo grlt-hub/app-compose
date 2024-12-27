@@ -1,4 +1,4 @@
-import type { AnyContainer, ContainerId } from '../createContainer';
+import type { AnyContainer, ContainerId } from '@createContainer';
 
 const traverseContainers = (containers: AnyContainer[]) => {
   const strict = new Set<AnyContainer>();
