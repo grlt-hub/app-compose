@@ -26,10 +26,6 @@
   "peerDependencies": {
     "effector": "23"
   },
-  "volta": {
-    "node": "22.9.0",
-    "npm": "10.9.0"
-  },
   "publishConfig": {
     "access": "public"
   },

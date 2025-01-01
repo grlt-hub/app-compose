@@ -10,12 +10,8 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/starlight": "^0.28.6",
-    "astro": "^4.15.3",
-    "sharp": "^0.32.5"
-  },
-  "volta": {
-    "node": "22.9.0",
-    "npm": "10.9.0"
+    "@astrojs/starlight": "^0.30.3",
+    "astro": "5",
+    "sharp": "^0.33.5"
   }
 }
