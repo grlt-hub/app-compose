@@ -4,7 +4,13 @@ import { prepareStages } from '../index';
 describe('container.id is uniq', () => {
   test('happy', () => {
     expect(() =>
-      prepareStages({ rawStages: [[createRandomContainer(), createRandomContainer()]], contaiderIds: new Set() }),
+      prepareStages({
+        stages: [
+          ['x', [createRandomContainer()]],
+          ['y', [createRandomContainer()]],
+        ],
+        contaiderIds: new Set(),
+      }),
     ).not.toThrowError();
   });
 
@@ -13,9 +19,30 @@ describe('container.id is uniq', () => {
 
     expect(() =>
       prepareStages({
-        rawStages: [[createRandomContainer({ id }), createRandomContainer({ id })]],
+        stages: [['x', [createRandomContainer({ id }), createRandomContainer({ id })]]],
         contaiderIds: new Set(),
       }),
     ).toThrowError(`[app-compose] Duplicate container ID found: ${id}`);
+  });
+
+  test('unhappy with stages', async () => {
+    const id = '~';
+
+    expect(() =>
+      prepareStages({
+        stages: [
+          ['x', [createRandomContainer({ id })]],
+          ['y', [createRandomContainer({ id })]],
+        ],
+        contaiderIds: new Set(),
+      }),
+    ).toThrowErrorMatchingInlineSnapshot(`
+      [Error: [app-compose] Container with ID "~" is already included in a previous stage (up to stage "y").
+          This indicates an issue in the stage definitions provided to the compose function.
+
+          Suggested actions:
+          - Remove the container from the "y" stage in the compose configuration.
+          - Use the graph fn to verify container dependencies and resolve potential conflicts.]
+    `);
   });
 });

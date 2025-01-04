@@ -5,6 +5,7 @@
   "useTabs": false,
   "singleQuote": true,
   "jsxSingleQuote": true,
+  "experimentalTernaries": true,
   "trailingComma": "all",
   "overrides": [{
     "files": ["*.json"],
