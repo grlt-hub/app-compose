@@ -11,4 +11,4 @@ prepublish:
 	make build && make lint && make test
 
 publish:
-	pnpm i && make prepublish && npx clean-publish
+	npm i && make prepublish && npx clean-publish

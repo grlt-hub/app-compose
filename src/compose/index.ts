@@ -1,5 +1,6 @@
 import { type ContainerId } from '@createContainer';
 import { prepareStages, type Stage } from '@prepareStages';
+import { up } from './commands/up';
 
 type Params = {
   stages: Stage[];
@@ -22,6 +23,7 @@ const compose = async (params: Params, config?: Config) => {
     diff: async () => {
       (await import('./commands/diff')).diff(params.stages, stages);
     },
+    up: (config?: Parameters<typeof up>[1]) => up(stages, config),
   };
 };
 

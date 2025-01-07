@@ -1,14 +1,15 @@
-import { type AnyContainer } from '@createContainer';
+import { type AnyContainer, type ContainerDomain, type ContainerId, type ContainerStatus } from '@createContainer';
+import { type StageId } from '@prepareStages';
 import { type NonEmptyTuple } from '@shared';
 import { compose } from '../index';
 
 describe('compose fn', () => {
-  type Params = Parameters<typeof compose>;
-  type Config = {
-    logSkippedContainers?: boolean;
-  };
-
   {
+    type Params = Parameters<typeof compose>;
+    type Config = {
+      logSkippedContainers?: boolean;
+    };
+
     expectTypeOf<Params['length']>().toEqualTypeOf<1 | 2>();
     expectTypeOf<Params[0]>().toEqualTypeOf<{
       stages: [string, NonEmptyTuple<AnyContainer>][];
@@ -16,11 +17,24 @@ describe('compose fn', () => {
     expectTypeOf<Params[1]>().toEqualTypeOf<Config | undefined>();
   }
 
-  type Result = ReturnType<typeof compose>;
+  {
+    type Result = Awaited<ReturnType<typeof compose>>;
 
-  expectTypeOf<Result>().toEqualTypeOf<
-    Promise<{
-      diff: () => Promise<void>;
-    }>
-  >();
+    type Diff = () => Promise<void>;
+    expectTypeOf<Result['diff']>().toEqualTypeOf<Diff>();
+
+    type Up = (_?: {
+      debug?: boolean;
+      onContainerFail?: (_: {
+        containerId: ContainerId;
+        containerDomain: ContainerDomain;
+        stageId: StageId;
+        error: Error;
+      }) => unknown;
+    }) => Promise<{
+      statuses: Record<StageId, Record<ContainerId, ContainerStatus>>;
+    }>;
+
+    expectTypeOf<Result['up']>().toEqualTypeOf<Up>();
+  }
 });
