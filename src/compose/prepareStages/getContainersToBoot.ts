@@ -19,6 +19,7 @@ const traverseContainers = (containers: AnyContainer[]) => {
   return { strictContainers: strict };
 };
 
+// also allows to avoid filter skipped containers after stage done
 const partitionOptionalDeps = (params: { container: AnyContainer; containersToBoot: Set<AnyContainer> }) => {
   const included: AnyContainer[] = [];
   const skipped: ContainerId[] = [];
@@ -37,6 +38,7 @@ const partitionOptionalDeps = (params: { container: AnyContainer; containersToBo
 const getContainersToBoot = <T extends AnyContainer[]>(inputContainers: T) => {
   const { strictContainers } = traverseContainers(inputContainers);
   const containersToBoot = new Set([...inputContainers, ...strictContainers]);
+  // container | skipped dependencies of the container
   const skippedContainers: Record<ContainerId, ContainerId[]> = {};
 
   for (const container of containersToBoot) {

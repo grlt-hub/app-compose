@@ -1,33 +1,24 @@
-import { createContainer } from './src/index';
+import { createRandomContainer } from '@randomContainer';
+import { compose } from './src';
 
-const user = createContainer({
-  id: 'user-entity',
-  domain: 'usr',
-  start: () => ({
-    api: { logout: () => new Promise((r) => r(true)) },
-  }),
+const y = createRandomContainer({
+  id: 'y',
+});
+const a = createRandomContainer({
+  id: 'a',
+});
+const b = createRandomContainer({
+  id: 'b',
+  optionalDependsOn: [a, y],
+});
+const c = createRandomContainer({
+  id: 'c',
+  dependsOn: [b],
+  optionalDependsOn: [y],
 });
 
-const accounts = createContainer({
-  id: 'accounts-entity',
-  domain: 'acc',
-  start: () => ({
-    api: { select: (x: string) => x },
-  }),
+const app = compose({
+  stages: [['x', [b, c]]],
 });
 
-const accountsList = createContainer({
-  id: 'accounts-list',
-  domain: 'acc',
-  start: () => ({
-    api: { list: [] },
-  }),
-});
-
-const avatarUpload = createContainer({
-  id: 'avatar-upload',
-  domain: 'usr',
-  start: () => ({
-    api: { upload: () => new Promise((r) => r(false)) },
-  }),
-});
+console.log(app);

@@ -1,16 +1,23 @@
 import type { ContainerId } from '@createContainer';
 import { prepareStages, type Stage } from './prepareStages';
+import { printSkippedContainers } from './printSkippedContainers';
 
 type Params = {
   stages: Stage[];
 };
 
-const compose = (params: Params) => {
+type Config = {
+  logSkippedContainers?: boolean;
+};
+
+const compose = (params: Params, config?: Config) => {
   const contaiderIds = new Set<ContainerId>();
 
   const stages = prepareStages({ stages: params.stages, contaiderIds });
 
-  // фильтрануть skipped по contaiderIds. если оно есть в запуске => не скипнуто :thinking_face:
+  if (config?.logSkippedContainers) {
+    printSkippedContainers(stages);
+  }
 
   return stages;
 
