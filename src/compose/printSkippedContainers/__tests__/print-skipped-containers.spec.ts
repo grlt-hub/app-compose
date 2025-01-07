@@ -1,4 +1,4 @@
-import { printSkippedContainers } from '../printSkippedContainers';
+import { printSkippedContainers } from '../index';
 
 describe('printSkippedContainers', () => {
   it('should not log anything if skipped is an empty object', () => {

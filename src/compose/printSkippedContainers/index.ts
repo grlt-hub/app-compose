@@ -1,6 +1,6 @@
 import type { ContainerId } from '@createContainer';
 import { LIBRARY_NAME } from '@shared';
-import type { StageId } from './prepareStages';
+import type { StageId } from '../prepareStages';
 
 const explanationMessage =
   'All skipped containers are optional. If they are expected to work, please include them in the list when calling `compose` function';
