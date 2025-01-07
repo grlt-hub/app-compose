@@ -1,8 +1,7 @@
 import type { AnyContainer, ContainerId } from '@createContainer';
 import type { Stage, StageId } from '@prepareStages';
-import { LIBRARY_NAME } from '@shared';
+import { LIBRARY_NAME, colors } from '@shared';
 import dedent from 'dedent';
-import c from 'picocolors';
 
 type Input = Stage[];
 type Output = {
@@ -29,13 +28,13 @@ const diff = (expectation: Input, reality: Output) => {
     const colorizedStage = containersToBoot.reduce<ContainerId[]>((acc, container, index) => {
       const exists = original[1].some((x) => x.id === container.id);
 
-      acc.push(exists ? container.id : c.bgGreen(container.id));
+      acc.push(exists ? container.id : colors.bgGreen(container.id));
 
       return acc;
     }, []);
 
     console.log(dedent`
-      - ${c.magenta(stageId)}:
+      - ${colors.magenta(stageId)}:
           input:  [ ${original[1].map((x) => x.id).join(', ')} ]
           output: [ ${colorizedStage.join(', ')} ]
     `);

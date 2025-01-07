@@ -27,8 +27,7 @@
     "effector": "23"
   },
   "dependencies": {
-    "dedent": "1",
-    "picocolors": "1"
+    "dedent": "1"
   },
   "publishConfig": {
     "access": "public"

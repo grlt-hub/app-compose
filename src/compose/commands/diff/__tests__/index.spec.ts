@@ -9,7 +9,7 @@ describe('diff cmd', () => {
   test('zero changes', async () => {
     const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
 
-    const a = createRandomContainer();
+    const a = createRandomContainer({});
     const b = createRandomContainer({
       dependsOn: [a],
     });
@@ -27,7 +27,7 @@ describe('diff cmd', () => {
       Stages:",
         ],
         [
-          "- x:
+          "- [35mx[39m:
           input:  [ ${a.id}, ${b.id}, ${c.id} ]
           output: [ ${a.id}, ${b.id}, ${c.id} ]",
         ],
@@ -56,9 +56,9 @@ describe('diff cmd', () => {
       Stages:",
         ],
         [
-          "- x:
+          "- [35mx[39m:
           input:  [ ${b.id}, ${c.id} ]
-          output: [ ${a.id}, ${b.id}, ${c.id} ]",
+          output: [ [42m${a.id}[49m, ${b.id}, ${c.id} ]",
         ],
       ]
     `);
