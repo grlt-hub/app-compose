@@ -9,10 +9,18 @@ describe('compose fn', () => {
   };
 
   {
-    //expectTypeOf<Params['length']>().toEqualTypeOf<1>();
+    expectTypeOf<Params['length']>().toEqualTypeOf<1 | 2>();
     expectTypeOf<Params[0]>().toEqualTypeOf<{
       stages: [string, NonEmptyTuple<AnyContainer>][];
     }>();
     expectTypeOf<Params[1]>().toEqualTypeOf<Config | undefined>();
   }
+
+  type Result = ReturnType<typeof compose>;
+
+  expectTypeOf<Result>().toEqualTypeOf<
+    Promise<{
+      diff: () => Promise<void>;
+    }>
+  >();
 });

@@ -1,6 +1,6 @@
 import type { ContainerId } from '@createContainer';
+import type { StageId } from '@prepareStages';
 import { LIBRARY_NAME } from '@shared';
-import type { StageId } from '../prepareStages';
 
 type Skipped = Record<ContainerId, ContainerId[]>;
 

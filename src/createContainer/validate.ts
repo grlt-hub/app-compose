@@ -1,6 +1,6 @@
 import { isEmpty, isNil } from '@shared';
 import dedent from 'dedent';
-import type { AnyContainer } from './types';
+import { type AnyContainer } from './types';
 
 type ValidateParams = Pick<AnyContainer, 'id' | 'domain' | 'dependsOn' | 'optionalDependsOn'>;
 

@@ -23,7 +23,8 @@
     "paths": {
       "@randomContainer": ["./src/compose/__fixtures__/createRandomContainer"],
       "@createContainer": ["./src/createContainer"],
-      "@shared": ["./src/shared"]
+      "@shared": ["./src/shared"],
+      "@prepareStages": ["./src/compose/prepareStages"]
     }
   }
 }

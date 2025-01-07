@@ -9,7 +9,8 @@ const a = createRandomContainer({
 });
 const b = createRandomContainer({
   id: 'b',
-  optionalDependsOn: [a, y],
+  dependsOn: [a],
+  optionalDependsOn: [y],
 });
 const c = createRandomContainer({
   id: 'c',
@@ -17,8 +18,8 @@ const c = createRandomContainer({
   optionalDependsOn: [y],
 });
 
-const app = compose({
-  stages: [['x', [b, c]]],
-});
-
-console.log(app);
+const app = (
+  await compose({
+    stages: [['x', [c, a]]],
+  })
+).diff();
