@@ -1,3 +1,5 @@
+/* v8 ignore start */
+
 const isNode = typeof process !== 'undefined' && process.versions && process.versions.node;
 
 const colors = {
