@@ -16,7 +16,7 @@ describe('container validation rules', () => {
 
     expect(() => createRandomContainer({ id: bId, dependsOn: [a], optionalDependsOn: [a] }))
       .toThrowErrorMatchingInlineSnapshot(`
-      [Error: Dependency conflict detected in container '${bId}':
+      [Error: Dependency conflict detected in container "${bId}":
       The following dependencies are listed as both required and optional: [${a.id}].
 
       Each dependency should be listed only once, as either required or optional.]

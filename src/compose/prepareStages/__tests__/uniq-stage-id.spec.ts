@@ -25,7 +25,8 @@ describe('container.id is uniq', () => {
       }),
     ).toThrowErrorMatchingInlineSnapshot(`
       [Error: [app-compose] Duplicate stage id detected: "x".
-            Each stage id must be unique. Please ensure that the stage "x" appears only once in the configuration.]
+
+      Each stage id must be unique. Please ensure that the stage "x" appears only once in the configuration.]
     `);
   });
 });

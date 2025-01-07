@@ -76,11 +76,12 @@ describe('prepareStages', () => {
       }),
     ).toThrowErrorMatchingInlineSnapshot(`
       [Error: [app-compose] Container with ID "a" is already included in a previous stage (up to stage "y").
-          This indicates an issue in the stage definitions provided to the compose function.
 
-          Suggested actions:
-          - Remove the container from the "y" stage in the compose configuration.
-          - Use the graph fn to verify container dependencies and resolve potential conflicts.]
+      This indicates an issue in the stage definitions provided to the compose function.
+
+      Suggested actions:
+        - Remove the container from the "y" stage in the compose configuration.
+        - Use the graph fn to verify container dependencies and resolve potential conflicts.]
     `);
   });
 });

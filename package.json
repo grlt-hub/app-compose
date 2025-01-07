@@ -26,6 +26,9 @@
   "peerDependencies": {
     "effector": "23"
   },
+  "dependencies": {
+    "dedent": "1"
+  },
   "publishConfig": {
     "access": "public"
   },

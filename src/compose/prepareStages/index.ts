@@ -1,6 +1,25 @@
 import { type AnyContainer, type ContainerId } from '@createContainer';
 import { LIBRARY_NAME, type NonEmptyTuple } from '@shared';
+import dedent from 'dedent';
 import { getContainersToBoot } from './getContainersToBoot';
+
+const ERROR = {
+  DUPLICATE_STAGE_ID: (sid: string) => dedent`
+  ${LIBRARY_NAME} Duplicate stage id detected: "${sid}".
+
+  Each stage id must be unique. Please ensure that the stage "${sid}" appears only once in the configuration.`,
+  DUPLICATE_CONTAINER_ID: (cid: string) => `${LIBRARY_NAME} Duplicate container ID found: ${cid}`,
+  ALREADY_PROCESSED: (
+    cid: string,
+    sid: string,
+  ) => dedent`${LIBRARY_NAME} Container with ID "${cid}" is already included in a previous stage (up to stage "${sid}").
+
+  This indicates an issue in the stage definitions provided to the compose function.
+
+  Suggested actions:
+    - Remove the container from the "${sid}" stage in the compose configuration.
+    - Use the graph fn to verify container dependencies and resolve potential conflicts.`,
+};
 
 type StageId = string;
 type Stage = [StageId, NonEmptyTuple<AnyContainer>];
@@ -10,10 +29,7 @@ const validateStageIds = (stages: Stage[]) => {
 
   for (const [id] of stages) {
     if (ids.has(id)) {
-      throw new Error(
-        `${LIBRARY_NAME} Duplicate stage id detected: "${id}".
-      Each stage id must be unique. Please ensure that the stage "${id}" appears only once in the configuration.`,
-      );
+      throw new Error(ERROR.DUPLICATE_STAGE_ID(id));
     }
 
     ids.add(id);
@@ -22,7 +38,7 @@ const validateStageIds = (stages: Stage[]) => {
 
 const addContainerId = (id: ContainerId, set: Set<ContainerId>) => {
   if (set.has(id)) {
-    throw new Error(`${LIBRARY_NAME} Duplicate container ID found: ${id}`);
+    throw new Error(ERROR.DUPLICATE_CONTAINER_ID(id));
   }
 
   set.add(id);
@@ -30,14 +46,7 @@ const addContainerId = (id: ContainerId, set: Set<ContainerId>) => {
 
 const checkAlreadyProcessed = (id: ContainerId, set: Set<ContainerId>, stageId: StageId) => {
   if (set.has(id)) {
-    throw new Error(
-      `${LIBRARY_NAME} Container with ID "${id}" is already included in a previous stage (up to stage "${stageId}").
-    This indicates an issue in the stage definitions provided to the compose function.
-
-    Suggested actions:
-    - Remove the container from the "${stageId}" stage in the compose configuration.
-    - Use the graph fn to verify container dependencies and resolve potential conflicts.`,
-    );
+    throw new Error(ERROR.ALREADY_PROCESSED(id, stageId));
   }
 };
 
