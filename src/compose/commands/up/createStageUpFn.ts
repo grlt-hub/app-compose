@@ -1,12 +1,6 @@
-import {
-  CONTAINER_STATUS,
-  type AnyContainer,
-  type ContainerDomain,
-  type ContainerId,
-  type ContainerStatus,
-} from '@createContainer';
+import { CONTAINER_STATUS, type AnyContainer, type ContainerId, type ContainerStatus } from '@createContainer';
 import type { StageId } from '@prepareStages';
-import { clearNode, combine, createDomain, createEffect, launch, sample } from 'effector';
+import { clearNode, combine, createDomain, launch, sample } from 'effector';
 import { normalizeConfig, type Config } from './normalizeConfig';
 
 const statusIs = {
@@ -17,32 +11,29 @@ const statusIs = {
   idle: (s: ContainerStatus) => s === CONTAINER_STATUS.idle,
 };
 
-const defaultFailError = new Error('Strict dependency failed');
-
 type Stage = {
   id: StageId;
   containersToBoot: AnyContainer[];
 };
 
+type APIs = Record<string, Awaited<ReturnType<AnyContainer['start']>>['api']>;
+
 type UpResult = {
-  ok: boolean;
-  data: {
-    statuses: Record<ContainerId, ContainerStatus>;
-    stageId: StageId;
-  };
+  hasFailures: boolean;
+  containerStatuses: Record<ContainerId, ContainerStatus>;
 };
 
 const createStageUpFn = (__config?: Config) => {
   const config = normalizeConfig(__config);
-  const onContainerFailFx = createEffect(config.onContainerFail);
 
-  let apis: Record<string, Awaited<ReturnType<AnyContainer['start']>>['api']> = {};
-
-  const stageUpFn = async (stage: Stage): Promise<UpResult> => {
+  return async (stage: Stage, apis: APIs): Promise<UpResult> => {
     const domain = createDomain(`up.${stage.id}`);
+    const containerFailFx = domain.createEffect(config.onContainerFail);
     let nodesToClear: Parameters<typeof clearNode>[0][] = [domain];
 
-    const containersStatuses = stage.containersToBoot.reduce<Record<ContainerId, AnyContainer['$status']>>((acc, x) => {
+    type ContainersStatuses = Record<ContainerId, AnyContainer['$status']>;
+
+    const containersStatuses = stage.containersToBoot.reduce<ContainersStatuses>((acc, x) => {
       acc[x.id] = x.$status;
       return acc;
     }, {});
@@ -96,27 +87,15 @@ const createStageUpFn = (__config?: Config) => {
         sample({
           clock: [startFx.fail, enableFx.fail],
           fn: (x) => ({
+            container: { id: container.id, domain: container.domain },
             error: x.error,
-            containerId: container.id,
-            containerDomain: container.domain,
             stageId: stage.id,
           }),
-          target: onContainerFailFx,
+          target: containerFailFx,
         });
 
         $strictDepsResolving.watch((s) => {
-          if (statusIs.fail(s)) {
-            launch(container.$status, s);
-            onContainerFailFx({
-              containerId: container.id,
-              containerDomain: container.domain,
-              stageId: stage.id,
-              error: defaultFailError,
-            });
-            return;
-          }
-
-          if (statusIs.off(s)) {
+          if (statusIs.fail(s) || statusIs.off(s)) {
             launch(container.$status, s);
           }
         });
@@ -129,33 +108,21 @@ const createStageUpFn = (__config?: Config) => {
       }),
     );
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       $stageResult.watch((x) => {
         if (!x.done) return;
 
         nodesToClear.forEach((x) => clearNode(x, { deep: true }));
         nodesToClear = [];
 
-        const res = {
-          ok: !Object.values(x.statuses).some(statusIs.fail),
-          data: {
-            statuses: x.statuses,
-            stageId: stage.id,
-          },
+        const result = {
+          hasFailures: Object.values(x.statuses).some(statusIs.fail),
+          containerStatuses: x.statuses,
         };
 
-        if (!res.ok) {
-          reject(res);
-        }
-
-        resolve(res);
+        resolve(result);
       });
     });
-  };
-
-  return {
-    stageUpFn,
-    apis,
   };
 };
 

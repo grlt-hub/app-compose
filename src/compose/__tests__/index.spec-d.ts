@@ -13,6 +13,7 @@ describe('compose fn', () => {
     expectTypeOf<Params['length']>().toEqualTypeOf<1 | 2>();
     expectTypeOf<Params[0]>().toEqualTypeOf<{
       stages: [string, NonEmptyTuple<AnyContainer>][];
+      critical?: AnyContainer[];
     }>();
     expectTypeOf<Params[1]>().toEqualTypeOf<Config | undefined>();
   }
@@ -26,13 +27,13 @@ describe('compose fn', () => {
     type Up = (_?: {
       debug?: boolean;
       onContainerFail?: (_: {
-        containerId: ContainerId;
-        containerDomain: ContainerDomain;
+        container: { id: ContainerId; domain: ContainerDomain };
         stageId: StageId;
         error: Error;
       }) => unknown;
     }) => Promise<{
-      statuses: Record<StageId, Record<ContainerId, ContainerStatus>>;
+      hasFailures: boolean;
+      stages: Record<StageId, { containerStatuses: Record<ContainerId, ContainerStatus>; hasFailures: boolean }>;
     }>;
 
     expectTypeOf<Result['up']>().toEqualTypeOf<Up>();

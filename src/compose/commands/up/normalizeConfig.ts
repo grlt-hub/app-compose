@@ -5,8 +5,7 @@ import { LIBRARY_NAME } from '@shared';
 type Config = {
   debug?: boolean;
   onContainerFail?: (_: {
-    containerId: ContainerId;
-    containerDomain: ContainerDomain;
+    container: { id: ContainerId; domain: ContainerDomain };
     stageId: StageId;
     error: Error;
   }) => unknown;
@@ -14,7 +13,7 @@ type Config = {
 
 const defaultOnContainerFail: Config['onContainerFail'] = (x) => {
   console.error(
-    `${LIBRARY_NAME} Container "${x.containerId}" failed with error: ${x.error.message} on stage "${x.stageId}"`,
+    `${LIBRARY_NAME} Container "${x.container.id}" failed with error: ${x.error.message} on stage "${x.stageId}"`,
   );
   if (x.error.stack) {
     console.error(`Stack trace:\n${x.error.stack}`);
@@ -22,6 +21,6 @@ const defaultOnContainerFail: Config['onContainerFail'] = (x) => {
 };
 
 const normalizeConfig = (config: Config | undefined): Required<NonNullable<Config>> =>
-  Object.assign({ apis: false, debug: false, onContainerFail: defaultOnContainerFail }, config ?? {});
+  Object.assign({ debug: false, onContainerFail: defaultOnContainerFail }, config ?? {});
 
 export { normalizeConfig, type Config };

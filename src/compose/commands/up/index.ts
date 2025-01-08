@@ -1,5 +1,6 @@
-import { type AnyContainer } from '@createContainer';
+import { CONTAINER_STATUS, type AnyContainer } from '@createContainer';
 import { type StageId } from '@prepareStages';
+import { isNil } from '@shared';
 import { clearNode } from 'effector';
 import { createStageUpFn } from './createStageUpFn';
 
@@ -8,26 +9,49 @@ type Stages = {
   containersToBoot: AnyContainer[];
 }[];
 
+type Params = {
+  stages: Stages;
+  critical?: AnyContainer[];
+};
+
 type Config = Parameters<typeof createStageUpFn>[0];
 
-// tentions:
-// - stage failed -> throw error with stageId as parameter
-// - return api but fully optional. check types
-// - tests :)
+// todo: critical as scheme (not a plain list)
+// todo: tests :)
+const up = async (params: Params, config: Config) => {
+  const stageUpFn = createStageUpFn(config);
+  let apis: Parameters<typeof stageUpFn>[1] = {};
 
-const up = async (stages: Stages, config: Config) => {
-  const { stageUpFn } = createStageUpFn(config);
-  const statuses: Record<StageId, Awaited<ReturnType<typeof stageUpFn>>['data']['statuses']> = {};
+  const executedStages: Record<StageId, Awaited<ReturnType<typeof stageUpFn>>> = {};
 
-  for (const stage of stages) {
-    const stageUpResult = await stageUpFn(stage);
+  for (const stage of params.stages) {
+    const stageUpResult = await stageUpFn(stage, apis);
 
-    statuses[stage.id] = stageUpResult.data.statuses;
+    executedStages[stage.id] = stageUpResult;
+
+    const failedCritialContainer = params.critical?.find((c) => {
+      const status = stageUpResult.containerStatuses[c.id];
+
+      return isNil(status) ? false : status !== CONTAINER_STATUS.done;
+    });
+
+    if (failedCritialContainer) {
+      const { throwStartupFailedError } = await import('./startupFailedError');
+
+      throwStartupFailedError({
+        failedCritialContainer,
+        stageId: stage.id,
+        log: executedStages,
+      });
+    }
   }
 
-  stages.forEach((s) => s.containersToBoot.forEach((c) => clearNode(c.$status)));
+  params.stages.forEach((s) => s.containersToBoot.forEach((c) => clearNode(c.$status, { deep: true })));
+  apis = {};
 
-  return { statuses };
+  const hasFailures = Object.values(executedStages).some((x) => x.hasFailures);
+
+  return { hasFailures, stages: executedStages };
 };
 
 export { up };
