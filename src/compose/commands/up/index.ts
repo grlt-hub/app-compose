@@ -1,7 +1,7 @@
-import { CONTAINER_STATUS, type AnyContainer } from '@createContainer';
+import { CONTAINER_STATUS, type AnyContainer, type ContainerId } from '@createContainer';
 import { type StageId } from '@prepareStages';
 import { isNil } from '@shared';
-import { clearNode } from 'effector';
+import { clearNode, type StoreValue } from 'effector';
 import { createStageUpFn } from './createStageUpFn';
 
 type Stages = {
@@ -11,12 +11,29 @@ type Stages = {
 
 type Params = {
   stages: Stages;
-  critical?: AnyContainer[];
+  required?: AnyContainer[] | 'all';
 };
 
 type Config = Parameters<typeof createStageUpFn>[0];
 
-// todo: critical as scheme (not a plain list)
+// - required "or" pattern
+
+const findFailedRequiredContainerId = (
+  statuses: Record<ContainerId, StoreValue<AnyContainer['$status']>>,
+  required: Params['required'],
+) => {
+  if (required === 'all') {
+    return Object.keys(statuses).find((id) => statuses[id] !== CONTAINER_STATUS.done);
+  }
+
+  return required?.find((c) => {
+    const status = statuses[c.id];
+
+    return isNil(status) ? false : status !== CONTAINER_STATUS.done;
+  })?.id;
+};
+
+// todo: required as scheme (not a plain list)
 // todo: tests :)
 const up = async (params: Params, config: Config) => {
   const stageUpFn = createStageUpFn(config);
@@ -29,17 +46,13 @@ const up = async (params: Params, config: Config) => {
 
     executedStages[stage.id] = stageUpResult;
 
-    const failedCritialContainer = params.critical?.find((c) => {
-      const status = stageUpResult.containerStatuses[c.id];
+    const failedRequiredContainerId = findFailedRequiredContainerId(stageUpResult.containerStatuses, params.required);
 
-      return isNil(status) ? false : status !== CONTAINER_STATUS.done;
-    });
-
-    if (failedCritialContainer) {
+    if (failedRequiredContainerId) {
       const { throwStartupFailedError } = await import('./startupFailedError');
 
       throwStartupFailedError({
-        failedCritialContainer,
+        containerId: failedRequiredContainerId,
         stageId: stage.id,
         log: executedStages,
       });

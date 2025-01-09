@@ -6,7 +6,7 @@ type UpFn = typeof up;
 
 type Params = {
   stages: Stage[];
-  critical?: Parameters<UpFn>[0]['critical'];
+  required?: Parameters<UpFn>[0]['required'];
 };
 
 type Config = {
@@ -26,7 +26,7 @@ const compose = async (params: Params, config?: Config) => {
     diff: async () => {
       (await import('./commands/diff')).diff(params.stages, stages);
     },
-    up: (config?: Parameters<UpFn>[1]) => up({ stages, critical: params.critical }, config),
+    up: (config?: Parameters<UpFn>[1]) => up({ stages, required: params.required }, config),
   };
 };
 

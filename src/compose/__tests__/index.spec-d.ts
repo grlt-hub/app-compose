@@ -13,7 +13,7 @@ describe('compose fn', () => {
     expectTypeOf<Params['length']>().toEqualTypeOf<1 | 2>();
     expectTypeOf<Params[0]>().toEqualTypeOf<{
       stages: [string, NonEmptyTuple<AnyContainer>][];
-      critical?: AnyContainer[];
+      required?: AnyContainer[] | 'all';
     }>();
     expectTypeOf<Params[1]>().toEqualTypeOf<Config | undefined>();
   }
