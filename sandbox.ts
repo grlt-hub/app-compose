@@ -10,7 +10,7 @@ const notifications = createRandomContainer({
 });
 const accountFeatures = createRandomContainer({
   id: 'accountFeatures',
-  // dependsOn: [notifications],
+  dependsOn: [notifications],
   // optionalDependsOn: [notifications],
   start: () => ({ api: { f: () => false } }),
 });
@@ -34,13 +34,13 @@ const hcFeatures = createRandomContainer({ id: 'hcFeatures' });
   const cmd = await compose({
     stages: [
       ['entities-stage', [entities]],
-      //   ['notifications-stage', [notifications]],
+      ['notifications-stage', [notifications]],
       ['accountFeatures-stage', [accountFeatures]],
       ['tradingFeatures-stage', [tradingFeatures]],
       ['profileFeatures-stage', [profileFeatures]],
       ['hcFeatures-stage', [hcFeatures]],
     ],
-    required: [entities, accountFeatures, tradingFeatures],
+    required: [entities, tradingFeatures, [accountFeatures, profileFeatures, hcFeatures]],
     // required: 'all',
   });
 

@@ -4,15 +4,15 @@ import { LIBRARY_NAME } from '@shared';
 import dedent from 'dedent';
 
 type Params = {
-  containerId: ContainerId;
+  id: ContainerId | ContainerId[];
   stageId: StageId;
   log: Record<string, Record<string, unknown>>;
 };
 
-const throwStartupFailedError = ({ containerId, stageId, log }: Params) => {
+const throwStartupFailedError = ({ id, stageId, log }: Params) => {
   throw new Error(
     dedent`${LIBRARY_NAME} Application startup failed.
-    Required container "${containerId}" did not up in stage "${stageId}".
+    Required container(s) "${id}" did not up in stage "${stageId}".
 
     Startup Log:
     ${JSON.stringify(JSON.stringify(log, null, 2))
@@ -23,9 +23,9 @@ const throwStartupFailedError = ({ containerId, stageId, log }: Params) => {
       .replace(/\\n\}/g, '')}
 
     Recommendations:
-      - Verify if "${containerId}" is truly required.
-      - If not, consider removing it from the required list in "up.required".
-      - Check that all its dependencies are correct and its logic works as expected.
+      - Verify if the container(s) "${id}" are truly required..
+      - If not, consider removing them from the required list in "up.required".
+      - Ensure all dependencies for the container(s) are correct and their logic works as expected.
   `,
   );
 };

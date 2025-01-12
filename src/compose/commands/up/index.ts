@@ -1,8 +1,8 @@
-import { CONTAINER_STATUS, type AnyContainer, type ContainerId } from '@createContainer';
+import { type AnyContainer, type ContainerId } from '@createContainer';
 import { type StageId } from '@prepareStages';
-import { isNil } from '@shared';
-import { clearNode, type StoreValue } from 'effector';
+import { clearNode } from 'effector';
 import { createStageUpFn } from './createStageUpFn';
+import { validateStageUp } from './validateStageUp';
 
 type Stages = {
   id: StageId;
@@ -11,29 +11,12 @@ type Stages = {
 
 type Params = {
   stages: Stages;
-  required?: AnyContainer[] | 'all';
+  required?: Parameters<typeof validateStageUp>[0]['required'];
 };
 
 type Config = Parameters<typeof createStageUpFn>[0];
 
-// - required "or" pattern
-
-const findFailedRequiredContainerId = (
-  statuses: Record<ContainerId, StoreValue<AnyContainer['$status']>>,
-  required: Params['required'],
-) => {
-  if (required === 'all') {
-    return Object.keys(statuses).find((id) => statuses[id] !== CONTAINER_STATUS.done);
-  }
-
-  return required?.find((c) => {
-    const status = statuses[c.id];
-
-    return isNil(status) ? false : status !== CONTAINER_STATUS.done;
-  })?.id;
-};
-
-// todo: required as scheme (not a plain list)
+// todo: verify required with containerToBootstrap. required must be in containerToBootstrap
 // todo: tests :)
 const up = async (params: Params, config: Config) => {
   const stageUpFn = createStageUpFn(config);
@@ -46,13 +29,16 @@ const up = async (params: Params, config: Config) => {
 
     executedStages[stage.id] = stageUpResult;
 
-    const failedRequiredContainerId = findFailedRequiredContainerId(stageUpResult.containerStatuses, params.required);
+    const validationResult = validateStageUp({
+      required: params.required,
+      containerStatuses: stageUpResult.containerStatuses,
+    });
 
-    if (failedRequiredContainerId) {
+    if (!validationResult.ok) {
       const { throwStartupFailedError } = await import('./startupFailedError');
 
       throwStartupFailedError({
-        containerId: failedRequiredContainerId,
+        id: validationResult.id,
         stageId: stage.id,
         log: executedStages,
       });
@@ -62,9 +48,9 @@ const up = async (params: Params, config: Config) => {
   params.stages.forEach((s) => s.containersToBoot.forEach((c) => clearNode(c.$status, { deep: true })));
   apis = {};
 
-  const hasFailures = Object.values(executedStages).some((x) => x.hasFailures);
+  const allSucceeded = Object.values(executedStages).some((x) => x.allSucceeded);
 
-  return { hasFailures, stages: executedStages };
+  return { allSucceeded, stages: executedStages };
 };
 
 export { up };

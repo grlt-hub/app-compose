@@ -4,11 +4,12 @@ import { clearNode, combine, createDomain, launch, sample } from 'effector';
 import { normalizeConfig, type Config } from './normalizeConfig';
 
 const statusIs = {
-  off: (s: ContainerStatus) => s === CONTAINER_STATUS.off,
-  fail: (s: ContainerStatus) => s === CONTAINER_STATUS.fail,
-  pending: (s: ContainerStatus) => s === CONTAINER_STATUS.pending,
-  done: (s: ContainerStatus) => s === CONTAINER_STATUS.done,
-  idle: (s: ContainerStatus) => s === CONTAINER_STATUS.idle,
+  off: (s: ContainerStatus | undefined) => s === CONTAINER_STATUS.off,
+  fail: (s: ContainerStatus | undefined) => s === CONTAINER_STATUS.fail,
+  pending: (s: ContainerStatus | undefined) => s === CONTAINER_STATUS.pending,
+  done: (s: ContainerStatus | undefined) => s === CONTAINER_STATUS.done,
+  idle: (s: ContainerStatus | undefined) => s === CONTAINER_STATUS.idle,
+  failedOrOff: (s: ContainerStatus | undefined) => s === CONTAINER_STATUS.fail || s === CONTAINER_STATUS.off,
 };
 
 type Stage = {
@@ -19,7 +20,7 @@ type Stage = {
 type APIs = Record<string, Awaited<ReturnType<AnyContainer['start']>>['api']>;
 
 type UpResult = {
-  hasFailures: boolean;
+  allSucceeded: boolean;
   containerStatuses: Record<ContainerId, ContainerStatus>;
 };
 
@@ -116,7 +117,7 @@ const createStageUpFn = (__config?: Config) => {
         nodesToClear = [];
 
         const result = {
-          hasFailures: Object.values(x.statuses).some(statusIs.fail),
+          allSucceeded: Object.values(x.statuses).every(x => !statusIs.fail(x)),
           containerStatuses: x.statuses,
         };
 
@@ -126,4 +127,4 @@ const createStageUpFn = (__config?: Config) => {
   };
 };
 
-export { createStageUpFn };
+export { createStageUpFn, statusIs };
