@@ -16,8 +16,6 @@ type Params = {
 
 type Config = Parameters<typeof createStageUpFn>[0];
 
-// todo: verify required with containerToBootstrap. required must be in containerToBootstrap
-// todo: tests :)
 const up = async (params: Params, config: Config) => {
   const stageUpFn = createStageUpFn(config);
   let apis: Parameters<typeof stageUpFn>[1] = {};
