@@ -1,7 +1,6 @@
 import type { AnyContainer, ContainerId } from '@createContainer';
 import type { Stage, StageId } from '@prepareStages';
 import { LIBRARY_NAME, colors } from '@shared';
-import dedent from 'dedent';
 
 type Input = Stage[];
 type Output = {
@@ -10,13 +9,7 @@ type Output = {
 }[];
 
 const diff = (expectation: Input, reality: Output) => {
-  console.log(
-    dedent`
-    ${LIBRARY_NAME} | diff command
-
-    Stages:
-    `,
-  );
+  console.log(`${LIBRARY_NAME} | diff command` + '\n\n' + 'Stages:');
 
   reality.forEach(({ id: stageId, containersToBoot }) => {
     const original = expectation.find((x) => x[0] === stageId);
@@ -33,11 +26,13 @@ const diff = (expectation: Input, reality: Output) => {
       return acc;
     }, []);
 
-    console.log(dedent`
-      - ${colors.magenta(stageId)}:
-          input:  [ ${original[1].map((x) => x.id).join(', ')} ]
-          output: [ ${colorizedStage.join(', ')} ]
-    `);
+    console.log(
+      `- ${colors.magenta(stageId)}:` +
+        '\n' +
+        `    input:  [ ${original[1].map((x) => x.id).join(', ')} ]` +
+        '\n' +
+        `    output: [ ${colorizedStage.join(', ')} ]`,
+    );
   });
 };
 

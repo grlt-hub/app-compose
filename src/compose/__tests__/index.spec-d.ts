@@ -13,7 +13,7 @@ describe('compose fn', () => {
     expectTypeOf<Params['length']>().toEqualTypeOf<1 | 2>();
     expectTypeOf<Params[0]>().toEqualTypeOf<{
       stages: [string, NonEmptyTuple<AnyContainer>][];
-      required?: AnyContainer[] | 'all';
+      required?: (AnyContainer | NonEmptyTuple<AnyContainer>)[] | 'all';
     }>();
     expectTypeOf<Params[1]>().toEqualTypeOf<Config | undefined>();
   }
@@ -32,8 +32,8 @@ describe('compose fn', () => {
         error: Error;
       }) => unknown;
     }) => Promise<{
-      hasFailures: boolean;
-      stages: Record<StageId, { containerStatuses: Record<ContainerId, ContainerStatus>; hasFailures: boolean }>;
+      allSucceeded: boolean;
+      stages: Record<StageId, { containerStatuses: Record<ContainerId, ContainerStatus>; allSucceeded: boolean }>;
     }>;
 
     expectTypeOf<Result['up']>().toEqualTypeOf<Up>();

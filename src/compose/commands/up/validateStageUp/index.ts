@@ -1,9 +1,9 @@
 import { CONTAINER_STATUS, type AnyContainer, type ContainerId } from '@createContainer';
 import { isNil, type NonEmptyTuple } from '@shared';
-import { statusIs, type createStageUpFn } from './createStageUpFn';
+import { statusIs, type createStageUpFn } from '../createStageUpFn';
 
 type Params = {
-  required: (AnyContainer | NonEmptyTuple<AnyContainer>)[] | 'all' | undefined;
+  required: (AnyContainer | NonEmptyTuple<AnyContainer>)[] | 'all';
 } & Pick<Awaited<ReturnType<ReturnType<typeof createStageUpFn>>>, 'containerStatuses'>;
 
 const getGroupStatus = (group: AnyContainer[]) => {
@@ -22,8 +22,6 @@ type Result = { ok: true } | { ok: false; id: ContainerId[] };
 const SUCCESS: Result = { ok: true };
 
 const validateStageUp = (params: Params): Result => {
-  if (isNil(params.required)) return SUCCESS;
-
   if (params.required === 'all') {
     const id = Object.entries(params.containerStatuses).find(([_, status]) => statusIs.failedOrOff(status))?.[0];
 
@@ -47,4 +45,5 @@ const validateStageUp = (params: Params): Result => {
   return isNil(result) ? SUCCESS : { ok: false, id: typeof result === 'string' ? [result] : result };
 };
 
+export { throwStartupFailedError } from './startupFailedError';
 export { validateStageUp };

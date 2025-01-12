@@ -1,8 +1,9 @@
 import { type AnyContainer, type ContainerId } from '@createContainer';
 import { type StageId } from '@prepareStages';
+import { isNil } from '@shared';
 import { clearNode } from 'effector';
 import { createStageUpFn } from './createStageUpFn';
-import { validateStageUp } from './validateStageUp';
+import { throwStartupFailedError, validateStageUp } from './validateStageUp';
 
 type Stages = {
   id: StageId;
@@ -11,7 +12,7 @@ type Stages = {
 
 type Params = {
   stages: Stages;
-  required?: Parameters<typeof validateStageUp>[0]['required'];
+  required?: Parameters<typeof validateStageUp>[0]['required'] | undefined;
 };
 
 type Config = Parameters<typeof createStageUpFn>[0];
@@ -27,14 +28,16 @@ const up = async (params: Params, config: Config) => {
 
     executedStages[stage.id] = stageUpResult;
 
+    if (isNil(params.required)) {
+      continue;
+    }
+
     const validationResult = validateStageUp({
       required: params.required,
       containerStatuses: stageUpResult.containerStatuses,
     });
 
     if (!validationResult.ok) {
-      const { throwStartupFailedError } = await import('./startupFailedError');
-
       throwStartupFailedError({
         id: validationResult.id,
         stageId: stage.id,

@@ -13,21 +13,18 @@
     "@size-limit/preset-small-lib": "11.1.6",
     "@vitest/coverage-v8": "2.1.8",
     "clean-publish": "5.1.0",
-    "knip": "5.41.1",
+    "knip": "5.42.0",
     "prettier": "3.4.2",
     "prettier-plugin-organize-imports": "4.1.0",
     "size-limit": "11.1.6",
     "tslib": "2.8.1",
     "tsup": "8.3.5",
-    "typescript": "5.7.2",
+    "typescript": "5.7.3",
     "vite-tsconfig-paths": "5.1.4",
     "vitest": "2.1.8"
   },
   "peerDependencies": {
     "effector": "23"
-  },
-  "dependencies": {
-    "dedent": "1"
   },
   "publishConfig": {
     "access": "public"
@@ -60,6 +57,8 @@
     "composable-framework",
     "module-integration",
     "project-structure",
-    "container-composition"
+    "container-composition",
+    "frontend di",
+    "front-end di"
   ]
 }
