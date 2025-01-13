@@ -12,7 +12,7 @@ type Stages = {
 
 type Params = {
   stages: Stages;
-  required?: Parameters<typeof validateStageUp>[0]['required'] | undefined;
+  required?: Parameters<typeof validateStageUp>[0]['required'];
 };
 
 type Config = Parameters<typeof createStageUpFn>[0];
@@ -27,10 +27,6 @@ const up = async (params: Params, config: Config) => {
     const stageUpResult = await stageUpFn(stage, apis);
 
     executedStages[stage.id] = stageUpResult;
-
-    if (isNil(params.required)) {
-      continue;
-    }
 
     const validationResult = validateStageUp({
       required: params.required,
