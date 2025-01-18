@@ -1,6 +1,5 @@
 import { type AnyContainer, type ContainerId } from '@createContainer';
 import { type StageId } from '@prepareStages';
-import { isNil } from '@shared';
 import { clearNode } from 'effector';
 import { createStageUpFn } from './createStageUpFn';
 import { throwStartupFailedError, validateStageUp } from './validateStageUp';
@@ -16,12 +15,13 @@ type Params = {
 };
 
 type Config = Parameters<typeof createStageUpFn>[0];
+type StageUpFn = ReturnType<typeof createStageUpFn>;
 
 const up = async (params: Params, config: Config) => {
   const stageUpFn = createStageUpFn(config);
-  let apis: Parameters<typeof stageUpFn>[1] = {};
+  let apis: Parameters<StageUpFn>[1] = {};
 
-  const executedStages: Record<StageId, Awaited<ReturnType<typeof stageUpFn>>> = {};
+  const executedStages: Record<StageId, Awaited<ReturnType<StageUpFn>>> = {};
 
   for (const stage of params.stages) {
     const stageUpResult = await stageUpFn(stage, apis);

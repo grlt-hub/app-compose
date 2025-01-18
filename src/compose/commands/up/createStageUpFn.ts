@@ -117,7 +117,7 @@ const createStageUpFn = (__config?: Config) => {
         nodesToClear = [];
 
         const result = {
-          allSucceeded: Object.values(x.statuses).every(x => !statusIs.fail(x)),
+          allSucceeded: Object.values(x.statuses).every((x) => !statusIs.fail(x)),
           containerStatuses: x.statuses,
         };
 
