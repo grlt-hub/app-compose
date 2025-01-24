@@ -1,5 +1,5 @@
 import { createContainer } from '../index';
-import type { ExtractEnableFn, ExtractstartFn, ParameterCount } from './types';
+import type { ExtractEnableFn, ExtractstartFn } from './types';
 
 const __ = {
   a: createContainer({
@@ -35,13 +35,13 @@ describe('void | void', () => {
 
     {
       type startFn = ExtractstartFn<Container>;
-      expectTypeOf<ParameterCount<startFn>>().toEqualTypeOf<0>();
+      expectTypeOf<Parameters<startFn>>().toEqualTypeOf<[]>();
     }
 
     {
       type EnableFn = (() => Promise<boolean> | boolean) | undefined;
 
-      expectTypeOf<ParameterCount<NonNullable<EnableFn>>>().toEqualTypeOf<0>();
+      expectTypeOf<Parameters<NonNullable<EnableFn>>>().toEqualTypeOf<[]>();
       expectTypeOf<EnableFn>().toEqualTypeOf<ExtractEnableFn<Container>>();
     }
   });
@@ -51,18 +51,16 @@ describe('dep | void', () => {
   test('one | void', () => {
     type Container = typeof createContainer<'_', '_', {}, [typeof __.a]>;
 
-    type Deps = { [__.a.id]: { t: () => true } };
+    type API = { [__.a.id]: { t: () => true } };
 
     {
       type startFn = ExtractstartFn<Container>;
 
-      expectTypeOf<ParameterCount<startFn>>().toEqualTypeOf<1>();
-      expectTypeOf<Deps>().toEqualTypeOf<Parameters<startFn>[0]>();
+      expectTypeOf<API>().toEqualTypeOf<Parameters<startFn>[0]>();
     }
     {
-      type EnableFn = ((d: Deps) => Promise<boolean> | boolean) | undefined;
+      type EnableFn = ((d: API) => Promise<boolean> | boolean) | undefined;
 
-      expectTypeOf<ParameterCount<NonNullable<EnableFn>>>().toEqualTypeOf<1>();
       expectTypeOf<EnableFn>().toEqualTypeOf<ExtractEnableFn<Container>>();
     }
   });
@@ -74,18 +72,16 @@ describe('dep | void', () => {
       [typeof __.a, typeof __.b, typeof __.c, typeof __.withEmptyAPI]
     >;
 
-    type Deps = { [__.a.id]: { t: () => true }; [__.b.id]: { f: () => false }; [__.c.id]: { nil: null } };
+    type API = { [__.a.id]: { t: () => true }; [__.b.id]: { f: () => false }; [__.c.id]: { nil: null } };
 
     {
       type startFn = ExtractstartFn<Container>;
 
-      expectTypeOf<ParameterCount<startFn>>().toEqualTypeOf<1>();
-      expectTypeOf<Deps>().toEqualTypeOf<Parameters<startFn>[0]>();
+      expectTypeOf<API>().toEqualTypeOf<Parameters<startFn>[0]>();
     }
     {
-      type EnableFn = ((d: Deps) => Promise<boolean> | boolean) | undefined;
+      type EnableFn = ((d: API) => Promise<boolean> | boolean) | undefined;
 
-      expectTypeOf<ParameterCount<NonNullable<EnableFn>>>().toEqualTypeOf<1>();
       expectTypeOf<EnableFn>().toEqualTypeOf<ExtractEnableFn<Container>>();
     }
   });
@@ -97,18 +93,16 @@ describe('deps | optDeps', () => {
 
     type Deps = { [__.a.id]: { t: () => true } };
     type OptDeps = { [__.b.id]?: { f: () => false } };
+    type API = Deps & OptDeps;
 
     {
       type startFn = ExtractstartFn<Container>;
 
-      expectTypeOf<ParameterCount<startFn>>().toEqualTypeOf<2>();
-      expectTypeOf<Deps>().toEqualTypeOf<Parameters<startFn>[0]>();
-      expectTypeOf<OptDeps>().toEqualTypeOf<Parameters<startFn>[1]>();
+      expectTypeOf<API>().toEqualTypeOf<Parameters<startFn>[0]>();
     }
     {
-      type EnableFn = ((d: Deps, o: OptDeps) => Promise<boolean> | boolean) | undefined;
+      type EnableFn = ((_: API) => Promise<boolean> | boolean) | undefined;
 
-      expectTypeOf<ParameterCount<NonNullable<EnableFn>>>().toEqualTypeOf<2>();
       expectTypeOf<EnableFn>().toEqualTypeOf<ExtractEnableFn<Container>>();
     }
   });
@@ -124,19 +118,17 @@ describe('deps | optDeps', () => {
 
     type Deps = { [__.a.id]: { t: () => true } };
     type OptDeps = { [__.b.id]?: { f: () => false }; [__.c.id]?: { nil: null } };
+    type API = Deps & OptDeps;
 
     {
       type startFn = ExtractstartFn<Container>;
 
-      expectTypeOf<ParameterCount<startFn>>().toEqualTypeOf<2>();
-      expectTypeOf<Deps>().toEqualTypeOf<Parameters<startFn>[0]>();
-      expectTypeOf<OptDeps>().toEqualTypeOf<Parameters<startFn>[1]>();
+      expectTypeOf<API>().toEqualTypeOf<Parameters<startFn>[0]>();
     }
 
     {
-      type EnableFn = ((d: Deps, o: OptDeps) => Promise<boolean> | boolean) | undefined;
+      type EnableFn = ((_: API) => Promise<boolean> | boolean) | undefined;
 
-      expectTypeOf<ParameterCount<NonNullable<EnableFn>>>().toEqualTypeOf<2>();
       expectTypeOf<EnableFn>().toEqualTypeOf<ExtractEnableFn<Container>>();
     }
   });
@@ -152,19 +144,17 @@ describe('deps | optDeps', () => {
 
     type Deps = { [__.a.id]: { t: () => true }; [__.b.id]: { f: () => false } };
     type OptDeps = { [__.c.id]?: { nil: null }; [__.d.id]?: { __: undefined } };
+    type API = Deps & OptDeps;
 
     {
       type startFn = ExtractstartFn<Container>;
 
-      expectTypeOf<ParameterCount<startFn>>().toEqualTypeOf<2>();
-      expectTypeOf<Deps>().toEqualTypeOf<Parameters<startFn>[0]>();
-      expectTypeOf<OptDeps>().toEqualTypeOf<Parameters<startFn>[1]>();
+      expectTypeOf<API>().toEqualTypeOf<Parameters<startFn>[0]>();
     }
 
     {
-      type EnableFn = ((d: Deps, o: OptDeps) => Promise<boolean> | boolean) | undefined;
+      type EnableFn = ((_: API) => Promise<boolean> | boolean) | undefined;
 
-      expectTypeOf<ParameterCount<NonNullable<EnableFn>>>().toEqualTypeOf<2>();
       expectTypeOf<EnableFn>().toEqualTypeOf<ExtractEnableFn<Container>>();
     }
   });
@@ -174,28 +164,23 @@ describe('void | optDeps', () => {
   test('void | one', () => {
     type Container = typeof createContainer<'_', '_', {}, void, [typeof __.a]>;
 
-    type Deps = void;
-    type OptDeps = { [__.a.id]?: { t: () => true } };
+    type API = { [__.a.id]?: { t: () => true } };
 
     {
       type startFn = ExtractstartFn<Container>;
 
-      expectTypeOf<ParameterCount<startFn>>().toEqualTypeOf<2>();
-      expectTypeOf<Deps>().toEqualTypeOf<Parameters<startFn>[0]>();
-      expectTypeOf<OptDeps>().toEqualTypeOf<Parameters<startFn>[1]>();
+      expectTypeOf<API>().toEqualTypeOf<Parameters<startFn>[0]>();
     }
     {
-      type EnableFn = ((d: Deps, o: OptDeps) => Promise<boolean> | boolean) | undefined;
+      type EnableFn = ((_: API) => Promise<boolean> | boolean) | undefined;
 
-      expectTypeOf<ParameterCount<NonNullable<EnableFn>>>().toEqualTypeOf<2>();
       expectTypeOf<EnableFn>().toEqualTypeOf<ExtractEnableFn<Container>>();
     }
   });
   test('void | multiple', () => {
     type Container = typeof createContainer<'_', '_', {}, void, [typeof __.a, typeof __.b, typeof __.c]>;
 
-    type Deps = void;
-    type OptDeps = {
+    type API = {
       [__.a.id]?: { t: () => true };
       [__.b.id]?: { f: () => false };
       [__.c.id]?: { nil: null };
@@ -204,14 +189,11 @@ describe('void | optDeps', () => {
     {
       type startFn = ExtractstartFn<Container>;
 
-      expectTypeOf<ParameterCount<startFn>>().toEqualTypeOf<2>();
-      expectTypeOf<Deps>().toEqualTypeOf<Parameters<startFn>[0]>();
-      expectTypeOf<OptDeps>().toEqualTypeOf<Parameters<startFn>[1]>();
+      expectTypeOf<API>().toEqualTypeOf<Parameters<startFn>[0]>();
     }
     {
-      type EnableFn = ((d: Deps, o: OptDeps) => Promise<boolean> | boolean) | undefined;
+      type EnableFn = ((_: API) => Promise<boolean> | boolean) | undefined;
 
-      expectTypeOf<ParameterCount<NonNullable<EnableFn>>>().toEqualTypeOf<2>();
       expectTypeOf<EnableFn>().toEqualTypeOf<ExtractEnableFn<Container>>();
     }
   });

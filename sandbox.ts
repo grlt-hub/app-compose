@@ -1,24 +1,28 @@
 import { createRandomContainer } from '@randomContainer';
-import { compose } from './src';
+import { compose, createContainer } from './src';
 
-const x = createRandomContainer({ id: 'x' });
+const x = createContainer({ id: 'x', domain: 'x', start: () => ({api: null}) });
 const y = createRandomContainer({ id: 'y', optionalDependencies: [x] });
 
-const entities = createRandomContainer({ id: 'entities' });
-const notifications = createRandomContainer({
+const entities = createContainer({ id: 'entities', domain: 'ent', start: () => ({ api: { F: () => false } }) });
+const notifications = createContainer({
   id: 'notifications',
+  domain: 'notif',
   optionalDependencies: [entities],
+  start: () => ({ api: { x: 2 } }),
   // enable: () => {
   //   throw Error('1');
   // },
 });
 
 // test notif includes on the same stage by other feature
-const accountFeatures = createRandomContainer({
+const accountFeatures = createContainer({
   id: 'accountFeatures',
-  optionalDependencies: [notifications, entities, x],
+  domain: 'acc',
+  dependencies: [entities],
+  optionalDependencies: [notifications, x],
   // optionalDependencies: [notifications],
-  start: () => ({ api: { f: () => false } }),
+  start: (apis) => ({ api: { f: () => apis.notifications } }),
 });
 const tradingFeatures = createRandomContainer({
   id: 'tradingFeatures',

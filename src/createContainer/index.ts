@@ -37,16 +37,16 @@ type Params<
         id: Id;
         domain: Domain;
         optionalDependencies: Exclude<OptionalDeps, void>;
-        start: (_: void, optionalDeps: Partial<ExtractDeps<Exclude<OptionalDeps, void>>>) => StartResult<API>;
-        enable?: (_: void, optionalDeps: Partial<ExtractDeps<Exclude<OptionalDeps, void>>>) => EnableResult;
+        start: (_: Partial<ExtractDeps<Exclude<OptionalDeps, void>>>) => StartResult<API>;
+        enable?: (_: Partial<ExtractDeps<Exclude<OptionalDeps, void>>>) => EnableResult;
       }
   : OptionalDeps extends void ?
     {
       id: Id;
       domain: Domain;
       dependencies: Exclude<Deps, void>;
-      start: (deps: ExtractDeps<Exclude<Deps, void>>) => StartResult<API>;
-      enable?: (deps: ExtractDeps<Exclude<Deps, void>>) => EnableResult;
+      start: (_: ExtractDeps<Exclude<Deps, void>>) => StartResult<API>;
+      enable?: (_: ExtractDeps<Exclude<Deps, void>>) => EnableResult;
     }
   : {
       id: Id;
@@ -54,12 +54,10 @@ type Params<
       dependencies: Exclude<Deps, void>;
       optionalDependencies: Exclude<OptionalDeps, void>;
       start: (
-        deps: ExtractDeps<Exclude<Deps, void>>,
-        optionalDeps: Partial<ExtractDeps<Exclude<OptionalDeps, void>>>,
+        _: ExtractDeps<Exclude<Deps, void>> & Partial<ExtractDeps<Exclude<OptionalDeps, void>>>,
       ) => StartResult<API>;
       enable?: (
-        deps: ExtractDeps<Exclude<Deps, void>>,
-        optionalDeps: Partial<ExtractDeps<Exclude<OptionalDeps, void>>>,
+        _: ExtractDeps<Exclude<Deps, void>> & Partial<ExtractDeps<Exclude<OptionalDeps, void>>>,
       ) => EnableResult;
     };
 
