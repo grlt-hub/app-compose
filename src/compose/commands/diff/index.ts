@@ -3,7 +3,7 @@ import type { StageTuples } from '@prepareStages';
 import { colors, LIBRARY_NAME, type SkippedContainers, type Stage } from '@shared';
 
 const INDENT = '    ';
-const SKIPPED_INDENT = INDENT.repeat(3);
+const SKIPPED_INDENT = `${INDENT}${INDENT}${INDENT}`;
 const SKIPPED_MSG =
   'All skipped containers are optional. If they are expected to work, please include them in the list when calling `compose` function';
 
