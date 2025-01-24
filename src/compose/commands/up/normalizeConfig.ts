@@ -1,12 +1,11 @@
 import type { ContainerDomain, ContainerId } from '@createContainer';
-import type { StageId } from '@prepareStages';
-import { LIBRARY_NAME } from '@shared';
+import { LIBRARY_NAME, type Stage } from '@shared';
 
 type Config = {
   debug?: boolean;
   onContainerFail?: (_: {
     container: { id: ContainerId; domain: ContainerDomain };
-    stageId: StageId;
+    stageId: Stage['id'];
     error: Error;
   }) => unknown;
 };

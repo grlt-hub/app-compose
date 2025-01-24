@@ -1,18 +1,14 @@
-import type { ContainerId } from '@createContainer';
-import type { StageId } from '@prepareStages';
-import { LIBRARY_NAME } from '@shared';
-
-type Skipped = Record<ContainerId, ContainerId[]>;
+import { LIBRARY_NAME, type Stage } from '@shared';
 
 const explanationMessage =
   'All skipped containers are optional. If they are expected to work, please include them in the list when calling `compose` function';
 
-const printSkippedContainersForStages = (skipped: Skipped, stage: StageId) => {
+const printSkippedContainersForStages = (skipped: Stage['skippedContainers'], stage: Stage['id']) => {
   if (Object.keys(skipped).length === 0) {
     return;
   }
 
-  const dependenciesMap: Skipped = {};
+  const dependenciesMap: typeof skipped = {};
 
   for (const [containerId, dependencies] of Object.entries(skipped)) {
     for (const dependency of dependencies) {
@@ -38,10 +34,7 @@ const printSkippedContainersForStages = (skipped: Skipped, stage: StageId) => {
   console.groupEnd();
 };
 
-type Params = {
-  id: StageId;
-  skippedContainers: Skipped;
-}[];
+type Params = Stage[];
 
 export const printSkippedContainers = (params: Params) => {
   for (const stage of params) {

@@ -1,6 +1,5 @@
 import { type AnyContainer, type ContainerDomain, type ContainerId, type ContainerStatus } from '@createContainer';
-import { type StageId } from '@prepareStages';
-import { type NonEmptyTuple } from '@shared';
+import { type NonEmptyTuple, type Stage } from '@shared';
 import { compose } from '../index';
 
 describe('compose fn', () => {
@@ -28,12 +27,12 @@ describe('compose fn', () => {
       debug?: boolean;
       onContainerFail?: (_: {
         container: { id: ContainerId; domain: ContainerDomain };
-        stageId: StageId;
+        stageId: Stage['id'];
         error: Error;
       }) => unknown;
     }) => Promise<{
       allSucceeded: boolean;
-      stages: Record<StageId, { containerStatuses: Record<ContainerId, ContainerStatus>; allSucceeded: boolean }>;
+      stages: Record<Stage['id'], { containerStatuses: Record<ContainerId, ContainerStatus>; allSucceeded: boolean }>;
     }>;
 
     expectTypeOf<Result['up']>().toEqualTypeOf<Up>();

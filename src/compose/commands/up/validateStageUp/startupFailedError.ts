@@ -1,10 +1,9 @@
 import type { ContainerId } from '@createContainer';
-import type { StageId } from '@prepareStages';
-import { LIBRARY_NAME } from '@shared';
+import { LIBRARY_NAME, type Stage } from '@shared';
 
 type Params = {
   id: ContainerId | ContainerId[];
-  stageId: StageId;
+  stageId: Stage['id'];
   log: Record<string, Record<string, unknown>>;
 };
 

@@ -1,14 +1,8 @@
-import type { AnyContainer, ContainerId } from '@createContainer';
-import type { Stage, StageId } from '@prepareStages';
-import { LIBRARY_NAME, colors } from '@shared';
+import type { ContainerId } from '@createContainer';
+import type { StageTuples } from '@prepareStages';
+import { colors, LIBRARY_NAME, type Stage } from '@shared';
 
-type Input = Stage[];
-type Output = {
-  id: StageId;
-  containersToBoot: AnyContainer[];
-}[];
-
-const diff = (expectation: Input, reality: Output) => {
+const diff = (expectation: StageTuples, reality: Stage[]) => {
   console.log(`${LIBRARY_NAME} | diff command` + '\n\n' + 'Stages:');
 
   reality.forEach(({ id: stageId, containersToBoot }) => {
@@ -18,7 +12,7 @@ const diff = (expectation: Input, reality: Output) => {
       return;
     }
 
-    const colorizedStage = containersToBoot.reduce<ContainerId[]>((acc, container, index) => {
+    const colorizedStage = containersToBoot.reduce<ContainerId[]>((acc, container) => {
       const exists = original[1].some((x) => x.id === container.id);
 
       acc.push(exists ? container.id : colors.bgGreen(container.id));

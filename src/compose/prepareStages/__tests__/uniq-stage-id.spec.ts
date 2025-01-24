@@ -5,7 +5,7 @@ describe('container.id is uniq', () => {
   test('happy', () => {
     expect(() =>
       prepareStages({
-        stages: [
+        stageTuples: [
           ['x', [createRandomContainer()]],
           ['y', [createRandomContainer()]],
         ],
@@ -17,7 +17,7 @@ describe('container.id is uniq', () => {
   test('unhappy with stages', async () => {
     expect(() =>
       prepareStages({
-        stages: [
+        stageTuples: [
           ['x', [createRandomContainer()]],
           ['x', [createRandomContainer()]],
         ],

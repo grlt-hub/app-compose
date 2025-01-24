@@ -1,5 +1,5 @@
 import { CONTAINER_STATUS, type AnyContainer, type ContainerId, type ContainerStatus } from '@createContainer';
-import type { StageId } from '@prepareStages';
+import type { Stage } from '@shared';
 import { clearNode, combine, createDomain, launch, sample } from 'effector';
 import { normalizeConfig, type Config } from './normalizeConfig';
 
@@ -10,11 +10,6 @@ const statusIs = {
   done: (s: ContainerStatus | undefined) => s === CONTAINER_STATUS.done,
   idle: (s: ContainerStatus | undefined) => s === CONTAINER_STATUS.idle,
   failedOrOff: (s: ContainerStatus | undefined) => s === CONTAINER_STATUS.fail || s === CONTAINER_STATUS.off,
-};
-
-type Stage = {
-  id: StageId;
-  containersToBoot: AnyContainer[];
 };
 
 type APIs = Record<string, Awaited<ReturnType<AnyContainer['start']>>['api']>;

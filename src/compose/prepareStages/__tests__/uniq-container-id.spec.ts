@@ -5,7 +5,7 @@ describe('container.id is uniq', () => {
   test('happy', () => {
     expect(() =>
       prepareStages({
-        stages: [
+        stageTuples: [
           ['x', [createRandomContainer()]],
           ['y', [createRandomContainer()]],
         ],
@@ -19,7 +19,7 @@ describe('container.id is uniq', () => {
 
     expect(() =>
       prepareStages({
-        stages: [['x', [createRandomContainer({ id }), createRandomContainer({ id })]]],
+        stageTuples: [['x', [createRandomContainer({ id }), createRandomContainer({ id })]]],
         contaiderIds: new Set(),
       }),
     ).toThrowError(`[app-compose] Duplicate container ID found: ${id}`);
@@ -30,7 +30,7 @@ describe('container.id is uniq', () => {
 
     expect(() =>
       prepareStages({
-        stages: [
+        stageTuples: [
           ['x', [createRandomContainer({ id })]],
           ['y', [createRandomContainer({ id })]],
         ],

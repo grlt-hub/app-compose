@@ -1,5 +1,5 @@
 import { type AnyContainer, type ContainerId } from '@createContainer';
-import { LIBRARY_NAME, type NonEmptyTuple } from '@shared';
+import { LIBRARY_NAME, type NonEmptyTuple, type Stage } from '@shared';
 import { getContainersToBoot } from './getContainersToBoot';
 
 const ERROR = {
@@ -20,13 +20,12 @@ const ERROR = {
     `  - Use the graph fn to verify container dependencies and resolve potential conflicts.`,
 };
 
-type StageId = string;
-type Stage = [StageId, NonEmptyTuple<AnyContainer>];
+type StageTuples = [Stage['id'], NonEmptyTuple<AnyContainer>][];
 
-const validateStageIds = (stages: Stage[]) => {
+const validateStageIds = (stageTuples: StageTuples) => {
   const ids = new Set<string>();
 
-  for (const [id] of stages) {
+  for (const [id] of stageTuples) {
     if (ids.has(id)) {
       throw new Error(ERROR.DUPLICATE_STAGE_ID(id));
     }
@@ -43,7 +42,7 @@ const addContainerId = (id: ContainerId, set: Set<ContainerId>) => {
   set.add(id);
 };
 
-const checkAlreadyProcessed = (id: ContainerId, set: Set<ContainerId>, stageId: StageId) => {
+const checkAlreadyProcessed = (id: ContainerId, set: Set<ContainerId>, stageId: Stage['id']) => {
   if (set.has(id)) {
     throw new Error(ERROR.ALREADY_PROCESSED(id, stageId));
   }
@@ -51,17 +50,13 @@ const checkAlreadyProcessed = (id: ContainerId, set: Set<ContainerId>, stageId: 
 
 type Params = {
   contaiderIds: Set<ContainerId>;
-  stages: Stage[];
+  stageTuples: StageTuples;
 };
 
-type Result = (ReturnType<typeof getContainersToBoot> & {
-  id: StageId;
-})[];
+const prepareStages = ({ contaiderIds, stageTuples }: Params) => {
+  validateStageIds(stageTuples);
 
-const prepareStages = ({ contaiderIds, stages }: Params) => {
-  validateStageIds(stages);
-
-  return stages.reduce<Result>((acc, [stageId, containers]) => {
+  return stageTuples.reduce<Stage[]>((acc, [stageId, containers]) => {
     containers.forEach((c) => checkAlreadyProcessed(c.id, contaiderIds, stageId));
 
     const { containersToBoot: __containersToBoot, skippedContainers } = getContainersToBoot(containers);
@@ -76,4 +71,4 @@ const prepareStages = ({ contaiderIds, stages }: Params) => {
   }, []);
 };
 
-export { prepareStages, type Stage, type StageId };
+export { prepareStages, type StageTuples };

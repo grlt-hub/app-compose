@@ -7,7 +7,7 @@ describe('prepareStages', () => {
     const a = createRandomContainer();
     const b = createRandomContainer({ dependsOn: [a], optionalDependsOn: [x] });
 
-    const result = prepareStages({ contaiderIds: new Set(), stages: [['_', [b]]] });
+    const result = prepareStages({ contaiderIds: new Set(), stageTuples: [['_', [b]]] });
 
     expect(result[0]?.containersToBoot).toStrictEqual([b, a]);
     expect(result[0]?.skippedContainers).toStrictEqual({ [b.id]: [x.id] });
@@ -17,14 +17,14 @@ describe('prepareStages', () => {
     const a = createRandomContainer();
     const b = createRandomContainer();
 
-    const result = prepareStages({ contaiderIds: new Set(), stages: [['_', [a, b]]] });
+    const result = prepareStages({ contaiderIds: new Set(), stageTuples: [['_', [a, b]]] });
 
     expect(result[0]?.containersToBoot).toStrictEqual([a, b]);
     expect(result[0]?.skippedContainers).toStrictEqual({});
   });
 
   test('no containers to boot', () => {
-    const result = prepareStages({ contaiderIds: new Set(), stages: [] });
+    const result = prepareStages({ contaiderIds: new Set(), stageTuples: [] });
 
     expect(result).toStrictEqual([]);
   });
@@ -36,7 +36,7 @@ describe('prepareStages', () => {
 
     const result = prepareStages({
       contaiderIds: new Set(),
-      stages: [
+      stageTuples: [
         ['x', [a]],
         ['y', [b]],
         ['z', [c]],
@@ -54,7 +54,7 @@ describe('prepareStages', () => {
     const a = createRandomContainer({ dependsOn: [shared] });
     const b = createRandomContainer({ dependsOn: [shared] });
 
-    const result = prepareStages({ contaiderIds: new Set(), stages: [['_', [a, b]]] });
+    const result = prepareStages({ contaiderIds: new Set(), stageTuples: [['_', [a, b]]] });
 
     expect(result[0]?.containersToBoot).toStrictEqual([a, b, shared]);
     expect(result[0]?.skippedContainers).toStrictEqual({});
@@ -68,7 +68,7 @@ describe('prepareStages', () => {
     expect(() =>
       prepareStages({
         contaiderIds: new Set(),
-        stages: [
+        stageTuples: [
           ['x', [b]],
           ['y', [a]],
           ['z', [c]],
