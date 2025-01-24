@@ -19,8 +19,11 @@ const traverseContainers = (containers: AnyContainer[]) => {
   return { strictContainers: strict };
 };
 
-// also allows to avoid filter skipped containers after stage done
-const partitionOptionalDeps = (params: { container: AnyContainer; containersToBoot: Set<AnyContainer> }) => {
+const partitionOptionalDeps = (params: {
+  container: AnyContainer;
+  containersToBoot: Set<AnyContainer>;
+  prevStagesContainerIds: Set<ContainerId>;
+}) => {
   const included: AnyContainer[] = [];
   const skipped: ContainerId[] = [];
   const optionalDependencies = params.container.optionalDependencies || [];
@@ -28,9 +31,9 @@ const partitionOptionalDeps = (params: { container: AnyContainer; containersToBo
   for (let i = 0; i < optionalDependencies.length; i++) {
     const dep = optionalDependencies[i] as AnyContainer;
 
-    if (params.containersToBoot.has(dep)) {
+    if (params.containersToBoot.has(dep) || params.prevStagesContainerIds.has(dep.id)) {
       included.push(dep);
-    } else {
+    } else if (!params.prevStagesContainerIds.has(dep.id)) {
       skipped.push(dep.id);
     }
   }
@@ -38,7 +41,10 @@ const partitionOptionalDeps = (params: { container: AnyContainer; containersToBo
   return [included, skipped] as const;
 };
 
-const getContainersToBoot = <T extends AnyContainer[]>(inputContainers: T, contaiderIds: Set<ContainerId>) => {
+const getContainersToBoot = <T extends AnyContainer[]>(
+  inputContainers: T,
+  prevStagesContainerIds: Set<ContainerId>,
+) => {
   const { strictContainers } = traverseContainers(inputContainers);
   const containersToBoot = new Set([...inputContainers, ...strictContainers]);
   const containersToBootListed = Array.from(containersToBoot) as T;
@@ -47,13 +53,13 @@ const getContainersToBoot = <T extends AnyContainer[]>(inputContainers: T, conta
 
   for (let i = 0; i < containersToBootListed.length; i++) {
     const container = containersToBootListed[i] as AnyContainer;
-    const [included, skipped] = partitionOptionalDeps({ container, containersToBoot });
+    const [included, skipped] = partitionOptionalDeps({ container, containersToBoot, prevStagesContainerIds });
 
     // otherwise, unstarted optional dependencies will prevent the application from starting
     container.optionalDependencies = included;
 
     if (skipped.length) {
-      skippedContainers[container.id] = skipped.filter((x) => !contaiderIds.has(x));
+      skippedContainers[container.id] = skipped;
     }
   }
 

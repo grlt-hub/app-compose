@@ -1,7 +1,7 @@
 import { createRandomContainer } from '@randomContainer';
 import { compose, createContainer } from './src';
 
-const x = createContainer({ id: 'x', domain: 'x', start: () => ({api: null}) });
+const x = createContainer({ id: 'x', domain: 'x', start: () => ({ api: null }) });
 const y = createRandomContainer({ id: 'y', optionalDependencies: [x] });
 
 const entities = createContainer({ id: 'entities', domain: 'ent', start: () => ({ api: { F: () => false } }) });
@@ -57,6 +57,7 @@ const hcFeatures = createRandomContainer({ id: 'hcFeatures' });
 
   try {
     const app = await cmd.diff();
+
     // console.log(app.stages);
   } catch (e) {
     console.error(e, 'app-start');
