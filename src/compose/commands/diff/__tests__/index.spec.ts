@@ -11,10 +11,10 @@ describe('diff cmd', () => {
 
     const a = createRandomContainer({});
     const b = createRandomContainer({
-      dependsOn: [a],
+      dependencies: [a],
     });
     const c = createRandomContainer({
-      dependsOn: [b],
+      dependencies: [b],
     });
 
     diff([['x', [a, b, c]]], [{ id: 'x', containersToBoot: [a, b, c], skippedContainers: {} }]);
@@ -41,10 +41,10 @@ describe('diff cmd', () => {
 
     const a = createRandomContainer();
     const b = createRandomContainer({
-      dependsOn: [a],
+      dependencies: [a],
     });
     const c = createRandomContainer({
-      dependsOn: [b],
+      dependencies: [b],
     });
 
     diff([['x', [b, c]]], [{ id: 'x', containersToBoot: [a, b, c], skippedContainers: {} }]);
@@ -71,10 +71,10 @@ describe('diff cmd', () => {
 
     const a = createRandomContainer();
     const b = createRandomContainer({
-      dependsOn: [a],
+      dependencies: [a],
     });
     const c = createRandomContainer({
-      dependsOn: [b],
+      dependencies: [b],
     });
 
     diff([['x', [b, c]]], [{ id: 'y', containersToBoot: [a, b, c], skippedContainers: {} }]);

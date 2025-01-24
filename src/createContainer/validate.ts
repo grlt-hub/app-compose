@@ -1,7 +1,7 @@
 import { isEmpty, isNil } from '@shared';
 import { type AnyContainer } from './types';
 
-type ValidateParams = Pick<AnyContainer, 'id' | 'domain' | 'dependsOn' | 'optionalDependsOn'>;
+type ValidateParams = Pick<AnyContainer, 'id' | 'domain' | 'dependencies' | 'optionalDependencies'>;
 
 const ERROR = {
   CONTAINER_ID_EMPTY_STRING: 'Container ID cannot be an empty string.',
@@ -33,12 +33,12 @@ const validateDomainName = (x: ValidateParams) => {
 };
 
 const validateDepsIntersection = (params: ValidateParams) => {
-  if (isNil(params.dependsOn) || isNil(params.optionalDependsOn)) {
+  if (isNil(params.dependencies) || isNil(params.optionalDependencies)) {
     return;
   }
 
-  const depIds = new Set(params.dependsOn.map((dep) => dep.id));
-  const optDepsIds = new Set(params.optionalDependsOn.map((dep) => dep.id));
+  const depIds = new Set(params.dependencies.map((dep) => dep.id));
+  const optDepsIds = new Set(params.optionalDependencies.map((dep) => dep.id));
 
   const intersection = depIds.intersection(optDepsIds);
 

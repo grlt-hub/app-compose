@@ -24,8 +24,8 @@ type AnyContainer = {
   domain: string;
   $status: StoreWritable<ContainerStatus>;
   start: AnyStartFn;
-  dependsOn?: AnyContainer[];
-  optionalDependsOn?: AnyContainer[];
+  dependencies?: AnyContainer[];
+  optionalDependencies?: AnyContainer[];
   enable?: (..._: any) => EnableResult;
 };
 

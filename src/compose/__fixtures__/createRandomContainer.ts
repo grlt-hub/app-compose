@@ -3,7 +3,7 @@ import { createStore } from 'effector';
 import { randomUUID } from 'node:crypto';
 
 type Overrides = Partial<
-  Pick<AnyContainer, 'domain' | 'dependsOn' | 'optionalDependsOn' | 'id' | 'enable' | 'start'> & {
+  Pick<AnyContainer, 'domain' | 'dependencies' | 'optionalDependencies' | 'id' | 'enable' | 'start'> & {
     status: ContainerStatus;
   }
 >;

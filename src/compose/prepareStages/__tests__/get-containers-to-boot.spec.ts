@@ -10,48 +10,48 @@ describe('getContainersToBoot exhaustive manual tests', () => {
     const result = getContainersToBoot(inputContainers, new Set());
 
     expect(result.containersToBoot).toEqual([
-      expect.objectContaining({ id: a.id, optionalDependsOn: [] }),
-      expect.objectContaining({ id: b.id, optionalDependsOn: [] }),
+      expect.objectContaining({ id: a.id, optionalDependencies: [] }),
+      expect.objectContaining({ id: b.id, optionalDependencies: [] }),
     ]);
     expect(result.skippedContainers).toEqual({});
   });
 
   test('manual resolves strict dependencies correctly', () => {
     const a = createRandomContainer();
-    const b = createRandomContainer({ dependsOn: [a] });
+    const b = createRandomContainer({ dependencies: [a] });
 
     const inputContainers = [a, b];
     const result = getContainersToBoot(inputContainers, new Set());
 
     expect(result.containersToBoot).toEqual([
-      expect.objectContaining({ id: a.id, optionalDependsOn: [] }),
-      expect.objectContaining({ id: b.id, optionalDependsOn: [] }),
+      expect.objectContaining({ id: a.id, optionalDependencies: [] }),
+      expect.objectContaining({ id: b.id, optionalDependencies: [] }),
     ]);
     expect(result.skippedContainers).toEqual({});
   });
 
   test('auto resolves strict dependencies correctly', () => {
     const a = createRandomContainer();
-    const b = createRandomContainer({ dependsOn: [a] });
+    const b = createRandomContainer({ dependencies: [a] });
 
     const inputContainers = [b];
     const result = getContainersToBoot(inputContainers, new Set());
 
     expect(result.containersToBoot).toEqual([
-      expect.objectContaining({ id: b.id, optionalDependsOn: [] }),
-      expect.objectContaining({ id: a.id, optionalDependsOn: [] }),
+      expect.objectContaining({ id: b.id, optionalDependencies: [] }),
+      expect.objectContaining({ id: a.id, optionalDependencies: [] }),
     ]);
     expect(result.skippedContainers).toEqual({});
   });
 
   test('handles optional dependencies correctly | one', () => {
     const a = createRandomContainer();
-    const b = createRandomContainer({ optionalDependsOn: [a] });
+    const b = createRandomContainer({ optionalDependencies: [a] });
 
     const inputContainers = [b];
     const result = getContainersToBoot(inputContainers, new Set());
 
-    expect(result.containersToBoot).toEqual([expect.objectContaining({ id: b.id, optionalDependsOn: [] })]);
+    expect(result.containersToBoot).toEqual([expect.objectContaining({ id: b.id, optionalDependencies: [] })]);
     expect(result.skippedContainers).toEqual({
       [b.id]: [a.id],
     });
@@ -59,12 +59,12 @@ describe('getContainersToBoot exhaustive manual tests', () => {
   test('handles optional dependencies correctly | two', () => {
     const a = createRandomContainer();
     const x = createRandomContainer();
-    const b = createRandomContainer({ optionalDependsOn: [a, x] });
+    const b = createRandomContainer({ optionalDependencies: [a, x] });
 
     const inputContainers = [b];
     const result = getContainersToBoot(inputContainers, new Set());
 
-    expect(result.containersToBoot).toEqual([expect.objectContaining({ id: b.id, optionalDependsOn: [] })]);
+    expect(result.containersToBoot).toEqual([expect.objectContaining({ id: b.id, optionalDependencies: [] })]);
     expect(result.skippedContainers).toEqual({
       [b.id]: [a.id, x.id],
     });
@@ -73,14 +73,14 @@ describe('getContainersToBoot exhaustive manual tests', () => {
   test('handles optional dependencies correctly | two | one not skipped', () => {
     const a = createRandomContainer();
     const x = createRandomContainer();
-    const b = createRandomContainer({ optionalDependsOn: [a, x] });
+    const b = createRandomContainer({ optionalDependencies: [a, x] });
 
     const inputContainers = [b, a];
     const result = getContainersToBoot(inputContainers, new Set());
 
     expect(result.containersToBoot).toEqual([
-      expect.objectContaining({ id: b.id, optionalDependsOn: [a] }),
-      expect.objectContaining({ id: a.id, optionalDependsOn: [] }),
+      expect.objectContaining({ id: b.id, optionalDependencies: [a] }),
+      expect.objectContaining({ id: a.id, optionalDependencies: [] }),
     ]);
     expect(result.skippedContainers).toEqual({
       [b.id]: [x.id],
@@ -89,32 +89,32 @@ describe('getContainersToBoot exhaustive manual tests', () => {
 
   test('resolves transitive dependencies up to depth 3', () => {
     const a = createRandomContainer();
-    const b = createRandomContainer({ dependsOn: [a] });
-    const c = createRandomContainer({ dependsOn: [b] });
-    const d = createRandomContainer({ dependsOn: [c] });
+    const b = createRandomContainer({ dependencies: [a] });
+    const c = createRandomContainer({ dependencies: [b] });
+    const d = createRandomContainer({ dependencies: [c] });
 
     const inputContainers = [a, b, c, d];
     const result = getContainersToBoot(inputContainers, new Set());
 
     expect(result.containersToBoot).toEqual([
-      expect.objectContaining({ id: a.id, optionalDependsOn: [] }),
-      expect.objectContaining({ id: b.id, optionalDependsOn: [] }),
-      expect.objectContaining({ id: c.id, optionalDependsOn: [] }),
-      expect.objectContaining({ id: d.id, optionalDependsOn: [] }),
+      expect.objectContaining({ id: a.id, optionalDependencies: [] }),
+      expect.objectContaining({ id: b.id, optionalDependencies: [] }),
+      expect.objectContaining({ id: c.id, optionalDependencies: [] }),
+      expect.objectContaining({ id: d.id, optionalDependencies: [] }),
     ]);
     expect(result.skippedContainers).toEqual({});
   });
 
   test('skips optional dependencies in transitive chains | one', () => {
     const a = createRandomContainer();
-    const b = createRandomContainer({ optionalDependsOn: [a] });
-    const c = createRandomContainer({ optionalDependsOn: [b] });
-    const d = createRandomContainer({ optionalDependsOn: [c] });
+    const b = createRandomContainer({ optionalDependencies: [a] });
+    const c = createRandomContainer({ optionalDependencies: [b] });
+    const d = createRandomContainer({ optionalDependencies: [c] });
 
     const inputContainers = [d];
     const result = getContainersToBoot(inputContainers, new Set());
 
-    expect(result.containersToBoot).toEqual([expect.objectContaining({ id: d.id, optionalDependsOn: [] })]);
+    expect(result.containersToBoot).toEqual([expect.objectContaining({ id: d.id, optionalDependencies: [] })]);
     expect(result.skippedContainers).toEqual({
       [d.id]: [c.id],
     });
@@ -122,16 +122,16 @@ describe('getContainersToBoot exhaustive manual tests', () => {
 
   test('skips optional dependencies in transitive chains | two', () => {
     const a = createRandomContainer();
-    const b = createRandomContainer({ optionalDependsOn: [a] });
-    const c = createRandomContainer({ optionalDependsOn: [b] });
-    const d = createRandomContainer({ optionalDependsOn: [c] });
+    const b = createRandomContainer({ optionalDependencies: [a] });
+    const c = createRandomContainer({ optionalDependencies: [b] });
+    const d = createRandomContainer({ optionalDependencies: [c] });
 
     const inputContainers = [d, c];
     const result = getContainersToBoot(inputContainers, new Set());
 
     expect(result.containersToBoot).toEqual([
-      expect.objectContaining({ id: d.id, optionalDependsOn: [c] }),
-      expect.objectContaining({ id: c.id, optionalDependsOn: [] }),
+      expect.objectContaining({ id: d.id, optionalDependencies: [c] }),
+      expect.objectContaining({ id: c.id, optionalDependencies: [] }),
     ]);
     expect(result.skippedContainers).toEqual({
       [c.id]: [b.id],
@@ -140,18 +140,18 @@ describe('getContainersToBoot exhaustive manual tests', () => {
 
   test('handles mixed strict and optional dependencies', () => {
     const a = createRandomContainer();
-    const b = createRandomContainer({ dependsOn: [a] });
-    const c = createRandomContainer({ dependsOn: [b], optionalDependsOn: [a] });
-    const d = createRandomContainer({ optionalDependsOn: [c] });
+    const b = createRandomContainer({ dependencies: [a] });
+    const c = createRandomContainer({ dependencies: [b], optionalDependencies: [a] });
+    const d = createRandomContainer({ optionalDependencies: [c] });
 
     const inputContainers = [a, b, c, d];
     const result = getContainersToBoot(inputContainers, new Set());
 
     expect(result.containersToBoot).toEqual([
-      expect.objectContaining({ id: a.id, optionalDependsOn: [] }),
-      expect.objectContaining({ id: b.id, optionalDependsOn: [] }),
-      expect.objectContaining({ id: c.id, optionalDependsOn: [a] }),
-      expect.objectContaining({ id: d.id, optionalDependsOn: [c] }),
+      expect.objectContaining({ id: a.id, optionalDependencies: [] }),
+      expect.objectContaining({ id: b.id, optionalDependencies: [] }),
+      expect.objectContaining({ id: c.id, optionalDependencies: [a] }),
+      expect.objectContaining({ id: d.id, optionalDependencies: [c] }),
     ]);
     expect(result.skippedContainers).toEqual({});
   });

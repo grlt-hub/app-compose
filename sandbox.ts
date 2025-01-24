@@ -2,12 +2,12 @@ import { createRandomContainer } from '@randomContainer';
 import { compose } from './src';
 
 const x = createRandomContainer({ id: 'x' });
-const y = createRandomContainer({ id: 'y', optionalDependsOn: [x] });
+const y = createRandomContainer({ id: 'y', optionalDependencies: [x] });
 
 const entities = createRandomContainer({ id: 'entities' });
 const notifications = createRandomContainer({
   id: 'notifications',
-  optionalDependsOn: [entities],
+  optionalDependencies: [entities],
   // enable: () => {
   //   throw Error('1');
   // },
@@ -16,8 +16,8 @@ const notifications = createRandomContainer({
 // test notif includes on the same stage by other feature
 const accountFeatures = createRandomContainer({
   id: 'accountFeatures',
-  optionalDependsOn: [notifications, entities, x],
-  // optionalDependsOn: [notifications],
+  optionalDependencies: [notifications, entities, x],
+  // optionalDependencies: [notifications],
   start: () => ({ api: { f: () => false } }),
 });
 const tradingFeatures = createRandomContainer({

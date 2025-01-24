@@ -5,7 +5,7 @@ describe('prepareStages', () => {
   test('single stage with strict and optional dependencies', () => {
     const x = createRandomContainer();
     const a = createRandomContainer();
-    const b = createRandomContainer({ dependsOn: [a], optionalDependsOn: [x] });
+    const b = createRandomContainer({ dependencies: [a], optionalDependencies: [x] });
 
     const result = prepareStages({ contaiderIds: new Set(), stageTuples: [['_', [b]]] });
 
@@ -31,8 +31,8 @@ describe('prepareStages', () => {
 
   test('multiple stages with dependencies', () => {
     const a = createRandomContainer();
-    const b = createRandomContainer({ dependsOn: [a] });
-    const c = createRandomContainer({ dependsOn: [b] });
+    const b = createRandomContainer({ dependencies: [a] });
+    const c = createRandomContainer({ dependencies: [b] });
 
     const result = prepareStages({
       contaiderIds: new Set(),
@@ -51,8 +51,8 @@ describe('prepareStages', () => {
 
   test('containers with shared dependencies', () => {
     const shared = createRandomContainer();
-    const a = createRandomContainer({ dependsOn: [shared] });
-    const b = createRandomContainer({ dependsOn: [shared] });
+    const a = createRandomContainer({ dependencies: [shared] });
+    const b = createRandomContainer({ dependencies: [shared] });
 
     const result = prepareStages({ contaiderIds: new Set(), stageTuples: [['_', [a, b]]] });
 
@@ -62,8 +62,8 @@ describe('prepareStages', () => {
 
   test('invalid configuration', () => {
     const a = createRandomContainer({ id: 'a' });
-    const b = createRandomContainer({ dependsOn: [a] });
-    const c = createRandomContainer({ dependsOn: [b] });
+    const b = createRandomContainer({ dependencies: [a] });
+    const c = createRandomContainer({ dependencies: [b] });
 
     expect(() =>
       prepareStages({

@@ -23,13 +23,13 @@ describe('upFn like in real world', () => {
     });
     const registration = createRandomContainer({
       id: 'registration',
-      dependsOn: [userEntity],
+      dependencies: [userEntity],
       start: () => ({ api: { register: null } }),
       enable: (d) => d.user.id === null,
     });
     const quotesEntity = createRandomContainer({
       id: 'quotesEntity',
-      optionalDependsOn: [userEntity],
+      optionalDependencies: [userEntity],
       start: () => ({ api: { register: null } }),
       enable: async (_, d) => {
         if (d.user?.id === '777') {
@@ -42,25 +42,25 @@ describe('upFn like in real world', () => {
     });
     const accountsEntity = createRandomContainer({
       id: 'accounts',
-      dependsOn: [userEntity],
+      dependencies: [userEntity],
       start: () => ({ api: { list: ['usd', 'eur'] } }),
     });
     const accountsList = createRandomContainer({
       id: 'accounts-list',
-      dependsOn: [accountsEntity],
+      dependencies: [accountsEntity],
       start: () => ({ api: { select: (x: number) => x } }),
       enable: (d) => d.accounts.list.length > 0,
     });
     const accountTransfers = createRandomContainer({
       id: 'account-transfers',
-      dependsOn: [accountsEntity],
+      dependencies: [accountsEntity],
       start: () => ({ api: { transfer: null } }),
       enable: (d) => d.accounts.list.includes('usdt'),
     });
     const marketplace = createRandomContainer({
       id: 'marketplace',
-      dependsOn: [userEntity],
-      optionalDependsOn: [accountsEntity],
+      dependencies: [userEntity],
+      optionalDependencies: [accountsEntity],
       start: () => {
         throw new Error('ooops');
       },
@@ -68,7 +68,7 @@ describe('upFn like in real world', () => {
     });
     const purchases = createRandomContainer({
       id: 'purchases',
-      dependsOn: [marketplace],
+      dependencies: [marketplace],
       start: () => ({ api: { list: ['one', 'two'] } }),
     });
     const idk = createRandomContainer({
@@ -84,7 +84,7 @@ describe('upFn like in real world', () => {
     });
     const hiddenFeature = createRandomContainer({
       id: 'hidden-feature',
-      dependsOn: [hiddenEntity],
+      dependencies: [hiddenEntity],
       start: () => ({ api: null }),
     });
 

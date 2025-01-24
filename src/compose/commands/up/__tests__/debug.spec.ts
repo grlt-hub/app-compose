@@ -5,7 +5,7 @@ test('up.debug = true', async () => {
   const consoleLogSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
 
   const a = createRandomContainer({ id: 'a' });
-  const b = createRandomContainer({ id: 'b', dependsOn: [a], enable: () => false });
+  const b = createRandomContainer({ id: 'b', dependencies: [a], enable: () => false });
   const c = createRandomContainer({ id: 'c' });
 
   const stage = {

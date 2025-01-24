@@ -10,7 +10,7 @@ const traverseContainers = (containers: AnyContainer[]) => {
     if (visited.has(container)) continue;
     visited.add(container);
 
-    container.dependsOn?.forEach((dep) => {
+    container.dependencies?.forEach((dep) => {
       stack.push(dep);
       strict.add(dep);
     });
@@ -23,10 +23,10 @@ const traverseContainers = (containers: AnyContainer[]) => {
 const partitionOptionalDeps = (params: { container: AnyContainer; containersToBoot: Set<AnyContainer> }) => {
   const included: AnyContainer[] = [];
   const skipped: ContainerId[] = [];
-  const optionalDependsOn = params.container.optionalDependsOn || [];
+  const optionalDependencies = params.container.optionalDependencies || [];
 
-  for (let i = 0; i < optionalDependsOn.length; i++) {
-    const dep = optionalDependsOn[i] as AnyContainer;
+  for (let i = 0; i < optionalDependencies.length; i++) {
+    const dep = optionalDependencies[i] as AnyContainer;
 
     if (params.containersToBoot.has(dep)) {
       included.push(dep);
@@ -50,7 +50,7 @@ const getContainersToBoot = <T extends AnyContainer[]>(inputContainers: T, conta
     const [included, skipped] = partitionOptionalDeps({ container, containersToBoot });
 
     // otherwise, unstarted optional dependencies will prevent the application from starting
-    container.optionalDependsOn = included;
+    container.optionalDependencies = included;
 
     if (skipped.length) {
       skippedContainers[container.id] = skipped.filter((x) => !contaiderIds.has(x));

@@ -36,7 +36,7 @@ type Params<
     : {
         id: Id;
         domain: Domain;
-        optionalDependsOn: Exclude<OptionalDeps, void>;
+        optionalDependencies: Exclude<OptionalDeps, void>;
         start: (_: void, optionalDeps: Partial<ExtractDeps<Exclude<OptionalDeps, void>>>) => StartResult<API>;
         enable?: (_: void, optionalDeps: Partial<ExtractDeps<Exclude<OptionalDeps, void>>>) => EnableResult;
       }
@@ -44,15 +44,15 @@ type Params<
     {
       id: Id;
       domain: Domain;
-      dependsOn: Exclude<Deps, void>;
+      dependencies: Exclude<Deps, void>;
       start: (deps: ExtractDeps<Exclude<Deps, void>>) => StartResult<API>;
       enable?: (deps: ExtractDeps<Exclude<Deps, void>>) => EnableResult;
     }
   : {
       id: Id;
       domain: Domain;
-      dependsOn: Exclude<Deps, void>;
-      optionalDependsOn: Exclude<OptionalDeps, void>;
+      dependencies: Exclude<Deps, void>;
+      optionalDependencies: Exclude<OptionalDeps, void>;
       start: (
         deps: ExtractDeps<Exclude<Deps, void>>,
         optionalDeps: Partial<ExtractDeps<Exclude<OptionalDeps, void>>>,
