@@ -14,7 +14,6 @@ export const createRandomContainer = (overrides: Overrides = {}): AnyContainer =
     id: randomUUID(),
     domain: randomUUID(),
     start: () => ({ api: null }),
-    enable: () => true,
     ...overrides,
   }) as AnyContainer;
 

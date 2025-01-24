@@ -20,7 +20,7 @@ type Stage = {
 type APIs = Record<string, Awaited<ReturnType<AnyContainer['start']>>['api']>;
 
 type UpResult = {
-  allSucceeded: boolean;
+  allDone: boolean;
   containerStatuses: Record<ContainerId, ContainerStatus>;
 };
 
@@ -73,6 +73,7 @@ const createStageUpFn = (__config?: Config) => {
         const enableFx = domain.createEffect(async () =>
           container.enable ? await container.enable(apis, apis) : true,
         );
+
         const startFx = domain.createEffect(async () => {
           apis[container.id] = (await container.start(apis, apis))['api'];
         });
@@ -117,7 +118,7 @@ const createStageUpFn = (__config?: Config) => {
         nodesToClear = [];
 
         const result = {
-          allSucceeded: Object.values(x.statuses).every((x) => !statusIs.fail(x)),
+          allDone: Object.values(x.statuses).every((x) => statusIs.done(x)),
           containerStatuses: x.statuses,
         };
 

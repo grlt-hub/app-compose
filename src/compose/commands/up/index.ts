@@ -45,9 +45,9 @@ const up = async (params: Params, config: Config) => {
   params.stages.forEach((s) => s.containersToBoot.forEach((c) => clearNode(c.$status, { deep: true })));
   apis = {};
 
-  const allSucceeded = Object.values(executedStages).some((x) => x.allSucceeded);
+  const allDone = Object.values(executedStages).every((x) => x.allDone);
 
-  return { allSucceeded, stages: executedStages };
+  return { allDone, stages: executedStages };
 };
 
 export { up };
