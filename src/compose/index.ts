@@ -10,12 +10,11 @@ type Params = {
 };
 
 const compose = async (params: Params) => {
-  const contaiderIds = new Set<ContainerId>();
-  const stages = prepareStages({ stageTuples: params.stages, contaiderIds });
+  const stages = prepareStages({ stageTuples: params.stages, visitedContainerIds: new Set<ContainerId>() });
 
   return {
     diff: async () => {
-      (await import('./commands/diff')).diff(params.stages, stages);
+      (await import('./commands/diff')).diff({ expected: params.stages, received: stages });
     },
     up: (config?: Parameters<UpFn>[1]) => up({ stages, required: params.required }, config),
   };

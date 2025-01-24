@@ -9,7 +9,7 @@ describe('container.id is uniq', () => {
           ['x', [createRandomContainer()]],
           ['y', [createRandomContainer()]],
         ],
-        contaiderIds: new Set(),
+        visitedContainerIds: new Set(),
       }),
     ).not.toThrowError();
   });
@@ -20,7 +20,7 @@ describe('container.id is uniq', () => {
     expect(() =>
       prepareStages({
         stageTuples: [['x', [createRandomContainer({ id }), createRandomContainer({ id })]]],
-        contaiderIds: new Set(),
+        visitedContainerIds: new Set(),
       }),
     ).toThrowError(`[app-compose] Duplicate container ID found: ${id}`);
   });
@@ -34,7 +34,7 @@ describe('container.id is uniq', () => {
           ['x', [createRandomContainer({ id })]],
           ['y', [createRandomContainer({ id })]],
         ],
-        contaiderIds: new Set(),
+        visitedContainerIds: new Set(),
       }),
     ).toThrowErrorMatchingInlineSnapshot(`
       [Error: [app-compose] Container with ID "~" is already included in a previous stage (up to stage "y").

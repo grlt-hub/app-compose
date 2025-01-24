@@ -30,11 +30,16 @@ const getSkippedContainers = (skipped: SkippedContainers) => {
     .join(`\n${SKIPPED_INDENT}`);
 };
 
-const diff = (expectation: StageTuples, reality: (Stage & { skippedContainers: SkippedContainers })[]) => {
+type Params = {
+  expected: StageTuples;
+  received: (Stage & { skippedContainers: SkippedContainers })[];
+};
+
+const diff = ({ expected, received }: Params) => {
   console.log(`${LIBRARY_NAME} | diff command` + '\n' + SKIPPED_MSG + '\n\n' + 'Stages:');
 
-  reality.forEach(({ id: stageId, containersToBoot, skippedContainers }) => {
-    const original = expectation.find((x) => x[0] === stageId);
+  received.forEach(({ id: stageId, containersToBoot, skippedContainers }) => {
+    const original = expected.find((x) => x[0] === stageId);
 
     if (!original) {
       return;
@@ -54,9 +59,9 @@ const diff = (expectation: StageTuples, reality: (Stage & { skippedContainers: S
     console.log(
       `- ${colors.magenta(stageId)}:` +
         '\n' +
-        `${INDENT}input:  [ ${original[1].map((x) => x.id).join(', ')} ]` +
+        `${INDENT}expected: [ ${original[1].map((x) => x.id).join(', ')} ]` +
         '\n' +
-        `${INDENT}output: [ ${colorizedStage.join(', ')} ]` +
+        `${INDENT}received: [ ${colorizedStage.join(', ')} ]` +
         skippedOutput,
     );
   });

@@ -9,7 +9,7 @@ describe('container.id is uniq', () => {
           ['x', [createRandomContainer()]],
           ['y', [createRandomContainer()]],
         ],
-        contaiderIds: new Set(),
+        visitedContainerIds: new Set(),
       }),
     ).not.toThrowError();
   });
@@ -21,7 +21,7 @@ describe('container.id is uniq', () => {
           ['x', [createRandomContainer()]],
           ['x', [createRandomContainer()]],
         ],
-        contaiderIds: new Set(),
+        visitedContainerIds: new Set(),
       }),
     ).toThrowErrorMatchingInlineSnapshot(`
       [Error: [app-compose] Duplicate stage id detected: "x".

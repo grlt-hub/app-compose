@@ -7,7 +7,7 @@ describe('prepareStages', () => {
     const a = createRandomContainer();
     const b = createRandomContainer({ dependencies: [a], optionalDependencies: [x] });
 
-    const result = prepareStages({ contaiderIds: new Set(), stageTuples: [['_', [b]]] });
+    const result = prepareStages({ visitedContainerIds: new Set(), stageTuples: [['_', [b]]] });
 
     expect(result[0]?.containersToBoot).toStrictEqual([b, a]);
     expect(result[0]?.skippedContainers).toStrictEqual({ [b.id]: [x.id] });
@@ -17,14 +17,14 @@ describe('prepareStages', () => {
     const a = createRandomContainer();
     const b = createRandomContainer();
 
-    const result = prepareStages({ contaiderIds: new Set(), stageTuples: [['_', [a, b]]] });
+    const result = prepareStages({ visitedContainerIds: new Set(), stageTuples: [['_', [a, b]]] });
 
     expect(result[0]?.containersToBoot).toStrictEqual([a, b]);
     expect(result[0]?.skippedContainers).toStrictEqual({});
   });
 
   test('no containers to boot', () => {
-    const result = prepareStages({ contaiderIds: new Set(), stageTuples: [] });
+    const result = prepareStages({ visitedContainerIds: new Set(), stageTuples: [] });
 
     expect(result).toStrictEqual([]);
   });
@@ -35,7 +35,7 @@ describe('prepareStages', () => {
     const c = createRandomContainer({ dependencies: [b] });
 
     const result = prepareStages({
-      contaiderIds: new Set(),
+      visitedContainerIds: new Set(),
       stageTuples: [
         ['x', [a]],
         ['y', [b]],
@@ -54,7 +54,7 @@ describe('prepareStages', () => {
     const a = createRandomContainer({ dependencies: [shared] });
     const b = createRandomContainer({ dependencies: [shared] });
 
-    const result = prepareStages({ contaiderIds: new Set(), stageTuples: [['_', [a, b]]] });
+    const result = prepareStages({ visitedContainerIds: new Set(), stageTuples: [['_', [a, b]]] });
 
     expect(result[0]?.containersToBoot).toStrictEqual([a, b, shared]);
     expect(result[0]?.skippedContainers).toStrictEqual({});
@@ -67,7 +67,7 @@ describe('prepareStages', () => {
 
     expect(() =>
       prepareStages({
-        contaiderIds: new Set(),
+        visitedContainerIds: new Set(),
         stageTuples: [
           ['x', [b]],
           ['y', [a]],

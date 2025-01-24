@@ -21,6 +21,12 @@ const ERROR = {
 };
 
 type StageTuples = [Stage['id'], NonEmptyTuple<AnyContainer>][];
+type VisitedContainers = Set<ContainerId>;
+
+type PrepareStagesParams = {
+  stageTuples: StageTuples;
+  visitedContainerIds: VisitedContainers;
+};
 
 const validateStageIds = (stageTuples: StageTuples) => {
   const ids = new Set<string>();
@@ -34,38 +40,34 @@ const validateStageIds = (stageTuples: StageTuples) => {
   }
 };
 
-const addContainerId = (id: ContainerId, set: Set<ContainerId>) => {
-  if (set.has(id)) {
+const addContainerId = (id: ContainerId, visited: VisitedContainers) => {
+  if (visited.has(id)) {
     throw new Error(ERROR.DUPLICATE_CONTAINER_ID(id));
   }
 
-  set.add(id);
+  visited.add(id);
 };
 
-const checkAlreadyProcessed = (id: ContainerId, set: Set<ContainerId>, stageId: Stage['id']) => {
-  if (set.has(id)) {
+const checkAlreadyProcessed = (id: ContainerId, visited: VisitedContainers, stageId: Stage['id']) => {
+  if (visited.has(id)) {
     throw new Error(ERROR.ALREADY_PROCESSED(id, stageId));
   }
 };
 
-type Params = {
-  contaiderIds: Set<ContainerId>;
-  stageTuples: StageTuples;
-};
-
 type Result = (Stage & { skippedContainers: SkippedContainers })[];
 
-const prepareStages = ({ contaiderIds, stageTuples }: Params) => {
+const prepareStages = ({ visitedContainerIds, stageTuples }: PrepareStagesParams) => {
   validateStageIds(stageTuples);
 
-  return stageTuples.reduce<Result>((acc, [stageId, containers]) => {
-    containers.forEach((c) => checkAlreadyProcessed(c.id, contaiderIds, stageId));
+  return stageTuples.reduce<Result>((acc, [stageId, stageContainers]) => {
+    stageContainers.forEach((c) => checkAlreadyProcessed(c.id, visitedContainerIds, stageId));
 
-    const { containersToBoot: __containersToBoot, skippedContainers } = getContainersToBoot(containers, contaiderIds);
+    const { containersToBoot, skippedContainers } = getContainersToBoot({
+      visitedContainerIds,
+      stageContainers,
+    });
 
-    const containersToBoot = __containersToBoot.filter((c) => !contaiderIds.has(c.id));
-
-    containersToBoot.forEach((c) => addContainerId(c.id, contaiderIds));
+    containersToBoot.forEach((c) => addContainerId(c.id, visitedContainerIds));
 
     acc.push({ id: stageId, containersToBoot, skippedContainers });
 

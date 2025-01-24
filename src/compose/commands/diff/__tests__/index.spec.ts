@@ -17,7 +17,10 @@ describe('diff cmd', () => {
       dependencies: [b],
     });
 
-    diff([['x', [a, b, c]]], [{ id: 'x', containersToBoot: [a, b, c], skippedContainers: {} }]);
+    diff({
+      expected: [['x', [a, b, c]]],
+      received: [{ id: 'x', containersToBoot: [a, b, c], skippedContainers: {} }],
+    });
 
     expect(consoleLogSpy.mock.calls).toMatchInlineSnapshot(`
       [
@@ -29,8 +32,8 @@ describe('diff cmd', () => {
         ],
         [
           "- [35mx[39m:
-          input:  [ ${a.id}, ${b.id}, ${c.id} ]
-          output: [ ${a.id}, ${b.id}, ${c.id} ]",
+          expected: [ ${a.id}, ${b.id}, ${c.id} ]
+          received: [ ${a.id}, ${b.id}, ${c.id} ]",
         ],
       ]
     `);
@@ -47,7 +50,10 @@ describe('diff cmd', () => {
       dependencies: [b],
     });
 
-    diff([['x', [b, c]]], [{ id: 'x', containersToBoot: [a, b, c], skippedContainers: {} }]);
+    diff({
+      expected: [['x', [b, c]]],
+      received: [{ id: 'x', containersToBoot: [a, b, c], skippedContainers: {} }],
+    });
 
     expect(consoleLogSpy.mock.calls).toMatchInlineSnapshot(`
       [
@@ -59,8 +65,8 @@ describe('diff cmd', () => {
         ],
         [
           "- [35mx[39m:
-          input:  [ ${b.id}, ${c.id} ]
-          output: [ [42m${a.id}[49m, ${b.id}, ${c.id} ]",
+          expected: [ ${b.id}, ${c.id} ]
+          received: [ [42m${a.id}[49m, ${b.id}, ${c.id} ]",
         ],
       ]
     `);
@@ -77,7 +83,10 @@ describe('diff cmd', () => {
       dependencies: [b],
     });
 
-    diff([['x', [b, c]]], [{ id: 'y', containersToBoot: [a, b, c], skippedContainers: {} }]);
+    diff({
+      expected: [['x', [b, c]]],
+      received: [{ id: 'y', containersToBoot: [a, b, c], skippedContainers: {} }],
+    });
 
     expect(consoleLogSpy.mock.calls).toMatchInlineSnapshot(`
       [
@@ -102,7 +111,10 @@ describe('diff cmd', () => {
       dependencies: [b],
     });
 
-    diff([['x', [b, c]]], [{ id: 'x', containersToBoot: [a, b, c], skippedContainers: { [a.id]: ['skippedId'] } }]);
+    diff({
+      expected: [['x', [b, c]]],
+      received: [{ id: 'x', containersToBoot: [a, b, c], skippedContainers: { [a.id]: ['skippedId'] } }],
+    });
 
     expect(consoleLogSpy.mock.calls).toMatchInlineSnapshot(`
       [
@@ -114,8 +126,8 @@ describe('diff cmd', () => {
         ],
         [
           "- [35mx[39m:
-          input:  [ ${b.id}, ${c.id} ]
-          output: [ [42m${a.id}[49m, ${b.id}, ${c.id} ]
+          expected: [ ${b.id}, ${c.id} ]
+          received: [ [42m${a.id}[49m, ${b.id}, ${c.id} ]
           skipped:
                   - [33mskippedId[39m: [${a.id}]",
         ],
