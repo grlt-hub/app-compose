@@ -38,7 +38,7 @@ const partitionOptionalDeps = (params: { container: AnyContainer; containersToBo
   return [included, skipped] as const;
 };
 
-const getContainersToBoot = <T extends AnyContainer[]>(inputContainers: T) => {
+const getContainersToBoot = <T extends AnyContainer[]>(inputContainers: T, biba: Set<ContainerId>) => {
   const { strictContainers } = traverseContainers(inputContainers);
   const containersToBoot = new Set([...inputContainers, ...strictContainers]);
   const containersToBootListed = Array.from(containersToBoot) as T;
@@ -53,7 +53,7 @@ const getContainersToBoot = <T extends AnyContainer[]>(inputContainers: T) => {
     container.optionalDependsOn = included;
 
     if (skipped.length) {
-      skippedContainers[container.id] = skipped;
+      skippedContainers[container.id] = skipped.filter((x) => !biba.has(x));
     }
   }
 

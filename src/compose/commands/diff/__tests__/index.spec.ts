@@ -17,12 +17,13 @@ describe('diff cmd', () => {
       dependsOn: [b],
     });
 
-    diff([['x', [a, b, c]]], [{ id: 'x', containersToBoot: [a, b, c] }]);
+    diff([['x', [a, b, c]]], [{ id: 'x', containersToBoot: [a, b, c], skippedContainers: {} }]);
 
     expect(consoleLogSpy.mock.calls).toMatchInlineSnapshot(`
       [
         [
           "[app-compose] | diff command
+      All skipped containers are optional. If they are expected to work, please include them in the list when calling \`compose\` function
 
       Stages:",
         ],
@@ -46,12 +47,13 @@ describe('diff cmd', () => {
       dependsOn: [b],
     });
 
-    diff([['x', [b, c]]], [{ id: 'x', containersToBoot: [a, b, c] }]);
+    diff([['x', [b, c]]], [{ id: 'x', containersToBoot: [a, b, c], skippedContainers: {} }]);
 
     expect(consoleLogSpy.mock.calls).toMatchInlineSnapshot(`
       [
         [
           "[app-compose] | diff command
+      All skipped containers are optional. If they are expected to work, please include them in the list when calling \`compose\` function
 
       Stages:",
         ],
@@ -75,12 +77,13 @@ describe('diff cmd', () => {
       dependsOn: [b],
     });
 
-    diff([['x', [b, c]]], [{ id: 'y', containersToBoot: [a, b, c] }]);
+    diff([['x', [b, c]]], [{ id: 'y', containersToBoot: [a, b, c], skippedContainers: {} }]);
 
     expect(consoleLogSpy.mock.calls).toMatchInlineSnapshot(`
       [
         [
           "[app-compose] | diff command
+      All skipped containers are optional. If they are expected to work, please include them in the list when calling \`compose\` function
 
       Stages:",
         ],

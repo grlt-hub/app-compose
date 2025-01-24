@@ -1,16 +1,22 @@
 import { createRandomContainer } from '@randomContainer';
 import { compose } from './src';
 
+const x = createRandomContainer({ id: 'x' });
+const y = createRandomContainer({ id: 'y', optionalDependsOn: [x] });
+
 const entities = createRandomContainer({ id: 'entities' });
 const notifications = createRandomContainer({
   id: 'notifications',
-  enable: () => {
-    throw Error('1');
-  },
+  optionalDependsOn: [entities],
+  // enable: () => {
+  //   throw Error('1');
+  // },
 });
+
+// test notif includes on the same stage by other feature
 const accountFeatures = createRandomContainer({
   id: 'accountFeatures',
-  dependsOn: [notifications],
+  optionalDependsOn: [notifications, entities, x],
   // optionalDependsOn: [notifications],
   start: () => ({ api: { f: () => false } }),
 });
@@ -23,10 +29,11 @@ const tradingFeatures = createRandomContainer({
 });
 const profileFeatures = createRandomContainer({
   id: 'profileFeatures',
-  enable: () => {
-    throw Error('oops');
-  },
+  // enable: () => {
+  //   throw Error('oops');
+  // },
 });
+
 const hcFeatures = createRandomContainer({ id: 'hcFeatures' });
 
 {
@@ -35,7 +42,7 @@ const hcFeatures = createRandomContainer({ id: 'hcFeatures' });
     stages: [
       ['entities-stage', [entities]],
       ['notifications-stage', [notifications]],
-      ['accountFeatures-stage', [accountFeatures]],
+      ['accountFeatures-stage', [accountFeatures, y]],
       ['tradingFeatures-stage', [tradingFeatures]],
       ['profileFeatures-stage', [profileFeatures]],
       ['hcFeatures-stage', [hcFeatures]],
@@ -45,8 +52,8 @@ const hcFeatures = createRandomContainer({ id: 'hcFeatures' });
   });
 
   try {
-    const app = await cmd.up({ debug: false });
-    console.log(app.stages);
+    const app = await cmd.diff();
+    // console.log(app.stages);
   } catch (e) {
     console.error(e, 'app-start');
   }

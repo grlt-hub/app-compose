@@ -9,18 +9,9 @@ type Params = {
   required?: Parameters<UpFn>[0]['required'];
 };
 
-type Config = {
-  logSkippedContainers?: boolean;
-};
-
-const compose = async (params: Params, config?: Config) => {
+const compose = async (params: Params) => {
   const contaiderIds = new Set<ContainerId>();
-
   const stages = prepareStages({ stageTuples: params.stages, contaiderIds });
-
-  if (config?.logSkippedContainers) {
-    (await import('./printSkippedContainers')).printSkippedContainers(stages);
-  }
 
   return {
     diff: async () => {

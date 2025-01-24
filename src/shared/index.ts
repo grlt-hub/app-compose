@@ -7,11 +7,11 @@ type StageId = string;
 type Stage = {
   id: StageId;
   containersToBoot: AnyContainer[];
-  // container | skipped dependencies of the container. eg: { deposit: [notifications] }
-  skippedContainers: Record<ContainerId, ContainerId[]>;
 };
+// container | skipped dependencies of the container. eg: { deposit: [notifications] }
+type SkippedContainers = Record<ContainerId, ContainerId[]>;
 
 export { colors } from './colors';
 export { isEmpty } from './isEmpty';
 export { isNil } from './isNil';
-export { LIBRARY_NAME, type NonEmptyTuple, type Stage };
+export { LIBRARY_NAME, type NonEmptyTuple, type SkippedContainers, type Stage };

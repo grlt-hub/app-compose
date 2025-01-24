@@ -1,11 +1,39 @@
 import type { ContainerId } from '@createContainer';
 import type { StageTuples } from '@prepareStages';
-import { colors, LIBRARY_NAME, type Stage } from '@shared';
+import { colors, LIBRARY_NAME, type SkippedContainers, type Stage } from '@shared';
 
-const diff = (expectation: StageTuples, reality: Stage[]) => {
-  console.log(`${LIBRARY_NAME} | diff command` + '\n\n' + 'Stages:');
+const INDENT = '    ';
+const SKIPPED_INDENT = INDENT.repeat(3);
+const SKIPPED_MSG =
+  'All skipped containers are optional. If they are expected to work, please include them in the list when calling `compose` function';
 
-  reality.forEach(({ id: stageId, containersToBoot }) => {
+const getSkippedContainers = (skipped: SkippedContainers) => {
+  if (Object.keys(skipped).length === 0) {
+    return '';
+  }
+
+  const reversedSkipped: SkippedContainers = {};
+
+  for (const [containerId, dependencies] of Object.entries(skipped)) {
+    for (const dependency of dependencies) {
+      if (!reversedSkipped[dependency]) {
+        reversedSkipped[dependency] = [];
+      }
+      reversedSkipped[dependency].push(containerId);
+    }
+  }
+
+  return Object.entries(reversedSkipped)
+    .map(([depId, containers]) => {
+      return `- ${colors.yellow(depId)}: [${containers.join(', ')}]`;
+    })
+    .join(`\n${SKIPPED_INDENT}`);
+};
+
+const diff = (expectation: StageTuples, reality: (Stage & { skippedContainers: SkippedContainers })[]) => {
+  console.log(`${LIBRARY_NAME} | diff command` + '\n' + SKIPPED_MSG + '\n\n' + 'Stages:');
+
+  reality.forEach(({ id: stageId, containersToBoot, skippedContainers }) => {
     const original = expectation.find((x) => x[0] === stageId);
 
     if (!original) {
@@ -20,12 +48,16 @@ const diff = (expectation: StageTuples, reality: Stage[]) => {
       return acc;
     }, []);
 
+    const skipped = getSkippedContainers(skippedContainers);
+    const skippedOutput = skipped.length ? `\n${INDENT}skipped:\n${SKIPPED_INDENT}${skipped}` : '';
+
     console.log(
       `- ${colors.magenta(stageId)}:` +
         '\n' +
-        `    input:  [ ${original[1].map((x) => x.id).join(', ')} ]` +
+        `${INDENT}input:  [ ${original[1].map((x) => x.id).join(', ')} ]` +
         '\n' +
-        `    output: [ ${colorizedStage.join(', ')} ]`,
+        `${INDENT}output: [ ${colorizedStage.join(', ')} ]` +
+        skippedOutput,
     );
   });
 };

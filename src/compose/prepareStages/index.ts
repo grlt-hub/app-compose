@@ -1,5 +1,5 @@
 import { type AnyContainer, type ContainerId } from '@createContainer';
-import { LIBRARY_NAME, type NonEmptyTuple, type Stage } from '@shared';
+import { LIBRARY_NAME, type NonEmptyTuple, type SkippedContainers, type Stage } from '@shared';
 import { getContainersToBoot } from './getContainersToBoot';
 
 const ERROR = {
@@ -53,13 +53,15 @@ type Params = {
   stageTuples: StageTuples;
 };
 
+type Result = (Stage & { skippedContainers: SkippedContainers })[];
+
 const prepareStages = ({ contaiderIds, stageTuples }: Params) => {
   validateStageIds(stageTuples);
 
-  return stageTuples.reduce<Stage[]>((acc, [stageId, containers]) => {
+  return stageTuples.reduce<Result>((acc, [stageId, containers]) => {
     containers.forEach((c) => checkAlreadyProcessed(c.id, contaiderIds, stageId));
 
-    const { containersToBoot: __containersToBoot, skippedContainers } = getContainersToBoot(containers);
+    const { containersToBoot: __containersToBoot, skippedContainers } = getContainersToBoot(containers, contaiderIds);
 
     const containersToBoot = __containersToBoot.filter((c) => !contaiderIds.has(c.id));
 
