@@ -24,6 +24,7 @@ import { createContainer, compose } from '@grlt-hub/app-compose';
 // wrap the module in a container
 const user = createContainer({
   id: 'user',
+  domain: 'user',
   start: async () => {
     const data = await fetchUser();
 
@@ -33,6 +34,7 @@ const user = createContainer({
 
 const accounts = createContainer({
   id: 'accounts',
+  domain: 'acc',
   dependencies: [user],
   start: async ({ user }) => {
     const data = await fetchAccounts({ id: user.data.id });
@@ -42,14 +44,23 @@ const accounts = createContainer({
   enable: ({ user }) => user.data.id !== null,
 });
 
-const wallets = createContainer({
-  id: 'wallets',
+const deposit = createContainer({
+  id: 'deposit',
+  domain: 'acc',
   dependencies: [accounts],
   start: () => ({ api: null }),
 });
 
 // up the containers
-await compose.up([user, wallets, accounts]);
+const cmd = await compose({
+  stages: [
+    ['entities', [user, accounts]],
+    ['features', [deposit]],
+  ],
+  required: 'all',
+});
+
+await cmd.up();
 
 // { user: 'idle',     accounts: 'idle',     wallets: 'idle' }
 // { user: 'pending',  accounts: 'idle',     wallets: 'idle' }
