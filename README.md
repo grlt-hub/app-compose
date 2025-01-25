@@ -36,12 +36,12 @@ const accounts = createContainer({
   id: 'accounts',
   domain: 'acc',
   dependencies: [user],
-  start: async ({ user }) => {
-    const data = await fetchAccounts({ id: user.data.id });
+  start: async (api) => {
+    const data = await fetchAccounts({ id: api.user.data.id });
 
     return { api: { data } };
   },
-  enable: ({ user }) => user.data.id !== null,
+  enable: (api) => api.user.data.id !== null,
 });
 
 const deposit = createContainer({
