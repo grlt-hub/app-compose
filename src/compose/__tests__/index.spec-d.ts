@@ -5,16 +5,12 @@ import { compose } from '../index';
 describe('compose fn', () => {
   {
     type Params = Parameters<typeof compose>;
-    type Config = {
-      logSkippedContainers?: boolean;
-    };
 
-    expectTypeOf<Params['length']>().toEqualTypeOf<1 | 2>();
+    expectTypeOf<Params['length']>().toEqualTypeOf<1>();
     expectTypeOf<Params[0]>().toEqualTypeOf<{
       stages: [string, NonEmptyTuple<AnyContainer>][];
       required?: (AnyContainer | NonEmptyTuple<AnyContainer>)[] | 'all';
     }>();
-    expectTypeOf<Params[1]>().toEqualTypeOf<Config | undefined>();
   }
 
   {
@@ -31,8 +27,8 @@ describe('compose fn', () => {
         error: Error;
       }) => unknown;
     }) => Promise<{
-      allSucceeded: boolean;
-      stages: Record<Stage['id'], { containerStatuses: Record<ContainerId, ContainerStatus>; allSucceeded: boolean }>;
+      allDone: boolean;
+      stages: Record<Stage['id'], { containerStatuses: Record<ContainerId, ContainerStatus>; allDone: boolean }>;
     }>;
 
     expectTypeOf<Result['up']>().toEqualTypeOf<Up>();

@@ -16,6 +16,26 @@ type ExtractDeps<D extends AnyContainer[]> = {
   >['api'];
 };
 
+type ExtractEnabled<D extends AnyContainer[]> = {
+  [K in D[number] as K['id']]: boolean;
+};
+
+type DependenciesConfig<Deps extends AnyDeps, OptionalDeps extends AnyDeps> =
+  [Deps] extends [void] ?
+    [OptionalDeps] extends [void] ?
+      {}
+    : {
+        optionalDependencies: Exclude<OptionalDeps, void>;
+      }
+  : [OptionalDeps] extends [void] ?
+    {
+      dependencies: Exclude<Deps, void>;
+    }
+  : {
+      dependencies: Exclude<Deps, void>;
+      optionalDependencies: Exclude<OptionalDeps, void>;
+    };
+
 type Params<
   Id extends string,
   Domain extends string,
@@ -25,39 +45,16 @@ type Params<
 > =
   '' extends Id ? ContainerIdEmptyStringError
   : '' extends Domain ? ContainerDomainNameEmptyStringError
-  : Deps extends void ?
-    OptionalDeps extends void ?
-      {
-        id: Id;
-        domain: Domain;
-        start: () => StartResult<API>;
-        enable?: () => EnableResult;
-      }
-    : {
-        id: Id;
-        domain: Domain;
-        optionalDependencies: Exclude<OptionalDeps, void>;
-        start: (_: Partial<ExtractDeps<Exclude<OptionalDeps, void>>>) => StartResult<API>;
-        enable?: (_: Partial<ExtractDeps<Exclude<OptionalDeps, void>>>) => EnableResult;
-      }
-  : OptionalDeps extends void ?
-    {
+  : DependenciesConfig<Deps, OptionalDeps> & {
       id: Id;
       domain: Domain;
-      dependencies: Exclude<Deps, void>;
-      start: (_: ExtractDeps<Exclude<Deps, void>>) => StartResult<API>;
-      enable?: (_: ExtractDeps<Exclude<Deps, void>>) => EnableResult;
-    }
-  : {
-      id: Id;
-      domain: Domain;
-      dependencies: Exclude<Deps, void>;
-      optionalDependencies: Exclude<OptionalDeps, void>;
       start: (
-        _: ExtractDeps<Exclude<Deps, void>> & Partial<ExtractDeps<Exclude<OptionalDeps, void>>>,
+        api: ExtractDeps<Exclude<Deps, void>> & Partial<ExtractDeps<Exclude<OptionalDeps, void>>>,
+        enabled: ExtractEnabled<Exclude<Deps, void>> & ExtractEnabled<Exclude<OptionalDeps, void>>,
       ) => StartResult<API>;
       enable?: (
-        _: ExtractDeps<Exclude<Deps, void>> & Partial<ExtractDeps<Exclude<OptionalDeps, void>>>,
+        api: ExtractDeps<Exclude<Deps, void>> & Partial<ExtractDeps<Exclude<OptionalDeps, void>>>,
+        enabled: ExtractEnabled<Exclude<Deps, void>> & ExtractEnabled<Exclude<OptionalDeps, void>>,
       ) => EnableResult;
     };
 

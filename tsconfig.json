@@ -26,5 +26,6 @@
       "@shared": ["./src/shared"],
       "@prepareStages": ["./src/compose/prepareStages"]
     }
-  }
+  },
+  "exclude": ["website", "dist"]
 }

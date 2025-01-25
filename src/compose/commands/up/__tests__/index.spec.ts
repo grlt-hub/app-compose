@@ -31,7 +31,7 @@ describe('upFn like in real world', () => {
       id: 'quotesEntity',
       optionalDependencies: [userEntity],
       start: () => ({ api: { register: null } }),
-      enable: async (_, d) => {
+      enable: async (d) => {
         if (d.user?.id === '777') {
           return false;
         }

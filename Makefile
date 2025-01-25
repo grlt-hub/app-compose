@@ -1,5 +1,5 @@
 build:
-	rm -rf ./dist && npx tsup src/index.ts --minify --format esm --dts
+	rm -rf ./dist && npx tsc --noEmit --project ./tsconfig.json && npx tsup src/index.ts --minify --format esm --dts
 
 test:
 	npx vitest --coverage

@@ -13,4 +13,5 @@ type SkippedContainers = Record<ContainerId, ContainerId[]>;
 
 export { colors } from './colors';
 export { isNil } from './isNil';
+export { pick } from './pick';
 export { LIBRARY_NAME, type NonEmptyTuple, type SkippedContainers, type Stage };

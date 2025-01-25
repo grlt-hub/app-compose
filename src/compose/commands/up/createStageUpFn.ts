@@ -19,6 +19,13 @@ type UpResult = {
   containerStatuses: Record<ContainerId, ContainerStatus>;
 };
 
+// have no idea how-to use attach
+const collectDepsEnabled = (strict: AnyContainer[], optional: AnyContainer[]) =>
+  [...strict, ...optional].reduce<Record<ContainerId, boolean>>((acc, { id, $status }) => {
+    acc[id] = statusIs.done($status.getState());
+    return acc;
+  }, {});
+
 const createStageUpFn = (__config?: Config) => {
   const config = normalizeConfig(__config);
 
@@ -50,27 +57,37 @@ const createStageUpFn = (__config?: Config) => {
 
     await Promise.allSettled(
       stage.containersToBoot.map((container) => {
-        const $strictDepsResolving = combine(container.dependencies?.map((d) => d.$status) || [], (x) => {
-          if (x.some(statusIs.off)) return CONTAINER_STATUS.off;
-          if (x.some(statusIs.fail)) return CONTAINER_STATUS.fail;
-          if (x.some(statusIs.pending)) return CONTAINER_STATUS.pending;
+        const containerDependencies = container.dependencies ?? [];
+        const containerOptionalDependencies = container.optionalDependencies ?? [];
 
-          if (x.every(statusIs.done) || x.length === 0) return CONTAINER_STATUS.done;
+        const $strictDepsResolving = combine(
+          containerDependencies.map((d) => d.$status),
+          (x) => {
+            if (x.some(statusIs.off)) return CONTAINER_STATUS.off;
+            if (x.some(statusIs.fail)) return CONTAINER_STATUS.fail;
+            if (x.some(statusIs.pending)) return CONTAINER_STATUS.pending;
 
-          return CONTAINER_STATUS.idle;
-        });
+            if (x.every(statusIs.done) || x.length === 0) return CONTAINER_STATUS.done;
+
+            return CONTAINER_STATUS.idle;
+          },
+        );
         const $optionalDepsResolving = combine(
-          (container.optionalDependencies || []).map((d) => d.$status),
+          containerOptionalDependencies.map((d) => d.$status),
           (l) => (l.some(statusIs.pending) || l.some(statusIs.idle) ? CONTAINER_STATUS.idle : CONTAINER_STATUS.done),
         );
         const $depsDone = combine([$strictDepsResolving, $optionalDepsResolving], (l) => l.every(statusIs.done));
 
         const enableFx = domain.createEffect(async () =>
-          container.enable ? await container.enable(apis, apis) : true,
+          container.enable ?
+            await container.enable(apis, collectDepsEnabled(containerDependencies, containerOptionalDependencies))
+          : true,
         );
 
         const startFx = domain.createEffect(async () => {
-          apis[container.id] = (await container.start(apis, apis))['api'];
+          apis[container.id] = (
+            await container.start(apis, collectDepsEnabled(containerDependencies, containerOptionalDependencies))
+          )['api'];
         });
 
         sample({

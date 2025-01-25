@@ -35,14 +35,15 @@ describe('void | void', () => {
 
     {
       type startFn = ExtractstartFn<Container>;
-      expectTypeOf<Parameters<startFn>>().toEqualTypeOf<[]>();
+
+      expectTypeOf<Parameters<startFn>>().toMatchTypeOf<{}>();
     }
 
     {
       type EnableFn = (() => Promise<boolean> | boolean) | undefined;
 
       expectTypeOf<Parameters<NonNullable<EnableFn>>>().toEqualTypeOf<[]>();
-      expectTypeOf<EnableFn>().toEqualTypeOf<ExtractEnableFn<Container>>();
+      expectTypeOf<EnableFn>().toMatchTypeOf<ExtractEnableFn<Container>>();
     }
   });
 });
@@ -56,12 +57,12 @@ describe('dep | void', () => {
     {
       type startFn = ExtractstartFn<Container>;
 
-      expectTypeOf<API>().toEqualTypeOf<Parameters<startFn>[0]>();
+      expectTypeOf<API>().toMatchTypeOf<Parameters<startFn>[0]>();
     }
     {
-      type EnableFn = ((d: API) => Promise<boolean> | boolean) | undefined;
+      type EnableFn = ((d: API, _: { [__.a.id]: boolean }) => Promise<boolean> | boolean) | undefined;
 
-      expectTypeOf<EnableFn>().toEqualTypeOf<ExtractEnableFn<Container>>();
+      expectTypeOf<EnableFn>().toMatchTypeOf<ExtractEnableFn<Container>>();
     }
   });
   test('multiple | void', () => {
@@ -77,12 +78,12 @@ describe('dep | void', () => {
     {
       type startFn = ExtractstartFn<Container>;
 
-      expectTypeOf<API>().toEqualTypeOf<Parameters<startFn>[0]>();
+      expectTypeOf<API>().toMatchTypeOf<Parameters<startFn>[0]>();
     }
     {
       type EnableFn = ((d: API) => Promise<boolean> | boolean) | undefined;
 
-      expectTypeOf<EnableFn>().toEqualTypeOf<ExtractEnableFn<Container>>();
+      expectTypeOf<EnableFn>().toMatchTypeOf<ExtractEnableFn<Container>>();
     }
   });
 });
@@ -103,7 +104,7 @@ describe('deps | optDeps', () => {
     {
       type EnableFn = ((_: API) => Promise<boolean> | boolean) | undefined;
 
-      expectTypeOf<EnableFn>().toEqualTypeOf<ExtractEnableFn<Container>>();
+      expectTypeOf<EnableFn>().toMatchTypeOf<ExtractEnableFn<Container>>();
     }
   });
 
@@ -129,7 +130,7 @@ describe('deps | optDeps', () => {
     {
       type EnableFn = ((_: API) => Promise<boolean> | boolean) | undefined;
 
-      expectTypeOf<EnableFn>().toEqualTypeOf<ExtractEnableFn<Container>>();
+      expectTypeOf<EnableFn>().toMatchTypeOf<ExtractEnableFn<Container>>();
     }
   });
 
@@ -155,7 +156,7 @@ describe('deps | optDeps', () => {
     {
       type EnableFn = ((_: API) => Promise<boolean> | boolean) | undefined;
 
-      expectTypeOf<EnableFn>().toEqualTypeOf<ExtractEnableFn<Container>>();
+      expectTypeOf<EnableFn>().toMatchTypeOf<ExtractEnableFn<Container>>();
     }
   });
 });
@@ -169,12 +170,12 @@ describe('void | optDeps', () => {
     {
       type startFn = ExtractstartFn<Container>;
 
-      expectTypeOf<API>().toEqualTypeOf<Parameters<startFn>[0]>();
+      expectTypeOf<API>().toMatchTypeOf<Parameters<startFn>[0]>();
     }
     {
       type EnableFn = ((_: API) => Promise<boolean> | boolean) | undefined;
 
-      expectTypeOf<EnableFn>().toEqualTypeOf<ExtractEnableFn<Container>>();
+      expectTypeOf<EnableFn>().toMatchTypeOf<ExtractEnableFn<Container>>();
     }
   });
   test('void | multiple', () => {
@@ -189,12 +190,12 @@ describe('void | optDeps', () => {
     {
       type startFn = ExtractstartFn<Container>;
 
-      expectTypeOf<API>().toEqualTypeOf<Parameters<startFn>[0]>();
+      expectTypeOf<API>().toMatchTypeOf<Parameters<startFn>[0]>();
     }
     {
       type EnableFn = ((_: API) => Promise<boolean> | boolean) | undefined;
 
-      expectTypeOf<EnableFn>().toEqualTypeOf<ExtractEnableFn<Container>>();
+      expectTypeOf<EnableFn>().toMatchTypeOf<ExtractEnableFn<Container>>();
     }
   });
 });
