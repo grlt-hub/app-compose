@@ -16,12 +16,14 @@ const compose = async (params: Params) => {
 
   return {
     up: (config?: Parameters<UpFn>[1]) => up({ stages, required: params.required }, config),
+    /* v8 ignore start */
     diff: async () => {
       (await import('./commands/diff')).diff({ expected: params.stages, received: stages });
     },
     graph: async (config?: Parameters<GraphFn>[1]) => {
       (await import('./commands/graph')).graph({ stages }, { view: config?.view ?? 'containers' });
     },
+    /* v8 ignore end */
   };
 };
 
