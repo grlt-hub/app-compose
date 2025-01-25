@@ -1,16 +1,18 @@
-import type { ContainerDomain, ContainerId } from '../../../createContainer';
+import type { ContainerDomain, ContainerId } from '@createContainer';
 
-type TransitiveDependency<Id extends string = ContainerId> = { id: Id; path: string };
+type View = 'domains' | 'containers';
+
+type TransitiveDependency<Id extends ContainerId | ContainerDomain = ContainerId> = { id: Id; path: string };
 
 type ContainersGraph = Record<
   ContainerId,
   {
     domain: ContainerDomain;
-    strict: ContainerId[];
-    optional: ContainerId[];
+    dependencies: ContainerId[];
+    optionalDependencies: ContainerId[];
     transitive: {
-      strict: TransitiveDependency<ContainerId>[];
-      optional: TransitiveDependency<ContainerId>[];
+      dependencies: TransitiveDependency<ContainerId>[];
+      optionalDependencies: TransitiveDependency<ContainerId>[];
     };
   }
 >;
@@ -28,4 +30,4 @@ type DomainsGraph = Record<
   }
 >;
 
-export type { ContainersGraph, DomainsGraph, TransitiveDependency };
+export type { ContainersGraph, DomainsGraph, TransitiveDependency, View };

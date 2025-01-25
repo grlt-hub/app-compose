@@ -1,6 +1,6 @@
+import { type NonEmptyTuple } from '@shared';
 import { type StoreWritable } from 'effector';
 
-type NonEmptyTuple<T = unknown> = [T, ...T[]];
 type AnyObject = Record<string, unknown>;
 type ValueOf<T> = T[keyof T];
 
@@ -24,8 +24,8 @@ type AnyContainer = {
   domain: string;
   $status: StoreWritable<ContainerStatus>;
   start: AnyStartFn;
-  dependsOn?: AnyContainer[];
-  optionalDependsOn?: AnyContainer[];
+  dependencies?: AnyContainer[];
+  optionalDependencies?: AnyContainer[];
   enable?: (..._: any) => EnableResult;
 };
 

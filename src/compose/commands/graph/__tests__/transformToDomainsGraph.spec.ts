@@ -1,27 +1,23 @@
-import { createContainer } from '@createContainer';
-import { randomUUID } from 'node:crypto';
-import { createGraphFn } from '../index';
+import { createRandomContainer } from '@randomContainer';
+import { graph } from '../index';
 
-const start = () => ({ api: null });
-
-describe('groupByDomain', () => {
+describe('transformToDomainsGraph', () => {
   test('basic', () => {
-    const a = createContainer({ id: randomUUID(), domain: randomUUID(), start });
-    const b = createContainer({ id: randomUUID(), domain: a.domain, dependsOn: [a], start });
-    const c = createContainer({ id: randomUUID(), domain: randomUUID(), dependsOn: [b], start });
-    const d = createContainer({ id: randomUUID(), domain: randomUUID(), optionalDependsOn: [c], start });
-    const x = createContainer({ id: randomUUID(), domain: randomUUID(), start });
-    const e = createContainer({
-      id: randomUUID(),
-      domain: randomUUID(),
-      dependsOn: [c],
-      optionalDependsOn: [x],
-      start,
-    });
+    const a = createRandomContainer();
+    const b = createRandomContainer({ domain: a.domain, dependencies: [a] });
+    const c = createRandomContainer({ dependencies: [b] });
+    const d = createRandomContainer({ optionalDependencies: [c] });
+    const x = createRandomContainer();
+    const e = createRandomContainer({ dependencies: [c], optionalDependencies: [x] });
 
-    const { data } = createGraphFn([a, b, c, d, e, x], {})({ view: 'domains' });
+    const { graph: result } = graph(
+      {
+        stages: [{ id: '_', containersToBoot: [a, b, c, d, e, x] }],
+      },
+      { view: 'domains' },
+    );
 
-    expect(data).toStrictEqual({
+    expect(result).toStrictEqual({
       [a.domain]: {
         containers: [a.id, b.id],
         strict: [],

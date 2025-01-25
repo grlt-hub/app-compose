@@ -1,37 +1,39 @@
-import { createContainer } from '@createContainer';
-import { randomUUID } from 'node:crypto';
-import { createGraphFn } from '../index';
-
-const start = () => ({ api: null });
+import { createRandomContainer } from '@randomContainer';
+import { graph } from '../index';
 
 test('example from doc', () => {
-  const a = createContainer({ id: 'a', domain: randomUUID(), start });
-  const b = createContainer({ id: 'b', domain: randomUUID(), dependsOn: [a], start });
-  const c = createContainer({ id: 'c', domain: randomUUID(), optionalDependsOn: [b], start });
-  const d = createContainer({ id: 'd', domain: randomUUID(), dependsOn: [c], optionalDependsOn: [b], start });
+  const a = createRandomContainer({ id: 'a' });
+  const b = createRandomContainer({ id: 'b', dependencies: [a] });
+  const c = createRandomContainer({ id: 'c', optionalDependencies: [b] });
+  const d = createRandomContainer({ id: 'd', dependencies: [c], optionalDependencies: [b] });
 
-  const graph = createGraphFn([a, b, c, d], {})();
+  const result = graph(
+    {
+      stages: [{ id: '_', containersToBoot: [a, b, c, d] }],
+    },
+    { view: 'containers' },
+  );
 
-  expect(graph.data).toStrictEqual({
+  expect(result.graph).toStrictEqual({
     [a.id]: {
       domain: a.domain,
-      strict: [],
-      optional: [],
-      transitive: { strict: [], optional: [] },
+      dependencies: [],
+      optionalDependencies: [],
+      transitive: { dependencies: [], optionalDependencies: [] },
     },
     [b.id]: {
       domain: b.domain,
-      strict: [a.id],
-      optional: [],
-      transitive: { strict: [], optional: [] },
+      dependencies: [a.id],
+      optionalDependencies: [],
+      transitive: { dependencies: [], optionalDependencies: [] },
     },
     [c.id]: {
       domain: c.domain,
-      strict: [],
-      optional: [b.id],
+      dependencies: [],
+      optionalDependencies: [b.id],
       transitive: {
-        strict: [],
-        optional: [
+        dependencies: [],
+        optionalDependencies: [
           {
             id: a.id,
             path: `${c.id} -> ${b.id} -> ${a.id}`,
@@ -41,11 +43,11 @@ test('example from doc', () => {
     },
     [d.id]: {
       domain: d.domain,
-      strict: [c.id],
-      optional: [b.id],
+      dependencies: [c.id],
+      optionalDependencies: [b.id],
       transitive: {
-        strict: [],
-        optional: [
+        dependencies: [],
+        optionalDependencies: [
           {
             id: a.id,
             path: `${d.id} -> ${b.id} -> ${a.id}`,

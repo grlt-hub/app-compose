@@ -1,22 +1,30 @@
-import { createContainer } from '@createContainer';
-import { randomUUID } from 'node:crypto';
-import { createGraphFn } from '../../index';
+import { createRandomContainer } from '@randomContainer';
 
-const start = () => ({ api: null });
+import { graph } from '../../index';
 
-const a = createContainer({ id: randomUUID(), domain: randomUUID(), start });
-const b = createContainer({ id: randomUUID(), domain: a.domain, dependsOn: [a], start });
-const c = createContainer({ id: randomUUID(), domain: randomUUID(), dependsOn: [b], start });
-const d = createContainer({ id: randomUUID(), domain: randomUUID(), optionalDependsOn: [c], start });
+const a = createRandomContainer();
+const b = createRandomContainer({ domain: a.domain, dependencies: [a] });
+const c = createRandomContainer({ dependencies: [b] });
+const d = createRandomContainer({ optionalDependencies: [c] });
 
 test('dependsOn | containers', () => {
-  const { dependsOn } = createGraphFn([a, b, c, d], {})({ view: 'containers' });
+  const { dependsOn } = graph(
+    {
+      stages: [{ id: '_', containersToBoot: [a, b, c, d] }],
+    },
+    { view: 'containers' },
+  );
 
   expect(Object.keys(dependsOn([c, d]))).toStrictEqual([c.id, d.id]);
 });
 
 test('dependsOn | domains', () => {
-  const { dependsOn } = createGraphFn([a, b, c, d], {})({ view: 'domains' });
+  const { dependsOn } = graph(
+    {
+      stages: [{ id: '_', containersToBoot: [a, b, c, d] }],
+    },
+    { view: 'domains' },
+  );
 
   expect(Object.keys(dependsOn([c.domain, d.domain]))).toStrictEqual([c.domain, d.domain]);
 });

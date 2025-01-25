@@ -16,53 +16,47 @@ type ExtractDeps<D extends AnyContainer[]> = {
   >['api'];
 };
 
+type ExtractEnabled<D extends AnyContainer[]> = {
+  [K in D[number] as K['id']]: boolean;
+};
+
+type DependenciesConfig<Deps extends AnyDeps, OptionalDeps extends AnyDeps> =
+  [Deps] extends [void] ?
+    [OptionalDeps] extends [void] ?
+      {}
+    : {
+        optionalDependencies: Exclude<OptionalDeps, void>;
+      }
+  : [OptionalDeps] extends [void] ?
+    {
+      dependencies: Exclude<Deps, void>;
+    }
+  : {
+      dependencies: Exclude<Deps, void>;
+      optionalDependencies: Exclude<OptionalDeps, void>;
+    };
+
 type Params<
   Id extends string,
   Domain extends string,
   API extends AnyAPI,
   Deps extends AnyDeps = void,
   OptionalDeps extends AnyDeps = void,
-> = '' extends Id
-  ? ContainerIdEmptyStringError
-  : '' extends Domain
-    ? ContainerDomainNameEmptyStringError
-    : Deps extends void
-      ? OptionalDeps extends void
-        ? {
-            id: Id;
-            domain: Domain;
-            start: () => StartResult<API>;
-            enable?: () => EnableResult;
-          }
-        : {
-            id: Id;
-            domain: Domain;
-            optionalDependsOn: Exclude<OptionalDeps, void>;
-            start: (_: void, optionalDeps: Partial<ExtractDeps<Exclude<OptionalDeps, void>>>) => StartResult<API>;
-            enable?: (_: void, optionalDeps: Partial<ExtractDeps<Exclude<OptionalDeps, void>>>) => EnableResult;
-          }
-      : OptionalDeps extends void
-        ? {
-            id: Id;
-            domain: Domain;
-            dependsOn: Exclude<Deps, void>;
-            start: (deps: ExtractDeps<Exclude<Deps, void>>) => StartResult<API>;
-            enable?: (deps: ExtractDeps<Exclude<Deps, void>>) => EnableResult;
-          }
-        : {
-            id: Id;
-            domain: Domain;
-            dependsOn: Exclude<Deps, void>;
-            optionalDependsOn: Exclude<OptionalDeps, void>;
-            start: (
-              deps: ExtractDeps<Exclude<Deps, void>>,
-              optionalDeps: Partial<ExtractDeps<Exclude<OptionalDeps, void>>>,
-            ) => StartResult<API>;
-            enable?: (
-              deps: ExtractDeps<Exclude<Deps, void>>,
-              optionalDeps: Partial<ExtractDeps<Exclude<OptionalDeps, void>>>,
-            ) => EnableResult;
-          };
+> =
+  '' extends Id ? ContainerIdEmptyStringError
+  : '' extends Domain ? ContainerDomainNameEmptyStringError
+  : DependenciesConfig<Deps, OptionalDeps> & {
+      id: Id;
+      domain: Domain;
+      start: (
+        api: ExtractDeps<Exclude<Deps, void>> & Partial<ExtractDeps<Exclude<OptionalDeps, void>>>,
+        enabled: ExtractEnabled<Exclude<Deps, void>> & ExtractEnabled<Exclude<OptionalDeps, void>>,
+      ) => StartResult<API>;
+      enable?: (
+        api: ExtractDeps<Exclude<Deps, void>> & Partial<ExtractDeps<Exclude<OptionalDeps, void>>>,
+        enabled: ExtractEnabled<Exclude<Deps, void>> & ExtractEnabled<Exclude<OptionalDeps, void>>,
+      ) => EnableResult;
+    };
 
 const createContainer = <
   Id extends string,
@@ -82,5 +76,5 @@ const createContainer = <
   };
 };
 
-export { type ContainerDomain, type ContainerId } from './types';
+export type { ContainerDomain, ContainerId } from './types';
 export { CONTAINER_STATUS, createContainer, type AnyContainer, type ContainerStatus };

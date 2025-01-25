@@ -33,7 +33,7 @@ const user = createContainer({
 
 const accounts = createContainer({
   id: 'accounts',
-  dependsOn: [user],
+  dependencies: [user],
   start: async ({ user }) => {
     const data = await fetchAccounts({ id: user.data.id });
 
@@ -44,7 +44,7 @@ const accounts = createContainer({
 
 const wallets = createContainer({
   id: 'wallets',
-  dependsOn: [accounts],
+  dependencies: [accounts],
   start: () => ({ api: null }),
 });
 

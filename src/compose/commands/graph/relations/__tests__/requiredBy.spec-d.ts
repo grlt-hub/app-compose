@@ -1,19 +1,27 @@
-import { createContainer, type AnyContainer, type ContainerDomain } from '@createContainer';
-import { randomUUID } from 'node:crypto';
-import { createGraphFn } from '../../';
+import { type AnyContainer, type ContainerDomain } from '@createContainer';
+import { createRandomContainer } from '@randomContainer';
+import { graph } from '../../';
 
-const start = () => ({ api: null });
-
-const a = createContainer({ id: randomUUID(), domain: randomUUID(), start });
+const a = createRandomContainer();
 
 {
-  const { requiredBy } = createGraphFn([a], {})({ view: 'containers' });
+  const { requiredBy } = graph(
+    {
+      stages: [{ id: '_', containersToBoot: [a] }],
+    },
+    { view: 'containers' },
+  );
 
   expectTypeOf<Parameters<typeof requiredBy>[0]>().toEqualTypeOf<AnyContainer[]>();
 }
 
 {
-  const { requiredBy } = createGraphFn([a], {})({ view: 'domains' });
+  const { requiredBy } = graph(
+    {
+      stages: [{ id: '_', containersToBoot: [a] }],
+    },
+    { view: 'domains' },
+  );
 
   expectTypeOf<Parameters<typeof requiredBy>[0]>().toEqualTypeOf<ContainerDomain[]>();
 }

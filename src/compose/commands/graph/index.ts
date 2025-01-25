@@ -1,68 +1,60 @@
-import { type AnyContainer, type ContainerDomain, type ContainerId } from '../../../createContainer';
-import { getTransitiveDependencies } from './getTransitiveDependencies';
-import { groupByDomain } from './groupByDomain';
+import type { AnyContainer, ContainerDomain } from '@createContainer';
+import type { Stage } from '@shared';
+import { computeTransitiveDependencies } from './computeTransitiveDependencies';
+import { createViewMapper } from './createViewMapper';
 import { createDependsOn, createRequiredBy } from './relations';
-import type { ContainersGraph, DomainsGraph } from './types';
+import { transformToDomainsGraph } from './transformToDomainsGraph';
+import type { ContainersGraph, DomainsGraph, View } from './types';
 
-type Skipped = Record<ContainerId, ContainerId[]>;
-type View = 'domains' | 'containers';
+type Params = {
+  stages: Stage[];
+};
 
-type Result<T extends View = 'containers'> = T extends 'domains'
-  ? {
-      data: DomainsGraph;
-      skippedContainers: Skipped;
+type Result<T extends View = 'containers'> =
+  T extends 'domains' ?
+    {
+      graph: DomainsGraph;
       dependsOn: (_: ContainerDomain[]) => DomainsGraph;
       requiredBy: (_: ContainerDomain[]) => DomainsGraph;
     }
   : {
-      data: ContainersGraph;
-      skippedContainers: Skipped;
+      graph: ContainersGraph;
       dependsOn: (_: AnyContainer[]) => ContainersGraph;
       requiredBy: (_: AnyContainer[]) => ContainersGraph;
     };
 
-const makeCompute = (view: View) => ({
-  id: (x: Pick<AnyContainer, 'id' | 'domain'>) => (view === 'domains' ? `${x.domain}` : x.id),
-  path: (x: Pick<AnyContainer, 'id' | 'domain'>) => (view === 'domains' ? `${x.domain}:${x.id}` : x.id),
-});
+const graph = <T extends View = 'containers'>(params: Params, config: { view: T }): Result<T> => {
+  const containersToBoot = params.stages.map((x) => x.containersToBoot).flat();
+  const viewMapper = createViewMapper(config.view);
 
-const createGraphFn =
-  (containersToBoot: AnyContainer[], skippedContainers: Skipped) =>
-  <T extends View = 'containers'>(config?: { view?: T }): Result<T> => {
-    const view: View = config?.view || 'containers';
+  const containersGraph = containersToBoot.reduce<ContainersGraph>((acc, container) => {
+    const dependencies = container.dependencies?.map(viewMapper.id) || [];
+    const optionalDependencies = container.optionalDependencies?.map(viewMapper.id) || [];
 
-    const compute = makeCompute(view);
+    const transitiveDependencies = computeTransitiveDependencies({ container, viewMapper });
 
-    const data = containersToBoot.reduce<ContainersGraph>((acc, container) => {
-      const dependsOn = container.dependsOn?.map(compute.id) || [];
-      const optionalDependsOn = container.optionalDependsOn?.map(compute.id) || [];
-
-      const transitiveDependencies = getTransitiveDependencies(container, compute.id, compute.path);
-
-      acc[container.id] = {
-        domain: container.domain,
-        strict: dependsOn,
-        optional: optionalDependsOn,
-        transitive: {
-          strict: transitiveDependencies.strict,
-          optional: transitiveDependencies.optional,
-        },
-      };
-
-      return acc;
-    }, {});
-
-    const dataParsed = view === 'domains' ? groupByDomain(data) : data;
-    const dependsOn = createDependsOn(dataParsed);
-    const requiredBy = createRequiredBy(dataParsed);
-
-    // @ts-expect-error wtf
-    return {
-      data: dataParsed,
-      skippedContainers,
-      dependsOn,
-      requiredBy,
+    acc[container.id] = {
+      domain: container.domain,
+      dependencies,
+      optionalDependencies,
+      transitive: {
+        dependencies: transitiveDependencies.dependencies,
+        optionalDependencies: transitiveDependencies.optionalDependencies,
+      },
     };
-  };
 
-export { createGraphFn };
+    return acc;
+  }, {});
+
+  const graph = config.view === 'domains' ? transformToDomainsGraph(containersGraph) : containersGraph;
+  const dependsOn = createDependsOn(graph);
+  const requiredBy = createRequiredBy(graph);
+
+  return {
+    graph,
+    dependsOn,
+    requiredBy,
+  } as typeof config.view extends 'domains' ? Result<'domains'> : Result<'containers'>;
+};
+
+export { graph };

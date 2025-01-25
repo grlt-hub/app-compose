@@ -1,5 +1,23 @@
-import type { AnyContainer, ContainerDomain } from '../../../../createContainer';
+import type { AnyContainer, ContainerDomain } from '@createContainer';
 import type { ContainersGraph, DomainsGraph } from '../types';
+
+const parseAsContainer = (keys: string[], val: ContainersGraph[number]) => ({
+  dependencies: val.dependencies.filter((x) => keys.includes(x)),
+  optionalDepenencies: val.optionalDependencies.filter((x) => keys.includes(x)),
+  transitive: {
+    dependencies: val.transitive.dependencies.filter((x) => keys.includes(x.id)),
+    optionalDepenencies: val.transitive.optionalDependencies.filter((x) => keys.includes(x.id)),
+  },
+});
+
+const parseAsDomain = (keys: string[], val: DomainsGraph[number]) => ({
+  strict: val.strict.filter((x) => keys.includes(x)),
+  optional: val.optional.filter((x) => keys.includes(x)),
+  transtivie: {
+    strict: val.transitive.strict.filter((x) => keys.includes(x.id)),
+    optional: val.transitive.optional.filter((x) => keys.includes(x.id)),
+  },
+});
 
 const createRequiredBy =
   <T extends ContainersGraph | DomainsGraph>(graph: T) =>
@@ -12,22 +30,41 @@ const createRequiredBy =
     const result = {};
 
     for (const [key, val] of entries) {
-      const strict = val.strict.filter((x) => keys.includes(x));
-      const optional = val.optional.filter((x) => keys.includes(x));
-      const transitiveStrict = val.transitive.strict.filter((x) => keys.includes(x.id));
-      const transitiveOptional = val.transitive.optional.filter((x) => keys.includes(x.id));
+      if ('domain' in val) {
+        const { dependencies, optionalDepenencies, transitive } = parseAsContainer(keys, val);
 
-      if (strict.length || optional.length || transitiveStrict.length || transitiveOptional.length) {
-        // @ts-expect-error :c
-        result[key] = {
-          ...('domain' in val ? { domain: val.domain } : { containers: val.containers }),
-          strict,
-          optional,
-          transitive: {
-            strict: transitiveStrict,
-            optional: transitiveOptional,
-          },
-        };
+        if (
+          dependencies.length ||
+          optionalDepenencies.length ||
+          transitive.dependencies.length ||
+          transitive.optionalDepenencies.length
+        ) {
+          // @ts-expect-error :c
+          result[key] = {
+            domain: val.domain,
+            dependencies,
+            optionalDepenencies,
+            transitive: {
+              dependencies: transitive.dependencies,
+              optionalDepenencies: transitive.optionalDepenencies,
+            },
+          };
+        }
+      } else {
+        const { strict, optional, transtivie } = parseAsDomain(keys, val);
+
+        if (strict.length || optional.length || transtivie.strict.length || transtivie.optional.length) {
+          // @ts-expect-error :c
+          result[key] = {
+            containers: val.containers,
+            strict,
+            optional,
+            transitive: {
+              strict: transtivie.strict,
+              optional: transtivie.optional,
+            },
+          };
+        }
       }
     }
 

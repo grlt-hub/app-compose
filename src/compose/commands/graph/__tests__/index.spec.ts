@@ -1,79 +1,75 @@
-import { createContainer } from '@createContainer';
-import { randomUUID } from 'node:crypto';
-import { createGraphFn } from '../index';
-
-const start = () => ({ api: null });
+import { createRandomContainer } from '@randomContainer';
+import { graph } from '../index';
 
 test('handles all variations of dependencies', () => {
   // containers without dependencies
-  const noDeps1 = createContainer({ id: randomUUID(), domain: randomUUID(), start });
-  const noDeps2 = createContainer({ id: randomUUID(), domain: randomUUID(), start });
+  const noDeps1 = createRandomContainer();
+  const noDeps2 = createRandomContainer();
 
   // containers with strict dependencies
-  const strict1 = createContainer({ id: randomUUID(), domain: randomUUID(), dependsOn: [noDeps1], start });
-  const strict2 = createContainer({ id: randomUUID(), domain: randomUUID(), dependsOn: [strict1], start });
+  const strict1 = createRandomContainer({ dependencies: [noDeps1] });
+  const strict2 = createRandomContainer({ dependencies: [strict1] });
 
   // containers with optional dependencies
-  const optional1 = createContainer({ id: randomUUID(), domain: randomUUID(), optionalDependsOn: [noDeps2], start });
-  const optional2 = createContainer({ id: randomUUID(), domain: randomUUID(), optionalDependsOn: [strict2], start });
+  const optional1 = createRandomContainer({ optionalDependencies: [noDeps2] });
+  const optional2 = createRandomContainer({ optionalDependencies: [strict2] });
 
   // containers with mixed dependencies
-  const mixed = createContainer({
-    id: randomUUID(),
-    domain: randomUUID(),
-    dependsOn: [strict1],
-    optionalDependsOn: [optional1],
-    start,
-  });
+  const mixed = createRandomContainer({ dependencies: [strict1], optionalDependencies: [optional1] });
 
-  const graph = createGraphFn([noDeps1, noDeps2, strict1, strict2, optional1, optional2, mixed], {})();
+  const { graph: result } = graph(
+    {
+      stages: [{ id: '_', containersToBoot: [noDeps1, noDeps2, strict1, strict2, optional1, optional2, mixed] }],
+    },
+    { view: 'containers' },
+  );
 
-  expect(graph.data).toStrictEqual({
+  expect(result).toStrictEqual({
     [noDeps1.id]: {
       domain: noDeps1.domain,
-      strict: [],
-      optional: [],
-      transitive: { strict: [], optional: [] },
+      dependencies: [],
+      optionalDependencies: [],
+      transitive: { dependencies: [], optionalDependencies: [] },
     },
     [noDeps2.id]: {
       domain: noDeps2.domain,
-      strict: [],
-      optional: [],
-      transitive: { strict: [], optional: [] },
+      dependencies: [],
+      optionalDependencies: [],
+      transitive: { dependencies: [], optionalDependencies: [] },
     },
     [strict1.id]: {
       domain: strict1.domain,
-      strict: [noDeps1.id],
-      optional: [],
-      transitive: { strict: [], optional: [] },
+      dependencies: [noDeps1.id],
+      optionalDependencies: [],
+      transitive: { dependencies: [], optionalDependencies: [] },
     },
     [strict2.id]: {
       domain: strict2.domain,
-      strict: [strict1.id],
-      optional: [],
+      dependencies: [strict1.id],
+      optionalDependencies: [],
       transitive: {
-        strict: [
+        dependencies: [
           {
             id: noDeps1.id,
             path: `${strict2.id} -> ${strict1.id} -> ${noDeps1.id}`,
           },
         ],
-        optional: [],
+        optionalDependencies: [],
       },
     },
     [optional1.id]: {
       domain: optional1.domain,
-      strict: [],
-      optional: [noDeps2.id],
-      transitive: { strict: [], optional: [] },
+      dependencies: [],
+      optionalDependencies: [noDeps2.id],
+      transitive: { dependencies: [], optionalDependencies: [] },
     },
     [optional2.id]: {
       domain: optional2.domain,
-      strict: [],
-      optional: [strict2.id],
+      dependencies: [],
+      optionalDependencies: [strict2.id],
       transitive: {
-        strict: [],
-        optional: [
+        dependencies: [],
+        optionalDependencies: [
           {
             id: strict1.id,
             path: `${optional2.id} -> ${strict2.id} -> ${strict1.id}`,
@@ -87,16 +83,16 @@ test('handles all variations of dependencies', () => {
     },
     [mixed.id]: {
       domain: mixed.domain,
-      strict: [strict1.id],
-      optional: [optional1.id],
+      dependencies: [strict1.id],
+      optionalDependencies: [optional1.id],
       transitive: {
-        strict: [
+        dependencies: [
           {
             id: noDeps1.id,
             path: `${mixed.id} -> ${strict1.id} -> ${noDeps1.id}`,
           },
         ],
-        optional: [
+        optionalDependencies: [
           {
             id: noDeps2.id,
             path: `${mixed.id} -> ${optional1.id} -> ${noDeps2.id}`,

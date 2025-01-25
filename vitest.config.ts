@@ -9,10 +9,10 @@ export default defineConfig({
     typecheck: {
       enabled: true,
       ignoreSourceErrors: true,
-      include: ['./src/**/__tests__/**/*.spec-d.ts?(x)'],
+      include: ['./src/**/__tests__/**/*.spec-d.ts'],
       exclude: defaultExclude,
     },
-    include: ['./src/**/__tests__/**/*.spec.ts?(x)'],
+    include: ['./src/**/__tests__/**/*.spec.ts'],
     exclude: defaultExclude,
     globals: true,
     reporters: 'dot',
@@ -20,7 +20,7 @@ export default defineConfig({
       extension: ['.ts'],
       all: true,
       include: ['src/**/*'],
-      exclude: [...defaultExclude, './src/**/__fixtures__/**', 'src/**/__tests__/**', './src/index.ts'],
+      exclude: [...defaultExclude, '**/__fixtures__/**', '**/__tests__/**', './src/index.ts'],
       reporter: 'text',
       provider: 'v8',
       thresholds: {

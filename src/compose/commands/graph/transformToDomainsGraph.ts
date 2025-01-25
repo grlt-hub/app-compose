@@ -1,6 +1,6 @@
 import type { ContainersGraph, DomainsGraph } from './types';
 
-const groupByDomain = (graph: ContainersGraph) =>
+const transformToDomainsGraph = (graph: ContainersGraph) =>
   Object.entries(graph).reduce<DomainsGraph>((acc, [id, data]) => {
     const domainName = data.domain;
 
@@ -14,12 +14,12 @@ const groupByDomain = (graph: ContainersGraph) =>
       },
     };
 
-    const strictDeps = data.strict.filter((x) => x !== domainName);
-    const optionalDeps = data.optional.filter((x) => x !== domainName && !strictDeps.includes(x));
-    const transitiveStrict = data.transitive.strict.filter(
+    const strictDeps = data.dependencies.filter((x) => x !== domainName);
+    const optionalDeps = data.optionalDependencies.filter((x) => x !== domainName && !strictDeps.includes(x));
+    const transitiveStrict = data.transitive.dependencies.filter(
       (x) => x.id !== domainName && !strictDeps.includes(x.id) && !optionalDeps.includes(x.id),
     );
-    const transitiveOptional = data.transitive.optional.filter(
+    const transitiveOptional = data.transitive.optionalDependencies.filter(
       (x) => x.id !== domainName && !strictDeps.includes(x.id) && !optionalDeps.includes(x.id),
     );
 
@@ -32,4 +32,4 @@ const groupByDomain = (graph: ContainersGraph) =>
     return acc;
   }, {});
 
-export { groupByDomain };
+export { transformToDomainsGraph };

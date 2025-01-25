@@ -21,7 +21,11 @@
     "types": ["vitest/globals"],
     "verbatimModuleSyntax": true,
     "paths": {
-      "@createContainer": ["./src/createContainer"]
+      "@randomContainer": ["./src/compose/__fixtures__/createRandomContainer"],
+      "@createContainer": ["./src/createContainer"],
+      "@shared": ["./src/shared"],
+      "@prepareStages": ["./src/compose/prepareStages"]
     }
-  }
+  },
+  "exclude": ["website", "dist"]
 }

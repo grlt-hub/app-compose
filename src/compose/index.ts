@@ -1,28 +1,29 @@
-import { type AnyContainer, type ContainerId } from '../createContainer';
-import { createGraphFn, createUpFn } from './commands';
-import { getContainersToBoot } from './getContainersToBoot';
-import { printSkippedContainers } from './printSkippedContainers';
+import { type ContainerId } from '@createContainer';
+import { prepareStages, type StageTuples } from '@prepareStages';
+import { type graph } from './commands/graph';
+import { up } from './commands/up';
 
-const validateContainerId = (id: ContainerId, set: Set<ContainerId>) => {
-  if (set.has(id)) {
-    throw new Error(`[app-compose] Duplicate container ID found: ${id}`);
-  }
-  set.add(id);
+type UpFn = typeof up;
+type GraphFn = typeof graph;
+
+type Params = {
+  stages: StageTuples;
+  required?: Parameters<UpFn>[0]['required'];
 };
 
-const compose = <T extends AnyContainer[]>(inputContainers: T) => {
-  const { containersToBoot, skippedContainers } = getContainersToBoot(inputContainers);
-  const CONTAINER_IDS = new Set<ContainerId>();
-
-  for (const container of containersToBoot) {
-    validateContainerId(container.id, CONTAINER_IDS);
-  }
-
-  printSkippedContainers(skippedContainers);
+const compose = async (params: Params) => {
+  const stages = prepareStages({ stageTuples: params.stages, visitedContainerIds: new Set<ContainerId>() });
 
   return {
-    up: createUpFn(containersToBoot),
-    graph: createGraphFn(containersToBoot, skippedContainers),
+    up: (config?: Parameters<UpFn>[1]) => up({ stages, required: params.required }, config),
+    /* v8 ignore start */
+    diff: async () => {
+      (await import('./commands/diff')).diff({ expected: params.stages, received: stages });
+    },
+    graph: async (config?: Parameters<GraphFn>[1]) => {
+      (await import('./commands/graph')).graph({ stages }, { view: config?.view ?? 'containers' });
+    },
+    /* v8 ignore end */
   };
 };
 
