@@ -1,4 +1,4 @@
-import { isEmpty, isNil } from '@shared';
+import { isNil } from '@shared';
 import { type AnyContainer } from './types';
 
 type ValidateParams = Pick<AnyContainer, 'id' | 'domain' | 'dependencies' | 'optionalDependencies'>;
@@ -21,13 +21,13 @@ type ContainerDomainNameEmptyStringError = ValidateParams & {
 };
 
 const validateContainerId = (x: ValidateParams) => {
-  if (isNil(x.id) || isEmpty(x.id)) {
+  if (isNil(x.id) || x.id.length === 0) {
     throw new Error(ERROR.CONTAINER_ID_EMPTY_STRING);
   }
 };
 
 const validateDomainName = (x: ValidateParams) => {
-  if (isNil(x.domain) || isEmpty(x.domain)) {
+  if (isNil(x.domain) || x.domain.length === 0) {
     throw new Error(ERROR.CONTAINER_DOMAIN_NAME_EMPTY_STRING);
   }
 };

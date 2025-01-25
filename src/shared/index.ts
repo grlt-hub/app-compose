@@ -12,6 +12,5 @@ type Stage = {
 type SkippedContainers = Record<ContainerId, ContainerId[]>;
 
 export { colors } from './colors';
-export { isEmpty } from './isEmpty';
 export { isNil } from './isNil';
 export { LIBRARY_NAME, type NonEmptyTuple, type SkippedContainers, type Stage };

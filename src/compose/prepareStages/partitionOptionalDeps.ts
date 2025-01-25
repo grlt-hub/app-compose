@@ -1,9 +1,10 @@
 import type { AnyContainer, ContainerId } from '@createContainer';
+import type { VisitedContainerIds } from './types';
 
 type Params = {
   container: AnyContainer;
-  containersToBoot: Set<AnyContainer>;
-  visitedContainerIds: Set<ContainerId>;
+  containerIdsToBoot: Set<ContainerId>;
+  visitedContainerIds: VisitedContainerIds;
 };
 
 type Result = {
@@ -11,7 +12,7 @@ type Result = {
   skipped: ContainerId[];
 };
 
-const partitionOptionalDeps = ({ container, containersToBoot, visitedContainerIds }: Params): Result => {
+const partitionOptionalDeps = ({ container, containerIdsToBoot, visitedContainerIds }: Params): Result => {
   const result: Result = { included: [], skipped: [] };
   const optionalDependencies = container.optionalDependencies;
 
@@ -20,7 +21,7 @@ const partitionOptionalDeps = ({ container, containersToBoot, visitedContainerId
   }
 
   for (const dep of optionalDependencies) {
-    if (containersToBoot.has(dep) || visitedContainerIds.has(dep.id)) {
+    if (containerIdsToBoot.has(dep.id) || visitedContainerIds.has(dep.id)) {
       result.included.push(dep);
     } else {
       result.skipped.push(dep.id);

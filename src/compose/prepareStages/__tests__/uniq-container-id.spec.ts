@@ -25,6 +25,19 @@ describe('container.id is uniq', () => {
     ).toThrowError(`[app-compose] Duplicate container ID found: ${id}`);
   });
 
+  test('unhappy 2', async () => {
+    const id = '~';
+    const a = createRandomContainer({ id });
+    const b = createRandomContainer({ id });
+
+    expect(() =>
+      prepareStages({
+        stageTuples: [['x', [a, b]]],
+        visitedContainerIds: new Set(),
+      }),
+    ).toThrowError(`[app-compose] Duplicate container ID found: ${id}`);
+  });
+
   test('unhappy with stages', async () => {
     const id = '~';
 

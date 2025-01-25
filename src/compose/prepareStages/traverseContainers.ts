@@ -16,7 +16,7 @@ const traverseContainers = (containers: AnyContainer[]) => {
     });
   }
 
-  return { strictContainers: strict };
+  return { strictDependencies: strict };
 };
 
 export { traverseContainers };
