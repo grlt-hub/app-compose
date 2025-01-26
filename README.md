@@ -1,16 +1,14 @@
 # App Compose
 
-Create scalable, module-based applications with ease.
+Create scalable modular apps.
 
-## Motivation
+## The Problem `app-compose` Solves
 
-Modern applications thrive on modular architecture, adapting seamlessly to evolving business needs. To achieve **true modularity**, though, you need more than just independent components—you need an **efficient** way to bring them together. This means **controlling** how modules load, in what order, and with which dependencies. It gets even trickier when you want to turn off parts of the system **without any traces** in the code, like `if/else` statements, and without affecting the **stability** of other components.
+An application is like a dish: a collection of features, entities, and services. But by themselves, they don’t make an application. To bring everything to life, you need to combine them properly: at the right time, in the right order, and without anything extra. One wrong step — and instead of a cake, you’ll end up with a steak.
 
-## How does this library solve this problem?
+`app-compose` brings everything together to create a complete application.
 
-`app-compose` is designed to make this seamless. It lets you dynamically enable or disable modules as needed, not only preventing their code from loading when they’re off but also excluding all related dependencies. This means no excess resource use and optimized **performance**, even as the app grows.
-
-With `app-compose`, you can **scale** your applications effortlessly—whether you’re building a lightweight tool or a complex, feature-rich system. By managing dependency flow and on-demand module loading, `app-compose` provides the control you need to build applications that are both **flexible and robust**.
+Ready to get started? Check out the full [documentation](https://grlt-hub.github.io/app-compose/) to dive deeper.
 
 ### Example
 
@@ -81,20 +79,22 @@ The library offers convenient functions for creating and composing modules into 
 
 ## Strengths of the Library
 
-- Provides a **simple and intuitive developer experience (DX)**.
-- Designed with a focus on **quality** and **performance**.
-- Weighs less than **1.6 kB** (runtime), making it lightweight.
-- Covered by **100% tests**, including **type tests**.
-- Ensures high performance, suitable for **scalable applications**.
-- Includes **debugging tools** to facilitate the development process.
+- **Automatically resolves dependencies**, removing the need to manually specify all containers.
+- Simplifies working with **feature-toggles** by eliminating excessive `if/else` logic for disabled functionality.
+- Allows you to define **which parts of the application to run and in what order**, prioritizing more important and less important dependencies.
 - Offers the ability to **visualize the system** composed of containers effectively (including transitive dependencies and their paths).
-- Follows **semantic versioning** (semver), guaranteeing **stability** and **predictability** of changes with each release.
+- Provides a **simple and intuitive developer experience (DX)**.
+- Ensures high performance, suitable for **scalable applications**.
+- Designed with a focus on **quality** and **performance**.
+- Includes **debugging tools** to facilitate the development process.
 
 ## Documentation
 
 For additional information, guides and api reference visit [documentation site](https://grlt-hub.github.io/app-compose/).
 
 ## Community
+
+Have questions or want to contribute? Join our community to connect with other developers.
 
 - [Discord](https://discord.gg/Q4DFKnxp)
 - [Telegram](https://t.me/grlt_hub_app_compose)
