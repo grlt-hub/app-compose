@@ -1,8 +1,8 @@
 # App Compose
 
-Organize modules into apps.
+Compose modules into apps.
 
-## Introduction
+## What is it?
 
 `app-compose` is a library for module-based applications. It helps developers easily connect different parts of an application — features, entities, services, and so on — so they work together as a single system.
 
