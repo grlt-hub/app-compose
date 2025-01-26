@@ -98,6 +98,7 @@ The library offers convenient functions for creating and composing modules into 
 - Ensures high performance, suitable for scalable applications.
 - Designed with a focus on quality and performance.
 - Includes debugging tools to facilitate the development process.
+- Covered by 100% tests, including type tests.
 
 ## Documentation
 
