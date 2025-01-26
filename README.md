@@ -1,6 +1,6 @@
 # App Compose
 
-Create scalable modular apps.
+Organize modules into apps.
 
 ## Introduction
 
