@@ -2,13 +2,22 @@
 
 Create scalable modular apps.
 
-## The Problem `app-compose` Solves
+## Introduction
+
+**`app-compose`** is a library for applications built with **modules**. It helps developers easily connect different parts of an application — **features**, **entities**, **services**, and so on — so they work together as a cohesive system.
+
+With `app-compose`, you can:
+
+- Simplify the management of **complex dependencies**.
+- Automate the **execution order** and startup of modules.
+- Intuitively **enable or disable parts of the application**.
+- Clearly visualize the **parts of the application and their connections**.
+
+Instead of manually managing the **chaos of modules**, `app-compose` turns them into a well-organized and scalable application.
 
 An application is like a dish: a collection of features, entities, and services. But by themselves, they don’t make an application. To bring everything to life, you need to combine them properly: at the right time, in the right order, and without anything extra. One wrong step — and instead of a cake, you’ll end up with a steak.
 
-`app-compose` brings everything together to create a complete application.
-
-Ready to get started? Check out the full [documentation](https://grlt-hub.github.io/app-compose/) to dive deeper.
+If you don’t know how to **connect modules into one system**, [app-compose](https://grlt-hub.github.io/app-compose/) can help and make it simple for you.
 
 ### Example
 
@@ -90,7 +99,7 @@ The library offers convenient functions for creating and composing modules into 
 
 ## Documentation
 
-For additional information, guides and api reference visit [documentation site](https://grlt-hub.github.io/app-compose/).
+Ready to get started? Check out the full [documentation](https://grlt-hub.github.io/app-compose/) to dive deeper.
 
 ## Community
 
