@@ -40,10 +40,10 @@ const chef = createContainer({
   domain: 'italian',
   start: async () => {
     // For example, we are hiring a chef.
-    const data = await hireChef();
+    const hiredChef = await hireChef();
 
     // We return our chef.
-    return { api: data };
+    return { api: hiredChef };
   },
 });
 
@@ -57,10 +57,10 @@ const kitchen = createContainer({
   enable: (api) => api.chef.id !== null,
   start: async (api) => {
     // We prepare the ingredients.
-    const data = await getIngredients({ chefId: api.chef.data.id });
+    const ingredients = await getIngredients({ chefId: api.chef.id });
 
     // We return the list of ingredients.
-    return { api: data };
+    return { api: ingredients };
   },
 });
 
@@ -72,10 +72,10 @@ const pizza = createContainer({
   dependencies: [chef, kitchen],
   start: (api) => {
     // The chef uses the ingredients from the kitchen to make the pizza.
-    const data = api.chef.makePizza(api.kitchen);
+    const pepperoniPizza = api.chef.makePizza(api.kitchen.ingredients);
 
     // The pizza is ready!
-    return { api: data };
+    return { api: pepperoniPizza };
   },
 });
 
