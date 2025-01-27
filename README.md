@@ -60,7 +60,7 @@ const kitchen = createContainer({
     const ingredients = await getIngredients({ chefId: api.chef.id });
 
     // We return the list of ingredients.
-    return { api: ingredients };
+    return { api: { ingredients } };
   },
 });
 
