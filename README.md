@@ -24,7 +24,6 @@ Compose modules into apps.
 
 </h4>
 <br>
-<br>
 
 ## What is it?
 
