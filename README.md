@@ -14,10 +14,7 @@ Compose modules into apps.
 <p>
 
 <p align="center">
-<a href="https://discord.gg/ajv8eHzm"><b>Get involved!</b></a>
-</p>
-<p align="center">
- <a href="https://grlt-hub.github.io/app-compose/">Documentation</a> | <a href="https://grlt-hub.github.io/app-compose/tutorials/getting-started/">Getting Started</a>
+ <a href="https://grlt-hub.github.io/app-compose/">Documentation</a> | <a href="https://discord.gg/ajv8eHzm"><b>Get involved!</b></a>
 </p>
 
 <h4 align="center">
