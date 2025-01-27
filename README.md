@@ -31,12 +31,16 @@ import { createContainer, compose } from '@grlt-hub/app-compose';
 
 // First: prepare the "chef" — it’s like hiring the chef to start cooking.
 const chef = createContainer({
-  id: 'John Doe', // The name of our chef.
-  domain: 'italian', // This chef specializes in Italian cuisine.
+  // The name of our chef.
+  id: 'John Doe',
+  // This chef specializes in Italian cuisine.
+  domain: 'italian',
   start: async () => {
-    const data = await hireChef(); // For example, we are hiring a chef.
+    // For example, we are hiring a chef.
+    const data = await hireChef();
 
-    return { api: data }; // We return our chef.
+    // We return our chef.
+    return { api: data };
   },
 });
 
@@ -44,12 +48,16 @@ const chef = createContainer({
 const kitchen = createContainer({
   id: 'kitchen',
   domain: 'our-restataunt',
-  dependencies: [chef], // Represents our restaurant’s kitchen.
-  enable: (api) => api.user.data.id !== null, // If the chef is unavailable, the kitchen won’t open.
+  // The kitchen depends on the chef to start working.
+  dependencies: [chef],
+  // If the chef is unavailable, the kitchen won’t open.
+  enable: (api) => api.user.data.id !== null,
   start: async (api) => {
-    const data = await getIngredients({ chefId: api.chef.data.id }); // We prepare the ingredients.
+    // We prepare the ingredients.
+    const data = await getIngredients({ chefId: api.chef.data.id });
 
-    return { api: data }; // We return the list of ingredients.
+    // We return the list of ingredients.
+    return { api: data };
   },
 });
 
@@ -57,11 +65,14 @@ const kitchen = createContainer({
 const pizza = createContainer({
   id: 'pizza',
   domain: 'dish',
-  dependencies: [chef, kitchen], // To make the pizza, we need the chef and the prepared ingredients from the kitchen.
+  // To make the pizza, we need the chef and the prepared ingredients from the kitchen.
+  dependencies: [chef, kitchen],
   start: (api) => {
-    const data = api.chef.makePizza(api.kitchen); // The chef uses the ingredients from the kitchen to make the pizza.
+    // The chef uses the ingredients from the kitchen to make the pizza.
+    const data = api.chef.makePizza(api.kitchen);
 
-    return { api: data }; // The pizza is ready!
+    // The pizza is ready!
+    return { api: data };
   },
 });
 
@@ -73,10 +84,12 @@ const cmd = await compose({
     ['prepare', [chef, kitchen]],
     ['cooking', [pizza]],
   ],
-  required: 'all', // We require everything to be ready.
+  // We require everything to be ready.
+  required: 'all',
 });
 
-await cmd.up(); // The cooking process has started!
+// The cooking process has started!
+await cmd.up();
 ```
 
 ### Example Status Flow
