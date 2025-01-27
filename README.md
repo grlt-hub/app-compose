@@ -20,9 +20,9 @@ Instead of manually managing the chaos of modules, `app-compose` turns them into
 
 An application is like a dish: a collection of features, entities, and services. But by themselves, they don’t make an application.
 To bring everything to life, you need to combine them properly: at the right time, in the right order, and without anything extra.
-One wrong step — and instead of a pizza, you’ll end up with a cake.
+One misstep, and instead of a pizza, you might end up with a cake.
 
-If you don’t know how to connect modules into one system, [app-compose](https://grlt-hub.github.io/app-compose/) can help and make it simple for you.
+If you’re unsure how to connect modules into a single system, [app-compose](https://grlt-hub.github.io/app-compose/) can simplify the process for you.
 
 ### Example
 
