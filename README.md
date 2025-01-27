@@ -71,12 +71,12 @@ const cmd = await compose({
 
 await cmd.up();
 
-// { user: 'idle',     accounts: 'idle',     wallets: 'idle' }
-// { user: 'pending',  accounts: 'idle',     wallets: 'idle' }
-// { user: 'done',     accounts: 'idle',     wallets: 'idle' }
+// { user: 'idle',     accounts: 'idle' }
+// { user: 'pending',  accounts: 'idle' }
+// { user: 'done',     accounts: 'idle' }
 //
 /* if user.data.id !== null */
-/* { user: 'done',    accounts: 'pending',  wallets: 'idle' } */
+/* { user: 'done',    accounts: 'pending' } */
 /* { user: 'done',    accounts: 'done',     wallets: 'pending' } */
 /* { user: 'done',    accounts: 'done',     wallets: 'done' } */
 //
