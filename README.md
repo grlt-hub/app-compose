@@ -24,7 +24,7 @@ One wrong step — and instead of a pizza, you’ll end up with a cake.
 
 If you don’t know how to connect modules into one system, [app-compose](https://grlt-hub.github.io/app-compose/) can help and make it simple for you.
 
-## Example
+### Example
 
 ```ts
 import { createContainer, compose } from '@grlt-hub/app-compose';
@@ -95,7 +95,7 @@ const cmd = await compose({
 await cmd.up();
 ```
 
-### Example Status Flow
+#### Example Status Flow
 
 Here’s how the statuses change during the cooking process:
 
