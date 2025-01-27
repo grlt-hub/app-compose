@@ -30,63 +30,77 @@ If the user exists, then the accounts entity should be started. If the accounts 
 ```ts
 import { createContainer, compose } from '@grlt-hub/app-compose';
 
-// wrap the module in a container
-const user = createContainer({
-  id: 'user',
-  domain: 'user',
+// Imagine we are cooking a dish in the kitchen.
+// There are three steps: hire the chef, open the kitchen to prepare, and cook the pizza.
+
+// First: prepare the "chef" — it’s like hiring the chef to start cooking.
+const chef = createContainer({
+  id: 'John Doe', // The name of our chef.
+  domain: 'italian', // This chef specializes in Italian cuisine.
   start: async () => {
-    const data = await fetchUser();
+    const data = await hireChef(); // For example, we are hiring a chef.
 
-    return { api: { data } };
+    return { api: data }; // We return our chef.
   },
 });
 
-const accounts = createContainer({
-  id: 'accounts',
-  domain: 'acc',
-  dependencies: [user],
+// Second: if the chef is hired, we need to open the kitchen and prepare the ingredients.
+const kitchen = createContainer({
+  id: 'kitchen',
+  domain: 'our-restataunt',
+  dependencies: [chef], // Represents our restaurant’s kitchen.
+  enable: (api) => api.user.data.id !== null, // If the chef is unavailable, the kitchen won’t open.
   start: async (api) => {
-    const data = await fetchAccounts({ id: api.user.data.id });
+    const data = await getIngredients({ chefId: api.chef.data.id }); // We prepare the ingredients.
 
-    return { api: { data } };
+    return { api: data }; // We return the list of ingredients.
   },
-  enable: (api) => api.user.data.id !== null,
 });
 
-const deposit = createContainer({
-  id: 'deposit',
-  domain: 'acc',
-  dependencies: [accounts],
-  start: () => ({ api: null }),
+// Third: we make the pizza.
+const pizza = createContainer({
+  id: 'pizza',
+  domain: 'dish',
+  dependencies: [chef, kitchen], // To make the pizza, we need the chef and the prepared ingredients from the kitchen.
+  start: (api) => {
+    const data = api.chef.makePizza(api.kitchen); // The chef uses the ingredients from the kitchen to make the pizza.
+
+    return { api: data }; // The pizza is ready!
+  },
 });
 
-// up the containers
+// Now the stages: we split the process into steps.
+// The first stage: "prepare" — hiring the chef and preparing the ingredients in the kitchen.
+// The second stage: "cooking" — making the pizza using the prepared ingredients.
 const cmd = await compose({
   stages: [
-    ['entities', [user, accounts]],
-    ['features', [deposit]],
+    ['prepare', [chef, kitchen]],
+    ['cooking', [pizza]],
   ],
-  required: 'all',
+  required: 'all', // We require everything to be ready.
 });
 
-await cmd.up();
-
-// { user: 'idle',     accounts: 'idle' }
-// { user: 'pending',  accounts: 'idle' }
-// { user: 'done',     accounts: 'idle' }
-//
-/* if user.data.id !== null */
-/* { user: 'done',    accounts: 'pending'   wallets: 'idle' } */
-/* { user: 'done',    accounts: 'done',     wallets: 'pending' } */
-/* { user: 'done',    accounts: 'done',     wallets: 'done' } */
-//
-/* else */
-/* { user: 'done',    accounts: 'off',      wallets: 'off' } */
-//
-// compose.up done
+await cmd.up(); // The cooking process has started!
 ```
 
-The library offers convenient functions for creating and composing modules into a single system. Each module is encapsulated in a container with a clear configuration, including parameters like _id_, _dependsOn_, _optionalDependsOn_, _start_, and _enable_. Developers describe containers and launch them using `compose.up` fn, without the need to worry about the order of execution. This approach makes working with containers intuitive and close to natural language.
+### Example Status Flow
+
+Here’s how the statuses change during the cooking process:
+
+1. **Initial state**:
+
+   - `{ chef: 'idle',    kitchen: 'idle' }` — Everything is waiting.
+   - `{ chef: 'pending', kitchen: 'idle' }` — The chef is on the way to the kitchen.
+
+2. **If the chef is ready to work**:
+
+   - `{ chef: 'done', kitchen: 'pending' }` — Preparing the ingredients in the kitchen.
+   - `{ chef: 'done', kitchen: 'done', pizza: 'idle' }` — All ingredients are ready.
+   - `{ chef: 'done', kitchen: 'done', pizza: 'pending' }` — Starting to make the pizza.
+   - `{ chef: 'done', kitchen: 'done', pizza: 'done' }` — The pizza is ready!
+
+3. **If the chef is here, but taking a break**:
+   - `{ chef: 'done', kitchen: 'off', pizza: 'off' }` — Cooking is canceled.
 
 ## Strengths of the Library
 
