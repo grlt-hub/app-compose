@@ -1,3 +1,8 @@
+<p align="center">
+<a href="https://grlt-hub.github.io/app-compose/">
+<img src="https://github.com/user-attachments/assets/b9f87cf8-5af1-410b-8125-28689e668d47" height="150">
+</a>
+</p>
 <h1 align="center">
 App Compose
 </h1>
@@ -23,6 +28,7 @@ Compose modules into apps.
 
 ## What is it?
 
+https://github.com/user-attachments/assets/b9f87cf8-5af1-410b-8125-28689e668d47
 `app-compose` is a library for module-based applications.
 It helps developers easily connect different parts of an application — features, entities, services, and so on — so they work together as a single system.
 
@@ -119,18 +125,19 @@ Here’s how the statuses change during the cooking process:
 
 1. **Initial state**:
 
-  - `chef: 'idle',    ingredients: 'idle'` — Everything is waiting.
-  - `chef: 'pending', ingredients: 'idle'` — The chef is on the way to the kitchen.
+- `chef: 'idle',    ingredients: 'idle'` — Everything is waiting.
+- `chef: 'pending', ingredients: 'idle'` — The chef is on the way to the kitchen.
 
 2. **If the chef is ready to work**:
 
-  - `chef: 'done', ingredients: 'pending'` — Ordering the ingredients.
-  - `chef: 'done', ingredients: 'done', pizza: 'idle'` — All ingredients have been delivered.
-  - `chef: 'done', ingredients: 'done', pizza: 'pending'` — Starting to make the pizza.
-  - `chef: 'done', ingredients: 'done', pizza: 'done'` — The pizza is ready!
+- `chef: 'done', ingredients: 'pending'` — Ordering the ingredients.
+- `chef: 'done', ingredients: 'done', pizza: 'idle'` — All ingredients have been delivered.
+- `chef: 'done', ingredients: 'done', pizza: 'pending'` — Starting to make the pizza.
+- `chef: 'done', ingredients: 'done', pizza: 'done'` — The pizza is ready!
 
 3. **If the chef is here, but taking a break**:
-  - `chef: 'done', ingredients: 'off', pizza: 'off'` — Cooking is canceled.
+
+- `chef: 'done', ingredients: 'off', pizza: 'off'` — Cooking is canceled.
 
 ## Strengths of the Library
 
