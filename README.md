@@ -85,18 +85,18 @@ Here’s how the statuses change during the cooking process:
 
 1. **Initial state**:
 
-   - `{ chef: 'idle',    kitchen: 'idle' }` — Everything is waiting.
-   - `{ chef: 'pending', kitchen: 'idle' }` — The chef is on the way to the kitchen.
+   - `chef: 'idle',    kitchen: 'idle'` — Everything is waiting.
+   - `chef: 'pending', kitchen: 'idle'` — The chef is on the way to the kitchen.
 
 2. **If the chef is ready to work**:
 
-   - `{ chef: 'done', kitchen: 'pending' }` — Preparing the ingredients in the kitchen.
-   - `{ chef: 'done', kitchen: 'done', pizza: 'idle' }` — All ingredients are ready.
-   - `{ chef: 'done', kitchen: 'done', pizza: 'pending' }` — Starting to make the pizza.
-   - `{ chef: 'done', kitchen: 'done', pizza: 'done' }` — The pizza is ready!
+   - `chef: 'done', kitchen: 'pending'` — Preparing the ingredients in the kitchen.
+   - `chef: 'done', kitchen: 'done', pizza: 'idle'` — All ingredients are ready.
+   - `chef: 'done', kitchen: 'done', pizza: 'pending'` — Starting to make the pizza.
+   - `chef: 'done', kitchen: 'done', pizza: 'done'` — The pizza is ready!
 
 3. **If the chef is here, but taking a break**:
-   - `{ chef: 'done', kitchen: 'off', pizza: 'off' }` — Cooking is canceled.
+   - `chef: 'done', kitchen: 'off', pizza: 'off'` — Cooking is canceled.
 
 ## Strengths of the Library
 
