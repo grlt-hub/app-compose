@@ -9,7 +9,7 @@ export default defineConfig({
       title: 'app-compose',
       description: 'App Compose - Create scalable, module-based applications with ease.',
       social: {
-        discord: 'https://discord.gg/Q4DFKnxp',
+        discord: 'https://discord.gg/ajv8eHzm',
         github: 'https://github.com/grlt-hub/app-compose',
         telegram: 'https://t.me/grlt_hub_app_compose',
       },
