@@ -24,7 +24,6 @@ Compose modules into apps.
 
 ## What is it?
 
-https://github.com/user-attachments/assets/b9f87cf8-5af1-410b-8125-28689e668d47
 `app-compose` is a library for module-based applications.
 It helps developers easily connect different parts of an application — features, entities, services, and so on — so they work together as a single system.
 
