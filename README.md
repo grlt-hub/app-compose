@@ -23,10 +23,6 @@ If you don’t know how to connect modules into one system, [app-compose](https:
 
 ### Example
 
-There are three entities: users, accounts, and wallets.
-
-If the user exists, then the accounts entity should be started. If the accounts entity is done, then the wallets entity should be started.
-
 ```ts
 import { createContainer, compose } from '@grlt-hub/app-compose';
 
