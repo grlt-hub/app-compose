@@ -54,7 +54,7 @@ const kitchen = createContainer({
   // The kitchen depends on the chef to start working.
   dependencies: [chef],
   // If the chef is unavailable, the kitchen won’t open.
-  enable: (api) => api.user.data.id !== null,
+  enable: (api) => api.chef.id !== null,
   start: async (api) => {
     // We prepare the ingredients.
     const data = await getIngredients({ chefId: api.chef.data.id });
