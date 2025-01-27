@@ -1,6 +1,25 @@
-# App Compose
-
+<h1 align="center">
+App Compose
+</h1>
+<p align="center">
 Compose modules into apps.
+<p>
+<p align="center">
+  <a href="https://www.npmjs.com/package/@grlt-hub/app-compose"><img src="https://img.shields.io/npm/v/@grlt-hub/app-compose?color=729B1B&label="></a>
+<p>
+
+<p align="center">
+<a href="https://discord.gg/Q4DFKnxp"><b>Get involved!</b></a>
+</p>
+<p align="center">
+ <a href="https://grlt-hub.github.io/app-compose/">Documentation</a> | <a href="https://grlt-hub.github.io/app-compose/tutorials/getting-started/">Getting Started</a>
+</p>
+
+<h4 align="center">
+
+</h4>
+<br>
+<br>
 
 ## What is it?
 
