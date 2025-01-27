@@ -76,7 +76,7 @@ await cmd.up();
 // { user: 'done',     accounts: 'idle' }
 //
 /* if user.data.id !== null */
-/* { user: 'done',    accounts: 'pending' } */
+/* { user: 'done',    accounts: 'pending'   wallets: 'idle' } */
 /* { user: 'done',    accounts: 'done',     wallets: 'pending' } */
 /* { user: 'done',    accounts: 'done',     wallets: 'done' } */
 //
