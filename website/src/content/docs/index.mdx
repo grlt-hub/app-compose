@@ -89,8 +89,8 @@ const pizza = createContainer({
 });
 
 // Now the stages: we split the process into steps.
-// The first stage: "prepare" — hiring the chef and ordering the ingredients.
-// The second stage: "cooking" — making the pizza.
+// 1: "prepare" — hiring the chef and ordering the ingredients.
+// 2: "cooking" — making the pizza.
 const cmd = await compose({
   stages: [
     ['prepare', [chef, ingredients]],
