@@ -50,9 +50,13 @@ If you’re unsure how to connect modules into a single system, [app-compose](ht
 import { createContainer, compose } from '@grlt-hub/app-compose';
 
 // Imagine we are cooking a dish in our restaurant kitchen.
-// There are three steps: hire the chef, order the ingredients, and cook the pizza.
+// There are three steps:
+// 1. hire the chef
+// 2. order the ingredients,
+// 3. and cook the pizza.
 
-// First: prepare the "chef" — it’s like hiring the chef to start cooking.
+// First: prepare the "chef"
+// it’s like hiring the chef to start cooking.
 const chef = createContainer({
   // The name of our chef.
   id: 'John Doe',
@@ -67,13 +71,15 @@ const chef = createContainer({
   },
 });
 
-// Second: if the chef is hired, we need to order the ingredients.
+// Second: if the chef is hired,
+// we need to order the ingredients.
 const ingredients = createContainer({
   id: 'ingredients',
   domain: 'shop',
   // The ingredients ordering depends on the chef.
   dependencies: [chef],
-  // If the chef is on break, we can't proceed with the order.
+  // If the chef is on break,
+  // we can't proceed with the order.
   enable: (api) => api.chef.hasBreak === false,
   start: async (api) => {
     // We order the ingredients.
