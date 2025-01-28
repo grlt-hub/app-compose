@@ -1,88 +1,132 @@
 ---
 title: Introduction
-description: App Compose — a tool for creating scalable, module-based applications with ease.
+description: Compose modules into apps.
 ---
 
-App Compose — a tool for creating scalable, module-based applications with ease.
+## What is it?
 
-## Motivation
+`app-compose` is a library for module-based applications.
+It helps developers easily connect different parts of an application — features, entities, services, and so on — so they work together as a single system.
 
-Modern applications thrive on modular architecture, adapting seamlessly to evolving business needs. To achieve **true modularity**, though, you need more than just independent components—you need an **efficient** way to bring them together. This means **controlling** how modules load, in what order, and with which dependencies. It gets even trickier when you want to turn off parts of the system **without any traces** in the code, like `if/else` statements, and without affecting the **stability** of other components.
+With `app-compose`, you can:
 
-## How does this library solve this problem?
+- Simplify the management of complex dependencies.
+- Control the order in which modules run.
+- Intuitively enable or disable parts of the application.
+- Clearly visualize the parts of the application and their connections.
 
-`app-compose` is designed to make this seamless. It lets you dynamically enable or disable modules as needed, not only preventing their code from loading when they’re off but also excluding all related dependencies. This means no excess resource use and optimized **performance**, even as the app grows.
+Instead of manually managing the chaos of modules, `app-compose` turns them into a well-organized and scalable application.
 
-With `app-compose`, you can **scale** your applications effortlessly—whether you’re building a lightweight tool or a complex, feature-rich system. By managing dependency flow and on-demand module loading, `app-compose` provides the control you need to build applications that are both **flexible and robust**.
+## Cooking Up Your Application
+
+An application is like a dish: a collection of features, entities, and services. But by themselves, they don’t make an application.
+To bring everything to life, you need to combine them properly: at the right time, in the right order, and without anything extra.
+One misstep, and instead of a pizza, you might end up with a cake.
+
+If you’re unsure how to connect modules into a single system, [app-compose](https://grlt-hub.github.io/app-compose/) can simplify the process for you.
 
 ### Example
-
-There are three entities: users, accounts, and wallets.
-
-If the user exists, then the accounts entity should be started. If the accounts entity is done, then the wallets entity should be started.
 
 ```ts
 import { createContainer, compose } from '@grlt-hub/app-compose';
 
-// wrap the module in a container
-const user = createContainer({
-  id: 'user',
+// Imagine we are cooking a dish in our restaurant kitchen.
+// There are three steps:
+// - hire the chef
+// - order the ingredients,
+// - and cook the pizza.
+
+// First: prepare the "chef" — it’s like hiring the chef to start cooking.
+const chef = createContainer({
+  // The name of our chef.
+  id: 'John Doe',
+  // This chef specializes in Italian cuisine.
+  domain: 'italian-chef',
   start: async () => {
-    const data = await fetchUser();
+    // For example, we are hiring a chef.
+    const hiredChef = await hireChef();
 
-    return { api: { data } };
+    // We return our chef.
+    return { api: hiredChef };
   },
 });
 
-const accounts = createContainer({
-  id: 'accounts',
-  dependsOn: [user],
-  start: async ({ user }) => {
-    const data = await fetchAccounts({ id: user.data.id });
+// Second: if the chef is hired, we need to order the ingredients.
+const ingredients = createContainer({
+  id: 'ingredients',
+  domain: 'shop',
+  // The ingredients ordering depends on the chef.
+  dependencies: [chef],
+  // If the chef is on break, we can't proceed with the order.
+  enable: (api) => api.chef.hasBreak === false,
+  start: async (api) => {
+    // We order the ingredients.
+    const orderedIngredients = await orderIngredients();
 
-    return { api: { data } };
+    // We return the ordered ingredients.
+    return { api: { orderedIngredients } };
   },
-  enable: ({ user }) => user.data.id !== null,
 });
 
-const wallets = createContainer({
-  id: 'wallets',
-  dependsOn: [accounts],
-  start: () => ({ api: null }),
+// Third: we make the pizza.
+const pizza = createContainer({
+  id: 'pizza',
+  domain: 'dish',
+  dependencies: [chef, ingredients],
+  start: (api) => {
+    // The chef uses the ingredients to make the pizza.
+    const pepperoniPizza = api.chef.makePizza({
+      ingredients: api.ingredients.orderedIngredients,
+    });
+
+    // The pizza is ready!
+    return { api: pepperoniPizza };
+  },
 });
 
-// up the containers
-await compose.up([user, wallets, accounts]);
+// Now the stages: we split the process into steps.
+// The first stage: "prepare" — hiring the chef and ordering the ingredients.
+// The second stage: "cooking" — making the pizza.
+const cmd = await compose({
+  stages: [
+    ['prepare', [chef, ingredients]],
+    ['cooking', [pizza]],
+  ],
+  // We require everything to be ready.
+  required: 'all',
+});
 
-// { user: 'idle',     accounts: 'idle',     wallets: 'idle' }
-// { user: 'pending',  accounts: 'idle',     wallets: 'idle' }
-// { user: 'done',     accounts: 'idle',     wallets: 'idle' }
-//
-/* if user.data.id !== null */
-/** { user: 'done',    accounts: 'pending',  wallets: 'idle' } **/
-/** { user: 'done',    accounts: 'done',     wallets: 'pending' } **/
-/** { user: 'done',    accounts: 'done',     wallets: 'done' } **/
-//
-/* else */
-/** { user: 'done',    accounts: 'off',      wallets: 'off' } **/
-//
-// compose.up done
+// The cooking process has started!
+await cmd.up();
 ```
 
-The library offers convenient functions for creating and composing modules into a single system. Each module is encapsulated in a **container** with a clear configuration, including parameters like _id_, _dependsOn_, _optionalDependsOn_, _start_, and _enable_. Developers describe containers and launch them using `compose.up` fn, **without the need to worry about the order of execution**. This approach makes working with containers **intuitive** and close to **natural language**.
+#### Example Status Flow
+
+Here’s how the statuses change during the cooking process:
+
+1. **Initial state**:
+
+- `chef: 'idle',    ingredients: 'idle'` — Everything is waiting.
+- `chef: 'pending', ingredients: 'idle'` — The chef is on the way to the kitchen.
+
+2. **If the chef is ready to work**:
+
+- `chef: 'done', ingredients: 'pending'` — Ordering the ingredients.
+- `chef: 'done', ingredients: 'done', pizza: 'idle'` — All ingredients have been delivered.
+- `chef: 'done', ingredients: 'done', pizza: 'pending'` — Starting to make the pizza.
+- `chef: 'done', ingredients: 'done', pizza: 'done'` — The pizza is ready!
+
+3. **If the chef is here, but taking a break**:
+
+- `chef: 'done', ingredients: 'off', pizza: 'off'` — Cooking is canceled.
 
 ## Strengths of the Library
 
-- Provides a **simple and intuitive developer experience (DX)**.
-- Designed with a focus on **quality** and **performance**.
-- Weighs less than **1.6 kB** (runtime), making it lightweight.
-- Covered by **100% tests**, including **type tests**.
-- Ensures high performance, suitable for **scalable applications**.
-- Includes **debugging tools** to facilitate the development process.
-- Offers the ability to **visualize the system** composed of containers effectively (including transitive dependencies and their paths).
-- Follows **semantic versioning** (semver), guaranteeing **stability** and **predictability** of changes with each release.
-
-## Community
-
-- [Discord](https://discord.gg/ajv8eHzm)
-- [Telegram](https://t.me/grlt_hub_app_compose)
+- Automatically resolves dependencies, removing the need to manually specify all containers.
+- Simplifies working with feature-toggles by eliminating excessive `if/else` logic for disabled functionality.
+- Allows you to define which parts of the application to run and in what order, prioritizing more important and less important dependencies.
+- Offers the ability to visualize the system composed of containers effectively (including transitive dependencies and their paths).
+- Provides a simple and intuitive developer experience (DX).
+- Ensures high performance, suitable for scalable applications.
+- Includes debugging tools to facilitate the development process.
+- Covered by 100% tests, including type tests.

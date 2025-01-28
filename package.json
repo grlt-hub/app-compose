@@ -13,7 +13,7 @@
     "@size-limit/preset-small-lib": "11.1.6",
     "@vitest/coverage-v8": "3.0.4",
     "clean-publish": "5.1.0",
-    "knip": "5.43.3",
+    "knip": "5.43.6",
     "prettier": "3.4.2",
     "prettier-plugin-organize-imports": "4.1.0",
     "size-limit": "11.1.6",
@@ -34,7 +34,7 @@
     "url": "https://github.com/grlt-hub/app-compose.git"
   },
   "homepage": "https://grlt-hub.github.io/app-compose/",
-  "description": "Create scalable, module-based applications with ease.",
+  "description": "Compose modules into apps",
   "keywords": [
     "grlt",
     "grlt-hub",

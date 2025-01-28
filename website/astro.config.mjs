@@ -7,7 +7,7 @@ export default defineConfig({
   integrations: [
     starlight({
       title: 'app-compose',
-      description: 'App Compose - Create scalable, module-based applications with ease.',
+      description: 'App Compose - Compose modules into apps',
       social: {
         discord: 'https://discord.gg/ajv8eHzm',
         github: 'https://github.com/grlt-hub/app-compose',
