@@ -7,6 +7,29 @@ sidebar:
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](http://semver.org).
 
+## 2.0.0
+
+Vault
+
+### Added
+
+- support for managing container execution order using `stages`.
+- `diff` command to display which containers were automatically added and which ones were skipped.
+- `domain` a required parameter in `createContainer`.
+- `view: domain` to visualize the entire application graph at the domain level.
+- `graph.dependsOn` command to quickly identify which containers a given container depends on, including transitive dependencies.
+- `graph.requiredBy` command to quickly identify which containers depend on a given container, including transitive dependencies.
+- the second argument of the `start` and `enable` functions contains information about whether the parent containers have been resolved.
+
+### Changed
+
+- all parent container APIs are wrapped into the first parameter in `start` and `enable` functions.
+- automatic resolving of strict dependencies is enabled by default.
+- renamed `dependsOn` to `dependencies`.
+- renamed `optionalDependsOn` to `optionalDependencies`.
+- renamed `onFail` to `onContainerFail`.
+- the message format for the `debug: true` option.
+
 ## 1.4.0
 
 ### Added
