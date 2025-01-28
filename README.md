@@ -97,7 +97,9 @@ const pizza = createContainer({
   dependencies: [chef, ingredients],
   start: (api) => {
     // The chef uses the ingredients to make the pizza.
-    const pepperoniPizza = api.chef.makePizza(api.ingredients.orderedIngredients);
+    const pepperoniPizza = api.chef.makePizza({
+      ingredients: api.ingredients.orderedIngredients,
+    });
 
     // The pizza is ready!
     return { api: pepperoniPizza };
