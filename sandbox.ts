@@ -1,26 +1,30 @@
 import { compose, createContainer } from './src';
 
-const hireChef = () => ({});
+const mainCource = createContainer({
+  id: 'pizza',
+  domain: 'dish',
+  start: () => {
+    console.log('pizza is ready');
 
-const chef = createContainer({
-  // The name of our chef.
-  id: 'John Doe',
-  // This chef specializes in Italian cuisine.
-  domain: 'italian-chef',
-  start: async () => {
-    // For example, we are hiring a chef.
-    const hiredChef = await hireChef();
+    return { api: { value: 'dough' } };
+  },
+});
 
-    console.log('The chef is already on the way!');
+const dessert = createContainer({
+  id: 'dessert',
+  domain: 'dish',
+  start: () => {
+    console.log('dessert is ready');
 
-    // Every start function should return an object like this:
-    // { api: object | null }
-    return { api: hiredChef };
+    return { api: { value: 'sauce' } };
   },
 });
 
 const { up } = await compose({
-  stages: [['prepare', [chef]]],
+  stages: [
+    ['first', [mainCource]],
+    ['then', [dessert]]
+  ],
 });
 
 up();

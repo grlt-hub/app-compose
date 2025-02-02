@@ -154,6 +154,11 @@ Here’s how the statuses change during the cooking process:
 - Includes debugging tools to facilitate the development process.
 - Covered by 100% tests, including type tests.
 
+## What app-compose is NOT
+
+- It does not tell you how to build a module. You choose how your modules work. app-compose only helps you put them together in one app.
+- It does not manage data or state. If you need state (like Effector or Redux), you add it inside your modules. app-compose only starts them.
+
 ## Documentation
 
 Ready to get started? Check out the full [documentation](https://grlt-hub.github.io/app-compose/) to dive deeper.
