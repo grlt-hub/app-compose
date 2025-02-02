@@ -4,38 +4,58 @@ sidebar:
   order: 1
 ---
 
-In this section, we will create a simple container using `createContainer` and run it with `compose.up`. This example will show you how to quickly get started with the library and understand its basic principles.
+In this section, we will create a simple container using `createContainer` and run it with `compose.up`. This example will show how to start using the library and understand its basic ideas.
 
-The container we create will include an identifier and an `start` function that runs upon initialization. You will see how `compose.up` brings containers together and manages their execution.
+The container we create will have an identifier, domain, and a start function that runs when the container starts. We will also see how `compose.up` connects containers and controls their execution.
+
+## Analogy from Cooking
+
+Imagine you are in a kitchen. You have a chef, ingredients, and a pot. Each of them is a container.
+
+A chef alone can’t cook without ingredients. Ingredients won’t turn into a meal without a pot.
+
+Containers don’t do much on their own, but when they work together, you get a finished meal. `compose.up` is the one that organizes the process, makes sure everything happens in the right order, and starts each part at the right time.
 
 ## Example
-
-Here’s a basic example of creating and running a container.
 
 ```ts
 import { createContainer, compose } from '@grlt-hub/app-compose';
 
-const user = createContainer({
-  id: 'user', // Each container's id must be unique to avoid conflicts
-  start: () => {
-    console.log('User container started');
-    return { api: null };
+const hireChef = () => null;
+
+const chef = createContainer({
+  // The name of our chef.
+  id: 'John Doe',
+  // This chef specializes in Italian cuisine.
+  domain: 'italian-chef',
+  start: async () => {
+    // For example, we are hiring a chef.
+    const hiredChef = await hireChef();
+
+    console.log('The chef is already on the way!');
+
+    // Every start function should return an object like this:
+    // { api: object | null }
+    return { api: hiredChef };
   },
 });
 
-compose.up([user]);
+const { up } = await compose({
+  stages: [['prepare', [chef]]],
+});
 ```
-
-> Note: Every container's start function should return an object in the format `{ api: object | null }`. This structure helps standardize how data is provided to other containers that depend on it.
-
-## Expected Result
 
 When you run this code, you should see the following output in the console:
 
 ```sh
-User container started
+The chef is already on the way!
 ```
 
-## Summary
+<br />
+<a href="https://stackblitz.com/edit/node-n4kthkkw?file=index.js" target="_blank">Try it</a>
 
-In this example, we demonstrated how to create a simple container with `createContainer` and initialize it with `compose.up`. This provides a foundation for working with containers and managing execution in your application. In the following sections, we’ll explore more advanced usage and features, including handling dependencies and managing asynchronous operations.
+## What’s Next?
+
+In this example, we created a simple container that works alone. But in real applications, containers often depend on other containers to do their job.
+
+Next, we will learn about `dependencies` and `optionalDependencies`. You’ll see how to connect containers and build flexible applications where different parts work together.
