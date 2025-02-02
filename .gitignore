@@ -10,4 +10,4 @@ coverage/
 .swc/
 .nx
 tsconfig.vitest-temp.json
-sandbox.ts
+./sandbox.ts
