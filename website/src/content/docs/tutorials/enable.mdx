@@ -3,3 +3,102 @@ title: Enable
 sidebar:
   order: 3
 ---
+
+In this article, you’ll learn how to control when containers start using the `enable` option. While dependencies ensure that containers start when the required parts are ready, sometimes that’s not enough.
+
+The `enable` option allows you to set custom conditions that decide if a container should start. This is useful when you need more control, like starting a container only when certain data is available or a specific state is active.
+
+You’ll also see how `enable` can be used with **feature toggles** to turn features on or off in your app based on specific conditions.
+
+## Analogy from Cooking
+
+Imagine you have dough and sauce, and you usually add cheese. But before you start making a pizza, you check if you have cheese.
+
+If there’s no cheese, you don’t start.
+
+This is how `enable` works. It helps you decide if you should start, even when everything else is ready.
+
+## Example
+
+```tsx
+import { compose, createContainer } from '@grlt-hub/app-compose';
+
+const hasCheese = () => false;
+
+const dough = createContainer({
+  id: 'dough',
+  domain: 'ingredients',
+  start: () => ({ api: { value: 'dough' } }),
+});
+
+const sauce = createContainer({
+  id: 'sauce',
+  domain: 'ingredients',
+  start: () => ({ api: { value: 'sauce' } }),
+});
+
+const cheese = createContainer({
+  id: 'cheese',
+  domain: 'ingredients',
+  start: () => ({ api: { value: 'cheese' } }),
+  // The container will start
+  // only if hasCheese() returns true
+  enable: hasCheese,
+});
+
+const pizza = createContainer({
+  id: 'pizza',
+  domain: 'dish',
+  dependencies: [dough, sauce, cheese],
+  start: () => {
+    return { api: { data: 'pizza' } };
+  },
+});
+
+const { up } = await compose({
+  stages: [['prepare', [pizza]]],
+});
+
+const result = await up();
+
+console.log(JSON.stringify(result, undefined, 2));
+```
+
+When you run this code, you should see the following output in the console:
+
+```json
+{
+  "allDone": false,
+  "stages": {
+    "prepare": {
+      "allDone": false,
+      "containerStatuses": {
+        // because one of its required dependencies (cheese) is OFF
+        "pizza": "off",
+
+        "dough": "done",
+        "sauce": "done",
+
+        // because the enable condition returned false
+        "cheese": "off"
+      }
+    }
+  }
+}
+```
+
+The `enable` function should always return a boolean. If it’s not provided, it returns **true** by default.
+
+Try modifying `hasCheese` and see what happens.
+
+<br />
+<a href="https://stackblitz.com/edit/node-nvuc9qtw?file=index.js" target="_blank">Try it</a>
+
+## What’s Next?
+
+We’ve learned how to control when containers start using enable. This helps start containers only when needed.
+
+But what if you want to control the order of starting containers?
+Sometimes, one container should start before another, even if they are not connected.
+
+This is where `stages` help. They let you group containers and choose the order they start.
