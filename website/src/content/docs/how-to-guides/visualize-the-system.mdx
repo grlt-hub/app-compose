@@ -1,0 +1,116 @@
+---
+title: Visualize the System
+sidebar:
+  order: 9
+---
+
+In this section, you will learn how to visualize the system of containers in `app-compose`.<br />
+Visualization helps you see how containers are connected, their dependencies, and their current statuses.
+
+You can use the `graph` command to generate a visual representation of your container structure. This makes it easier to understand complex systems and debug issues.
+
+## Example
+
+```ts {14}
+import { createContainer, compose } from '@grlt-hub/app-compose';
+
+const start = () => ({ api: null });
+
+const a = createContainer({ id: 'a', domain: 'a', start });
+const b = createContainer({ id: 'b', domain: 'b', dependencies: [a], start });
+const c = createContainer({ id: 'c', domain: 'c', optionalDependencies: [b], start });
+const d = createContainer({ id: 'd', domain: 'd', dependencies: [c], optionalDependencies: [b], start });
+
+const cmd = await compose({
+  stages: [['_', [a, b, c, d]]],
+});
+
+const { graph, dependsOn, requiredBy } = await cmd.graph();
+
+console.log(JSON.stringify(graph, undefined, 2));
+```
+
+The `cmd.graph` command returns an object with:
+
+- `graph` — the visual representation of the system.
+- `dependsOn`(Container[]) — shows which containers the specified container depends on.
+- `requiredBy`(Container[]) — shows which containers require the specified container to work.
+
+The output provides a detailed breakdown of each container:
+
+- **Direct Dependencies**:
+  - **Strict**: Lists containers that are `strict` dependencies of the current container.
+  - **Optional**: Lists containers that are `optional` dependencies of the current container.
+- **Transitive Dependencies**:
+  - **Strict**: Lists containers that are `strict` dependencies, inherited through a chain of dependencies.
+  - **Optional**: Lists containers that are `optional` dependencies, inherited through a chain of dependencies.
+- **Transitive Dependency Paths**:
+  - Each transitive dependency includes a path that describes how the dependency is reached, which is helpful for tracing and debugging.
+
+```json
+{
+  "a": {
+    "domain": "a",
+    "dependencies": [],
+    "optionalDependencies": [],
+    "transitive": {
+      "dependencies": [],
+      "optionalDependencies": []
+    }
+  },
+  "b": {
+    "domain": "b",
+    "dependencies": ["a"],
+    "optionalDependencies": [],
+    "transitive": {
+      "dependencies": [],
+      "optionalDependencies": []
+    }
+  },
+  "c": {
+    "domain": "c",
+    "dependencies": [],
+    "optionalDependencies": ["b"],
+    "transitive": {
+      "dependencies": [],
+      "optionalDependencies": [
+        {
+          "id": "a",
+          "path": "c -> b -> a"
+        }
+      ]
+    }
+  },
+  "d": {
+    "domain": "d",
+    "dependencies": ["c"],
+    "optionalDependencies": ["b"],
+    "transitive": {
+      "dependencies": [],
+      "optionalDependencies": [
+        {
+          "id": "a",
+          "path": "d -> b -> a"
+        }
+      ]
+    }
+  }
+}
+```
+
+<br />
+<a href="https://stackblitz.com/edit/node-xhkzmouy?file=index.js" target="_blank">Try it</a>
+
+## Grouping by Domain
+
+If you want to collapse the view to show only domains, you can pass an option:
+
+```ts
+const { graph, dependsOn, requiredBy } = await cmd.graph({ view: 'domains' });
+```
+
+## When to Use `compose.graph`
+
+- **Debugging**: Use the graph output to identify and resolve potential issues, such as missing or transitive (hidden) dependencies.
+- **Optimizing Architecture**: Analyze the dependency structure to refactor and optimize your application's architecture.
+- **Documenting Dependencies**: Generate a visual representation to document the architecture for your team.

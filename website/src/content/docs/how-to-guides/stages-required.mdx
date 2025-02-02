@@ -1,0 +1,28 @@
+---
+title: Define which containers are critical for app startup
+sidebar:
+  order: 7
+---
+
+In this section, you will learn how to define which containers are critical for your app to start successfully.<br />
+You can use the `required` option in `compose.up` to control the startup process and handle critical parts of your app effectively.
+
+## Values
+
+- `required: undefined`: The app will start even if some containers do not work. This is the **default** value.
+- `required: 'all'`: All containers must start. If one container fails, up will stop and reject an error.
+- `required: [container1, container2]`: Only the listed containers must start successfully. If one of them fails, up will reject.
+- `required: [container1, [container2, container3]`: Nested lists mean that at least one container from the group must start.<br />
+  In this example, `container1` and either `container2` or `container3` must start successfully.
+
+### Example
+
+```tsx {6}
+const cmd = await compose({
+  stages: [
+    ['prepare', [chef, ingredients]],
+    ['cooking', [pizza]],
+  ],
+  required: 'all',
+});
+```

@@ -20,9 +20,8 @@ const compose = async (params: Params) => {
     diff: async () => {
       (await import('./commands/diff')).diff({ expected: params.stages, received: stages });
     },
-    graph: async (config?: Parameters<GraphFn>[1]) => {
-      (await import('./commands/graph')).graph({ stages }, { view: config?.view ?? 'containers' });
-    },
+    graph: async (config?: Parameters<GraphFn>[1]) =>
+      (await import('./commands/graph')).graph({ stages }, { view: config?.view ?? 'containers' }),
     /* v8 ignore end */
   };
 };

@@ -1,0 +1,60 @@
+---
+title: Handle container failures
+sidebar:
+  order: 5
+---
+
+In this section, you will learn how to handle container failures in `app-compose`.
+
+When a container fails to start, you can detect this and take action.
+
+### Example
+
+```ts {21}
+const unstableService = createContainer({
+  id: 'unstable-service',
+  domain: 'backend',
+  start: () => {
+    throw new Error('Service failed to start');
+  },
+});
+
+const myFeature = createContainer({
+  id: 'feature',
+  domain: 'frontend',
+  dependencies: [unstableService],
+  start: () => ({ api: {} }),
+});
+
+const { up } = await compose({
+  stages: [['stage-name', [myFeature]]],
+});
+
+await up({
+  onContainerFail: ({ container, error, stageId }) => {
+    // for example, sending the error
+    // to an error tracking service.
+    console.log({
+      stageId,
+      container,
+      msg: error.message,
+    });
+  },
+});
+```
+
+When you run this code, you should see the following output in the console:
+
+```json
+{
+  "stageId": "stage-name",
+  "container": {
+    "id": "unstable-service",
+    "domain": "backend"
+  },
+  "msg": "Service failed to start"
+}
+```
+
+<br />
+<a href="https://stackblitz.com/edit/node-3dut4g4b?file=index.js" target="_blank">Try it</a>

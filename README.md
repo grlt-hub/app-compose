@@ -80,7 +80,7 @@ const ingredients = createContainer({
   dependencies: [chef],
   // If the chef is on break,
   // we can't proceed with the order.
-  enable: (api) => api.chef.hasBreak === false,
+  enable: (api) => api['John Doe'].hasBreak === false,
   start: async (api) => {
     // We order the ingredients.
     const orderedIngredients = await orderIngredients();
@@ -98,7 +98,7 @@ const pizza = createContainer({
   start: (api) => {
     // The chef uses the ingredients
     // to make the pizza.
-    const pepperoniPizza = api.chef.makePizza({
+    const pepperoniPizza = api['John Doe'].makePizza({
       ingredients: api.ingredients.orderedIngredients,
     });
 

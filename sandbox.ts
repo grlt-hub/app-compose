@@ -1,30 +1,16 @@
 import { compose, createContainer } from './src';
 
-const mainCource = createContainer({
-  id: 'pizza',
-  domain: 'dish',
-  start: () => {
-    console.log('pizza is ready');
+const start = () => ({ api: null });
 
-    return { api: { value: 'dough' } };
-  },
+const a = createContainer({ id: 'a', domain: 'a', start });
+const b = createContainer({ id: 'b', domain: 'b', dependencies: [a], start });
+const c = createContainer({ id: 'c', domain: 'c', optionalDependencies: [b], start });
+const d = createContainer({ id: 'd', domain: 'd', dependencies: [c], optionalDependencies: [b], start });
+
+const cmd = await compose({
+  stages: [['_', [a, b, c, d]]],
 });
 
-const dessert = createContainer({
-  id: 'dessert',
-  domain: 'dish',
-  start: () => {
-    console.log('dessert is ready');
+const { graph } = await cmd.graph({ view: 'domains' });
 
-    return { api: { value: 'sauce' } };
-  },
-});
-
-const { up } = await compose({
-  stages: [
-    ['first', [mainCource]],
-    ['then', [dessert]]
-  ],
-});
-
-up();
+console.log(graph);

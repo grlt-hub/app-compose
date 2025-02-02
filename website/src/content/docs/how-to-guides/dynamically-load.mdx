@@ -1,0 +1,22 @@
+---
+title: Dynamically load code for a container
+sidebar:
+  order: 8
+---
+
+In this section, you will learn how to dynamically load code for a container in `app-compose`.<br />
+This is useful when you want to load a container only when it’s needed, which can improve app performance.
+
+### Example
+
+```ts title="featureModuleContainer.ts" {5,8}
+const featureModuleContainer = createContainer({
+  id: 'featureModule',
+  domain: 'features',
+  start: async () => {
+    const { FeatureComponent } = await import('./FeatureComponent');
+    return { api: { ui: FeatureComponent } };
+  },
+  enable: () => process.env.FEATURE_MODULE_ENABLED === 'true',
+});
+```
