@@ -11,7 +11,7 @@
   "license": "MIT",
   "devDependencies": {
     "@size-limit/preset-small-lib": "11.1.6",
-    "@vitest/coverage-v8": "3.0.4",
+    "@vitest/coverage-v8": "3.0.5",
     "clean-publish": "5.1.0",
     "knip": "5.43.6",
     "prettier": "3.4.2",
@@ -21,7 +21,7 @@
     "tsup": "8.3.6",
     "typescript": "5.7.3",
     "vite-tsconfig-paths": "5.1.4",
-    "vitest": "3.0.4"
+    "vitest": "3.0.5"
   },
   "peerDependencies": {
     "effector": "23"
