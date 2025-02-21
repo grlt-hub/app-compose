@@ -6,23 +6,27 @@
   "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
-  "files": ["/README.md", "/package.json", "/dist"],
+  "files": [
+    "/README.md",
+    "/package.json",
+    "/dist"
+  ],
   "author": "Viktor Pasynok",
   "license": "MIT",
   "devDependencies": {
-    "@size-limit/preset-small-lib": "11.1.6",
-    "@vitest/coverage-v8": "3.0.5",
+    "@size-limit/preset-small-lib": "11.2.0",
+    "@vitest/coverage-v8": "3.0.6",
     "clean-publish": "5.1.0",
-    "knip": "5.43.6",
-    "prettier": "3.4.2",
+    "knip": "5.44.4",
+    "prettier": "3.5.1",
     "prettier-plugin-organize-imports": "4.1.0",
-    "size-limit": "11.1.6",
-    "terser": "5.37.0",
+    "size-limit": "11.2.0",
+    "terser": "5.39.0",
     "tslib": "2.8.1",
-    "tsup": "8.3.6",
+    "tsup": "2.0.3",
     "typescript": "5.7.3",
     "vite-tsconfig-paths": "5.1.4",
-    "vitest": "3.0.5"
+    "vitest": "3.0.6"
   },
   "peerDependencies": {
     "effector": "23"
