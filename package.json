@@ -6,11 +6,7 @@
   "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
-  "files": [
-    "/README.md",
-    "/package.json",
-    "/dist"
-  ],
+  "files": ["/README.md", "/package.json", "/dist"],
   "author": "Viktor Pasynok",
   "license": "MIT",
   "devDependencies": {
@@ -23,7 +19,7 @@
     "size-limit": "11.2.0",
     "terser": "5.39.0",
     "tslib": "2.8.1",
-    "tsup": "2.0.3",
+    "tsup": "8.3.6",
     "typescript": "5.7.3",
     "vite-tsconfig-paths": "5.1.4",
     "vitest": "3.0.6"
