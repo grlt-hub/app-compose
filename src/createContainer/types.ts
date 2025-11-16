@@ -21,7 +21,6 @@ type AnyStartFn = (...x: any) => StartResult<AnyAPI>;
 
 type AnyContainer = {
   id: string;
-  domain: string;
   $status: StoreWritable<ContainerStatus>;
   start: AnyStartFn;
   dependencies?: AnyContainer[];
@@ -30,8 +29,6 @@ type AnyContainer = {
 };
 
 type AnyDeps = NonEmptyTuple<AnyContainer> | void;
-type ContainerId = AnyContainer['id'];
-type ContainerDomain = AnyContainer['domain'];
 
 export { CONTAINER_STATUS };
-export type { AnyAPI, AnyContainer, AnyDeps, ContainerDomain, ContainerId, ContainerStatus, EnableResult, StartResult };
+export type { AnyAPI, AnyContainer, AnyDeps, ContainerStatus, EnableResult, StartResult };

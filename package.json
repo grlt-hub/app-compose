@@ -1,6 +1,6 @@
 {
   "name": "@grlt-hub/app-compose",
-  "version": "2.0.3",
+  "version": "3.0.0-next.0",
   "type": "module",
   "private": false,
   "main": "dist/index.js",
@@ -9,56 +9,26 @@
   "files": ["/README.md", "/package.json", "/dist"],
   "author": "Viktor Pasynok",
   "license": "MIT",
+  "scripts": {
+    "build": "rslib build",
+    "lint": "knip",
+    "test": "vitest"
+  },
   "devDependencies": {
-    "@size-limit/preset-small-lib": "11.2.0",
-    "@vitest/coverage-v8": "3",
-    "clean-publish": "6.0.1",
-    "knip": "5.67.1",
+    "@rslib/core": "0.17.1",
+    "knip": "5.69.1",
     "prettier": "3.6.2",
     "prettier-plugin-organize-imports": "4.3.0",
-    "size-limit": "11.2.0",
-    "terser": "5.44.0",
     "tslib": "2.8.1",
-    "tsup": "8.5.0",
     "typescript": "5.9.3",
-    "vitest": "3"
+    "vitest": "4.0.9"
   },
   "peerDependencies": {
     "effector": "23"
-  },
-  "publishConfig": {
-    "access": "public"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/grlt-hub/app-compose.git"
   },
-  "homepage": "https://grlt-hub.github.io/app-compose/",
-  "description": "Compose modules into apps",
-  "keywords": [
-    "grlt",
-    "grlt-hub",
-    "modular",
-    "scalable",
-    "application-composition",
-    "module-based",
-    "app-composition",
-    "dependency-injection",
-    "dependency-management",
-    "framework",
-    "application-assembly",
-    "modularity",
-    "app-development",
-    "composable-architecture",
-    "container-management",
-    "software-architecture",
-    "reusable-components",
-    "app-structure",
-    "composable-framework",
-    "module-integration",
-    "project-structure",
-    "container-composition",
-    "frontend di",
-    "front-end di"
-  ]
+  "description": "Compose modules into apps"
 }
