@@ -1,9 +1,9 @@
-type Ctx = {
+type RunCtx = {
   log: typeof console.log;
   error?: typeof console.error;
 };
 
-const run = (ctx: Ctx) => {
+const run = (ctx: RunCtx) => {
   ctx.log('DEPS LOG from bTask');
 
   if (ctx?.error) {
@@ -11,6 +11,6 @@ const run = (ctx: Ctx) => {
   }
 };
 
-const enabled = (ctx: Ctx) => (ctx?.error ? true : false);
+const enabled = (ctx: RunCtx) => (ctx?.error ? true : false);
 
 export const bFeature = { run, enabled };
