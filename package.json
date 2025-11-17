@@ -10,7 +10,8 @@
   "author": "Viktor Pasynok",
   "license": "MIT",
   "scripts": {
-    "dev": "bun run ./src/createTask/sandbox.ts",
+    "dev:createTask": "bun run ./src/createTask/sandbox.ts",
+    "dev:runTasks": "bun run ./src/runTasks/sandbox.ts",
     "build": "rslib build",
     "lint": "knip",
     "test": "vitest"

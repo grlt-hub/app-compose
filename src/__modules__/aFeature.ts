@@ -5,7 +5,7 @@ const run = async () => {
 
   await sleep(1000);
 
-  return { pep: { log: console.log } };
+  return { pep: { log: console.log }, info: console.info };
 };
 
 export const aFeature = { run };

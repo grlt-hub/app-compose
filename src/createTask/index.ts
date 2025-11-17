@@ -37,4 +37,6 @@ const createTask = <Id extends string, Ctx, InputCtx extends ContextWithOptional
   return task;
 };
 
-export { createTask, optional, required };
+type Task = ReturnType<typeof createTask>;
+
+export { createTask, optional, required, type Task };
