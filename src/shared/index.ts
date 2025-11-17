@@ -1,5 +1,5 @@
-type NonEmptyTuple<T = unknown> = [T, ...T[]];
+type AnyObject = Record<string, any>;
 
-export { isNil } from './isNil';
+const isObject = (x: unknown): x is object => Object.prototype.toString.call(x) === '[object Object]';
 
-export { type NonEmptyTuple };
+export { isObject, type AnyObject };
