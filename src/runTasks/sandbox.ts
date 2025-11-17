@@ -26,6 +26,7 @@ const bTask = createTask({
 });
 
 // todo: HMMMM
+// todo: required.or() HMMMM X2
 runTasks({
   // @ts-expect-error 123
   stages: [[zeroTask, aTask, required(bTask)]],
