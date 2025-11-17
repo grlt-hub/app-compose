@@ -1,6 +1,6 @@
 import { runTasks } from './index';
 
-import { createTask, optional } from '@createTask';
+import { createTask, optional, required } from '@createTask';
 import { aFeature, bFeature } from '../__modules__';
 
 const zeroTask = createTask({
@@ -25,6 +25,8 @@ const bTask = createTask({
   enabled: (_) => Math.random() > 0.5,
 });
 
+// todo: HMMMM
 runTasks({
-  stages: [[zeroTask, aTask, bTask]],
+  // @ts-expect-error 123
+  stages: [[zeroTask, aTask, required(bTask)]],
 });
