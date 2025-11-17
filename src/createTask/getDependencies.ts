@@ -1,6 +1,6 @@
 import type { AnyObject as AnyContext } from '@shared';
 import { isOptional } from './optional';
-import { extractTargetId as extractDependencyId } from './proxy';
+import { extractTarget, type Target } from './proxy';
 
 const getDependencies = (ctx: AnyContext) => {
   const strict = new Set<string>();
@@ -8,20 +8,16 @@ const getDependencies = (ctx: AnyContext) => {
 
   for (const value of Object.values(ctx)) {
     if (isOptional(value)) {
-      const dependencyId = extractDependencyId(value.value);
+      const target = extractTarget<Target>(value.value);
 
-      if (dependencyId) {
-        optional.add(dependencyId);
-      }
+      if (target?.id) optional.add(target.id);
 
       continue;
     }
 
-    const dependencyId = extractDependencyId(value);
+    const target = extractTarget<Target>(value);
 
-    if (dependencyId) {
-      strict.add(dependencyId);
-    }
+    if (target?.id) strict.add(target.id);
   }
 
   for (const id of strict) {
@@ -30,7 +26,7 @@ const getDependencies = (ctx: AnyContext) => {
 
   return {
     strict: Array.from(strict),
-    optional: Array.from(optional),
+    optional: Array.from(optional.difference(strict)),
   };
 };
 

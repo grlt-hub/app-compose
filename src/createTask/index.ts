@@ -10,12 +10,15 @@ type Params<Id, Ctx, InputCtx, Api> = {
   id: Id;
   run: RunFn<Ctx, Api>;
   context: InputCtx;
+  // fixme: rename to RunCtx
   enabled?: EnabledFn<Ctx>;
 };
 
+// todo: add strict (like optional)
 // fixme: optional ошибка должна быть явнее
 // fixme: only flat ctx supported now :c
-// todo: required as option for valid up result
+// todo: change signature: { run: { fn, context }, enabled: ... }
+// todo: required as option for valid up result ||| to composeFn
 const createTask = <Id extends string, Ctx, InputCtx extends ContextWithOptional<Ctx>, Api>({
   id,
   run: __run,
@@ -28,7 +31,7 @@ const createTask = <Id extends string, Ctx, InputCtx extends ContextWithOptional
 
   const task = {
     id,
-    api: createProxy({ target: { id } }) as Api,
+    api: createProxy({ id }) as Api,
     run,
     enabled,
     dependencies: getDependencies(contextWithOptional),

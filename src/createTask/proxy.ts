@@ -1,53 +1,39 @@
-import { isObject, type AnyObject } from '@shared';
+import { isObject } from '@shared';
 
-const TAG = Symbol('$$isRef');
+const TARGET = Symbol('$$target');
+const PATH = Symbol('$$path');
 
-type CreateProxyParams = {
-  target: { id: string };
+type Target = { id: string };
+
+type ProxyRef<T> = {
+  [TARGET]: T;
+  [PATH]: string[];
 };
 
-type ProxyRef = {
-  [TAG]: true;
-  target: CreateProxyParams['target'];
-  path: string[];
-};
+const createProxyRef = <T>(value: ProxyRef<T>) =>
+  new Proxy(value, {
+    get(ref, prop, self) {
+      if (typeof prop === 'symbol') {
+        return ref[prop as keyof typeof value];
+      }
 
-const createProxyRef = (target: CreateProxyParams['target'], path: string[]) =>
-  new Proxy({} as ProxyRef, {
-    get(_, prop) {
-      if (prop === TAG) return true;
-      if (prop === 'target') return target;
-      if (prop === 'path') return path;
-
-      return createProxyRef(target, [...path, prop as string]);
+      ref[PATH].push(prop);
+      return self;
     },
   });
 
-const createProxy = ({ target }: CreateProxyParams) =>
-  new Proxy({} as AnyObject, {
-    get: (_, prop) => createProxyRef(target, [prop as string]),
-  });
+const createProxy = <T>(target: T) => createProxyRef({ [PATH]: [], [TARGET]: target });
 
-const isProxyRef = (value: unknown): value is ProxyRef => {
-  try {
-    if (!isObject(value)) {
-      return false;
-    }
+const isProxyRef = (value: unknown): value is ProxyRef<unknown> => isObject(value) && Object.hasOwn(value, TARGET);
 
-    return (value as any)[TAG] === true;
-  } catch {
-    return false;
-  }
-};
-
-const extractTargetId = (ref: unknown) => {
+const extractTarget = <T>(ref: unknown): T | null => {
   if (!isProxyRef(ref)) return null;
 
   try {
-    return ref.target.id;
+    return ref[TARGET] as T;
   } catch {
     return null;
   }
 };
 
-export { createProxy, extractTargetId, isProxyRef };
+export { createProxy, extractTarget, isProxyRef, type Target };
