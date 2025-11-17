@@ -1,6 +1,6 @@
 import { type ContextWithOptional, normalizeContext } from './context';
 import { getDependencies } from './getDependencies';
-import { optional } from './optional';
+import { optional, required } from './modifiers';
 import { createProxy } from './proxy';
 
 type RunFn<Ctx, Api> = (__: Ctx) => Api | Promise<Api> | void;
@@ -13,10 +13,9 @@ type Params<Id, Ctx, InputCtx, Api> = {
   enabled?: EnabledFn<Ctx>;
 };
 
-// todo: add strict (like optional)
-// fixme: optional ошибка должна быть явнее
 // fixme: only flat ctx supported now :c
 // todo: change signature: { run: { fn, context }, enabled: ... }
+// todo: required for compose.run
 const createTask = <Id extends string, Ctx, InputCtx extends ContextWithOptional<Ctx>, Api>({
   id,
   run: __run,
@@ -38,4 +37,4 @@ const createTask = <Id extends string, Ctx, InputCtx extends ContextWithOptional
   return task;
 };
 
-export { createTask, optional };
+export { createTask, optional, required };

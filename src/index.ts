@@ -1,1 +1,1 @@
-export { createTask, optional } from './createTask';
+export { createTask, optional, required } from './createTask';

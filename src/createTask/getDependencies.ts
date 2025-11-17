@@ -1,32 +1,31 @@
 import type { AnyObject as AnyContext } from '@shared';
-import { isOptional } from './optional';
+import { isOptional, isRequired } from './modifiers';
 import { extractTarget, type Target } from './proxy';
 
+const get = (v: unknown) => {
+  if (isOptional(v)) return { type: 'optional' as const, source: v.value };
+  if (isRequired(v)) return { type: 'required' as const, source: v.value };
+
+  return { type: 'required' as const, source: v };
+};
+
 const getDependencies = (ctx: AnyContext) => {
-  const strict = new Set<string>();
+  const required = new Set<string>();
   const optional = new Set<string>();
 
   for (const value of Object.values(ctx)) {
-    if (isOptional(value)) {
-      const target = extractTarget<Target>(value.value);
+    const { source, type } = get(value);
 
-      if (target?.id) optional.add(target.id);
+    const target = extractTarget<Target>(source);
 
-      continue;
+    if (target?.id) {
+      type !== 'optional' ? required.add(target.id) : optional.add(target.id);
     }
-
-    const target = extractTarget<Target>(value);
-
-    if (target?.id) strict.add(target.id);
-  }
-
-  for (const id of strict) {
-    optional.delete(id);
   }
 
   return {
-    strict: Array.from(strict),
-    optional: Array.from(optional.difference(strict)),
+    required: Array.from(required),
+    optional: Array.from(optional.difference(required)),
   };
 };
 

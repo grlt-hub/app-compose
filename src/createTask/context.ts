@@ -1,8 +1,10 @@
 import type { AnyObject as AnyContext } from '@shared';
-import { isOptional, type Optional } from './optional';
+import { isOptional, isRequired, type Optional, type Required } from './modifiers';
 
 type ContextWithOptional<T> = {
-  [K in keyof T]: undefined extends T[K] ? Optional<Exclude<T[K], undefined>> | undefined : T[K];
+  [K in keyof T]: undefined extends T[K] ?
+    Optional<Exclude<T[K], undefined>> | Required<Exclude<T[K], undefined>> | undefined
+  : T[K];
 };
 
 const normalizeContext = <T extends AnyContext>(ctx: T) => {
@@ -12,7 +14,7 @@ const normalizeContext = <T extends AnyContext>(ctx: T) => {
     const value = ctx[key];
     clean[key] =
       value === undefined ? undefined
-      : isOptional(value) ? value.value
+      : isOptional(value) || isRequired(value) ? value.value
       : value;
   }
 

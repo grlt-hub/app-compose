@@ -1,5 +1,5 @@
 import { isObject } from '@shared';
-import { isProxyRef } from './proxy';
+import { isProxyRef } from '../proxy';
 
 const TAG = Symbol('$$optional');
 
