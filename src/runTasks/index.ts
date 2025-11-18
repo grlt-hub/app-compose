@@ -19,7 +19,7 @@ const runTasks = (params: Params) => {
     const nonEmptyStage = nonEmptyStageGuard({ stage, stageIndex });
 
     if (!nonEmptyStage.ok) {
-      console.warn(nonEmptyStage.message);
+      console.warn(nonEmptyStage.err.message);
       continue;
     }
 
@@ -27,7 +27,7 @@ const runTasks = (params: Params) => {
       const taskUnique = taskUniqueGuard({ taskIds, taskId: task.id, stageIndex });
 
       if (!taskUnique.ok) {
-        throw new Error(taskUnique.message);
+        throw new Error(taskUnique.err.message);
       }
 
       taskIds.add(task.id);
@@ -37,7 +37,7 @@ const runTasks = (params: Params) => {
     const requiredDepsCheck = requiredDepsGuard({ stageRequiredTasks, taskIds, stageIndex });
 
     if (!requiredDepsCheck.ok) {
-      throw new Error(requiredDepsCheck.message);
+      throw new Error(requiredDepsCheck.err.message);
     }
   }
 };

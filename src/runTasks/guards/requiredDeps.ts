@@ -1,4 +1,4 @@
-import { LIBRARY_NAME } from '@shared';
+import { Err, LIBRARY_NAME, Ok } from '@shared';
 import type { GuardResult } from './types';
 
 type Params = {
@@ -11,13 +11,13 @@ const requiredDepsGuard = ({ stageRequiredTasks, taskIds, stageIndex }: Params):
   const ok = stageRequiredTasks.isSubsetOf(taskIds);
 
   if (ok) {
-    return { ok: true };
+    return Ok();
   }
 
   const missing = stageRequiredTasks.difference(taskIds);
   const message = `${LIBRARY_NAME}: Stage ${stageIndex} is missing required tasks: ${Array.from(missing).join(', ')}`;
 
-  return { ok: false, message };
+  return Err({ message });
 };
 
 export { requiredDepsGuard };

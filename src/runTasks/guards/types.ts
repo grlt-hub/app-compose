@@ -1,8 +1,5 @@
-type GuardResult =
-  | { ok: true }
-  | {
-      ok: false;
-      message: string;
-    };
+import type { Result } from '@shared';
+
+type GuardResult = Result<void, { message: string }>;
 
 export type { GuardResult };

@@ -1,4 +1,4 @@
-import { LIBRARY_NAME } from '@shared';
+import { Err, LIBRARY_NAME, Ok } from '@shared';
 import type { Stage } from '../types';
 import type { GuardResult } from './types';
 
@@ -8,11 +8,6 @@ type Params = {
 };
 
 const nonEmptyStageGuard = ({ stage, stageIndex }: Params): GuardResult =>
-  stage.length === 0 ?
-    {
-      ok: false,
-      message: `${LIBRARY_NAME}: Warning: Stage ${stageIndex} is empty`,
-    }
-  : { ok: true };
+  stage.length === 0 ? Err({ message: `${LIBRARY_NAME}: Warning: Stage ${stageIndex} is empty` }) : Ok();
 
 export { nonEmptyStageGuard };
