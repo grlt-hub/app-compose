@@ -6,7 +6,6 @@ type Params = {
   stages: Stage[];
 };
 
-// fixme: parallel for stage
 const configGuard = (params: Params) => {
   const taskIds = new Set<Task['id']>();
   let optionalDependencies = new Set<Task['id']>();
