@@ -1,39 +1,20 @@
-import { isObject } from '@shared';
+import { MetaPath$, type Lensable, type Spot } from './spot';
 
-const TARGET = Symbol('$$target');
-const PATH = Symbol('$$path');
-
-type Target = { id: string };
-
-type ProxyRef<T> = {
-  [TARGET]: T;
-  [PATH]: string[];
+const raise = () => {
+  throw new Error();
 };
 
-const createProxyRef = <T>(value: ProxyRef<T>) =>
-  new Proxy(value, {
-    get(ref, prop, self) {
-      if (typeof prop === 'symbol') {
-        return ref[prop as keyof typeof value];
-      }
+const get: ProxyHandler<Lensable>['get'] = (target, property, recv) =>
+  typeof property == 'symbol' ?
+    Reflect.get(target, property, recv)
+  : proxy({ ...target, [MetaPath$]: target[MetaPath$].concat(property) });
 
-      ref[PATH].push(prop);
-      return self;
-    },
-  });
+const set: ProxyHandler<Lensable>['set'] = (target, property, recv) =>
+  typeof property == 'symbol' ? Reflect.set({ ...target }, property, recv) : raise();
 
-const createProxy = <T>(target: T) => createProxyRef({ [PATH]: [], [TARGET]: target });
+const proxy = (ref: Lensable) => new Proxy(ref, { get, set });
 
-const isProxyRef = (value: unknown): value is ProxyRef<unknown> => isObject(value) && Object.hasOwn(value, TARGET);
+const lens = <T extends Spot<any> & Lensable>(spot: Omit<T, typeof MetaPath$>): T & Lensable =>
+  proxy({ ...spot, [MetaPath$]: [] }) as T & Lensable;
 
-const extractTarget = <T>(ref: unknown): T | null => {
-  if (!isProxyRef(ref)) return null;
-
-  try {
-    return ref[TARGET] as T;
-  } catch {
-    return null;
-  }
-};
-
-export { createProxy, extractTarget, isProxyRef, type Target };
+export { lens };

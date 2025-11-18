@@ -1,26 +1,40 @@
-import { aFeature, bFeature } from '../__modules__';
-import { createTask, optional } from './index';
+import { createTask, createMarker, optional } from './index';
+import { flatContext } from './resolve';
 
-const zeroTask = createTask({
-  id: 'zero',
-  run: () => ({ error: console.error }),
-  context: {},
+type Logger = { log: (_: string) => void };
+
+const timeoutMarker = createMarker<number>({ id: 'timeout' });
+const loggerMarker = createMarker<Logger>({ id: 'logger' });
+
+const sleeperTask = createTask({
+  id: 'sleeper',
+  run: {
+    fn: ({ timeout = 5000 }: { timeout?: number }) => {
+      return { sleep: () => new Promise<void>((res) => setTimeout(res, timeout)) };
+    },
+    context: { timeout: timeoutMarker },
+  },
 });
 
-const aTask = createTask({
-  id: 'a',
-  run: aFeature.run,
-  context: {},
+const loaderTask = createTask({
+  id: 'loader',
+  run: {
+    fn: ({ sleep, log }: { sleep: () => Promise<void>; log?: Logger['log'] }) =>
+      sleep().then((): void => log?.('hello world!')),
+    context: {
+      sleep: sleeperTask.api.sleep,
+      log: optional(loggerMarker.log),
+    },
+  },
 });
 
-const bTask = createTask({
-  id: 'b',
-  run: bFeature.run,
-  context: {
-    log: aTask.api.pep.log,
-    error: optional(zeroTask.api.error),
+const appTask = createTask({
+  id: 'app',
+  run: {
+    fn: ({ logger }: { logger: Logger }) => logger.log('rendering app...'),
+    context: { logger: loggerMarker },
   },
   enabled: (_) => Math.random() > 0.5,
 });
 
-console.log(zeroTask.dependencies, aTask.dependencies, bTask.dependencies);
+console.log(flatContext(appTask.definition.context))
