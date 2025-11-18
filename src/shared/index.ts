@@ -9,6 +9,6 @@ const Ok = <T = void>(val?: T) => ({ ok: true, val }) as const;
 
 const Err = <E>(err: E) => ({ ok: false, err }) as const;
 
-type Result<T, E> = ReturnType<typeof Ok<T>> | ReturnType<typeof Err<E>>;
+// type Result<T, E> = ReturnType<typeof Ok<T>> | ReturnType<typeof Err<E>>;
 
-export { Err, LIBRARY_NAME, Ok, isObject, type AnyObject, type Result, type Tuple };
+export { Err, LIBRARY_NAME, Ok, isObject, type AnyObject, type Tuple };

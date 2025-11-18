@@ -1,5 +1,4 @@
 import { Err, LIBRARY_NAME, Ok } from '@shared';
-import type { GuardResult } from './types';
 
 type Params = {
   taskIds: Set<string>;
@@ -7,7 +6,7 @@ type Params = {
   stageIndex: number;
 };
 
-const requiredDepsGuard = ({ stageRequiredTasks, taskIds, stageIndex }: Params): GuardResult => {
+const requiredDepsGuard = ({ stageRequiredTasks, taskIds, stageIndex }: Params) => {
   const ok = stageRequiredTasks.isSubsetOf(taskIds);
 
   if (ok) {

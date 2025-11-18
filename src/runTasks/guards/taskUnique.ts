@@ -1,6 +1,5 @@
 import type { Task } from '@createTask';
 import { Err, LIBRARY_NAME, Ok } from '@shared';
-import type { GuardResult } from './types';
 
 type Params = {
   taskIds: Set<string>;
@@ -8,7 +7,7 @@ type Params = {
   stageIndex: number;
 };
 
-const taskUniqueGuard = ({ taskId, taskIds, stageIndex }: Params): GuardResult => {
+const taskUniqueGuard = ({ taskId, taskIds, stageIndex }: Params) => {
   const duplicate = taskIds.has(taskId);
 
   if (!duplicate) {
