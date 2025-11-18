@@ -26,5 +26,5 @@ const bTask = createTask({
 });
 
 runTasks({
-  stages: [[zeroTask, aTask], [bTask]],
+  stages: [[aTask], [zeroTask, bTask], []],
 });

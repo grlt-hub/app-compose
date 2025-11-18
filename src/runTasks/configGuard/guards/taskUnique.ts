@@ -8,9 +8,9 @@ type Params = {
 };
 
 const taskUniqueGuard = ({ taskId, taskIds, stageIndex }: Params) => {
-  const duplicate = taskIds.has(taskId);
+  const ok = !taskIds.has(taskId);
 
-  if (!duplicate) {
+  if (ok) {
     return Ok();
   }
 
