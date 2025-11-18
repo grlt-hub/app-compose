@@ -15,7 +15,6 @@ type Params<Id, Ctx, InputCtx, Api> = {
 
 // fixme: only flat ctx supported now :c
 // todo: change signature: { run: { fn, context }, enabled: ... }
-// todo: required for compose.run
 const createTask = <Id extends string, Ctx, InputCtx extends ContextWithOptional<Ctx>, Api>({
   id,
   run: __run,
