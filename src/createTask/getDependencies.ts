@@ -24,8 +24,8 @@ const getDependencies = (ctx: AnyContext) => {
   }
 
   return {
-    required: Array.from(required),
-    optional: Array.from(optional.difference(required)),
+    required,
+    optional: optional.difference(required),
   };
 };
 

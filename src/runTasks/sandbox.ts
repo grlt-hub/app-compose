@@ -20,13 +20,11 @@ const bTask = createTask({
   run: bFeature.run,
   context: {
     log: aTask.api.pep.log,
-    error: optional(aTask.api.info),
+    error: optional(zeroTask.api.error),
   },
   enabled: (_) => Math.random() > 0.5,
 });
 
-// todo: ensure || ensure.or.or.or
 runTasks({
-  // @ts-expect-error 123
-  stages: [[zeroTask, aTask, required(bTask)]],
+  stages: [[zeroTask, aTask], [bTask]],
 });
