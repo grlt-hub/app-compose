@@ -9,7 +9,7 @@ type Spot<T> = { [Spot$]?: T; [MetaOptional$]: boolean };
 
 type Lensable = { [MetaPath$]: string[]; [MetaID$]: Symbol };
 
-type Marker<T> = Spot<T> & Lensable & { [Kind$]: 'marker' };
+type Mark<T> = Spot<T> & Lensable & { [Kind$]: 'mark' };
 type Reference<T> = Spot<T> & Lensable & { [Kind$]: 'reference' };
 
 const amendSpot = <T extends Spot<any>>(
@@ -19,4 +19,4 @@ const amendSpot = <T extends Spot<any>>(
 ): T => ((spot[key] = value), spot);
 
 export { Kind$, MetaID$, MetaOptional$, MetaPath$, Spot$, amendSpot };
-export type { Marker, Reference, Spot, Lensable };
+export type { Lensable, Mark, Reference, Spot };

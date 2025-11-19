@@ -1,4 +1,4 @@
 export { createTask, type Task } from './task';
-export { createMarker } from './marker';
+export { createMark } from './mark';
 export { optional } from './modifier';
-export type { Marker, Spot } from './spot';
+export type { Mark, Spot } from './spot';

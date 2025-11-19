@@ -1,10 +1,10 @@
-import { createTask, createMarker, optional } from './index';
+import { createMark, createTask, optional } from './index';
 import { flatContext } from './resolve';
 
 type Logger = { log: (_: string) => void };
 
-const timeoutMarker = createMarker<number>({ id: 'timeout' });
-const loggerMarker = createMarker<Logger>({ id: 'logger' });
+const timeoutMark = createMark<number>({ id: 'timeout' });
+const loggerMark = createMark<Logger>({ id: 'logger' });
 
 const sleeperTask = createTask({
   id: 'sleeper',
@@ -12,7 +12,7 @@ const sleeperTask = createTask({
     fn: ({ timeout = 5000 }: { timeout?: number }) => {
       return { sleep: () => new Promise<void>((res) => setTimeout(res, timeout)) };
     },
-    context: { timeout: timeoutMarker },
+    context: { timeout: timeoutMark },
   },
 });
 
@@ -23,7 +23,7 @@ const loaderTask = createTask({
       sleep().then((): void => log?.('hello world!')),
     context: {
       sleep: sleeperTask.api.sleep,
-      log: optional(loggerMarker.log),
+      log: optional(loggerMark.log),
     },
   },
 });
@@ -32,9 +32,9 @@ const appTask = createTask({
   id: 'app',
   run: {
     fn: ({ logger }: { logger: Logger }) => logger.log('rendering app...'),
-    context: { logger: loggerMarker },
+    context: { logger: loggerMark },
   },
   enabled: (_) => Math.random() > 0.5,
 });
 
-console.log(flatContext(appTask.definition.context))
+console.log(flatContext(appTask.definition.context));
