@@ -1,4 +1,9 @@
-import { MetaPath$, type Lensable, type Spot } from './spot';
+import { type Spot } from './spot';
+
+const MetaID$ = Symbol('$meta.id');
+const MetaPath$ = Symbol('$meta.path');
+
+type Lensable = { [MetaPath$]: string[]; [MetaID$]: Symbol };
 
 const raise = () => {
   throw new Error();
@@ -17,4 +22,4 @@ const proxy = (ref: Lensable) => new Proxy(ref, { get, set });
 const lens = <T extends Spot<any> & Lensable>(spot: Omit<T, typeof MetaPath$>): T & Lensable =>
   proxy({ ...spot, [MetaPath$]: [] }) as T & Lensable;
 
-export { lens };
+export { lens, MetaID$, MetaPath$, type Lensable };

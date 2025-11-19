@@ -21,7 +21,9 @@
     "types": ["vitest/globals"],
     "verbatimModuleSyntax": true,
     "paths": {
-      "@createTask": ["./src/createTask"],
+      "@spot": ["./src/spot"],
+      "@task": ["./src/task"],
+      "@mark": ["./src/mark"],
       "@shared": ["./src/shared"]
     }
   },

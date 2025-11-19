@@ -1,9 +1,12 @@
-import { Kind$, MetaOptional$, type Spot } from './spot';
+import { type Spot } from "@spot";
+import { readSlot } from "../spot/read";
 
-function* flatten(shape: unknown): Generator<Spot<unknown>, void, void> {
+type AnySpot = Spot<unknown>
+
+function* flatten(shape: unknown): Generator<AnySpot, void, void> {
   if (typeof shape !== 'object' || shape === null) return;
   else if (Array.isArray(shape)) throw new Error('array is not supported');
-  else if (Kind$ in shape) yield shape as unknown as Spot<unknown>;
+  else if (readSlot.is(shape)) yield shape;
   else for (const key of Object.keys(shape)) yield* flatten(shape[key as keyof typeof shape]);
 }
 
@@ -12,7 +15,7 @@ const flatContext = (context: unknown) => {
   const optional = new Set<unknown>();
 
   for (const ref of flatten(context))
-    if (ref[MetaOptional$]) optional.add(ref);
+    if (readSlot.optional(ref)) optional.add(ref);
     else required.add(ref);
 
   return { required, optional: optional.difference(required) };

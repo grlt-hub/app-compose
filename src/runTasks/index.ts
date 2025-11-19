@@ -1,8 +1,6 @@
-import type { Task } from '@createTask';
+import type { Tuple } from "@shared";
 
-type Tuple<T = unknown> = [T, ...T[]];
-
-type Stage = Tuple<Task>;
+type Stage = Tuple<unknown>;
 
 type Params = {
   stages: Stage[];

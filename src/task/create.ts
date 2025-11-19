@@ -1,5 +1,5 @@
-import { lens } from './proxy';
-import { Kind$, MetaID$, MetaOptional$, type Reference, type Spot } from './spot';
+import { $$, lens, type Spot } from '@spot';
+import type { Reference } from './reference';
 
 type Eventual<T> = Promise<T> | T;
 type AnyRecord = Record<string, unknown>;
@@ -8,8 +8,10 @@ type AnyReference = Reference<unknown>;
 type Argument<T extends AnyFunction> = T extends (arg: infer Arg) => any ? Arg : void;
 
 type ValueToContext<Value extends Record<string, unknown>> = {
-  [Key in keyof Value]: // | Value[Key]
-  Spot<Value[Key]> | (Value[Key] extends Record<string, unknown> ? ValueToContext<Value[Key]> : never);
+  [Key in keyof Value]:
+    | Value[Key]
+    | Spot<Value[Key]>
+    | (Value[Key] extends Record<string, unknown> ? ValueToContext<Value[Key]> : never);
 };
 
 type ContextOfRunner<Runner extends AnyFunction> =
@@ -28,7 +30,7 @@ type Task<Fn extends AnyFunction, Context extends ContextOfRunner<Fn>> = {
 
 type TaskConfig<Fn extends AnyFunction, Context extends ContextOfRunner<Fn>> = {
   id?: string;
-  run: { fn: Fn } & (Context extends never ? { context?: never } : { context: Context });
+  run: { fn: Fn } & (Context extends void ? { context?: never } : { context: Context });
   enabled?: (ctx: Argument<Fn>) => Eventual<boolean>;
 };
 
@@ -38,10 +40,11 @@ const createTask = <Fn extends AnyFunction, Context extends ContextOfRunner<Fn>>
   type Self = Task<Fn, Context>;
 
   const id = config.id ? Symbol(`Task["${config.id}"]`) : Symbol();
+  const ref = { [$$.kind]: 'reference' as const, [$$.optional]: false, [$$.meta.id]: id };
 
   return {
     id,
-    api: lens<AnyReference>({ [Kind$]: 'reference', [MetaID$]: id, [MetaOptional$]: false }) as Self['api'],
+    api: lens<AnyReference>(ref) as Self['api'],
     definition: { run: config.run.fn, context: config.run.context as Context, enabled: config.enabled },
   };
 };
