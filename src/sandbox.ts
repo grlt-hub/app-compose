@@ -3,11 +3,11 @@ import { createMark } from '@mark';
 import { optional } from '@spot';
 import { createTask } from '@task';
 import { fill, up } from './app';
-import { flatContext } from './app/context';
 
 type Logger = { log: (_: string) => void };
 
 const loggerMark = createMark<Logger>({ id: 'logger' });
+const timeoutMark = createMark<number>({ id: 'timeout' });
 
 const sleeperTask = createTask({
   id: 'sleeper',
@@ -15,7 +15,7 @@ const sleeperTask = createTask({
     fn: ({ timeout = 5000 }: { timeout?: number }) => {
       return { sleep: () => new Promise<void>((res) => setTimeout(res, timeout)) };
     },
-    context: { timeout: literal(5_000) },
+    context: { timeout: timeoutMark },
   },
 });
 
@@ -40,8 +40,11 @@ const appTask = createTask({
   enabled: (_) => Math.random() > 0.5,
 });
 
-console.log(flatContext(appTask.definition.context));
-
 up({
-  stages: [[fill(loggerMark, { log: console.log })], [sleeperTask], [loaderTask]],
+  // prettier-ignore
+  stages: [
+    [fill(loggerMark, { log: console.log }), fill(timeoutMark, 1_000)],
+    [sleeperTask], 
+    [loaderTask, appTask]
+  ],
 });

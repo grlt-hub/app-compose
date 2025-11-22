@@ -1,3 +1,3 @@
+export { isSpot } from './is';
 export { optional } from './modifier';
-export { readSpot } from './read';
-export { type Spot, type SpotKind, Kind$, Optional$ } from './spot';
+export { Kind$, Optional$, type Spot, type SpotKind } from './spot';

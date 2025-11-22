@@ -2,6 +2,8 @@ import { lens, LensID$ } from '@lens';
 import { Kind$, Optional$, type Spot } from '@spot';
 import type { Reference } from './reference';
 
+const Task$ = Symbol('$task');
+
 type Eventual<T> = Promise<T> | T;
 type AnyRecord = Record<string, unknown>;
 type AnyFunction = (arg: any) => any;
@@ -26,6 +28,7 @@ type Task<Fn extends AnyFunction, Context extends ContextOfRunner<Fn>> = {
   id: symbol;
   api: ReferenceProvider<Awaited<ReturnType<Fn>>>;
   definition: { run: Fn; context: Context; enabled?: (ctx: Argument<Fn>) => Eventual<boolean> };
+  [Task$]: true;
 };
 
 type TaskConfig<Fn extends AnyFunction, Context extends ContextOfRunner<Fn>> = {
@@ -46,7 +49,10 @@ const createTask = <Fn extends AnyFunction, Context extends ContextOfRunner<Fn>>
     id,
     api: lens<AnyReference>(ref) as Self['api'],
     definition: { run: config.run.fn, context: config.run.context as Context, enabled: config.enabled },
+    // todo: check how to distinguish task from non-task
+    // todo: make non-enumerable and non-configurable?
+    [Task$]: true,
   };
 };
 
-export { createTask, type Task };
+export { createTask, Task$, type Task };

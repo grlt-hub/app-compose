@@ -1,2 +1,2 @@
-export { createTask, type Task } from './create';
+export { Task$, createTask, type Task } from './create';
 export type { Reference } from './reference';

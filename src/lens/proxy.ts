@@ -6,6 +6,7 @@ const LensPath$ = Symbol('$lens.path');
 type Lensable = { [LensPath$]: string[]; [LensID$]: symbol };
 
 const raise = () => {
+  // todo: meaningful message
   throw new Error();
 };
 

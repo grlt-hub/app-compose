@@ -4,7 +4,7 @@ const Kind$ = Symbol('$kind');
 const Optional$ = Symbol('$optional');
 
 type Spot<T> = { [Spot$]?: T; [Optional$]: boolean };
-type SpotKind<T> = { [Kind$]: T }
+type SpotKind<T> = { [Kind$]: T };
 
 const amendSpot = <T extends Spot<any>>(
   spot: T,
