@@ -24,6 +24,8 @@
       "@spot": ["./src/spot"],
       "@task": ["./src/task"],
       "@mark": ["./src/mark"],
+      "@lens": ["./src/lens"],
+      "@literal": ["./src/literal"],
       "@shared": ["./src/shared"]
     }
   },

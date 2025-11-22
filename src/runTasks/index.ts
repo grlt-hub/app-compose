@@ -1,6 +1,6 @@
-import type { Tuple } from "@shared";
+import type { NonEmptyArray } from "@shared";
 
-type Stage = Tuple<unknown>;
+type Stage = NonEmptyArray<unknown>;
 
 type Params = {
   stages: Stage[];

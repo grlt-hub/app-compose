@@ -1,4 +1,5 @@
-import { $$, lens, type Lensable, type Spot, type SpotKind } from '@spot';
+import { lens, LensID$, type Lensable } from '@lens';
+import { Kind$, Optional$, type Spot, type SpotKind } from '@spot';
 
 type Mark<T> = Spot<T> & SpotKind<'mark'> & Lensable;
 
@@ -10,7 +11,7 @@ type MarkProvider<T> =
 
 const createMark = <T = never>(config: MarkConfig = {}): MarkProvider<T> => {
   const id = config.id ? Symbol(`Mark["${config.id}"]`) : Symbol();
-  const ref = { [$$.kind]: 'mark' as const, [$$.optional]: false, [$$.meta.id]: id };
+  const ref = { [Kind$]: 'mark' as const, [Optional$]: false, [LensID$]: id };
 
   return lens<AnyMark>(ref) as MarkProvider<T>;
 };

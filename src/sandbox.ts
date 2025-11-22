@@ -1,13 +1,12 @@
-import { createMark } from "@mark";
-import { optional } from "@spot";
-import { createTask } from "@task";
-import { flatContext } from "./app/context";
+import { literal } from '@literal';
+import { createMark } from '@mark';
+import { optional } from '@spot';
+import { createTask } from '@task';
+import { fill, up } from './app';
+import { flatContext } from './app/context';
 
 type Logger = { log: (_: string) => void };
 
-const literal = (arg: any): any => null
-
-const timeoutMark = createMark<number>({ id: 'timeout' });
 const loggerMark = createMark<Logger>({ id: 'logger' });
 
 const sleeperTask = createTask({
@@ -16,7 +15,7 @@ const sleeperTask = createTask({
     fn: ({ timeout = 5000 }: { timeout?: number }) => {
       return { sleep: () => new Promise<void>((res) => setTimeout(res, timeout)) };
     },
-    context: { timeout: 10_000 },
+    context: { timeout: literal(5_000) },
   },
 });
 
@@ -42,3 +41,7 @@ const appTask = createTask({
 });
 
 console.log(flatContext(appTask.definition.context));
+
+up({
+  stages: [[fill(loggerMark, { log: console.log })], [sleeperTask], [loaderTask]],
+});
