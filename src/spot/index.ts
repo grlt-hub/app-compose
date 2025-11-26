@@ -1,0 +1,6 @@
+export { type SpotContext, type SpotContextRecord } from "./context"
+export { RefID$, RefPath$ } from "./lens"
+export { Literal$, literal, type Literal } from "./literal"
+export { optional } from "./modifier"
+export { reference, type Reference, type ReferenceProvider } from "./reference"
+export { Kind$, Optional$, isSpot, type AnySpot, type Spot } from "./spot"
