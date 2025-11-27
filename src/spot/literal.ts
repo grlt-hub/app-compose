@@ -4,6 +4,6 @@ const Literal$ = Symbol("$literal")
 
 type Literal<T> = Spot<T> & SpotKind<"literal"> & { [Literal$]: T }
 
-const literal = <T>(value: T): Literal<T> => ({ [Kind$]: "literal", [Literal$]: value })
+const literal = <const T>(value: T): Literal<T> => ({ [Kind$]: "literal", [Literal$]: value })
 
 export { literal, Literal$, type Literal }

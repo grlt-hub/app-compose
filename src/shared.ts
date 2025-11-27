@@ -5,7 +5,7 @@ type Argument<T extends AnyFunction> = T extends (arg: infer Arg) => any ? Arg :
 
 type NonEmptyArray<T = unknown> = [T, ...T[]]
 
-const path = (value: any, path: string[]): unknown => path.reduce((curr, key) => curr?.[key], value)
+const path = (value: any, path: PropertyKey[]): unknown => path.reduce((curr, key) => curr?.[key], value)
 
 const isObject = (x: unknown): x is object => Object.prototype.toString.call(x) === "[object Object]"
 

@@ -1,8 +1,8 @@
 import { isObject, path, type AnyRecord } from "@shared"
-import { Kind$, Literal$, Optional$, RefID$, RefPath$ } from "@spot"
-import type { Repository, SpotImpl } from "./types"
+import { Kind$, Literal$, RefID$, RefPath$ } from "@spot"
+import type { Registry, SpotImpl } from "./types"
 
-const createCompiler = (repo: Repository) => {
+const createCompiler = (repo: Registry) => {
   const read = (spot: SpotImpl): unknown => {
     switch (spot[Kind$]) {
       case "literal":

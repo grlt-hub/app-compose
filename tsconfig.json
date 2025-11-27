@@ -21,11 +21,11 @@
     "lib": ["ESNext"],
 
     "paths": {
-      "@up": ["./src/up"],
+      "@compose": ["./src/compose"],
       "@shared": ["./src/shared"],
       "@spot": ["./src/spot"],
-      "@task": ["./src/task"],
-      "@tag": ["./src/tag"]
+      "@tag": ["./src/tag"],
+      "@task": ["./src/task"]
     }
   },
   "include": ["src"]

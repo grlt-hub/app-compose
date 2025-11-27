@@ -1,5 +1,5 @@
 import type { AnyRecord } from "@shared"
-import type { AnySpot } from "../spot"
+import type { AnySpot } from "./spot"
 
 const RefID$ = Symbol("$lens.id")
 const RefPath$ = Symbol("$lens.path")

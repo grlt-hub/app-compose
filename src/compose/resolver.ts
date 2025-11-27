@@ -1,7 +1,6 @@
 import { isObject } from "@shared"
 import { Kind$, Optional$, RefID$ } from "@spot"
-import { type TaskInternal } from "@task"
-import type { Repository, SpotImpl } from "./types"
+import type { Registry, SpotImpl } from "./types"
 
 type Dependency = { required: Set<symbol>; optional: Set<symbol> }
 type DependencyMap = Map<unknown, Dependency>
@@ -28,7 +27,7 @@ const resolve = (context: unknown): Dependency => {
   return { required, optional: optional.difference(required) }
 }
 
-const createResolver = (repo: Repository) => {
+const createResolver = (repo: Registry) => {
   const deps: DependencyMap = new Map()
 
   const dependenciesOf = (context: unknown): Dependency => {

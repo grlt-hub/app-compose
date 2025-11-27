@@ -27,7 +27,7 @@ type TaskConfig<Context, Api> = {
 const createTask = <Context = void, Api = unknown>(config: TaskConfig<Context, Api>): Task<Api> => {
   const id = {
     value: config.id ? Symbol(`Task[${config.id}]`) : Symbol(),
-    status: config.id ? Symbol(`Task:Status[${config.id}]`) : Symbol(),
+    status: config.id ? Symbol(`Task[${config.id}]::status`) : Symbol(),
   }
 
   const task = reference<Api>(id.value) as Task<Api>

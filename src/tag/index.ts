@@ -1,2 +1,2 @@
-export { BindTo$, BindValue$, bind, type Binding } from "./bind"
+export { Binding$, bind, type Binding, type BindingInternal } from "./bind"
 export { createTag, type Tag } from "./create"

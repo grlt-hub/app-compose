@@ -1,4 +1,4 @@
-import { bind, createTag, createTask, literal, optional, status, TaskStatus, up } from "./dist"
+import { bind, compose, createTag, createTask, literal, optional, status, TaskStatus } from "./dist"
 
 type Logger = { log: (_: string) => void }
 
@@ -44,18 +44,18 @@ const appTask = createTask({
 const secondTask = createTask({
   id: "second",
   run: {
-    fn: (_: { other: undefined; status: TaskStatus }) => console.warn("second task", _),
-    context: { other: otherTask, status: status(appTask) },
+    fn: ({ status }: { other: undefined; status: TaskStatus["name"][] }) =>
+      console.warn(`finished with status ${status}`),
+    context: { other: otherTask, status: [literal("fail"), status(appTask).name] },
   },
 })
 
-const app = await up({
-  // prettier-ignore
+const app = await compose({
   stages: [
     [bind(timeoutMark, literal(1_000)), bind(loggerMark, { log: literal(console.log) })],
     [sleeperTask, otherTask],
     [loaderTask, appTask],
-    [secondTask]
+    [secondTask],
   ],
 })
 

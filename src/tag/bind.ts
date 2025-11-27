@@ -1,12 +1,12 @@
 import { RefID$, type Reference, type Spot, type SpotContext } from "@spot"
 import type { Tag } from "./create"
 
-const BindTo$ = Symbol("$bind.to")
-const BindValue$ = Symbol("$bind.value")
+const Binding$ = Symbol("$binding")
 
-type Binding = { [BindTo$]: symbol; [BindValue$]: unknown }
+type BindingInternal = { id: symbol; value: unknown }
+type Binding = { [Binding$]: BindingInternal }
 
 const bind = <T>(tag: Tag & Reference<T>, value: SpotContext<T>): Binding =>
-  ({ [BindTo$]: tag[RefID$], [BindValue$]: value }) satisfies Binding
+  ({ [Binding$]: { id: tag[RefID$], value } }) satisfies Binding
 
-export { bind, BindTo$, BindValue$, type Binding }
+export { bind, Binding$, type Binding, type BindingInternal }
