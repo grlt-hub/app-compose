@@ -40,7 +40,7 @@ const createResolver = (repo: Registry) => {
       .required.values()
       .every((id) => repo.has(id))
 
-  return { satisfies }
+  return { dependenciesOf, satisfies }
 }
 
 type Resolver = ReturnType<typeof createResolver>

@@ -1,4 +1,4 @@
-import { bind, compose, createTag, createTask, literal, optional, status, TaskStatus } from "./dist"
+import { bind, compose, createTag, createTask, literal, optional, status, TaskStatus } from "."
 
 type Logger = { log: (_: string) => void }
 
@@ -50,13 +50,11 @@ const secondTask = createTask({
   },
 })
 
-const app = await compose({
-  stages: [
-    [bind(timeoutMark, literal(1_000)), bind(loggerMark, { log: literal(console.log) })],
-    [sleeperTask, otherTask],
-    [loaderTask, appTask],
-    [secondTask],
-  ],
-})
+const app = await compose()
+  .stage([bind(timeoutMark, literal(1_000)), bind(loggerMark, { log: literal(console.log) })])
+  .stage([sleeperTask, otherTask])
+  .stage([loaderTask, appTask])
+  .stage([secondTask])
+  .run()
 
 app.get(sleeperTask)
