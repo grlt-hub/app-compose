@@ -1,31 +1,38 @@
 {
   "name": "composer",
-  "version": "0.0.0",
-  "type": "module",
+  "version": "0.0.2",
   "private": true,
+  "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
-    }
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./package.json": "./package.json"
   },
   "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "rslib build",
-    "dev": "rslib build --watch",
+    "build": "tsdown",
+    "dev": "tsdown --watch",
     "test": "vitest run"
   },
   "devDependencies": {
-    "@rslib/core": "0.18.1",
-    "@types/node": "24.10.1",
     "prettier-plugin-organize-imports": "4.3.0",
+    "tsdown": "0.16.6",
     "tsx": "4.20.6",
     "typescript": "5.9.3",
     "vitest": "4.0.13"
-  }
+  },
+  "packageManager": "pnpm@10.24.0+sha512.01ff8ae71b4419903b65c60fb2dc9d34cf8bb6e06d03bde112ef38f7a34d6904c424ba66bea5cdcf12890230bf39f9580473140ed9c946fef328b6e5238a345a"
 }

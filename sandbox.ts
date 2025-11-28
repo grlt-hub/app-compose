@@ -1,4 +1,4 @@
-import { bind, compose, createTag, createTask, literal, optional, status, TaskStatus } from "."
+import { bind, compose, createTag, createTask, literal, optional, status, TaskStatus } from "./dist"
 
 type Logger = { log: (_: string) => void }
 

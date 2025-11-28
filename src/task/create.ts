@@ -18,7 +18,7 @@ type AnyTask = Task<unknown>
 
 type TaskConfig<Context, Api> = {
   id?: string
-  run: { fn: (ctx: Context) => Api } & (Context extends void
+  run: { fn: (ctx: Context) => Eventual<Api> } & (Context extends void
     ? { context?: never }
     : { context: ContextOfRunner<Context> })
   enabled?: (ctx: Context) => Eventual<boolean>
