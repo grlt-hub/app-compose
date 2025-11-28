@@ -35,7 +35,7 @@ const loaderTask = createTask({
 const appTask = createTask({
   id: "app",
   run: {
-    fn: ({ logger }: { logger: Logger }) => (logger.log("rendering app..."), Promise.resolve(new Error("heher"))),
+    fn: ({ logger }: { logger: Logger }) => (logger.log("rendering app..."), Promise.reject(new Error("heher"))),
     context: { logger: loggerMark },
   },
   enabled: () => true,

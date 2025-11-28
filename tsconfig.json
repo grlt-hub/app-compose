@@ -18,7 +18,10 @@
     "module": "preserve",
     "noEmit": true,
 
-    "lib": ["ESNext"],
+    "declaration": true,
+    "declarationMap": true,
+
+    "lib": ["ES2022"],
 
     "paths": {
       "@compose": ["./src/compose"],

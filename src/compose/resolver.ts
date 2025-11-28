@@ -1,4 +1,4 @@
-import { isObject } from "@shared"
+import { difference, isObject } from "@shared"
 import { Kind$, Optional$, RefID$ } from "@spot"
 import type { Registry, SpotImpl } from "./types"
 
@@ -24,7 +24,7 @@ const resolve = (context: unknown): Dependency => {
         else required.add(spot[RefID$])
     }
 
-  return { required, optional: optional.difference(required) }
+  return { required, optional: difference(optional, required) }
 }
 
 const createResolver = (repo: Registry) => {
@@ -35,10 +35,10 @@ const createResolver = (repo: Registry) => {
     return deps.get(context)!
   }
 
-  const satisfies = (context: unknown) =>
-    dependenciesOf(context)
-      .required.values()
-      .every((id) => repo.has(id))
+  const satisfies = (context: unknown) => {
+    const deps = Array.from(dependenciesOf(context).required)
+    return deps.every((id) => repo.has(id))
+  }
 
   return { dependenciesOf, satisfies }
 }

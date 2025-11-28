@@ -31,18 +31,20 @@ const run = async (config: ComposeConfig, stages: Stage[]): Promise<Container> =
 
   const execute = async (step: Step): Promise<void> => {
     switch (true) {
-      case Task$ in step:
-        // prettier-ignore
+      case Task$ in step: {
+        const task = step[Task$]
+
         return run
-          .task(step[Task$])
-          .then(tap(logger.task))
-          .then(dispatch.task(step[Task$]))
-      case Binding$ in step:
-        // prettier-ignore
-        return run
-          .binding(step[Binding$])
-          .then(tap(logger.task))
-          .then(dispatch.binding(step[Binding$]))
+          .task(task)
+          .then(tap(logger.task(task)))
+          .then(dispatch.task(task))
+      }
+
+      case Binding$ in step: {
+        const binding = step[Binding$]
+
+        return run.binding(binding).then(dispatch.binding(binding))
+      }
       default:
         throw new Error("unreachable")
     }

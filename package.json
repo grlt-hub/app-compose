@@ -1,6 +1,6 @@
 {
   "name": "composer",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "private": true,
   "type": "module",
   "exports": {
@@ -28,6 +28,7 @@
     "test": "vitest run"
   },
   "devDependencies": {
+    "@types/node": "24.10.1",
     "prettier-plugin-organize-imports": "4.3.0",
     "tsdown": "0.16.6",
     "tsx": "4.20.6",

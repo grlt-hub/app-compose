@@ -1,5 +1,3 @@
-import { isObject } from "@shared"
-
 declare const Spot$: unique symbol
 
 const Kind$ = Symbol("$kind")

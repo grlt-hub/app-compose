@@ -1,5 +1,4 @@
-import { LIBRARY_NAME } from "@shared"
-import { RefID$ } from "@spot"
+import { difference, LIBRARY_NAME, union, UNKNOWN_NAME } from "@shared"
 import { Binding$ } from "@tag"
 import { Task$ } from "@task"
 import type { Resolver } from "./resolver"
@@ -17,10 +16,8 @@ const notify = {
   },
 
   notSatisfied: ({ type, name, index, missing: set }: NotifyContext & { missing: Set<symbol> }) => {
-    const list = set
-      .values()
-      .map((id) => id.description ?? "<unknown>")
-      .toArray()
+    const list = Array.from(set)
+      .map((id) => id.description ?? UNKNOWN_NAME)
       .join(", ")
 
     const message = `${LIBRARY_NAME} Unsatisfied dependencies found for ${NameMap[type]} with ID: ${name} on stage #${index + 1}: missing ${list}.`
@@ -34,13 +31,13 @@ const createGuard = (resolver: Resolver) => {
       case Task$ in step:
         return {
           type: "task" as StepType,
-          name: step[Task$].id.value.description ?? "<unknown>",
+          name: step[Task$].id.value.description ?? UNKNOWN_NAME,
           writes: [step[Task$].id.value, step[Task$].id.status],
         }
       case Binding$ in step:
         return {
           type: "binding" as StepType,
-          name: step[Binding$].id.description ?? "<unknown>",
+          name: step[Binding$].id.description ?? UNKNOWN_NAME,
           writes: [step[Binding$].id],
         }
       default:
@@ -74,13 +71,13 @@ const createGuard = (resolver: Resolver) => {
         const hasSeen = writes.some((id) => registry.has(id) || willCompute.has(id))
         if (hasSeen) notify.duplicate({ type, name, index })
 
-        const missing = dependencies.required.difference(registry)
+        const missing = difference(dependencies.required, registry)
         if (missing.size > 0) notify.notSatisfied({ type, name, index, missing })
 
         writes.forEach((id) => willCompute.add(id))
       }
 
-      registry = registry.union(willCompute)
+      registry = union(registry, willCompute)
     }
   }
 }

@@ -1,4 +1,4 @@
-import { RefID$, type Reference, type Spot, type SpotContext } from "@spot"
+import { RefID$, type Reference, type SpotContext } from "@spot"
 import type { Tag } from "./create"
 
 const Binding$ = Symbol("$binding")
