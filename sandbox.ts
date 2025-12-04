@@ -2,8 +2,8 @@ import { bind, compose, createTag, createTask, literal, optional, status, TaskSt
 
 type Logger = { log: (_: string) => void }
 
-const loggerMark = createTag<Logger>({ id: "logger" })
-const timeoutMark = createTag<number>({ id: "timeout" })
+const loggerTag = createTag<Logger>({ id: "logger" })
+const timeoutTag = createTag<number>({ id: "timeout" })
 
 const sleeperTask = createTask({
   id: "sleeper",
@@ -11,7 +11,7 @@ const sleeperTask = createTask({
     fn: ({ timeout = 5000, set }: { timeout?: number; set: typeof setTimeout }) => {
       return { sleep: () => new Promise<void>((res) => set(res, timeout)) }
     },
-    context: { timeout: timeoutMark, set: literal(setTimeout) },
+    context: { timeout: timeoutTag, set: literal(setTimeout) },
   },
 })
 
@@ -27,7 +27,7 @@ const loaderTask = createTask({
       sleep().then<void>(() => log?.("hello world!")),
     context: {
       sleep: sleeperTask.sleep,
-      log: optional(loggerMark.log),
+      log: optional(loggerTag.log),
     },
   },
 })
@@ -35,8 +35,8 @@ const loaderTask = createTask({
 const appTask = createTask({
   id: "app",
   run: {
-    fn: ({ logger }: { logger: Logger }) => (logger.log("rendering app..."), Promise.reject(new Error("heher"))),
-    context: { logger: loggerMark },
+    fn: ({ logger }: { logger: Logger }) => (logger.log("rendering app..."), Promise.reject(new Error("hehe"))),
+    context: { logger: loggerTag },
   },
   enabled: () => true,
 })
@@ -51,7 +51,7 @@ const secondTask = createTask({
 })
 
 const app = await compose()
-  .stage([bind(timeoutMark, literal(1_000)), bind(loggerMark, { log: literal(console.log) })])
+  .stage([bind(timeoutTag, literal(1_000)), bind(loggerTag, { log: literal(console.log) })])
   .stage([sleeperTask, otherTask])
   .stage([loaderTask, appTask])
   .stage([secondTask])

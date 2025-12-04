@@ -1,16 +1,16 @@
-import { difference, isObject } from "@shared"
+import { difference, isObject, LIBRARY_NAME } from "@shared"
 import { Kind$, Optional$, RefID$ } from "@spot"
 import type { Registry, SpotImpl } from "./types"
 
 type Dependency = { required: Set<symbol>; optional: Set<symbol> }
 type DependencyMap = Map<unknown, Dependency>
 
-function* flatten(shape: unknown): Generator<SpotImpl, void, void> {
-  if (isObject(shape))
-    if (Kind$ in shape) yield shape as SpotImpl
-    else for (const key of Object.keys(shape)) yield* flatten(shape[key as keyof typeof shape])
-  else if (Array.isArray(shape)) for (const item of shape) yield* flatten(item)
-  else throw new Error("unknown value" /* todo: better messaging */)
+function* flatten(thing: unknown): Generator<SpotImpl, void, void> {
+  if (isObject(thing))
+    if (Kind$ in thing) yield thing as SpotImpl
+    else for (const key of Object.keys(thing)) yield* flatten(thing[key as keyof typeof thing])
+  else if (Array.isArray(thing)) for (const item of thing) yield* flatten(item)
+  else /* unknown literal */ throw new Error(`${LIBRARY_NAME} Literal value found in context: ${String(thing)}.`)
 }
 
 const resolve = (context: unknown): Dependency => {

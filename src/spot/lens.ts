@@ -1,4 +1,4 @@
-import type { AnyRecord } from "@shared"
+import { LIBRARY_NAME, type AnyRecord } from "@shared"
 import type { AnySpot } from "./spot"
 
 const RefID$ = Symbol("$lens.id")
@@ -9,8 +9,7 @@ const Self$ = Symbol(/* internal */)
 type Lensable = { [RefID$]: symbol; [RefPath$]: string[] }
 
 const raise = () => {
-  // todo: meaningful message
-  throw new Error()
+  throw new Error(`${LIBRARY_NAME} Modifying a Reference is not allowed.`)
 }
 
 const get: ProxyHandler<Lensable>["get"] = (target, property, recv) =>

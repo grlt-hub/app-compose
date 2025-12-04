@@ -9,7 +9,7 @@ type ReferenceProvider<T> = T extends AnyRecord
   : Reference<T>
 
 const reference = <T>(id: symbol): ReferenceProvider<T> => {
-  const spot = { [Kind$]: "reference" as const, [Optional$]: false } as /* todo */ Spot<T>
+  const spot: Omit<Reference<T>, keyof Lensable> = { [Kind$]: "reference" as const, [Optional$]: false }
 
   return lens(spot, id) as ReferenceProvider<T>
 }

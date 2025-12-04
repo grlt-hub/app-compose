@@ -1,7 +1,7 @@
 {
-  "name": "composer",
-  "version": "0.0.3",
-  "private": true,
+  "name": "@grlt-hub/app-compose",
+  "version": "3.0.0-alpha.0",
+  "license": "MIT",
   "type": "module",
   "exports": {
     ".": {
@@ -25,13 +25,15 @@
   "scripts": {
     "build": "tsdown",
     "dev": "tsdown --watch",
+    "prepack": "pnpm build",
     "test": "vitest run"
   },
   "devDependencies": {
+    "@changesets/cli": "2.29.8",
     "@types/node": "24.10.1",
     "prettier-plugin-organize-imports": "4.3.0",
     "tsdown": "0.16.6",
-    "tsx": "4.20.6",
+    "tsx": "4.21.0",
     "typescript": "5.9.3",
     "vitest": "4.0.13"
   },

@@ -41,7 +41,7 @@ const createGuard = (resolver: Resolver) => {
           writes: [step[Binding$].id],
         }
       default:
-        throw new Error("unreachable")
+        throw new Error(`${LIBRARY_NAME} Unknown step type found: ${String(step)}.`)
     }
   }
 
@@ -52,7 +52,7 @@ const createGuard = (resolver: Resolver) => {
       case Binding$ in step:
         return step[Binding$].value
       default:
-        throw new Error("unreachable")
+        throw new Error(`${LIBRARY_NAME} Unknown step type found: ${String(step)}.`)
     }
   }
 

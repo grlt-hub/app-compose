@@ -1,4 +1,4 @@
-import { tap } from "@shared"
+import { LIBRARY_NAME, tap } from "@shared"
 import { RefID$ } from "@spot"
 import { Binding$ } from "@tag"
 import { Task$, type Task } from "@task"
@@ -13,7 +13,7 @@ import type { Registry, Stage, Step } from "./types"
 type ComposeConfig = { log?: ContainerLogger }
 
 type Container = { get: <T>(task: Task<T>) => T | undefined }
-type Composer = { stage: (stage: Stage) => Composer; run: () => Promise<Container> }
+type Composer = { stage: (stage: Stage) => Composer; run: () => Promise<Container>; guard: () => never }
 
 const run = async (config: ComposeConfig, stages: Stage[]): Promise<Container> => {
   const registry: Registry = new Map()
@@ -46,7 +46,7 @@ const run = async (config: ComposeConfig, stages: Stage[]): Promise<Container> =
         return run.binding(binding).then(dispatch.binding(binding))
       }
       default:
-        throw new Error("unreachable")
+        throw new Error(`${LIBRARY_NAME} Unknown step type found: ${String(step)}.`)
     }
   }
 
@@ -67,6 +67,8 @@ const compose = (config: ComposeConfig = {}): Composer => {
   const composer: Composer = {
     stage: (stage: Stage) => (stages.push(stage), composer),
     run: () => run(config, stages),
+
+    guard: (): never => null as never,
   }
 
   return composer

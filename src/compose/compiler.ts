@@ -1,4 +1,4 @@
-import { isObject, path, type AnyRecord } from "@shared"
+import { isObject, LIBRARY_NAME, path, type AnyRecord } from "@shared"
 import { Kind$, Literal$, RefID$, RefPath$ } from "@spot"
 import type { Registry, SpotImpl } from "./types"
 
@@ -27,9 +27,9 @@ const createCompiler = (repo: Registry) => {
   const anything = (thing: unknown): unknown => {
     if (isObject(thing))
       if (Kind$ in thing) return read(thing as SpotImpl)
-      else return record(thing /* todo: check safety? */ as AnyRecord)
+      else return record(thing as AnyRecord)
     else if (Array.isArray(thing)) return thing.map(anything)
-    else /* unknown literal */ throw new Error("unknown value" /* todo: better messaging */)
+    else /* unknown literal */ throw new Error(`${LIBRARY_NAME} Literal value found in context: ${String(thing)}.`)
   }
 
   return { build: anything }
