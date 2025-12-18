@@ -24,6 +24,8 @@ type TaskConfig<Context, Api> = {
   enabled?: (ctx: Context) => Eventual<boolean>
 }
 
+type TaskResult<T> = T extends Task<infer Api> ? Api : never
+
 const createTask = <Context = void, Api = unknown>(config: TaskConfig<Context, Api>): Task<Api> => {
   const id = {
     value: config.id ? Symbol(`Task[${config.id}]`) : Symbol(),
@@ -38,4 +40,4 @@ const createTask = <Context = void, Api = unknown>(config: TaskConfig<Context, A
   return task
 }
 
-export { createTask, Task$, type AnyTask, type Task, type TaskInternal }
+export { createTask, Task$, type AnyTask, type Task, type TaskInternal, type TaskResult }

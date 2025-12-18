@@ -4,6 +4,7 @@ type Eventual<T> = Promise<T> | T
 type Argument<T extends AnyFunction> = T extends (arg: infer Arg) => any ? Arg : void
 
 type NonEmptyArray<T = unknown> = [T, ...T[]]
+type ReadonlyNonEmptyArray<T> = readonly [T, ...(readonly T[])]
 
 const LIBRARY_NAME = "[app-compose]"
 const UNKNOWN_NAME = "<unknown>"
@@ -43,4 +44,5 @@ export {
   type Argument,
   type Eventual,
   type NonEmptyArray,
+  type ReadonlyNonEmptyArray,
 }

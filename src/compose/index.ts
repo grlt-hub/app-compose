@@ -13,7 +13,7 @@ import type { Registry, Stage, Step } from "./types"
 type ComposeConfig = { log?: ContainerLogger }
 
 type Container = { get: <T>(task: Task<T>) => T | undefined }
-type Composer = { stage: (stage: Stage) => Composer; run: () => Promise<Container>; guard: () => never }
+type Composer = { stage: (...stage: Stage[]) => Composer; run: () => Promise<Container>; guard: () => never }
 
 const run = async (config: ComposeConfig, stages: Stage[]): Promise<Container> => {
   const registry: Registry = new Map()
@@ -65,7 +65,7 @@ const compose = (config: ComposeConfig = {}): Composer => {
   const stages: Stage[] = []
 
   const composer: Composer = {
-    stage: (stage: Stage) => (stages.push(stage), composer),
+    stage: (...input: Stage[]) => (stages.push(...input), composer),
     run: () => run(config, stages),
 
     guard: (): never => null as never,
