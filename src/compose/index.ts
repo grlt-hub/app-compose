@@ -65,7 +65,7 @@ const compose = (config: ComposeConfig = {}): Composer => {
   const stages: Stage[] = []
 
   const composer: Composer = {
-    stage: (...input: Stage[]) => (stages.push(...input), composer),
+    stage: (...list: Stage[]) => (stages.push(...list), composer),
     run: () => run(config, stages),
 
     guard: (): never => null as never,

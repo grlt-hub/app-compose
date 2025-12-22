@@ -50,11 +50,14 @@ const secondTask = createTask({
   },
 })
 
+const floxTag = createTag<{ v: ("a" | "b")[] }>({ id: "floxTag" })
+
 const app = await compose()
   .stage([bind(timeoutTag, literal(1_000)), bind(loggerTag, { log: literal(console.log) })])
   .stage([sleeperTask, otherTask])
   .stage([loaderTask, appTask])
   .stage([secondTask])
+  .stage([bind(floxTag, { v: literal(["a", "b"]) })])
   .run()
 
 app.get(sleeperTask)
