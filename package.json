@@ -1,6 +1,22 @@
 {
   "name": "@grlt-hub/app-compose",
   "version": "3.0.0-alpha.3",
+  "keywords": [
+    "grlt",
+    "grlt-hub",
+    "app-compose",
+    "dependency-injection",
+    "di",
+    "inversion-of-control",
+    "ioc",
+    "modular",
+    "typescript"
+  ],
+  "homepage": "https://grlt-hub.github.io/app-compose/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/grlt-hub/app-compose.git"
+  },
   "license": "MIT",
   "contributors": [
     {
