@@ -1,7 +1,17 @@
 {
   "name": "@grlt-hub/app-compose",
-  "version": "3.0.0-alpha.2",
+  "version": "3.0.0-alpha.3",
   "license": "MIT",
+  "contributors": [
+    {
+      "name": "Mikhail Kireev",
+      "url": "https://github.com/kireevmp"
+    },
+    {
+      "name": "Viktor Pasynok",
+      "url": "https://github.com/binjospookie"
+    }
+  ],
   "type": "module",
   "exports": {
     ".": {

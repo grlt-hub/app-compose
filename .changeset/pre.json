@@ -4,5 +4,7 @@
   "initialVersions": {
     "@grlt-hub/app-compose": "2.0.2"
   },
-  "changesets": []
+  "changesets": [
+    "pink-melons-pay"
+  ]
 }
