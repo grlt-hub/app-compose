@@ -1,7 +1,7 @@
 import { bind, createTag } from "@tag"
 import { createTask } from "@task"
 import { literal } from "@spot"
-import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest"
+import { afterAll, beforeEach, describe, expect, it, vi } from "vitest"
 import { createGuard } from "../guard"
 import { createResolver } from "../resolver"
 import type { Registry, Stage } from "../types"
