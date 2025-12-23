@@ -1,7 +1,5 @@
 type AnyRecord = Record<string, unknown>
-type AnyFunction = (arg: any) => any
 type Eventual<T> = Promise<T> | T
-type Argument<T extends AnyFunction> = T extends (arg: infer Arg) => any ? Arg : void
 
 type NonEmptyArray<T = unknown> = [T, ...T[]]
 type ReadonlyNonEmptyArray<T> = readonly [T, ...(readonly T[])]
@@ -39,9 +37,7 @@ export {
   path,
   tap,
   union,
-  type AnyFunction,
   type AnyRecord,
-  type Argument,
   type Eventual,
   type NonEmptyArray,
   type ReadonlyNonEmptyArray,
