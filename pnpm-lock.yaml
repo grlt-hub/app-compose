@@ -21,7 +21,7 @@ importers:
         specifier: 5.75.2
         version: 5.75.2(@types/node@25.0.3)(typescript@5.9.3)
       oxlint:
-        specifier: ^1.34.0
+        specifier: 1.34.0
         version: 1.34.0
       tsdown:
         specifier: 0.18.1
