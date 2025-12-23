@@ -53,7 +53,7 @@
     "dev": "tsdown --watch",
     "prepack": "pnpm build",
     "test": "vitest run",
-    "lint": "knip && oxlint"
+    "lint": "knip && oxlint ./src"
   },
   "devDependencies": {
     "@changesets/cli": "2.29.8",
