@@ -16,8 +16,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
-      - name: Enable Corepack
-        run: corepack enable
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          cache: true
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
