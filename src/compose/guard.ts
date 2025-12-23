@@ -1,4 +1,4 @@
-import { difference, LIBRARY_NAME, union, UNKNOWN_NAME } from "@shared"
+import { difference, LIBRARY_NAME, UNKNOWN_NAME } from "@shared"
 import { Binding$ } from "@tag"
 import { Task$ } from "@task"
 import type { Resolver } from "./resolver"

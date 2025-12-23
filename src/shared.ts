@@ -22,12 +22,6 @@ const difference = <T>(left: Set<T>, right: Set<T>): Set<T> => {
   return out
 }
 
-const union = <T>(left: Set<T>, right: Set<T>): Set<T> => {
-  const out = new Set<T>(left)
-  for (const item of right) out.add(item)
-  return out
-}
-
 export {
   LIBRARY_NAME,
   T,
@@ -36,7 +30,6 @@ export {
   isObject,
   path,
   tap,
-  union,
   type AnyRecord,
   type Eventual,
   type NonEmptyArray,

@@ -9,10 +9,6 @@ const fallback: ContainerLogger = {
     const name = id.description ?? UNKNOWN_NAME
     console.warn(`${LIBRARY_NAME} A Task with ID: ${name} has failed to run.`, error)
   },
-
-  onTaskSkip: ({ id, reason }) => {
-    reason // 'enabled' | { type: 'missing_dependencies'; missing: Set<symbol> }
-  },
 }
 
 const createLogger = (config: ContainerLogger = {}) => {
