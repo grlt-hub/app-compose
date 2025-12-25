@@ -1,11 +1,11 @@
-import { difference, LIBRARY_NAME, Meta$, UNKNOWN_NAME } from "@shared"
+import { difference, LIBRARY_NAME, Meta$, UNKNOWN_NAME, type Name } from "@shared"
 import { Binding$ } from "@tag"
 import { Task$ } from "@task"
 import type { Resolver } from "./resolver"
 import type { Stage, Step } from "./types"
 
 type StepType = "task" | "binding"
-type NotifyContext = { type: StepType; name: string; index: number }
+type NotifyContext = { type: StepType; name: Name; index: number }
 
 const NameMap = { task: "Task", binding: "Binding" } as const
 
