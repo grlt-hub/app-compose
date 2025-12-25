@@ -1,4 +1,5 @@
-import { Meta$, type Eventual, type Name } from "@shared"
+import { Meta$, type Meta } from "@meta"
+import { type Eventual, type Name } from "@shared"
 import { literal, reference, type ReferenceProvider, type SpotContext } from "@spot"
 
 const Task$ = Symbol("$task")
@@ -12,8 +13,7 @@ type TaskInternal = {
   context: unknown
 }
 
-type TaskMeta = { name: Name }
-type Task<Api> = ReferenceProvider<Api> & { [Task$]: TaskInternal } & { [Meta$]: TaskMeta }
+type Task<Api> = ReferenceProvider<Api> & { [Task$]: TaskInternal } & Meta
 
 type AnyTask = Task<unknown>
 

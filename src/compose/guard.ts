@@ -1,4 +1,5 @@
-import { difference, LIBRARY_NAME, Meta$, UNKNOWN_NAME, type Name } from "@shared"
+import { Meta$ } from "@meta"
+import { difference, LIBRARY_NAME, UNKNOWN_NAME, type Name } from "@shared"
 import { Binding$ } from "@tag"
 import { Task$ } from "@task"
 import type { Resolver } from "./resolver"
@@ -11,19 +12,19 @@ const NameMap = { task: "Task", binding: "Binding" } as const
 
 const notify = {
   duplicate: ({ type, name, index }: NotifyContext) => {
-    const message = `${LIBRARY_NAME} A duplicate ${NameMap[type]} found with Name: ${name} on stage #${index + 1}.`
+    const message = `${LIBRARY_NAME} A duplicate ${NameMap[type]} found with name: ${name} on stage #${index + 1}.`
     throw new Error(message)
   },
 
   notSatisfied: ({ type, name, index, missing: set }: NotifyContext & { missing: Set<symbol> }) => {
     const list = Array.from(set, (id) => id.description ?? UNKNOWN_NAME).join(", ")
 
-    const message = `${LIBRARY_NAME} Unsatisfied dependencies found for ${NameMap[type]} with Name: ${name} on stage #${index + 1}: missing ${list}.`
+    const message = `${LIBRARY_NAME} Unsatisfied dependencies found for ${NameMap[type]} with name: ${name} on stage #${index + 1}: missing ${list}.`
     throw new Error(message)
   },
 
   unused: ({ type, name, index }: NotifyContext) => {
-    const message = `${LIBRARY_NAME} Unused ${NameMap[type]} found with Name: ${name} on stage #${index + 1}.`
+    const message = `${LIBRARY_NAME} Unused ${NameMap[type]} found with name: ${name} on stage #${index + 1}.`
     console.warn(message)
   },
 }

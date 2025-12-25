@@ -1,10 +1,10 @@
-import { Meta$, type Name } from "@shared"
+import { Meta$, type Meta } from "@meta"
+import { type Name } from "@shared"
 import { reference, type ReferenceProvider } from "@spot"
 
 const Tag$ = Symbol("$tag")
 
-type TagMeta = { name: Name }
-type Tag = { [Tag$]: true } & { [Meta$]: TagMeta }
+type Tag = { [Tag$]: true } & Meta
 type TagConfig = { name: Name }
 
 const createTag = <T = never>(config: TagConfig): ReferenceProvider<T> & Tag => {

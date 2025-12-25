@@ -22,18 +22,16 @@ describe("duplicate guard", () => {
   describe("throws on duplicate Binding", () => {
     it("in the same stage", () => {
       const stages: [Stage] = [[bind(tag, literal(1)), bind(tag, literal(2))]]
+      const error = `${LIBRARY_NAME} A duplicate Binding found with name: Tag[alpha] on stage #1.`
 
-      expect(() => guard(stages)).toThrow(
-        `${LIBRARY_NAME} A duplicate Binding found with Name: Tag[alpha] on stage #1.`,
-      )
+      expect(() => guard(stages)).toThrow(error)
     })
 
     it("in different stages", () => {
       const stages: [Stage, Stage] = [[bind(tag, literal(1))], [bind(tag, literal(2))]]
+      const error = `${LIBRARY_NAME} A duplicate Binding found with name: Tag[alpha] on stage #2.`
 
-      expect(() => guard(stages)).toThrow(
-        `${LIBRARY_NAME} A duplicate Binding found with Name: Tag[alpha] on stage #2.`,
-      )
+      expect(() => guard(stages)).toThrow(error)
     })
   })
 
@@ -41,13 +39,13 @@ describe("duplicate guard", () => {
     it("in the same stage", () => {
       const stages: [Stage] = [[task, task]]
 
-      expect(() => guard(stages)).toThrow(`${LIBRARY_NAME} A duplicate Task found with Name: Task[beta] on stage #1.`)
+      expect(() => guard(stages)).toThrow(`${LIBRARY_NAME} A duplicate Task found with name: Task[beta] on stage #1.`)
     })
 
     it("in different stages", () => {
       const stages: [Stage, Stage] = [[task], [task]]
 
-      expect(() => guard(stages)).toThrow(`${LIBRARY_NAME} A duplicate Task found with Name: Task[beta] on stage #2.`)
+      expect(() => guard(stages)).toThrow(`${LIBRARY_NAME} A duplicate Task found with name: Task[beta] on stage #2.`)
     })
   })
 
@@ -72,7 +70,7 @@ describe("unsatisfied guard", () => {
 
     const stages: Stage[] = [[consumer]]
 
-    const error = `${LIBRARY_NAME} Unsatisfied dependencies found for Task with Name: Task[beta] on stage #1: missing Tag[alpha].`
+    const error = `${LIBRARY_NAME} Unsatisfied dependencies found for Task with name: Task[beta] on stage #1: missing Tag[alpha].`
     expect(() => guard(stages)).toThrow(error)
   })
 
@@ -82,7 +80,7 @@ describe("unsatisfied guard", () => {
 
     const stages: Stage[] = [[consumer]]
 
-    const error = `${LIBRARY_NAME} Unsatisfied dependencies found for Task with Name: Task[beta] on stage #1: missing Task[alpha].`
+    const error = `${LIBRARY_NAME} Unsatisfied dependencies found for Task with name: Task[beta] on stage #1: missing Task[alpha].`
     expect(() => guard(stages)).toThrow(error)
   })
 
@@ -93,7 +91,7 @@ describe("unsatisfied guard", () => {
 
     const stages: Stage[] = [[bind(intermediate, provider)], [consumer]]
 
-    const error = `${LIBRARY_NAME} Unsatisfied dependencies found for Binding with Name: Tag[beta] on stage #1: missing Tag[alpha].`
+    const error = `${LIBRARY_NAME} Unsatisfied dependencies found for Binding with name: Tag[beta] on stage #1: missing Tag[alpha].`
     expect(() => guard(stages)).toThrow(error)
   })
 
@@ -104,7 +102,7 @@ describe("unsatisfied guard", () => {
 
     const stages: Stage[] = [[bind(intermediate, provider)], [consumer]]
 
-    const error = `${LIBRARY_NAME} Unsatisfied dependencies found for Binding with Name: Tag[beta] on stage #1: missing Task[alpha].`
+    const error = `${LIBRARY_NAME} Unsatisfied dependencies found for Binding with name: Tag[beta] on stage #1: missing Task[alpha].`
     expect(() => guard(stages)).toThrow(error)
   })
 
@@ -130,6 +128,6 @@ describe("unused guard", () => {
 
     guard(stages)
 
-    expect(warn).toHaveBeenCalledWith(`${LIBRARY_NAME} Unused Binding found with Name: Tag[alpha] on stage #1.`)
+    expect(warn).toHaveBeenCalledWith(`${LIBRARY_NAME} Unused Binding found with name: Tag[alpha] on stage #1.`)
   })
 })

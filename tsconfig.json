@@ -28,7 +28,8 @@
       "@shared": ["./src/shared"],
       "@spot": ["./src/spot"],
       "@tag": ["./src/tag"],
-      "@task": ["./src/task"]
+      "@task": ["./src/task"],
+      "@meta": ["./src/meta"]
     }
   },
   "include": ["src"]
