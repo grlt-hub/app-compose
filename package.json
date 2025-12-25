@@ -61,6 +61,7 @@
     "@vitest/coverage-v8": "4.0.16",
     "knip": "5.75.2",
     "oxlint": "1.34.0",
+    "prettier-plugin-organize-imports": "4.3.0",
     "tsdown": "0.18.1",
     "typescript": "5.9.3",
     "vitest": "4.0.16"

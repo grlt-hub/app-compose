@@ -1,4 +1,4 @@
-import type { Eventual } from "@shared"
+import { Meta$, type Eventual, type Name } from "@shared"
 import { literal, reference, type ReferenceProvider, type SpotContext } from "@spot"
 
 const Task$ = Symbol("$task")
@@ -12,12 +12,13 @@ type TaskInternal = {
   context: unknown
 }
 
-type Task<Api> = ReferenceProvider<Api> & { [Task$]: TaskInternal }
+type TaskMeta = { name: Name }
+type Task<Api> = ReferenceProvider<Api> & { [Task$]: TaskInternal } & { [Meta$]: TaskMeta }
 
 type AnyTask = Task<unknown>
 
 type TaskConfig<Context, Api> = {
-  id?: string
+  name: Name
   run: { fn: (ctx: Context) => Eventual<Api> } & (Context extends void
     ? { context?: never }
     : { context: ContextOfRunner<Context> })
@@ -28,14 +29,15 @@ type TaskResult<T> = T extends Task<infer Api> ? Api : never
 
 const createTask = <Context = void, Api = unknown>(config: TaskConfig<Context, Api>): Task<Api> => {
   const id = {
-    value: config.id ? Symbol(`Task[${config.id}]`) : Symbol(),
-    status: config.id ? Symbol(`Task[${config.id}]::status`) : Symbol(),
+    value: Symbol(`Task[${config.name}]`),
+    status: Symbol(`Task[${config.name}]::status`),
   }
 
   const task = reference<Api>(id.value) as Task<Api>
   const context = config.run.context === undefined ? literal(undefined) : config.run.context
 
   task[Task$] = { run: config.run.fn, enabled: config.enabled, context, id }
+  task[Meta$] = { name: config.name }
 
   return task
 }

@@ -22,8 +22,13 @@ const difference = <T>(left: Set<T>, right: Set<T>): Set<T> => {
   return out
 }
 
+const Meta$ = Symbol("$meta")
+
+type Name = string
+
 export {
   LIBRARY_NAME,
+  Meta$,
   T,
   UNKNOWN_NAME,
   difference,
@@ -32,6 +37,7 @@ export {
   tap,
   type AnyRecord,
   type Eventual,
+  type Name,
   type NonEmptyArray,
   type ReadonlyNonEmptyArray,
 }

@@ -23,6 +23,9 @@ importers:
       oxlint:
         specifier: 1.34.0
         version: 1.34.0
+      prettier-plugin-organize-imports:
+        specifier: 4.3.0
+        version: 4.3.0(prettier@2.8.8)(typescript@5.9.3)
       tsdown:
         specifier: 0.18.1
         version: 0.18.1(@arethetypeswrong/core@0.18.2)(oxc-resolver@11.16.0)(publint@0.3.15)(typescript@5.9.3)
@@ -1172,6 +1175,16 @@ packages:
   postcss@8.5.6:
     resolution: {integrity: sha512-3Ybi1tAuwAP9s0r1UQ2J4n5Y0G05bJkpUIO0/bI9MhwmD70S5aTWbXGBwxHrelT+XM1k6dM0pk+SwNkpTRN7Pg==}
     engines: {node: ^10 || ^12 || >=14}
+
+  prettier-plugin-organize-imports@4.3.0:
+    resolution: {integrity: sha512-FxFz0qFhyBsGdIsb697f/EkvHzi5SZOhWAjxcx2dLt+Q532bAlhswcXGYB1yzjZ69kW8UoadFBw7TyNwlq96Iw==}
+    peerDependencies:
+      prettier: '>=2.0'
+      typescript: '>=2.9'
+      vue-tsc: ^2.1.0 || 3
+    peerDependenciesMeta:
+      vue-tsc:
+        optional: true
 
   prettier@2.8.8:
     resolution: {integrity: sha512-tdN8qQGvNjw4CHbY+XXk0JgCXn9QiF21a55rBe5LJAU+kDyC4WQn4+awm2Xfk2lQMk5fKup9XgzTZtGkjBdP9Q==}
@@ -2514,6 +2527,11 @@ snapshots:
       nanoid: 3.3.11
       picocolors: 1.1.1
       source-map-js: 1.2.1
+
+  prettier-plugin-organize-imports@4.3.0(prettier@2.8.8)(typescript@5.9.3):
+    dependencies:
+      prettier: 2.8.8
+      typescript: 5.9.3
 
   prettier@2.8.8: {}
 
