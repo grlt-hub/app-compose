@@ -1,11 +1,10 @@
 import { difference, LIBRARY_NAME, UNKNOWN_NAME } from "@shared"
-import { Binding$ } from "@tag"
-import { Task$ } from "@task"
 import type { Resolver } from "./resolver"
-import type { Stage, Step } from "./types"
+import { toContext } from "./toContext"
+import { toID } from "./toID"
+import type { Stage, StepName, StepType } from "./types"
 
-type StepType = "task" | "binding"
-type NotifyContext = { type: StepType; name: string; index: number }
+type NotifyContext = { type: StepType; name: StepName; index: number }
 
 const NameMap = { task: "Task", binding: "Binding" } as const
 
@@ -31,36 +30,6 @@ const notify = {
 }
 
 const createGuard = (resolver: Resolver) => {
-  const toID = (step: Step) => {
-    switch (true) {
-      case Task$ in step:
-        return {
-          type: "task" as StepType,
-          name: step[Task$].id.value.description ?? UNKNOWN_NAME,
-          writes: [step[Task$].id.value, step[Task$].id.status],
-        }
-      case Binding$ in step:
-        return {
-          type: "binding" as StepType,
-          name: step[Binding$].id.description ?? UNKNOWN_NAME,
-          writes: [step[Binding$].id],
-        }
-      default:
-        throw new Error(`${LIBRARY_NAME} Unknown step type found: ${String(step)}.`)
-    }
-  }
-
-  const toContext = (step: Step) => {
-    switch (true) {
-      case Task$ in step:
-        return step[Task$].context
-      case Binding$ in step:
-        return step[Binding$].value
-      default:
-        throw new Error(`${LIBRARY_NAME} Unknown step type found: ${String(step)}.`)
-    }
-  }
-
   const duplicate = (stages: Stage[]) => {
     const seen = new Set<symbol>()
 
