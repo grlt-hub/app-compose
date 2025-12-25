@@ -1,5 +1,5 @@
 import { Meta$, type Meta } from "@meta"
-import { type Eventual, type Name } from "@shared"
+import { type Eventual, type UnitName } from "@shared"
 import { literal, reference, type ReferenceProvider, type SpotContext } from "@spot"
 
 const Task$ = Symbol("$task")
@@ -18,7 +18,7 @@ type Task<Api> = ReferenceProvider<Api> & { [Task$]: TaskInternal } & Meta
 type AnyTask = Task<unknown>
 
 type TaskConfig<Context, Api> = {
-  name: Name
+  name: UnitName
   run: { fn: (ctx: Context) => Eventual<Api> } & (Context extends void
     ? { context?: never }
     : { context: ContextOfRunner<Context> })

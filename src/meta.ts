@@ -1,9 +1,9 @@
-import type { Name } from "@shared"
+import type { UnitName } from "@shared"
 
 const Meta$ = Symbol("$meta")
 
 type Meta = {
-  [Meta$]: { name: Name }
+  [Meta$]: { name: UnitName }
 }
 
 export { Meta$, type Meta }

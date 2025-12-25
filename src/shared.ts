@@ -22,7 +22,7 @@ const difference = <T>(left: Set<T>, right: Set<T>): Set<T> => {
   return out
 }
 
-type Name = string
+type UnitName = string
 
 export {
   LIBRARY_NAME,
@@ -34,7 +34,7 @@ export {
   tap,
   type AnyRecord,
   type Eventual,
-  type Name,
+  type UnitName,
   type NonEmptyArray,
   type ReadonlyNonEmptyArray,
 }
