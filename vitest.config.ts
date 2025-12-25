@@ -15,6 +15,7 @@ export default defineConfig({
       "@spot": resolve("./src/spot"),
       "@tag": resolve("./src/tag"),
       "@task": resolve("./src/task"),
+      "@meta": resolve("./src/meta"),
     },
   },
 })

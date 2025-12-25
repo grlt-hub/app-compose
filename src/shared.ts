@@ -22,6 +22,8 @@ const difference = <T>(left: Set<T>, right: Set<T>): Set<T> => {
   return out
 }
 
+type UnitName = string
+
 export {
   LIBRARY_NAME,
   T,
@@ -34,4 +36,5 @@ export {
   type Eventual,
   type NonEmptyArray,
   type ReadonlyNonEmptyArray,
+  type UnitName,
 }

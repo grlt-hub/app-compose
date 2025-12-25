@@ -7,7 +7,7 @@ type ContainerLogger = { onTaskFail?: (event: { id: symbol; error: unknown }) =>
 const fallback: ContainerLogger = {
   onTaskFail: ({ id, error }) => {
     const name = id.description ?? UNKNOWN_NAME
-    console.warn(`${LIBRARY_NAME} A Task with ID: ${name} has failed to run.`, error)
+    console.warn(`${LIBRARY_NAME} A Task with name: ${name} has failed to run.`, error)
   },
 }
 

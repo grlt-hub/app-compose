@@ -1,11 +1,11 @@
+import { LIBRARY_NAME } from "@shared"
+import { literal } from "@spot"
 import { bind, createTag } from "@tag"
 import { createTask } from "@task"
-import { literal } from "@spot"
 import { afterAll, beforeEach, describe, expect, it, vi } from "vitest"
 import { createGuard } from "../guard"
 import { createResolver } from "../resolver"
 import type { Registry, Stage } from "../types"
-import { LIBRARY_NAME } from "@shared"
 
 const registry: Registry = new Map()
 const resolver = createResolver(registry)
@@ -16,20 +16,22 @@ beforeEach(() => registry.clear())
 describe("duplicate guard", () => {
   const fn = vi.fn<() => void>()
 
-  const task = createTask({ id: "beta", run: { fn } })
-  const tag = createTag<number>({ id: "alpha" })
+  const task = createTask({ name: "beta", run: { fn } })
+  const tag = createTag<number>({ name: "alpha" })
 
   describe("throws on duplicate Binding", () => {
     it("in the same stage", () => {
       const stages: [Stage] = [[bind(tag, literal(1)), bind(tag, literal(2))]]
+      const error = `${LIBRARY_NAME} A duplicate Binding found with name: Tag[alpha] on stage #1.`
 
-      expect(() => guard(stages)).toThrow(`${LIBRARY_NAME} A duplicate Binding found with ID: Tag[alpha] on stage #1.`)
+      expect(() => guard(stages)).toThrow(error)
     })
 
     it("in different stages", () => {
       const stages: [Stage, Stage] = [[bind(tag, literal(1))], [bind(tag, literal(2))]]
+      const error = `${LIBRARY_NAME} A duplicate Binding found with name: Tag[alpha] on stage #2.`
 
-      expect(() => guard(stages)).toThrow(`${LIBRARY_NAME} A duplicate Binding found with ID: Tag[alpha] on stage #2.`)
+      expect(() => guard(stages)).toThrow(error)
     })
   })
 
@@ -37,21 +39,21 @@ describe("duplicate guard", () => {
     it("in the same stage", () => {
       const stages: [Stage] = [[task, task]]
 
-      expect(() => guard(stages)).toThrow(`${LIBRARY_NAME} A duplicate Task found with ID: Task[beta] on stage #1.`)
+      expect(() => guard(stages)).toThrow(`${LIBRARY_NAME} A duplicate Task found with name: Task[beta] on stage #1.`)
     })
 
     it("in different stages", () => {
       const stages: [Stage, Stage] = [[task], [task]]
 
-      expect(() => guard(stages)).toThrow(`${LIBRARY_NAME} A duplicate Task found with ID: Task[beta] on stage #2.`)
+      expect(() => guard(stages)).toThrow(`${LIBRARY_NAME} A duplicate Task found with name: Task[beta] on stage #2.`)
     })
   })
 
   it("passes with no duplicates", () => {
     const fn = vi.fn<(n: number) => void>()
 
-    const tag = createTag<number>({ id: "alpha" })
-    const task = createTask({ id: "beta", run: { fn, context: tag } })
+    const tag = createTag<number>({ name: "alpha" })
+    const task = createTask({ name: "beta", run: { fn, context: tag } })
 
     const stages: [Stage, Stage] = [[bind(tag, literal(1))], [task]]
 
@@ -63,50 +65,50 @@ describe("unsatisfied guard", () => {
   const fn = vi.fn<(n: number) => void>()
 
   it("throws on Task missing Binding context", () => {
-    const provider = createTag<number>({ id: "alpha" })
-    const consumer = createTask({ id: "beta", run: { fn, context: provider } })
+    const provider = createTag<number>({ name: "alpha" })
+    const consumer = createTask({ name: "beta", run: { fn, context: provider } })
 
     const stages: Stage[] = [[consumer]]
 
-    const error = `${LIBRARY_NAME} Unsatisfied dependencies found for Task with ID: Task[beta] on stage #1: missing Tag[alpha].`
+    const error = `${LIBRARY_NAME} Unsatisfied dependencies found for Task with name: Task[beta] on stage #1: missing Tag[alpha].`
     expect(() => guard(stages)).toThrow(error)
   })
 
   it("throws on Task missing Task context", () => {
-    const provider = createTask({ id: "alpha", run: { fn: () => 0 } })
-    const consumer = createTask({ id: "beta", run: { fn, context: provider } })
+    const provider = createTask({ name: "alpha", run: { fn: () => 0 } })
+    const consumer = createTask({ name: "beta", run: { fn, context: provider } })
 
     const stages: Stage[] = [[consumer]]
 
-    const error = `${LIBRARY_NAME} Unsatisfied dependencies found for Task with ID: Task[beta] on stage #1: missing Task[alpha].`
+    const error = `${LIBRARY_NAME} Unsatisfied dependencies found for Task with name: Task[beta] on stage #1: missing Task[alpha].`
     expect(() => guard(stages)).toThrow(error)
   })
 
   it("throws on Binding missing Binding context", () => {
-    const provider = createTag<number>({ id: "alpha" })
-    const intermediate = createTag<number>({ id: "beta" })
-    const consumer = createTask({ id: "gamma", run: { fn, context: provider } })
+    const provider = createTag<number>({ name: "alpha" })
+    const intermediate = createTag<number>({ name: "beta" })
+    const consumer = createTask({ name: "gamma", run: { fn, context: provider } })
 
     const stages: Stage[] = [[bind(intermediate, provider)], [consumer]]
 
-    const error = `${LIBRARY_NAME} Unsatisfied dependencies found for Binding with ID: Tag[beta] on stage #1: missing Tag[alpha].`
+    const error = `${LIBRARY_NAME} Unsatisfied dependencies found for Binding with name: Tag[beta] on stage #1: missing Tag[alpha].`
     expect(() => guard(stages)).toThrow(error)
   })
 
   it("throws on Binding missing Task context", () => {
-    const provider = createTask({ id: "alpha", run: { fn: () => 0 } })
-    const intermediate = createTag<number>({ id: "beta" })
-    const consumer = createTask({ id: "gamma", run: { fn, context: provider } })
+    const provider = createTask({ name: "alpha", run: { fn: () => 0 } })
+    const intermediate = createTag<number>({ name: "beta" })
+    const consumer = createTask({ name: "gamma", run: { fn, context: provider } })
 
     const stages: Stage[] = [[bind(intermediate, provider)], [consumer]]
 
-    const error = `${LIBRARY_NAME} Unsatisfied dependencies found for Binding with ID: Tag[beta] on stage #1: missing Task[alpha].`
+    const error = `${LIBRARY_NAME} Unsatisfied dependencies found for Binding with name: Tag[beta] on stage #1: missing Task[alpha].`
     expect(() => guard(stages)).toThrow(error)
   })
 
   it("passes when satisfied", () => {
-    const provider = createTag<number>({ id: "alpha" })
-    const consumer = createTask({ id: "beta", run: { fn, context: provider } })
+    const provider = createTag<number>({ name: "alpha" })
+    const consumer = createTask({ name: "beta", run: { fn, context: provider } })
 
     const stages: [Stage, Stage] = [[bind(provider, literal(1))], [consumer]]
 
@@ -117,7 +119,7 @@ describe("unsatisfied guard", () => {
 describe("unused guard", () => {
   const warn = vi.spyOn(console, "warn").mockImplementation(() => {})
 
-  const tag = createTag<number>({ id: "alpha" })
+  const tag = createTag<number>({ name: "alpha" })
 
   afterAll(() => warn.mockRestore())
 
@@ -126,6 +128,6 @@ describe("unused guard", () => {
 
     guard(stages)
 
-    expect(warn).toHaveBeenCalledWith(`${LIBRARY_NAME} Unused Binding found with ID: Tag[alpha] on stage #1.`)
+    expect(warn).toHaveBeenCalledWith(`${LIBRARY_NAME} Unused Binding found with name: Tag[alpha] on stage #1.`)
   })
 })
