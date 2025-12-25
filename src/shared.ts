@@ -34,7 +34,7 @@ export {
   tap,
   type AnyRecord,
   type Eventual,
-  type UnitName,
   type NonEmptyArray,
   type ReadonlyNonEmptyArray,
+  type UnitName,
 }
