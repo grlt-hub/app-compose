@@ -22,7 +22,7 @@ type TaskConfig<Context, Api> = {
   run: { fn: (ctx: Context) => Eventual<Api> } & (Context extends void
     ? { context?: never }
     : { context: ContextOfRunner<Context> })
-  enabled?: (ctx: Context) => Eventual<boolean>
+  enabled?: { fn: (ctx: Context) => Eventual<boolean> }
 }
 
 type TaskResult<T> = T extends Task<infer Api> ? Api : never
@@ -36,7 +36,7 @@ const createTask = <Context = void, Api = unknown>(config: TaskConfig<Context, A
   const task = reference<Api>(id.value) as Task<Api>
   const context = config.run.context === undefined ? literal(undefined) : config.run.context
 
-  task[Task$] = { run: config.run.fn, enabled: config.enabled, context, id }
+  task[Task$] = { run: config.run.fn, enabled: config.enabled?.fn, context, id }
   task[Meta$] = { name: config.name }
 
   return task

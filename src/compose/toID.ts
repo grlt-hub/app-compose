@@ -10,6 +10,7 @@ const toID = (step: Step) => {
       return {
         type: "task" as StepType,
         name: step[Meta$].name,
+        displayName: `Task[${step[Meta$].name}]`,
         symbol: step[Task$].id.value,
         writes: [step[Task$].id.value, step[Task$].id.status],
       }
@@ -17,6 +18,7 @@ const toID = (step: Step) => {
       return {
         type: "binding" as StepType,
         name: step[Meta$].name,
+        displayName: `Tag[${step[Meta$].name}]`,
         symbol: step[Binding$].id,
         writes: [step[Binding$].id],
       }
