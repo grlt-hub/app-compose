@@ -4,6 +4,7 @@ import { Binding$ } from "@tag"
 import { Task$, type Task } from "@task"
 import { createCompiler } from "./compiler"
 import { createDispatch } from "./dispatch"
+import type { Graph } from "./graph"
 import { createGuard } from "./guard"
 import { createLogger, type ContainerLogger } from "./logger"
 import { createResolver } from "./resolver"
@@ -13,7 +14,12 @@ import type { Registry, Stage, Step } from "./types"
 type ComposeConfig = { log?: ContainerLogger }
 
 type Container = { get: <T>(task: Task<T>) => T | undefined }
-type Composer = { stage: (...stage: Stage[]) => Composer; run: () => Promise<Container>; guard: () => never }
+type Composer = {
+  stage: (...stage: Stage[]) => Composer
+  run: () => Promise<Container>
+  graph: () => Promise<Graph>
+  guard: () => never
+}
 
 const run = async (config: ComposeConfig, stages: Stage[]): Promise<Container> => {
   const registry: Registry = new Map()
@@ -67,7 +73,7 @@ const compose = (config: ComposeConfig = {}): Composer => {
   const composer: Composer = {
     stage: (...list: Stage[]) => (stages.push(...list), composer),
     run: () => run(config, stages),
-
+    graph: async () => (await import("./graph")).graph(stages),
     guard: (): never => null as never,
   }
 

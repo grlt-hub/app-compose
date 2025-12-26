@@ -4,6 +4,8 @@ import type { Binding } from "@tag"
 import type { AnyTask } from "@task"
 
 type Step = AnyTask | Binding
+type StepType = "task" | "binding"
+
 type Stage =
   | NonEmptyArray<AnyTask>
   | NonEmptyArray<Binding>
@@ -13,4 +15,4 @@ type Stage =
 type SpotImpl<T = unknown> = Literal<T> | Reference<T>
 type Registry = Map<symbol, any>
 
-export { type Registry, type SpotImpl, type Stage, type Step }
+export type { Registry, SpotImpl, Stage, Step, StepType }
