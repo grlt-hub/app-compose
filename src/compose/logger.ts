@@ -1,13 +1,14 @@
 import { LIBRARY_NAME, UNKNOWN_NAME } from "@shared"
 import type { TaskInternal } from "@task"
 import type { RunnerResult } from "./runner"
+import { toDisplayName } from "./toDisplayName"
 
 type ContainerLogger = { onTaskFail?: (event: { id: symbol; error: unknown }) => void }
 
 const fallback: ContainerLogger = {
   onTaskFail: ({ id, error }) => {
     const name = id.description ?? UNKNOWN_NAME
-    console.warn(`${LIBRARY_NAME} A Task with name: Task[${name}] has failed to run.`, error)
+    console.warn(`${LIBRARY_NAME} A Task with name: ${toDisplayName("task", name)} has failed to run.`, error)
   },
 }
 
