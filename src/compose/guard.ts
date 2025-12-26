@@ -1,65 +1,34 @@
-import { Meta$ } from "@meta"
 import { difference, LIBRARY_NAME, UNKNOWN_NAME, type UnitName } from "@shared"
-import { Binding$ } from "@tag"
-import { Task$ } from "@task"
 import type { Resolver } from "./resolver"
-import type { Stage, Step } from "./types"
+import { toContext } from "./toContext"
+import { toDisplayName } from "./toDisplayName"
+import { toID } from "./toID"
+import type { Stage, StepType } from "./types"
 
-type StepType = "task" | "binding"
 type NotifyContext = { type: StepType; name: UnitName; index: number }
 
-const NameMap = { task: "Task", binding: "Binding" } as const
+const TypeMap = { task: "Task", binding: "Binding" } as const
 
 const notify = {
   duplicate: ({ type, name, index }: NotifyContext) => {
-    const message = `${LIBRARY_NAME} A duplicate ${NameMap[type]} found with name: ${name} on stage #${index + 1}.`
+    const message = `${LIBRARY_NAME} A duplicate ${TypeMap[type]} found with name: ${toDisplayName(type, name)} on stage #${index + 1}.`
     throw new Error(message)
   },
 
   notSatisfied: ({ type, name, index, missing: set }: NotifyContext & { missing: Set<symbol> }) => {
     const list = Array.from(set, (id) => id.description ?? UNKNOWN_NAME).join(", ")
 
-    const message = `${LIBRARY_NAME} Unsatisfied dependencies found for ${NameMap[type]} with name: ${name} on stage #${index + 1}: missing ${list}.`
+    const message = `${LIBRARY_NAME} Unsatisfied dependencies found for ${TypeMap[type]} with name: ${toDisplayName(type, name)} on stage #${index + 1}: missing ${list}.`
     throw new Error(message)
   },
 
   unused: ({ type, name, index }: NotifyContext) => {
-    const message = `${LIBRARY_NAME} Unused ${NameMap[type]} found with name: ${name} on stage #${index + 1}.`
+    const message = `${LIBRARY_NAME} Unused ${TypeMap[type]} found with name: ${toDisplayName(type, name)} on stage #${index + 1}.`
     console.warn(message)
   },
 }
 
 const createGuard = (resolver: Resolver) => {
-  const toID = (step: Step) => {
-    switch (true) {
-      case Task$ in step:
-        return {
-          type: "task" as StepType,
-          name: `Task[${step[Meta$].name}]`,
-          writes: [step[Task$].id.value, step[Task$].id.status],
-        }
-      case Binding$ in step:
-        return {
-          type: "binding" as StepType,
-          name: `Tag[${step[Meta$].name}]`,
-          writes: [step[Binding$].id],
-        }
-      default:
-        throw new Error(`${LIBRARY_NAME} Unknown step type found: ${String(step)}.`)
-    }
-  }
-
-  const toContext = (step: Step) => {
-    switch (true) {
-      case Task$ in step:
-        return step[Task$].context
-      case Binding$ in step:
-        return step[Binding$].value
-      default:
-        throw new Error(`${LIBRARY_NAME} Unknown step type found: ${String(step)}.`)
-    }
-  }
-
   const duplicate = (stages: Stage[]) => {
     const seen = new Set<symbol>()
 
