@@ -16,10 +16,9 @@ describe("graph tests", () => {
   })
 
   it("direct dependency on another task", () => {
-    type BetaCtx = { value: boolean }
     const betaTask = createTask({
       name: "beta",
-      run: { fn: (ctx: BetaCtx) => !ctx.value, context: { value: alphaTask.value } },
+      run: { fn: (ctx: boolean) => !ctx, context: alphaTask.value },
     })
 
     const stages: [Stage, Stage] = [[alphaTask], [betaTask]]
@@ -32,10 +31,9 @@ describe("graph tests", () => {
   })
 
   it("direct dependency on another task [optional]", () => {
-    type BetaCtx = { value?: boolean }
     const betaTask = createTask({
       name: "beta",
-      run: { fn: (ctx: BetaCtx) => !ctx.value, context: { value: optional(alphaTask.value) } },
+      run: { fn: (ctx?: boolean) => !ctx, context: optional(alphaTask.value) },
     })
 
     const stages: [Stage, Stage] = [[alphaTask], [betaTask]]
@@ -48,11 +46,10 @@ describe("graph tests", () => {
   })
 
   it("dependency on a task via a tag", () => {
-    type BetaCtx = { value: boolean }
-    const valueTag = createTag<BetaCtx["value"]>({ name: "valueTag" })
+    const valueTag = createTag<boolean>({ name: "valueTag" })
     const betaTask = createTask({
       name: "beta",
-      run: { fn: (ctx: BetaCtx) => !ctx.value, context: { value: valueTag } },
+      run: { fn: (ctx: boolean) => !ctx, context: valueTag },
     })
 
     const stages: [Stage, Stage, Stage] = [[alphaTask], [bind(valueTag, alphaTask.value)], [betaTask]]
@@ -66,11 +63,10 @@ describe("graph tests", () => {
   })
 
   it("dependency on a task via a tag [optional]", () => {
-    type BetaCtx = { value?: boolean }
-    const valueTag = createTag<BetaCtx["value"]>({ name: "valueTag" })
+    const valueTag = createTag<boolean>({ name: "valueTag" })
     const betaTask = createTask({
       name: "beta",
-      run: { fn: (ctx: BetaCtx) => !ctx.value, context: { value: optional(valueTag) } },
+      run: { fn: (ctx?: boolean) => !ctx, context: optional(valueTag) },
     })
 
     const stages: [Stage, Stage, Stage] = [[alphaTask], [bind(valueTag, alphaTask.value)], [betaTask]]
@@ -84,11 +80,10 @@ describe("graph tests", () => {
   })
 
   it("task depends on a literal via tag", () => {
-    type BetaCtx = { value: boolean }
-    const valueTag = createTag<BetaCtx["value"]>({ name: "valueTag" })
+    const valueTag = createTag<boolean>({ name: "valueTag" })
     const betaTask = createTask({
       name: "beta",
-      run: { fn: (ctx: BetaCtx) => !ctx.value, context: { value: valueTag } },
+      run: { fn: (ctx: boolean) => !ctx, context: valueTag },
     })
 
     const stages: [Stage, Stage, Stage] = [[alphaTask], [bind(valueTag, literal(false))], [betaTask]]
@@ -102,11 +97,10 @@ describe("graph tests", () => {
   })
 
   it("task depends on a literal via tag [optional]", () => {
-    type BetaCtx = { value?: boolean }
-    const valueTag = createTag<BetaCtx["value"]>({ name: "valueTag" })
+    const valueTag = createTag<boolean>({ name: "valueTag" })
     const betaTask = createTask({
       name: "beta",
-      run: { fn: (ctx: BetaCtx) => !ctx.value, context: { value: optional(valueTag) } },
+      run: { fn: (ctx?: boolean) => !ctx, context: optional(valueTag) },
     })
 
     const stages: [Stage, Stage, Stage] = [[alphaTask], [bind(valueTag, literal(false))], [betaTask]]
@@ -120,10 +114,9 @@ describe("graph tests", () => {
   })
 
   it("task depends on a literal", () => {
-    type BetaCtx = { value: boolean }
     const betaTask = createTask({
       name: "beta",
-      run: { fn: (ctx: BetaCtx) => !ctx.value, context: { value: literal(true) } },
+      run: { fn: (ctx: boolean) => !ctx, context: literal(true) },
     })
 
     const stages: [Stage, Stage] = [[alphaTask], [betaTask]]
@@ -136,10 +129,9 @@ describe("graph tests", () => {
   })
 
   it("task depends on a literal [optional]", () => {
-    type BetaCtx = { value?: boolean }
     const betaTask = createTask({
       name: "beta",
-      run: { fn: (ctx: BetaCtx) => !ctx.value, context: { value: literal(true) } },
+      run: { fn: (ctx?: boolean) => !ctx, context: literal(true) },
     })
 
     const stages: [Stage, Stage] = [[alphaTask], [betaTask]]
@@ -152,10 +144,9 @@ describe("graph tests", () => {
   })
 
   it("optional dependency that is not found in the graph", () => {
-    type BetaCtx = { value?: boolean }
     const betaTask = createTask({
       name: "beta",
-      run: { fn: (ctx: BetaCtx) => !ctx.value, context: { value: optional(alphaTask.value) } },
+      run: { fn: (ctx?: boolean) => !ctx, context: optional(alphaTask.value) },
     })
 
     const stages: [Stage] = [[betaTask]]
