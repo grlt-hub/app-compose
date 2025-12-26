@@ -7,7 +7,16 @@ import type { Stage, StepType } from "./types"
 type NotifyContext = { type: StepType; name: UnitName; index: number }
 
 const TypeMap = { task: "Task", binding: "Binding" } as const
-const toDisplayName = (type: StepType, name: UnitName) => (type === "task" ? `Task[${name}]` : `Tag[${name}]`)
+const toDisplayName = (type: StepType, name: UnitName) => {
+  switch (type) {
+    case "task":
+      return `Task[${name}]`
+    case "binding":
+      return `Tag[${name}]`
+    default:
+      throw new Error(`${LIBRARY_NAME} Unknown step type found: ${type}.`)
+  }
+}
 
 const notify = {
   duplicate: ({ type, name, index }: NotifyContext) => {
