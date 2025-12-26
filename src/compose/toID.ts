@@ -9,14 +9,14 @@ const toID = (step: Step) => {
     case Task$ in step:
       return {
         type: "task" as StepType,
-        name: `Task[${step[Meta$].name}]`,
+        name: step[Meta$].name,
         symbol: step[Task$].id.value,
         writes: [step[Task$].id.value, step[Task$].id.status],
       }
     case Binding$ in step:
       return {
         type: "binding" as StepType,
-        name: `Tag[${step[Meta$].name}]`,
+        name: step[Meta$].name,
         symbol: step[Binding$].id,
         writes: [step[Binding$].id],
       }

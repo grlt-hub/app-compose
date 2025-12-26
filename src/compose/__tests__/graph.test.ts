@@ -10,7 +10,7 @@ const alphaTask = createTask({ name: "alpha", run: { fn: () => ({ value: true })
 describe("graph tests", () => {
   it("zero dependencies", () => {
     const stages: [Stage] = [[alphaTask]]
-    const expected = [{ id: 0, name: "Task[alpha]", type: "task", dependencies: { optional: [], required: [] } }]
+    const expected = [{ id: 0, name: "alpha", type: "task", dependencies: { optional: [], required: [] } }]
 
     expect(graph(stages)).toStrictEqual(expected)
   })
@@ -23,8 +23,8 @@ describe("graph tests", () => {
 
     const stages: [Stage, Stage] = [[alphaTask], [betaTask]]
     const expected = [
-      { id: 0, name: "Task[alpha]", type: "task", dependencies: { optional: [], required: [] } },
-      { id: 1, name: "Task[beta]", type: "task", dependencies: { optional: [], required: [0] } },
+      { id: 0, name: "alpha", type: "task", dependencies: { optional: [], required: [] } },
+      { id: 1, name: "beta", type: "task", dependencies: { optional: [], required: [0] } },
     ]
 
     expect(graph(stages)).toStrictEqual(expected)
@@ -38,8 +38,8 @@ describe("graph tests", () => {
 
     const stages: [Stage, Stage] = [[alphaTask], [betaTask]]
     const expected = [
-      { id: 0, name: "Task[alpha]", type: "task", dependencies: { optional: [], required: [] } },
-      { id: 1, name: "Task[beta]", type: "task", dependencies: { optional: [0], required: [] } },
+      { id: 0, name: "alpha", type: "task", dependencies: { optional: [], required: [] } },
+      { id: 1, name: "beta", type: "task", dependencies: { optional: [0], required: [] } },
     ]
 
     expect(graph(stages)).toStrictEqual(expected)
@@ -54,9 +54,9 @@ describe("graph tests", () => {
 
     const stages: [Stage, Stage, Stage] = [[alphaTask], [bind(valueTag, alphaTask.value)], [betaTask]]
     const expected = [
-      { id: 0, name: "Task[alpha]", type: "task", dependencies: { optional: [], required: [] } },
-      { id: 1, name: "Tag[valueTag]", type: "binding", dependencies: { optional: [], required: [0] } },
-      { id: 2, name: "Task[beta]", type: "task", dependencies: { optional: [], required: [1] } },
+      { id: 0, name: "alpha", type: "task", dependencies: { optional: [], required: [] } },
+      { id: 1, name: "valueTag", type: "binding", dependencies: { optional: [], required: [0] } },
+      { id: 2, name: "beta", type: "task", dependencies: { optional: [], required: [1] } },
     ]
 
     expect(graph(stages)).toStrictEqual(expected)
@@ -71,9 +71,9 @@ describe("graph tests", () => {
 
     const stages: [Stage, Stage, Stage] = [[alphaTask], [bind(valueTag, alphaTask.value)], [betaTask]]
     const expected = [
-      { id: 0, name: "Task[alpha]", type: "task", dependencies: { optional: [], required: [] } },
-      { id: 1, name: "Tag[valueTag]", type: "binding", dependencies: { optional: [], required: [0] } },
-      { id: 2, name: "Task[beta]", type: "task", dependencies: { optional: [1], required: [] } },
+      { id: 0, name: "alpha", type: "task", dependencies: { optional: [], required: [] } },
+      { id: 1, name: "valueTag", type: "binding", dependencies: { optional: [], required: [0] } },
+      { id: 2, name: "beta", type: "task", dependencies: { optional: [1], required: [] } },
     ]
 
     expect(graph(stages)).toStrictEqual(expected)
@@ -88,9 +88,9 @@ describe("graph tests", () => {
 
     const stages: [Stage, Stage, Stage] = [[alphaTask], [bind(valueTag, literal(false))], [betaTask]]
     const expected = [
-      { id: 0, name: "Task[alpha]", type: "task", dependencies: { optional: [], required: [] } },
-      { id: 1, name: "Tag[valueTag]", type: "binding", dependencies: { optional: [], required: [] } },
-      { id: 2, name: "Task[beta]", type: "task", dependencies: { optional: [], required: [1] } },
+      { id: 0, name: "alpha", type: "task", dependencies: { optional: [], required: [] } },
+      { id: 1, name: "valueTag", type: "binding", dependencies: { optional: [], required: [] } },
+      { id: 2, name: "beta", type: "task", dependencies: { optional: [], required: [1] } },
     ]
 
     expect(graph(stages)).toStrictEqual(expected)
@@ -105,9 +105,9 @@ describe("graph tests", () => {
 
     const stages: [Stage, Stage, Stage] = [[alphaTask], [bind(valueTag, literal(false))], [betaTask]]
     const expected = [
-      { id: 0, name: "Task[alpha]", type: "task", dependencies: { optional: [], required: [] } },
-      { id: 1, name: "Tag[valueTag]", type: "binding", dependencies: { optional: [], required: [] } },
-      { id: 2, name: "Task[beta]", type: "task", dependencies: { optional: [1], required: [] } },
+      { id: 0, name: "alpha", type: "task", dependencies: { optional: [], required: [] } },
+      { id: 1, name: "valueTag", type: "binding", dependencies: { optional: [], required: [] } },
+      { id: 2, name: "beta", type: "task", dependencies: { optional: [1], required: [] } },
     ]
 
     expect(graph(stages)).toStrictEqual(expected)
@@ -121,8 +121,8 @@ describe("graph tests", () => {
 
     const stages: [Stage, Stage] = [[alphaTask], [betaTask]]
     const expected = [
-      { id: 0, name: "Task[alpha]", type: "task", dependencies: { optional: [], required: [] } },
-      { id: 1, name: "Task[beta]", type: "task", dependencies: { optional: [], required: [] } },
+      { id: 0, name: "alpha", type: "task", dependencies: { optional: [], required: [] } },
+      { id: 1, name: "beta", type: "task", dependencies: { optional: [], required: [] } },
     ]
 
     expect(graph(stages)).toStrictEqual(expected)
@@ -136,8 +136,8 @@ describe("graph tests", () => {
 
     const stages: [Stage, Stage] = [[alphaTask], [betaTask]]
     const expected = [
-      { id: 0, name: "Task[alpha]", type: "task", dependencies: { optional: [], required: [] } },
-      { id: 1, name: "Task[beta]", type: "task", dependencies: { optional: [], required: [] } },
+      { id: 0, name: "alpha", type: "task", dependencies: { optional: [], required: [] } },
+      { id: 1, name: "beta", type: "task", dependencies: { optional: [], required: [] } },
     ]
 
     expect(graph(stages)).toStrictEqual(expected)
@@ -150,7 +150,7 @@ describe("graph tests", () => {
     })
 
     const stages: [Stage] = [[betaTask]]
-    const expected = [{ id: 0, name: "Task[beta]", type: "task", dependencies: { optional: [], required: [] } }]
+    const expected = [{ id: 0, name: "beta", type: "task", dependencies: { optional: [], required: [] } }]
 
     expect(graph(stages)).toStrictEqual(expected)
   })
@@ -168,9 +168,9 @@ describe("graph tests", () => {
 
     const stages: [Stage, Stage, Stage] = [[alphaTask], [bind(fnTag, literal(Boolean))], [betaTask]]
     const expected = [
-      { id: 0, name: "Task[alpha]", type: "task", dependencies: { optional: [], required: [] } },
-      { id: 1, name: "Tag[fnTag]", type: "binding", dependencies: { optional: [], required: [] } },
-      { id: 2, name: "Task[beta]", type: "task", dependencies: { optional: [1], required: [0] } },
+      { id: 0, name: "alpha", type: "task", dependencies: { optional: [], required: [] } },
+      { id: 1, name: "fnTag", type: "binding", dependencies: { optional: [], required: [] } },
+      { id: 2, name: "beta", type: "task", dependencies: { optional: [1], required: [0] } },
     ]
 
     expect(graph(stages)).toStrictEqual(expected)

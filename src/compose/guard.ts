@@ -6,23 +6,24 @@ import type { Stage, StepType } from "./types"
 
 type NotifyContext = { type: StepType; name: UnitName; index: number }
 
-const NameMap = { task: "Task", binding: "Binding" } as const
+const TypeMap = { task: "Task", binding: "Binding" } as const
+const toDisplayName = (type: StepType, name: UnitName) => (type === "task" ? `Task[${name}]` : `Tag[${name}]`)
 
 const notify = {
   duplicate: ({ type, name, index }: NotifyContext) => {
-    const message = `${LIBRARY_NAME} A duplicate ${NameMap[type]} found with name: ${name} on stage #${index + 1}.`
+    const message = `${LIBRARY_NAME} A duplicate ${TypeMap[type]} found with name: ${toDisplayName(type, name)} on stage #${index + 1}.`
     throw new Error(message)
   },
 
   notSatisfied: ({ type, name, index, missing: set }: NotifyContext & { missing: Set<symbol> }) => {
     const list = Array.from(set, (id) => id.description ?? UNKNOWN_NAME).join(", ")
 
-    const message = `${LIBRARY_NAME} Unsatisfied dependencies found for ${NameMap[type]} with name: ${name} on stage #${index + 1}: missing ${list}.`
+    const message = `${LIBRARY_NAME} Unsatisfied dependencies found for ${TypeMap[type]} with name: ${toDisplayName(type, name)} on stage #${index + 1}: missing ${list}.`
     throw new Error(message)
   },
 
   unused: ({ type, name, index }: NotifyContext) => {
-    const message = `${LIBRARY_NAME} Unused ${NameMap[type]} found with name: ${name} on stage #${index + 1}.`
+    const message = `${LIBRARY_NAME} Unused ${TypeMap[type]} found with name: ${toDisplayName(type, name)} on stage #${index + 1}.`
     console.warn(message)
   },
 }

@@ -17,25 +17,29 @@ type Graph = GraphEntry[]
 const graph = (stages: Stage[]): Graph => {
   const registry: Registry = new Map()
   const resolver = createResolver(registry)
-  const symbolToID = new Map<symbol, EntryID>()
 
-  return stages.flat().map((step, id) => {
-    const { type, name, symbol } = toID(step)
-    const context = toContext(step)
-    const dependencies = resolver.dependenciesOf(context)
+  return stages.flat().reduce(
+    (acc, step, id) => {
+      const { type, name, symbol } = toID(step)
+      const context = toContext(step)
+      const dependencies = resolver.dependenciesOf(context)
 
-    symbolToID.set(symbol, id)
+      const entry = {
+        id,
+        name,
+        type,
+        dependencies: {
+          required: Array.from(dependencies.required, (x) => acc.symbolToID.get(x) ?? -1),
+          optional: Array.from(dependencies.optional, (x) => acc.symbolToID.get(x)).filter((x) => x !== undefined),
+        },
+      }
 
-    return {
-      id,
-      name,
-      type,
-      dependencies: {
-        required: Array.from(dependencies.required, (x) => symbolToID.get(x) ?? -1),
-        optional: Array.from(dependencies.optional, (x) => symbolToID.get(x)).filter((x) => x !== undefined),
-      },
-    }
-  })
+      acc.symbolToID.set(symbol, entry.id)
+      acc.result.push(entry)
+      return acc
+    },
+    { symbolToID: new Map<symbol, EntryID>(), result: [] as Graph },
+  ).result
 }
 
 export { graph, type Graph }
