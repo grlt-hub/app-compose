@@ -4,25 +4,25 @@ import { toContext } from "./toContext"
 import { toID } from "./toID"
 import type { Stage, StepType } from "./types"
 
-type NotifyContext = { type: StepType; displayName: UnitName; index: number }
+type NotifyContext = { type: StepType; name: UnitName; index: number }
 
 const TypeMap = { task: "Task", binding: "Binding" } as const
 
 const notify = {
-  duplicate: ({ type, displayName, index }: NotifyContext) => {
-    const message = `${LIBRARY_NAME} A duplicate ${TypeMap[type]} found with name: ${displayName} on stage #${index + 1}.`
+  duplicate: ({ type, name, index }: NotifyContext) => {
+    const message = `${LIBRARY_NAME} A duplicate ${TypeMap[type]} found with name: ${name} on stage #${index + 1}.`
     throw new Error(message)
   },
 
-  notSatisfied: ({ type, displayName, index, missing: set }: NotifyContext & { missing: Set<symbol> }) => {
+  notSatisfied: ({ type, name, index, missing: set }: NotifyContext & { missing: Set<symbol> }) => {
     const list = Array.from(set, (id) => id.description ?? UNKNOWN_NAME).join(", ")
 
-    const message = `${LIBRARY_NAME} Unsatisfied dependencies found for ${TypeMap[type]} with name: ${displayName} on stage #${index + 1}: missing ${list}.`
+    const message = `${LIBRARY_NAME} Unsatisfied dependencies found for ${TypeMap[type]} with name: ${name} on stage #${index + 1}: missing ${list}.`
     throw new Error(message)
   },
 
-  unused: ({ type, displayName, index }: NotifyContext) => {
-    const message = `${LIBRARY_NAME} Unused ${TypeMap[type]} found with name: ${displayName} on stage #${index + 1}.`
+  unused: ({ type, name, index }: NotifyContext) => {
+    const message = `${LIBRARY_NAME} Unused ${TypeMap[type]} found with name: ${name} on stage #${index + 1}.`
     console.warn(message)
   },
 }
@@ -33,10 +33,10 @@ const createGuard = (resolver: Resolver) => {
 
     for (const [index, stage] of stages.entries()) {
       for (const step of stage) {
-        const { type, displayName, writes } = toID(step)
+        const { type, display, writes } = toID(step)
 
         const isDuplicate = writes.some((id) => seen.has(id))
-        if (isDuplicate) notify.duplicate({ type, displayName, index })
+        if (isDuplicate) notify.duplicate({ type, name: display.name, index })
 
         writes.forEach((id) => seen.add(id))
       }
@@ -50,12 +50,12 @@ const createGuard = (resolver: Resolver) => {
       const added = new Set<symbol>()
 
       for (const step of stage) {
-        const { type, displayName, writes } = toID(step)
+        const { type, display, writes } = toID(step)
         const context = toContext(step)
 
         const dependencies = resolver.dependenciesOf(context)
         const missing = difference(dependencies.required, available)
-        if (missing.size > 0) notify.notSatisfied({ type, displayName, index, missing })
+        if (missing.size > 0) notify.notSatisfied({ type, name: display.name, index, missing })
 
         writes.forEach((id) => added.add(id))
       }
@@ -69,10 +69,10 @@ const createGuard = (resolver: Resolver) => {
 
     for (const [index, stage] of stages.entries()) {
       for (const step of stage) {
-        const { type, displayName, writes } = toID(step)
+        const { type, display, writes } = toID(step)
         const context = toContext(step)
 
-        if (type === "binding") writes.forEach((id) => candidates.set(id, { type, displayName, index }))
+        if (type === "binding") writes.forEach((id) => candidates.set(id, { type, name: display.name, index }))
 
         const dependencies = resolver.dependenciesOf(context)
 
