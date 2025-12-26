@@ -164,7 +164,7 @@ describe("graph tests", () => {
     expect(graph(stages)).toStrictEqual(expected)
   })
 
-  it("Mixed dependencies: required and optional", () => {
+  it("mixed dependencies: required and optional", () => {
     type BetaCtx = { value: boolean; fn?: (_: boolean) => boolean }
     const fnTag = createTag<NonNullable<BetaCtx["fn"]>>({ name: "fnTag" })
     const betaTask = createTask({
