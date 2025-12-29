@@ -23,7 +23,7 @@ type TaskConfig<RunContext, EnabledContext, Api> = {
     ? { context?: never }
     : { context: ContextOfRunner<RunContext> })
   enabled?: EnabledContext extends void
-    ? { fn: (ctx?: never) => Eventual<boolean>; context?: never }
+    ? { fn: () => Eventual<boolean>; context?: never }
     : { context: EnabledContext; fn: (ctx: ExtractSpotContext<EnabledContext>) => Eventual<boolean> }
 }
 
