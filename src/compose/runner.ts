@@ -21,8 +21,8 @@ const createRunner = ({ compiler, resolver }: RunnerContext) => {
     if (!satisfied) return { status: "skip" }
 
     const context = {
-      run: compiler.build(task.context.run),
       enabled: compiler.build(task.context.enabled),
+      run: compiler.build(task.context.run),
     }
 
     try {
