@@ -25,11 +25,11 @@ const graph = (stages: Stage[]): Graph => {
   let entryID = 0
 
   for (const step of steps) {
-    const { type, name, symbol } = toID(step)
+    const { type, name, writes } = toID(step)
     const context = toContext(step)
     const dependencies = resolver.dependenciesOf(context)
 
-    symbolToID.set(symbol, entryID)
+    writes.forEach((x) => symbolToID.set(x, entryID))
 
     result[entryID] = {
       id: entryID,
