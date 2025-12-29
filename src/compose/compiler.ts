@@ -16,7 +16,7 @@ const createCompiler = (repo: Registry) => {
     }
   }
 
-  const record = <T extends AnyRecord>(shape: T): Record<keyof T, unknown> => {
+  const record = (shape: AnyRecord) => {
     const out: any = {}
 
     for (const key of Object.keys(shape)) out[key] = anything(shape[key])
@@ -32,7 +32,7 @@ const createCompiler = (repo: Registry) => {
     else /* unknown literal */ throw new Error(`${LIBRARY_NAME} Literal value found in context: ${String(thing)}.`)
   }
 
-  return { build: anything, buildRecord: record }
+  return { build: anything }
 }
 
 type Compiler = ReturnType<typeof createCompiler>

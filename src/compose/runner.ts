@@ -20,7 +20,10 @@ const createRunner = ({ compiler, resolver }: RunnerContext) => {
     const satisfied = resolver.satisfies(task.context)
     if (!satisfied) return { status: "skip" }
 
-    const context = compiler.buildRecord(task.context)
+    const context = {
+      run: compiler.build(task.context.run),
+      enabled: compiler.build(task.context.enabled),
+    }
 
     try {
       const enabled = await (task.enabled ?? T)(context.enabled)
