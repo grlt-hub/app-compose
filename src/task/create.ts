@@ -1,6 +1,6 @@
 import { Meta$, type Meta } from "@meta"
 import { type Eventual, type UnitName } from "@shared"
-import { literal, reference, type ExtractSpotContext, type ReferenceProvider, type SpotContext } from "@spot"
+import { literal, reference, type ContextValue, type ReferenceProvider, type SpotContext } from "@spot"
 
 const Task$ = Symbol("$task")
 
@@ -24,7 +24,7 @@ type TaskConfig<RunContext, EnabledContext, Api> = {
     : { context: ContextOfRunner<RunContext> })
   enabled?: EnabledContext extends void
     ? { fn: () => Eventual<boolean>; context?: never }
-    : { context: EnabledContext; fn: (ctx: ExtractSpotContext<EnabledContext>) => Eventual<boolean> }
+    : { context: EnabledContext; fn: (ctx: ContextValue<EnabledContext>) => Eventual<boolean> }
 }
 
 type TaskResult<T> = T extends Task<infer Api> ? Api : never

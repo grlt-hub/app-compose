@@ -10,4 +10,4 @@ type ContextValue<T> = T extends Spot<infer Value>
     ? { [Key in keyof T]: ContextValue<T[Key]> }
     : never
 
-export type { SpotContext, ExtractSpotContext }
+export type { SpotContext, ContextValue }
