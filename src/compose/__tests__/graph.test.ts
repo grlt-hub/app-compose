@@ -1,6 +1,6 @@
 import { literal, optional } from "@spot"
 import { bind, createTag } from "@tag"
-import { createTask } from "@task"
+import { createTask, status, type TaskStatus } from "@task"
 import { describe, expect, it } from "vitest"
 import { graph } from "../graph"
 import type { Stage } from "../types"
@@ -138,6 +138,36 @@ describe("graph tests", () => {
     const expected = [
       { id: 0, name: "alpha", type: "task", dependencies: { optional: [], required: [] } },
       { id: 1, name: "beta", type: "task", dependencies: { optional: [], required: [] } },
+    ]
+
+    expect(graph(stages)).toStrictEqual(expected)
+  })
+
+  it("task depends on another task's status", () => {
+    const betaTask = createTask({
+      name: "beta",
+      run: { fn: (ctx: TaskStatus) => ctx.name, context: status(alphaTask) },
+    })
+
+    const stages: [Stage, Stage] = [[alphaTask], [betaTask]]
+    const expected = [
+      { id: 0, name: "alpha", type: "task", dependencies: { optional: [], required: [] } },
+      { id: 1, name: "beta", type: "task", dependencies: { optional: [], required: [0] } },
+    ]
+
+    expect(graph(stages)).toStrictEqual(expected)
+  })
+
+  it("task depends on another task's status [optional]", () => {
+    const betaTask = createTask({
+      name: "beta",
+      run: { fn: (ctx?: TaskStatus) => ctx?.name, context: optional(status(alphaTask)) },
+    })
+
+    const stages: [Stage, Stage] = [[alphaTask], [betaTask]]
+    const expected = [
+      { id: 0, name: "alpha", type: "task", dependencies: { optional: [], required: [] } },
+      { id: 1, name: "beta", type: "task", dependencies: { optional: [0], required: [] } },
     ]
 
     expect(graph(stages)).toStrictEqual(expected)
