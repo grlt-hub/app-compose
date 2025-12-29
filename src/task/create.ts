@@ -17,7 +17,7 @@ type Task<Api> = ReferenceProvider<Api> & { [Task$]: TaskInternal } & Meta
 
 type AnyTask = Task<unknown>
 
-type TaskConfig<RunContext, EnabledContext, Api> = {
+type TaskConfig<Api, RunContext, EnabledContext> = {
   name: UnitName
   run: { fn: (ctx: RunContext) => Eventual<Api> } & (RunContext extends void
     ? { context?: never }
@@ -29,8 +29,8 @@ type TaskConfig<RunContext, EnabledContext, Api> = {
 
 type TaskResult<T> = T extends Task<infer Api> ? Api : never
 
-const createTask = <RunContext = void, EnabledContext = void, Api = unknown>(
-  config: TaskConfig<RunContext, EnabledContext, Api>,
+const createTask = <Api = unknown, RunContext = void, EnabledContext = void>(
+  config: TaskConfig<Api, RunContext, EnabledContext>,
 ): Task<Api> => {
   const id = {
     value: Symbol(`Task[${config.name}]`),
