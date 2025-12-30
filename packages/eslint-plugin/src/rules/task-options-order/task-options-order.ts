@@ -1,5 +1,6 @@
 import { type TSESTree as Node, AST_NODE_TYPES as NodeType, type TSESLint } from "@typescript-eslint/utils"
 
+import { PACKAGE_NAME, UNITS } from "@shared/constants"
 import { createRule } from "@shared/create"
 
 const GROUPS = [
@@ -15,7 +16,7 @@ export default createRule({
   meta: {
     type: "problem",
     docs: {
-      description: "Enforce options order for Task",
+      description: `Enforce options order for ${UNITS.CREATE_TASK}`,
     },
     messages: {
       invalidOrder: `Order of options should be \`{{ correctOrder }}\`, but found \`{{ currentOrder }}\`.`,
@@ -29,10 +30,8 @@ export default createRule({
     const source = context.sourceCode
     const imports = new Set<string>()
 
-    const PACKAGE_NAME = "@grlt-hub/app-compose"
-
     const importSelector = `ImportDeclaration[source.value=${PACKAGE_NAME}]`
-    const methodSelector = `ImportSpecifier[imported.name=createTask]`
+    const methodSelector = `ImportSpecifier[imported.name=${UNITS.CREATE_TASK}]`
 
     const callSelector = `[callee.type="Identifier"][arguments.length=1]`
     const argumentSelector = `ObjectExpression.arguments`
@@ -105,12 +104,12 @@ const isCorrectOrder = (current: string[]) => {
   return true
 }
 
-type BuilSnippetsParams = {
+type BuildSnippetsParams = {
   nodes: Map<string, Node.Property>
   source: Readonly<TSESLint.SourceCode>
 }
 
-const buildSnippets = ({ nodes, source }: BuilSnippetsParams) =>
+const buildSnippets = ({ nodes, source }: BuildSnippetsParams) =>
   GROUPS.map((group) => {
     if (group.nested) {
       const parts = group.nested
