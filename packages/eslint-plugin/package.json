@@ -1,7 +1,11 @@
 {
   "name": "@grlt-hub/eslint-plugin-app-compose",
-  "version": "3.0.0-alpha.1",
+  "version": "3.0.0-alpha.2",
   "description": "Enforcing best practices for @grlt-hub/app-compose",
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "keywords": [
     "eslint",
     "eslintplugin",
@@ -52,7 +56,7 @@
     "lint": "knip && oxlint ./src"
   },
   "dependencies": {
-    "@typescript-eslint/type-utils": "8.50.1"
+    "@typescript-eslint/utils": "8.50.1"
   },
   "devDependencies": {
     "eslint": "9.39.2"
