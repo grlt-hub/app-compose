@@ -1,17 +1,7 @@
 {
-  "name": "@grlt-hub/app-compose",
-  "version": "3.0.0-alpha.5",
-  "keywords": [
-    "grlt",
-    "grlt-hub",
-    "app-compose",
-    "dependency-injection",
-    "di",
-    "inversion-of-control",
-    "ioc",
-    "modular",
-    "typescript"
-  ],
+  "name": "@grlt-hub/app-compose-dev",
+  "private": true,
+  "version": "3.0.0",
   "homepage": "https://grlt-hub.github.io/app-compose/",
   "repository": {
     "type": "git",
@@ -29,31 +19,10 @@
     }
   ],
   "type": "module",
-  "exports": {
-    ".": {
-      "import": {
-        "types": "./dist/index.d.ts",
-        "default": "./dist/index.js"
-      },
-      "require": {
-        "types": "./dist/index.d.cts",
-        "default": "./dist/index.cjs"
-      }
-    },
-    "./package.json": "./package.json"
-  },
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "files": [
-    "dist"
-  ],
   "scripts": {
-    "build": "tsdown",
-    "dev": "tsdown --watch",
-    "prepack": "pnpm build",
-    "test": "vitest run",
-    "lint": "knip && oxlint ./src"
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "lint": "pnpm -r lint"
   },
   "devDependencies": {
     "@changesets/cli": "2.29.8",
