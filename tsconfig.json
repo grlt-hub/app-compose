@@ -21,16 +21,6 @@
     "declaration": true,
     "declarationMap": true,
 
-    "lib": ["ES2022"],
-
-    "paths": {
-      "@compose": ["./src/compose"],
-      "@shared": ["./src/shared"],
-      "@spot": ["./src/spot"],
-      "@tag": ["./src/tag"],
-      "@task": ["./src/task"],
-      "@meta": ["./src/meta"]
-    }
-  },
-  "include": ["src"]
+    "lib": ["ES2022"]
+  }
 }
