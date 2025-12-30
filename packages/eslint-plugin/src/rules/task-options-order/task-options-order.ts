@@ -2,6 +2,14 @@ import { type TSESTree as Node, AST_NODE_TYPES as NodeType, type TSESLint } from
 
 import { createRule } from "@shared/create"
 
+const GROUPS = [
+  { key: "name" },
+  { key: "run", nested: ["fn", "context"] } as const,
+  { key: "enabled", nested: ["fn", "context"] } as const,
+]
+
+const TRUE_ORDER = GROUPS.flatMap((group) => (group.nested ? group.nested.map((n) => `${group.key}.${n}`) : group.key))
+
 export default createRule({
   name: "task-options-order",
   meta: {
@@ -45,20 +53,14 @@ export default createRule({
         if (hasWeirdProperty) return
 
         const properties = config.properties as (Node.Property & { key: Node.Identifier })[]
-        const current = properties.map((prop) => prop.key.name)
+        const current = getCurrentKeys(properties)
 
-        if (isCorrectOrder(current)) return
+        if (isCorrectOrder(current.keys)) return
 
-        const correctOrder = TRUE_ORDER.filter((item) => current.includes(item))
-        const othersOrder = current.filter((item) => !TRUE_ORDER.includes(item))
-        const order = [...correctOrder, ...othersOrder]
+        const correctOrder = TRUE_ORDER.filter((item) => current.keys.includes(item))
+        const snippets = buildSnippets({ source, nodes: current.nodes })
 
-        const snippets = properties
-          .slice()
-          .sort((a, b) => order.indexOf(a.key.name) - order.indexOf(b.key.name))
-          .map((prop) => source.getText(prop))
-
-        const data = { correctOrder: correctOrder.join(" -> "), currentOrder: current.join(" -> ") }
+        const data = { correctOrder: correctOrder.join(" -> "), currentOrder: current.keys.join(" -> ") }
         context.report({
           node: config,
           messageId: "invalidOrder",
@@ -70,7 +72,25 @@ export default createRule({
   },
 })
 
-const TRUE_ORDER = ["name", "run", "enabled"]
+const getCurrentKeys = (properties: (Node.Property & { key: Node.Identifier })[]) => {
+  const nodes = new Map<string, Node.Property>()
+
+  for (const prop of properties) {
+    if (prop.value.type !== NodeType.ObjectExpression) {
+      nodes.set(prop.key.name, prop)
+      continue
+    }
+
+    for (const p of prop.value.properties) {
+      if (p.type === NodeType.Property && p.key.type === NodeType.Identifier) {
+        const key = `${prop.key.name}.${p.key.name}`
+        nodes.set(key, p)
+      }
+    }
+  }
+
+  return { keys: Array.from(nodes.keys()), nodes }
+}
 
 const isCorrectOrder = (current: string[]) => {
   let seen = -1
@@ -84,3 +104,25 @@ const isCorrectOrder = (current: string[]) => {
 
   return true
 }
+
+type BuilSnippetsParams = {
+  nodes: Map<string, Node.Property>
+  source: Readonly<TSESLint.SourceCode>
+}
+
+const buildSnippets = ({ nodes, source }: BuilSnippetsParams) =>
+  GROUPS.map((group) => {
+    if (group.nested) {
+      const parts = group.nested
+        .map((nested) => {
+          const node = nodes.get(`${group.key}.${nested}`)
+          return node ? `${nested}: ${source.getText(node.value)}` : null
+        })
+        .filter(Boolean)
+
+      return parts.length ? `${group.key}: { ${parts.join(", ")} }` : null
+    }
+
+    const node = nodes.get(group.key)
+    return node ? `${group.key}: ${source.getText(node.value)}` : null
+  }).filter(Boolean)
