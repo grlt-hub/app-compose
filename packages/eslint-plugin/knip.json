@@ -2,5 +2,6 @@
   "$schema": "https://unpkg.com/knip@5/schema.json",
   "ignore": ["**/__tests__/**", "*.config.ts"],
   "entry": ["./src/index.ts"],
-  "exclude": ["unlisted", "dependencies", "binaries"]
+  "ignoreBinaries": ["tsdown", "knip", "oxlint"],
+  "ignoreDependencies": ["@typescript-eslint/type-utils", "eslint"]
 }
