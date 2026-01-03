@@ -20,6 +20,7 @@
   ],
   "type": "module",
   "scripts": {
+    "doc:dev": "pnpm --dir ./documentation run dev",
     "build": "pnpm -r build",
     "test": "pnpm -r test",
     "lint": "pnpm -r lint"
