@@ -1,20 +1,18 @@
 {
-  "name": "@grlt-hub/app-compose",
-  "version": "3.0.0-alpha.6",
+  "name": "@grlt-hub/eslint-plugin-app-compose",
+  "version": "3.0.0-alpha.2",
+  "description": "Enforcing best practices for @grlt-hub/app-compose",
   "private": false,
   "publishConfig": {
     "access": "public"
   },
   "keywords": [
+    "eslint",
+    "eslintplugin",
+    "eslint-plugin",
     "grlt",
     "grlt-hub",
-    "app-compose",
-    "dependency-injection",
-    "di",
-    "inversion-of-control",
-    "ioc",
-    "modular",
-    "typescript"
+    "app-compose"
   ],
   "homepage": "https://grlt-hub.github.io/app-compose/",
   "repository": {
@@ -36,8 +34,8 @@
   "exports": {
     ".": {
       "import": {
-        "types": "./dist/index.d.ts",
-        "default": "./dist/index.js"
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
       },
       "require": {
         "types": "./dist/index.d.cts",
@@ -46,18 +44,28 @@
     },
     "./package.json": "./package.json"
   },
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.cts",
   "files": [
     "dist"
   ],
   "scripts": {
     "build": "tsdown",
-    "dev": "tsdown --watch",
     "prepack": "pnpm build",
-    "test": "vitest run",
-    "lint": "knip && oxlint ./src"
+    "lint": "oxlint ./src",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@typescript-eslint/utils": "8.51.0"
+  },
+  "devDependencies": {
+    "@typescript-eslint/rule-tester": "8.51.0",
+    "eslint": "9.39.2"
+  },
+  "peerDependencies": {
+    "eslint": ">=9.0.0",
+    "typescript": ">=5.0.0"
   },
   "packageManager": "pnpm@10.24.0+sha512.01ff8ae71b4419903b65c60fb2dc9d34cf8bb6e06d03bde112ef38f7a34d6904c424ba66bea5cdcf12890230bf39f9580473140ed9c946fef328b6e5238a345a"
 }
