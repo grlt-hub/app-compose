@@ -1,7 +1,11 @@
-minimumReleaseAge: 4320
-
 packages:
-  - "packages/*"
+  - packages/*
+  - documentation
+
+ignoredBuiltDependencies:
+  - sharp
+
+minimumReleaseAge: 4320
 
 onlyBuiltDependencies:
   - esbuild
