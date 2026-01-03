@@ -1,7 +1,6 @@
+import { PACKAGE_NAME, UNITS } from "@/shared/constants"
+import { createRule } from "@/shared/create"
 import { type TSESTree as Node, AST_NODE_TYPES as NodeType, type TSESLint } from "@typescript-eslint/utils"
-
-import { PACKAGE_NAME, UNITS } from "@shared/constants"
-import { createRule } from "@shared/create"
 
 const GROUPS = [
   { key: "name" },

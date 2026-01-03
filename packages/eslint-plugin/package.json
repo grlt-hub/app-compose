@@ -53,12 +53,14 @@
   "scripts": {
     "build": "tsdown",
     "prepack": "pnpm build",
-    "lint": "knip && oxlint ./src"
+    "lint": "oxlint ./src",
+    "test": "vitest run"
   },
   "dependencies": {
-    "@typescript-eslint/utils": "8.50.1"
+    "@typescript-eslint/utils": "8.51.0"
   },
   "devDependencies": {
+    "@typescript-eslint/rule-tester": "8.51.0",
     "eslint": "9.39.2"
   },
   "peerDependencies": {
