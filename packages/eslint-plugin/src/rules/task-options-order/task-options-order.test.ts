@@ -11,7 +11,6 @@ const commonCode = ts`
   const enabled = (x: boolean) => !x;
 `
 
-// @ts-expect-error idk
 ruleTester.run("task-options-order", rule, {
   valid: [
     {
@@ -86,7 +85,11 @@ ruleTester.run("task-options-order", rule, {
       `,
       output: ts`
         ${commonCode}
-        createTask({ name: 'alpha', run: { fn: run, context: literal('0') }, enabled: { fn: enabled, context: literal(false) } })
+        createTask({
+        name: 'alpha',
+        run: { fn: run, context: literal('0') },
+        enabled: { fn: enabled, context: literal(false) }
+        })
     `,
       errors: [
         {
@@ -112,7 +115,11 @@ ruleTester.run("task-options-order", rule, {
       output: ts`
         ${commonCode}
 
-        createTask({ name: 'alpha', run: { fn: run, context: literal('0') }, enabled: { fn: enabled, context: literal(false) } })
+        createTask({
+        name: 'alpha',
+        run: { fn: run, context: literal('0') },
+        enabled: { fn: enabled, context: literal(false) }
+        })
     `,
       errors: [
         {
@@ -138,7 +145,11 @@ ruleTester.run("task-options-order", rule, {
       output: ts`
         ${commonCode}
 
-        createTask({ name: 'alpha', run: { fn: run, context: literal('0') }, enabled: { fn: enabled, context: literal(false) } })
+        createTask({
+        name: 'alpha',
+        run: { fn: run, context: literal('0') },
+        enabled: { fn: enabled, context: literal(false) }
+        })
     `,
       errors: [
         {
@@ -164,7 +175,11 @@ ruleTester.run("task-options-order", rule, {
       output: ts`
         ${commonCode}
 
-        createTask({ name: 'alpha', run: { fn: run, context: literal('0') }, enabled: { fn: enabled, context: literal(false) } })
+        createTask({
+        name: 'alpha',
+        run: { fn: run, context: literal('0') },
+        enabled: { fn: enabled, context: literal(false) }
+        })
     `,
       errors: [
         {
@@ -190,7 +205,11 @@ ruleTester.run("task-options-order", rule, {
       output: ts`
         ${commonCode}
 
-        createTask({ name: 'alpha', run: { fn: run, context: literal('0') }, enabled: { fn: enabled, context: literal(false) } })
+        createTask({
+        name: 'alpha',
+        run: { fn: run, context: literal('0') },
+        enabled: { fn: enabled, context: literal(false) }
+        })
     `,
       errors: [
         {

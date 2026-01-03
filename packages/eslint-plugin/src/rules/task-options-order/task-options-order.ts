@@ -10,6 +10,12 @@ const GROUPS = [
 
 const TRUE_ORDER = GROUPS.flatMap((group) => (group.nested ? group.nested.map((n) => `${group.key}.${n}`) : group.key))
 
+const importSelector = `ImportDeclaration[source.value=${PACKAGE_NAME}]`
+const methodSelector = `ImportSpecifier[imported.name=${UNITS.CREATE_TASK}]`
+
+const callSelector = `[callee.type="Identifier"][arguments.length=1]`
+const argumentSelector = `ObjectExpression.arguments`
+
 export default createRule({
   name: "task-options-order",
   meta: {
@@ -28,12 +34,6 @@ export default createRule({
   create: (context) => {
     const source = context.sourceCode
     const imports = new Set<string>()
-
-    const importSelector = `ImportDeclaration[source.value=${PACKAGE_NAME}]`
-    const methodSelector = `ImportSpecifier[imported.name=${UNITS.CREATE_TASK}]`
-
-    const callSelector = `[callee.type="Identifier"][arguments.length=1]`
-    const argumentSelector = `ObjectExpression.arguments`
 
     type MethodCall = Node.CallExpression & { callee: Node.Identifier; arguments: [Node.ObjectExpression] }
 
@@ -63,7 +63,7 @@ export default createRule({
           node: config,
           messageId: "invalidOrder",
           data,
-          fix: (fixer: TSESLint.RuleFixer) => [fixer.replaceText(config, `{ ${snippets.join(", ")} }`)],
+          fix: (fixer) => [fixer.replaceText(config, `{\n${snippets.join(`,\n`)}\n}`)],
         })
       },
     }
