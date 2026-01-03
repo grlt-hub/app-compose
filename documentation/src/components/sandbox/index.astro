@@ -1,0 +1,7 @@
+---
+import SandpackEditor from './index.tsx';
+
+const { code, template, options, files } = Astro.props;
+---
+
+<SandpackEditor client:load code={code} template={template} options={options} files={files} />

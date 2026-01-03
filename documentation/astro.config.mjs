@@ -1,10 +1,12 @@
 // @ts-check
+import react from "@astrojs/react"
 import starlight from "@astrojs/starlight"
 import { defineConfig } from "astro/config"
 
 export default defineConfig({
   // base: "/app-compose",
   integrations: [
+    react(),
     starlight({
       title: "app-compose",
       description: "App Compose - Compose modules into apps",
@@ -30,6 +32,7 @@ export default defineConfig({
           collapsed: true,
         },
       ],
+      customCss: ["./src/styles/custom.css"],
     }),
   ],
 })

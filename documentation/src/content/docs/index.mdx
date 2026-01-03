@@ -1,9 +1,9 @@
 ---
-title: Welcome to Starlight
+title: App-Compose
 description: Get started building your docs site with Starlight.
 template: splash # Remove or comment out this line to display the site sidebar on this page.
 hero:
-  tagline: Congrats on setting up a new Starlight project!
+  tagline: Compose modules into apps
   image:
     file: ../../assets/houston.webp
   actions:
@@ -17,6 +17,10 @@ hero:
 ---
 
 import { Card, CardGrid } from "@astrojs/starlight/components"
+import Sandbox from "../../components/sandbox/index.astro"
+import example from "./example.js?raw"
+
+<Sandbox template="vanilla" code={example} options={{ editorHeight: 440 }} />
 
 ## Next steps
 
