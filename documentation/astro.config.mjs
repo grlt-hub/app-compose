@@ -2,23 +2,32 @@
 import starlight from "@astrojs/starlight"
 import { defineConfig } from "astro/config"
 
-// https://astro.build/config
 export default defineConfig({
+  // base: "/app-compose",
   integrations: [
     starlight({
-      title: "My Docs",
+      title: "app-compose",
+      description: "App Compose - Compose modules into apps",
       social: [{ icon: "github", label: "GitHub", href: "https://github.com/withastro/starlight" }],
+      tableOfContents: false,
       sidebar: [
         {
-          label: "Guides",
+          label: "Start",
           items: [
-            // Each item here is one entry in the navigation menu.
-            { label: "Example Guide", slug: "guides/example" },
+            { label: "Getting started", slug: "start" },
+            { label: "Tooling", slug: "start/tooling" },
           ],
+          collapsed: true,
+        },
+        {
+          label: "Guides",
+          items: [{ label: "Example Guide", slug: "guides/example" }],
+          collapsed: true,
         },
         {
           label: "Reference",
           autogenerate: { directory: "reference" },
+          collapsed: true,
         },
       ],
     }),

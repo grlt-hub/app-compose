@@ -21,7 +21,7 @@
   "type": "module",
   "scripts": {
     "doc:dev": "pnpm --dir ./documentation run dev",
-    "build": "pnpm -r build",
+    "build": "pnpm -r --filter='!./documentation' build",
     "test": "pnpm -r test",
     "lint": "pnpm -r lint"
   },
