@@ -1,43 +1,35 @@
 ---
 title: App-Compose
 description: Get started building your docs site with Starlight.
-template: splash # Remove or comment out this line to display the site sidebar on this page.
+template: splash
 hero:
-  tagline: Compose modules into apps
-  image:
-    file: ../../assets/houston.webp
+  tagline: The library for dependency injection
   actions:
-    - text: Example Guide
+    - text: Learn
       link: /start/
-      icon: right-arrow
-    - text: Read the Starlight docs
+      icon: open-book
+
+    - text: API Reference
       link: https://starlight.astro.build
-      icon: external
-      variant: minimal
+      variant: secondary
+head:
+  - tag: style
 ---
 
-import { Card, CardGrid } from "@astrojs/starlight/components"
 import Sandbox from "../../components/sandbox/index.astro"
 import example from "./example.js?raw"
+import logger from "./logger.js?raw"
 
 <Sandbox template="vanilla" code={example} options={{ editorHeight: 440 }} />
 
-## Next steps
+## Reuse code for any task
 
-<CardGrid stagger>
-  <Card title="Update content" icon="pencil">
-    Edit `src/content/docs/index.mdx` to see this page change.
-  </Card>
-  <Card title="Change page layout" icon="document">
-    Delete `template: splash` in `src/content/docs/index.mdx` to display a sidebar on this page.
-  </Card>
-  <Card title="Add new content" icon="add-document">
-    Add Markdown or MDX files to `src/content/docs` to create new pages.
-  </Card>
-  <Card title="Configure your site" icon="setting">
-    Edit your `sidebar` and other config in `astro.config.mjs`.
-  </Card>
-  <Card title="Read the docs" icon="open-book">
-    Learn more in [the Starlight Docs](https://starlight.astro.build/).
-  </Card>
-</CardGrid>
+Write logic once and run it anywhere. Need to mock an API or change a config for a specific page? Just provide different values<br/>
+Build features that work in any part of the app.
+
+<Sandbox template="react-ts" code={logger} options={{ editorHeight: 440, showConsole: true }} />
+
+## Toggle features with ease
+
+Enable or disable any feature with a single toggle. Turning off a feature automatically stops all its dependent features.<br/>
+Stop cluttering code with `if` conditions and manual cleanup.

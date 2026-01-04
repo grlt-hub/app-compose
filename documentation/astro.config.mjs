@@ -8,9 +8,9 @@ export default defineConfig({
   integrations: [
     react(),
     starlight({
-      title: "app-compose",
+      title: "App-Compose",
       description: "App Compose - Compose modules into apps",
-      social: [{ icon: "github", label: "GitHub", href: "https://github.com/withastro/starlight" }],
+      social: [{ icon: "github", label: "GitHub", href: "https://github.com/grlt-hub/app-compose" }],
       tableOfContents: false,
       sidebar: [
         {
