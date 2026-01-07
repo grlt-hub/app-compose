@@ -1,5 +1,5 @@
 import { isObject, LIBRARY_NAME, path, type AnyRecord } from "@shared"
-import { Derive$, Kind$, Literal$, RefID$, RefPath$ } from "@spot"
+import { Kind$, Literal$, Map$, RefID$, RefPath$ } from "@spot"
 import type { Registry, SpotImpl } from "./types"
 
 const createCompiler = (repo: Registry) => {
@@ -10,7 +10,7 @@ const createCompiler = (repo: Registry) => {
 
       case "reference":
         const value = path(repo.get(spot[RefID$]), spot[RefPath$])
-        return spot[Derive$] ? spot[Derive$](value) : value
+        return spot[Map$] ? spot[Map$](value) : value
 
       default:
         const _: never = /* exhaustive */ spot
@@ -30,7 +30,7 @@ const createCompiler = (repo: Registry) => {
       if (Kind$ in thing) return read(thing as SpotImpl)
       else return record(thing as AnyRecord)
     else if (Array.isArray(thing)) return thing.map(anything)
-    else /* unknown literal */ throw new Error(`${LIBRARY_NAME} Literal value found in context: ${String(thing)}.`)
+    /* unknown literal */ else throw new Error(`${LIBRARY_NAME} Literal value found in context: ${String(thing)}.`)
   }
 
   return { build: anything }

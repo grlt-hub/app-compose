@@ -1,18 +1,18 @@
 import type { AnyRecord } from "@shared"
 import { lens, type Lensable } from "./lens"
-import { Derive$, Kind$, Optional$, type Spot, type SpotDerive, type SpotKind, type SpotOptional } from "./spot"
+import { Kind$, Map$, Optional$, type Spot, type SpotKind, type SpotMap, type SpotOptional } from "./spot"
 
-type Reference<T> = Spot<T> & SpotKind<"reference"> & SpotOptional & Lensable & SpotDerive<T>
+type Reference<T> = Spot<T> & SpotKind<"reference"> & SpotOptional & Lensable & SpotMap<T>
 
 type ReferenceProvider<T> = T extends AnyRecord
   ? { [Key in keyof T]: ReferenceProvider<T[Key]> } & Reference<T>
   : Reference<T>
 
-const reference = <T, S = T>(id: symbol, derive?: (value: S) => T): ReferenceProvider<T> => {
+const reference = <T, S = T>(id: symbol, map?: (value: S) => T): ReferenceProvider<T> => {
   const spot: Omit<Reference<T>, keyof Lensable> = {
     [Kind$]: "reference" as const,
     [Optional$]: false,
-    ...(derive && { [Derive$]: derive }),
+    ...(map && { [Map$]: map }),
   }
 
   return lens(spot, id) as ReferenceProvider<T>
