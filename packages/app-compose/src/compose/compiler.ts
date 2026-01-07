@@ -1,5 +1,5 @@
 import { isObject, LIBRARY_NAME, path, type AnyRecord } from "@shared"
-import { Kind$, Literal$, RefID$, RefPath$ } from "@spot"
+import { Derive$, Kind$, Literal$, RefID$, RefPath$ } from "@spot"
 import type { Registry, SpotImpl } from "./types"
 
 const createCompiler = (repo: Registry) => {
@@ -9,7 +9,8 @@ const createCompiler = (repo: Registry) => {
         return spot[Literal$]
 
       case "reference":
-        return path(repo.get(spot[RefID$]), spot[RefPath$])
+        const value = path(repo.get(spot[RefID$]), spot[RefPath$])
+        return spot[Derive$] ? spot[Derive$](value) : value
 
       default:
         const _: never = /* exhaustive */ spot
