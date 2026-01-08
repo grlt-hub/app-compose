@@ -4,7 +4,7 @@ const mainFeature = createTask({
   name: "main",
   run: {
     fn: () => {
-      /* throw new Error("Oops!") */
+      // throw new Error("Oops!")
     },
   },
   enabled: { fn: () => true },
