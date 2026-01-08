@@ -83,8 +83,8 @@ Do not mix `bind` and Tasks within the same Stage.
 .stage([bind(...), task])
 
 // ✅ Correct
-.stage([bind(...)], [task])
 .stage([bind(...)]).stage([task])
+.stage([bind(...)], [task])
 ```
 
 </Aside>
