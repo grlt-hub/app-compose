@@ -50,7 +50,7 @@ const SandpackEditor = ({ code, template = "react", options, files = {} }: Props
         }}
         customSetup={{
           dependencies: {
-            "@grlt-hub/app-compose": "3.0.0-alpha.6",
+            "@grlt-hub/app-compose": "3.0.0-alpha.7",
           },
           entry: "/entry.js",
         }}

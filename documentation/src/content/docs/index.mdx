@@ -19,6 +19,7 @@ head:
 import Sandbox from "../../components/sandbox/index.astro"
 import example from "./example.js?raw"
 import logger from "./logger.js?raw"
+import featureToggle from "./feature-toggle.js?raw"
 
 <Sandbox template="vanilla" code={example} options={{ editorHeight: 440 }} />
 
@@ -33,3 +34,5 @@ Build features that work in any part of the app.
 
 Enable or disable any feature with a single toggle. Turning off a feature automatically stops all its dependent features.<br/>
 Stop cluttering code with `if` conditions and manual cleanup.
+
+<Sandbox template="vanilla" code={featureToggle} options={{ editorHeight: 470 }} />
