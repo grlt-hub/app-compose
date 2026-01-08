@@ -6,7 +6,10 @@ type Props = {
   code: string
   template?: SandpackPredefinedTemplate
   files?: Record<string, string>
-  options?: Pick<SandpackOptions, "showConsole" | "layout" | "editorHeight" | "editorWidthPercentage">
+  options?: Pick<
+    SandpackOptions,
+    "showConsole" | "layout" | "editorHeight" | "editorWidthPercentage" | "showConsoleButton"
+  >
 }
 
 const SandpackEditor = ({ code, template = "react", options, files = {} }: Props) => {
@@ -42,7 +45,7 @@ const SandpackEditor = ({ code, template = "react", options, files = {} }: Props
           showLineNumbers: true,
           showInlineErrors: true,
           resizablePanels: true,
-          showConsoleButton: true,
+          showConsoleButton: options?.showConsoleButton ?? true,
           initMode: "user-visible",
           initModeObserverOptions: { rootMargin: "1400px 0px" },
           // @ts-expect-error idk

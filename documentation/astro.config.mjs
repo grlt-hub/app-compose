@@ -12,6 +12,7 @@ export default defineConfig({
       description: "App Compose - Compose modules into apps",
       social: [{ icon: "github", label: "GitHub", href: "https://github.com/grlt-hub/app-compose" }],
       tableOfContents: false,
+      logo: { src: "./src/assets/logo.svg", replacesTitle: true },
       sidebar: [
         {
           label: "Start",

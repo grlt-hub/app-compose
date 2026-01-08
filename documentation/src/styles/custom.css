@@ -1,5 +1,6 @@
 :root {
   --sl-content-width: 60rem;
+  --sl-color-text-accent: #00C897;
 }
 
 .hero {
@@ -13,4 +14,3 @@
 .hero .actions {
   justify-content: center;
 }
-
