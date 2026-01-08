@@ -14,7 +14,14 @@ type Props = {
 
 const SandpackEditor = ({ code, template = "react", options, files = {} }: Props) => {
   const theme = useTheme()
-  const fileName = template === "react" ? "App.js" : template === "react-ts" ? "App.tsx" : "index.js"
+  const fileName =
+    template === "react"
+      ? "App.js"
+      : template === "react-ts"
+      ? "App.tsx"
+      : template === "vanilla-ts"
+      ? "index.ts"
+      : "index.js"
 
   return (
     <div className="not-content">
@@ -39,13 +46,14 @@ const SandpackEditor = ({ code, template = "react", options, files = {} }: Props
           showConsole: options?.showConsole,
           layout: options?.layout,
           editorWidthPercentage: options?.editorWidthPercentage ?? 60,
+          showConsoleButton: options?.showConsoleButton ?? true,
 
           showNavigator: false,
           showTabs: true,
           showLineNumbers: true,
           showInlineErrors: true,
           resizablePanels: true,
-          showConsoleButton: options?.showConsoleButton ?? true,
+          showRefreshButton: true,
           initMode: "user-visible",
           initModeObserverOptions: { rootMargin: "1400px 0px" },
           // @ts-expect-error idk

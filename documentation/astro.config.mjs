@@ -11,14 +11,14 @@ export default defineConfig({
       title: "App-Compose",
       description: "App Compose - Compose modules into apps",
       social: [{ icon: "github", label: "GitHub", href: "https://github.com/grlt-hub/app-compose" }],
-      tableOfContents: false,
       logo: { src: "./src/assets/logo.svg", replacesTitle: true },
       sidebar: [
         {
-          label: "Start",
+          label: "Learn",
           items: [
-            { label: "Getting started", slug: "start" },
-            { label: "Tooling", slug: "start/tooling" },
+            { label: "Quick Start", slug: "learn" },
+            { label: "Installation", slug: "learn/installation" },
+            { label: "Tooling", slug: "learn/tooling" },
           ],
           collapsed: true,
         },
