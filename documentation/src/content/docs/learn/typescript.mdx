@@ -3,3 +3,39 @@ title: Using TypeScript
 ---
 
 App-Compose comes with built-in TypeScript support, so you can start writing type-safe code right away.
+
+## TypeScript with Tags
+
+When creating a Tag, you can specify the data type it holds.
+
+```ts
+const tag = createTag<string>({ name: "title" })
+```
+
+This provides full type safety for both Tag inputs and outputs.
+
+## Useful Types
+
+### TaskResult&lt;T&gt;
+
+Extracts the return type of a given Task.
+
+```ts
+import { type TaskResult } from "@grlt-hub/app-compose"
+
+const alpha = createTask({ name: "alpha", run: { fn: () => "hello" } })
+
+type AlphaResult = TaskResult<typeof alpha> // => string
+```
+
+### TaskStatus
+
+Represents the possible execution outcomes of a Task.
+
+{/* prettier-ignore */}
+```ts
+type TaskStatus = 
+  | { name: "done" } 
+  | { name: "skip" } 
+  | { name: "fail"; error: unknown };
+```

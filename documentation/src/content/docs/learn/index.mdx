@@ -39,7 +39,7 @@ const fetchUser = createTask({
 })
 ```
 
-Notice that every Task must have a `name` and a `run.fn`. These are the only mandatory properties. The `run.fn` can be either a synchronous or an asynchronous function. It can return a value to be used by other Tasks, or return nothing if the Task only performs a side effect.
+**Note** that every Task must have a `name` and a `run.fn`. These are the only mandatory properties. The `run.fn` can be either a synchronous or an asynchronous function. It can return a value to be used by other Tasks, or return nothing if the Task only performs a side effect.
 
 ## How to run a Task
 
@@ -55,8 +55,9 @@ After defining the Stages, call `run()` to start execution.
 
 ## How to pass data to a Task
 
-Tasks rarely operate in a vacuum. To be dynamic and reusable, they need access to external data like a username, a product ID, or the current interface language. Tasks access data through a _Context_ object, receiving everything they need from the environment without hardcoding values.
-The Context supplies all properties required by the `run.fn` function.
+Tasks rarely operate in a vacuum. To be dynamic and reusable, they need access to external data like a username, a product ID, or the current interface language. Tasks access data through a _Context_, receiving everything they need from the environment without hardcoding values.
+The Context supplies all properties required by the `run.fn` function.<br/>
+**Note** that the Context can be either an _object_ or an _array_.
 
 <br />
 

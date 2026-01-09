@@ -13,30 +13,30 @@ Use your preferred package manager.
 
 <Tabs>
   <TabItem label="npm">
+
     ```bash
     npm install --save-dev --save-exact @grlt-hub/eslint-plugin-app-compose
-
     ```
 
   </TabItem>
   <TabItem label="pnpm">
+
     ```bash
     pnpm add --save-dev --save-exact @grlt-hub/eslint-plugin-app-compose
-
     ```
 
   </TabItem>
   <TabItem label="yarn">
+   
     ```bash
     yarn add --dev --exact @grlt-hub/eslint-plugin-app-compose
-
     ```
 
   </TabItem>
   <TabItem label="bun">
+
     ```bash
     bun add --dev --exact @grlt-hub/eslint-plugin-app-compose
-
     ```
 
   </TabItem>
@@ -46,11 +46,11 @@ Use your preferred package manager.
 
 Import the plugin and add it to your config. Use the recommended preset for a quick start.
 
+{/* prettier-ignore */}
 ```js
 import appCompose from "@grlt-hub/eslint-plugin-app-compose"
 
 export default tseslint.config(
-  ...,
   appCompose.configs.recommended
 )
 ```
