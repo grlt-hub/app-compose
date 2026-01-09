@@ -4,6 +4,7 @@ const mainFeature = createTask({
   name: "main",
   run: {
     fn: () => {
+      // 👇 Uncomment to simulate failure
       // throw new Error("Oops!")
     },
   },

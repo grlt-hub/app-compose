@@ -38,7 +38,7 @@ const SandpackEditor = ({ code, template = "react", options, files = {} }: Props
             import * as AppCompose from "@grlt-hub/app-compose";
             Object.assign(window, AppCompose);
             console.clear();
-            import("./${fileName}");
+            import("./${fileName}").catch(err => console.error(err.message));
             `,
           },
         }}
