@@ -37,6 +37,7 @@ const SandpackEditor = ({ code, template = "react", options, files = {} }: Props
             import "./sandboxStyle.css";
             import * as AppCompose from "@grlt-hub/app-compose";
             Object.assign(window, AppCompose);
+            console.clear();
             import("./${fileName}");
             `,
           },

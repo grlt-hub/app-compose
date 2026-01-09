@@ -149,7 +149,7 @@ const controlTask = createTask({
     },
     context: {
       // Returns true if tasks failed
-      checks: [status(logIn, "fail"), status(fetchUser, "fail")],
+      checks: [status(fetchUser, "fail")],
     },
   },
 })
@@ -168,5 +168,12 @@ Check out this interactive example to see `status` in action:
 <Sandbox
   template="vanilla"
   code={getStatus}
-  options={{ editorHeight: 920, layout: "console", showConsoleButton: false }}
+  options={{ editorHeight: 720, layout: "console", showConsoleButton: false }}
 />
+
+## Next Steps
+
+By now, you know how to build with App-Compose.
+
+<br />
+Next, head over to [Installation](/learn/installation/) to get everything set up.
