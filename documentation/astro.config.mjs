@@ -22,7 +22,8 @@ export default defineConfig({
           items: [
             { label: "Quick Start", slug: "learn" },
             { label: "Installation", slug: "learn/installation" },
-            { label: "Tooling", slug: "learn/tooling" },
+            { label: "Linting", slug: "learn/linting" },
+            { label: "Using TypeScript", slug: "learn/typescript" },
           ],
           collapsed: true,
         },
