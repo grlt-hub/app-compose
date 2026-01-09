@@ -6,6 +6,8 @@ import { Aside, Code } from "@astrojs/starlight/components"
 import Sandbox from "../../../components/sandbox/index.astro"
 import runTask from "./how-to-run-task.js?raw"
 import passData from "./how-to-pass-data.js?raw"
+import disable from "./how-to-disable.js?raw"
+import getStatus from "./how-to-get-status.js?raw"
 
 Welcome to the App-Compose documentation! This page covers 90% of the App-Compose concepts you will use on a daily basis.
 
@@ -13,7 +15,8 @@ Welcome to the App-Compose documentation! This page covers 90% of the App-Compos
 - How to create a Task
 - How to run a Task
 - How to pass data to a Task
-- How to enable and disable Tasks
+- How to enable and disable Task
+- How to get Task status
 
 </Aside>
 
@@ -67,7 +70,7 @@ const tag = createTag({ name: "userId" })
 
 <br />
 
-The `bind` operator fills a Tag at the Stage level, making data available for upcoming Tasks
+The `bind` operator fills a Tag at the Stage level, making data available for upcoming Tasks.
 
 ```js
 import { bind } from "@grlt-hub/app-compose"
@@ -99,4 +102,42 @@ Have a look at the result:
   options={{ editorHeight: 800, layout: "console", showConsoleButton: false, editorWidthPercentage: 65 }}
 />
 
-## How to enable and disable Tasks
+## How to enable and disable Task
+
+Tasks are enabled by default. Use the `enabled` property to skip a Task based on feature toggles, application state, or any internal logic.
+
+```js {6-9}
+const tag = createTag({ name: "fetch-user::enabled" })
+
+const fetchUser = createTask({
+  name: "fetch-user",
+  run: { fn: () => {...} },
+  enabled: {
+    fn: ({ enabled }) => enabled,
+    context: { enabled: tag },
+  },
+})
+```
+
+The `enabled` property works as follows:
+
+- Data from `enabled.context` is passed to `enabled.fn`
+- `enabled.fn` must return a _boolean | Promise&lt;boolean&gt;_
+- If it returns false, the Task is skipped
+
+<Sandbox
+  template="vanilla"
+  code={disable}
+  options={{ editorHeight: 590, layout: "console", showConsoleButton: false }}
+/>
+
+## How to get Task status
+
+Sometimes a Task needs to know the execution status of another, either directly or through a Tag. The `status` operator provides
+this information. This is especially useful for ensuring core functionality or displaying a fallback UI.
+
+<Sandbox
+  template="vanilla"
+  code={getStatus}
+  options={{ editorHeight: 420, layout: "console", showConsoleButton: false }}
+/>

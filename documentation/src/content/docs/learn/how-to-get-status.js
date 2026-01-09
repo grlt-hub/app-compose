@@ -1,4 +1,4 @@
-import { bind, compose, createTag } from "@grlt-hub/app-compose"
+import { bind, compose, createTag, status } from "@grlt-hub/app-compose"
 
 const tag = createTag({ name: "userId" })
 
@@ -6,10 +6,7 @@ const fetchUser = createTask({
   name: "fetch-user",
   run: {
     fn: async (ctx) => {
-      const response = await fetch(
-        // 👇 userId is passed from Context
-        `https://jsonplaceholder.typicode.com/users/${ctx.userId}`
-      )
+      const response = await fetch(`https://jsonplaceholder.typicode.com/users/${ctx.userId}`)
       const result = await response.json()
 
       console.log(JSON.stringify(result, null, 2))
@@ -21,11 +18,12 @@ const fetchUser = createTask({
 const logIn = createTask({
   name: "log-in",
   run: {
-    fn: () => {
-      // 👇 Try different values here
-      return { id: 1 }
-    },
+    fn: () => ({ id: 1 }),
   },
+})
+
+const controlTask = createTask({
+  name: "control-task",
 })
 
 compose()
