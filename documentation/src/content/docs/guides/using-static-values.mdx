@@ -1,0 +1,21 @@
+---
+title: Using Static Values
+description: App-Compose — Using Static Values (literal)
+sidebar:
+  order: 0
+---
+
+import Sandbox from "../../../components/sandbox/index.astro"
+import staticValues from "./using-static-values.js?raw"
+
+Typically, you pass Tags or Task APIs to connect data between Tasks. While a Task might use dynamic data on one page, it may need a fixed value on another. To pass a plain value like a string, number, or object, you wrap it in `literal`.
+
+This tells App-Compose that your value is just data and not a link to another Task or Tag. Using `literal` also allows the library to handle complex data like circular references or custom classes that shouldn't be searched. This keeps your application fast by skipping unnecessary work.
+
+Whether you’re providing a value in a Task context or binding a Tag to a static value, `literal` works exactly the same way.
+
+<Sandbox
+  template="vanilla"
+  code={staticValues}
+  options={{ editorHeight: 620, layout: "console", showConsoleButton: false, editorWidthPercentage: 70 }}
+/>
