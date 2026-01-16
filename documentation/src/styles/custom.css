@@ -14,3 +14,7 @@
 .hero .actions {
   justify-content: center;
 }
+
+.llms-only {
+  display: none;
+}

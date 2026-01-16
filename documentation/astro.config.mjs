@@ -2,8 +2,10 @@
 import react from "@astrojs/react"
 import starlight from "@astrojs/starlight"
 import { defineConfig } from "astro/config"
+import starlightLlmsTxt from "starlight-llms-txt"
 
 export default defineConfig({
+  site: "https://grlt-hub.github.io",
   // base: "/app-compose",
   integrations: [
     react(),
@@ -40,6 +42,12 @@ export default defineConfig({
         { label: "Sandbox", slug: "sandbox" },
       ],
       customCss: ["./src/styles/custom.css"],
+      plugins: [
+        starlightLlmsTxt({
+          rawContent: false,
+          promote: ["learn*"],
+        }),
+      ],
     }),
   ],
 })
