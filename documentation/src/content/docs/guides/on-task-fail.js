@@ -12,7 +12,7 @@ const onTaskFail = (task) => {
 }
 
 compose({
-  // Handle task failures here
+  // 👇 Handle task failures here
   log: { onTaskFail },
 })
   .stage([alpha])
