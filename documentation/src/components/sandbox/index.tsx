@@ -18,10 +18,14 @@ const SandpackEditor = ({ code, template = "react", options, files = {} }: Props
     template === "react"
       ? "App.js"
       : template === "react-ts"
-      ? "App.tsx"
-      : template === "vanilla-ts"
-      ? "index.ts"
-      : "index.js"
+        ? "App.tsx"
+        : template === "vanilla-ts"
+          ? "index.ts"
+          : "index.js"
+
+  const lines = code.replace(/\r\n/g, "\n").split("\n").length
+  const fullEditorHeight = options?.editorHeight ?? 42 + lines * 20 + 34
+  const editorHeight = options?.editorHeight ?? fullEditorHeight
 
   return (
     <div className="not-content">
@@ -43,7 +47,7 @@ const SandpackEditor = ({ code, template = "react", options, files = {} }: Props
           },
         }}
         options={{
-          editorHeight: options?.editorHeight,
+          editorHeight,
           showConsole: options?.showConsole,
           layout: options?.layout,
           editorWidthPercentage: options?.editorWidthPercentage ?? 60,
@@ -67,6 +71,7 @@ const SandpackEditor = ({ code, template = "react", options, files = {} }: Props
           entry: "/entry.js",
         }}
       />
+      <button>show More</button>
     </div>
   )
 }

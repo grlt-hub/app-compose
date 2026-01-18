@@ -17,7 +17,7 @@ Task errors only come from `run.fn` or `enabled.fn`.
 
 If a Task fails, App-Compose marks it as _failed_ and keeps the app running. Any Task that strictly depends on it, directly or through Tags, is marked as _skipped_.
 
-<Sandbox template="vanilla" code={failureBehaviour} options={{ editorHeight: 800, layout: "console" }} />
+<Sandbox template="vanilla" code={failureBehaviour} options={{ layout: "console" }} />
 
 ## Logging Failures
 
@@ -26,5 +26,5 @@ By default, App-Compose logs a warning to the console when a Task fails. You can
 <Sandbox
   template="vanilla"
   code={onTaskFail}
-  options={{ editorHeight: 475, layout: "console", showConsoleButton: false, editorWidthPercentage: 70 }}
+  options={{ layout: "console", showConsoleButton: false, editorWidthPercentage: 70 }}
 />

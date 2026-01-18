@@ -48,11 +48,7 @@ Tasks cannot be called directly. To run a Task, first define it on a _Stage_. A 
 You can define multiple Stages that execute sequentially. This gives you precise control over the execution flow, prioritizing critical Tasks before non-essential ones.<br/><br/>
 After defining the Stages, call `run()` to start execution.
 
-<Sandbox
-  template="vanilla"
-  code={runTask}
-  options={{ editorHeight: 420, layout: "console", showConsoleButton: false }}
-/>
+<Sandbox template="vanilla" code={runTask} options={{ layout: "console", showConsoleButton: false }} />
 
 ## How to pass data to a Task
 
@@ -101,7 +97,7 @@ Have a look at the result:
 <Sandbox
   template="vanilla"
   code={passData}
-  options={{ editorHeight: 800, layout: "console", showConsoleButton: false, editorWidthPercentage: 65 }}
+  options={{ layout: "console", showConsoleButton: false, editorWidthPercentage: 65 }}
 />
 
 ## How to pass static data
@@ -115,7 +111,7 @@ Whether you’re providing a value in a Task context or binding a Tag to a stati
 <Sandbox
   template="vanilla"
   code={staticValues}
-  options={{ editorHeight: 620, layout: "console", showConsoleButton: false, editorWidthPercentage: 70 }}
+  options={{ layout: "console", showConsoleButton: false, editorWidthPercentage: 70 }}
 />
 
 ## How to enable and disable Task
@@ -141,11 +137,7 @@ The `enabled` property works as follows:
 - `enabled.fn` must return a _boolean | Promise&lt;boolean&gt;_
 - If it returns false, the Task is skipped
 
-<Sandbox
-  template="vanilla"
-  code={disable}
-  options={{ editorHeight: 590, layout: "console", showConsoleButton: false }}
-/>
+<Sandbox template="vanilla" code={disable} options={{ layout: "console", showConsoleButton: false }} />
 
 ## Next Steps
 
