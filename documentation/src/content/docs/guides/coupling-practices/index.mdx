@@ -1,0 +1,36 @@
+---
+title: Coupling Practices
+---
+
+import Sandbox from "../../../../components/sandbox/index.astro"
+import tag from "./tag.js?raw"
+import direct from "./direct.js?raw"
+import literal from "./literal.js?raw"
+
+App‑Compose is fundamentally task‑centric: composition is organized around Tasks and their Contexts. Tasks are connected only through Context. There are three ways to do that:
+
+1. Using a Tag
+1. By depending directly on another Task's result
+1. Using a `literal`
+
+## When to use each approach
+
+### Tag
+
+Use a Tag when you need a Task to be maximally reusable across different contexts and conditions.
+
+<Sandbox template="vanilla" code={tag} options={{ layout: "console", showConsoleButton: false }} />
+
+### Direct dependencies
+
+Use direct dependencies when the relationship between tasks is stable and unlikely to change.<br/>
+Make this an intentional choice. When in doubt, prefer Tags.
+
+<Sandbox template="vanilla" code={direct} options={{ layout: "console", showConsoleButton: false }} />
+
+### Literal
+
+Use a literal to seed context for possible future flexibility, like switching to a Tag.<br/>
+But treat it as a conscious choice. In many cases, it is premature optimization.
+
+<Sandbox template="vanilla" code={literal} options={{ layout: "console", showConsoleButton: false }} />
