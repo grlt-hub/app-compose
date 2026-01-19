@@ -19,10 +19,13 @@ type Props = {
     "showConsole" | "layout" | "editorHeight" | "editorWidthPercentage" | "showConsoleButton"
   > & {
     hideOutput: boolean
+    storageKey?: string
   }
 }
 
-const SandpackEditor = ({ code, template = "react", options, files = {} }: Props) => {
+const SandpackEditor = ({ code: __code, template = "react", options, files = {} }: Props) => {
+  const code = options?.storageKey ? (localStorage.getItem(options.storageKey) ?? __code) : __code
+
   const theme = useTheme()
   const fileName =
     template === "react"
@@ -74,7 +77,7 @@ const SandpackEditor = ({ code, template = "react", options, files = {} }: Props
         <FileTabs />
         <SandpackLayout style={{ height: editorHeight, display: "flex", overflow: "visible" }}>
           <div style={{ width: `${editorWidthPercentage}%`, height: editorHeight }}>
-            <Editor template={template} />
+            <Editor template={template} storageKey={options?.storageKey} />
           </div>
           {!options?.hideOutput && (
             <Output

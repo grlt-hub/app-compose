@@ -11,5 +11,11 @@ import emptySandbox from "./sandbox.ts?raw"
 <Sandbox
   template="vanilla-ts"
   code={emptySandbox}
-  options={{ editorHeight: 800, layout: "console", showConsoleButton: false, editorWidthPercentage: 65 }}
+  options={{
+    editorHeight: 800,
+    layout: "console",
+    showConsoleButton: false,
+    editorWidthPercentage: 65,
+    storageKey: "@app-compose::sandbox",
+  }}
 />
