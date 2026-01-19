@@ -24,21 +24,21 @@ import featureToggle from "./feature-toggle.js?raw"
 import guard from "./guard.js?raw"
 import graph from "./graph.js?raw"
 
-<Sandbox template="vanilla" code={example} />
+<Sandbox template="vanilla-ts" code={example} />
 
 ## Reuse code for any task
 
 Write logic once and run it anywhere. Need to mock an API or change a config for a specific page? Just provide different values<br/>
 Build features that work in any part of the app.
 
-<Sandbox template="react-ts" code={logger} options={{ editorHeight: 440, showConsole: true }} />
+<Sandbox template="vanilla" code={logger} options={{ editorHeight: 440, showConsole: true }} />
 
 ## Toggle features with ease
 
 Enable or disable any feature with a single toggle. Turning off a feature automatically stops all its dependent features.<br/>
 Stop cluttering code with `if` conditions and manual cleanup.
 
-<Sandbox template="vanilla" code={featureToggle} options={{ editorHeight: 470 }} />
+<Sandbox template="vanilla" code={featureToggle} />
 
 ## Build with confidence
 
@@ -52,7 +52,7 @@ Never debug a missing dependency in production.
 Stop digging through folders to understand your architecture. Get a clear map of your system.<br/>
 Keep your project transparent, no matter how large it grows.
 
-<Sandbox template="vanilla" code={graph} options={{ editorHeight: 460, layout: "console", showConsoleButton: false }} />
+<Sandbox template="vanilla" code={graph} options={{ layout: "console", showConsoleButton: false }} />
 
 ## The way logic should be
 

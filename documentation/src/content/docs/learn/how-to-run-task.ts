@@ -1,4 +1,4 @@
-import { compose } from "@grlt-hub/app-compose"
+import { compose, createTask } from "@grlt-hub/app-compose"
 
 const fetchUser = createTask({
   name: "fetch-user",

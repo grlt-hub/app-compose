@@ -3,15 +3,21 @@ title: Using TypeScript
 description: App-Compose — Using TypeScript
 ---
 
+import Sandbox from "../../../components/sandbox/index.astro"
+import tagType from "./tag-type.ts?raw"
+import taskResult from "./task-result.ts?raw"
+
 App-Compose comes with built-in TypeScript support, so you can start writing type-safe code right away.
 
 ## TypeScript with Tags
 
 When creating a Tag, you can specify the data type it holds.
 
-```ts
-const tag = createTag<string>({ name: "title" })
-```
+<Sandbox
+  template="vanilla-ts"
+  code={tagType}
+  options={{ layout: "console", editorHeight: 250, showConsoleButton: false, hideOutput: true }}
+/>
 
 This provides full type safety for both Tag inputs and outputs.
 
@@ -21,13 +27,11 @@ This provides full type safety for both Tag inputs and outputs.
 
 Extracts the return type of a given Task.
 
-```ts
-import { type TaskResult } from "@grlt-hub/app-compose"
-
-const alpha = createTask({ name: "alpha", run: { fn: () => "hello" } })
-
-type AlphaResult = TaskResult<typeof alpha> // => string
-```
+<Sandbox
+  template="vanilla-ts"
+  code={taskResult}
+  options={{ layout: "console", editorHeight: 250, showConsoleButton: false, hideOutput: true }}
+/>
 
 ### TaskStatus
 

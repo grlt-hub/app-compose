@@ -1,14 +1,18 @@
-import { bind, compose, createTag } from "@grlt-hub/app-compose"
+import { bind, compose, createTag, createTask } from "@grlt-hub/app-compose"
 
-const tag = createTag({ name: "userId" })
+type Context = {
+  userId: number
+}
+
+const tag = createTag<Context["userId"]>({ name: "userId" })
 
 const fetchUser = createTask({
   name: "fetch-user",
   run: {
-    fn: async (ctx) => {
+    fn: async (ctx: Context) => {
       const response = await fetch(
         // 👇 userId is passed from Context
-        `https://jsonplaceholder.typicode.com/users/${ctx.userId}`
+        `https://jsonplaceholder.typicode.com/users/${ctx.userId}`,
       )
       const result = await response.json()
 

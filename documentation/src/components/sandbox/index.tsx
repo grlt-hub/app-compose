@@ -1,6 +1,14 @@
-import { Sandpack, type SandpackOptions, type SandpackPredefinedTemplate } from "@codesandbox/sandpack-react"
+import {
+  FileTabs,
+  SandpackLayout,
+  SandpackProvider,
+  type SandpackOptions,
+  type SandpackPredefinedTemplate,
+} from "@codesandbox/sandpack-react"
+import { Editor } from "./editor/index"
 import { sandboxStyle } from "./sandboxStyle"
 import { useTheme } from "./useTheme"
+import { Output } from "./output"
 
 type Props = {
   code: string
@@ -9,7 +17,9 @@ type Props = {
   options?: Pick<
     SandpackOptions,
     "showConsole" | "layout" | "editorHeight" | "editorWidthPercentage" | "showConsoleButton"
-  >
+  > & {
+    hideOutput: boolean
+  }
 }
 
 const SandpackEditor = ({ code, template = "react", options, files = {} }: Props) => {
@@ -24,12 +34,13 @@ const SandpackEditor = ({ code, template = "react", options, files = {} }: Props
           : "index.js"
 
   const lines = code.replace(/\r\n/g, "\n").split("\n").length
-  const fullEditorHeight = options?.editorHeight ?? 42 + lines * 20 + 34
+  const fullEditorHeight = options?.editorHeight ?? lines * 18
   const editorHeight = options?.editorHeight ?? fullEditorHeight
+  const editorWidthPercentage = options?.hideOutput ? 100 : (options?.editorWidthPercentage ?? 60)
 
   return (
-    <div className="not-content">
-      <Sandpack
+    <div className="not-content sandbox">
+      <SandpackProvider
         template={template}
         theme={theme}
         files={{
@@ -47,22 +58,11 @@ const SandpackEditor = ({ code, template = "react", options, files = {} }: Props
           },
         }}
         options={{
-          editorHeight,
-          showConsole: options?.showConsole,
-          layout: options?.layout,
-          editorWidthPercentage: options?.editorWidthPercentage ?? 60,
-          showConsoleButton: options?.showConsoleButton ?? true,
-
-          showNavigator: false,
-          showTabs: true,
-          showLineNumbers: true,
-          showInlineErrors: true,
-          resizablePanels: true,
-          showRefreshButton: true,
           initMode: "user-visible",
           initModeObserverOptions: { rootMargin: "1400px 0px" },
-          // @ts-expect-error idk
+          activeFile: fileName,
           visibleFiles: [fileName],
+          recompileMode: "delayed",
         }}
         customSetup={{
           dependencies: {
@@ -70,8 +70,21 @@ const SandpackEditor = ({ code, template = "react", options, files = {} }: Props
           },
           entry: "/entry.js",
         }}
-      />
-      <button>show More</button>
+      >
+        <FileTabs />
+        <SandpackLayout style={{ height: editorHeight, display: "flex", overflow: "visible" }}>
+          <div style={{ width: `${editorWidthPercentage}%`, height: editorHeight }}>
+            <Editor template={template} />
+          </div>
+          {!options?.hideOutput && (
+            <Output
+              layout={options?.layout}
+              showConsole={options?.showConsole}
+              editorWidthPercentage={editorWidthPercentage}
+            />
+          )}
+        </SandpackLayout>
+      </SandpackProvider>
     </div>
   )
 }
