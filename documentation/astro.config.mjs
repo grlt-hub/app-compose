@@ -22,16 +22,20 @@ export default defineConfig({
         {
           label: "Learn",
           items: [
-            { label: "Quick Start", slug: "learn" },
-            { label: "Installation", slug: "learn/installation" },
-            { label: "Linting", slug: "learn/linting" },
-            { label: "Using TypeScript", slug: "learn/typescript" },
+            { slug: "learn" },
+            { slug: "learn/installation" },
+            { slug: "learn/linting" },
+            { slug: "learn/typescript" },
           ],
           collapsed: true,
         },
         {
           label: "Guides",
-          autogenerate: { directory: "guides" },
+          items: [
+            { slug: "guides/handling-errors" },
+            { slug: "guides/using-task-status" },
+            { slug: "guides/getting-task-result" },
+          ],
           collapsed: true,
         },
         {

@@ -1,12 +1,10 @@
 ---
 title: Handling Errors
 description: App-Compose — Handling Errors
-sidebar:
-  order: 0
 ---
 
-import Sandbox from "../../../components/sandbox/index.astro"
-import failureBehaviour from "./failure-behaiviour.js?raw"
+import Sandbox from "../../../../components/sandbox/index.astro"
+import failureBehaviour from "./failure-behaviour.js?raw"
 import onTaskFail from "./on-task-fail.js?raw"
 
 In real apps, things go wrong. A network request might fail, a data transformation might error out, or an external service might be unavailable. When this happens, App-Compose isolates the failure so the rest of your app continues to work as expected.
