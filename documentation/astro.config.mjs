@@ -13,7 +13,7 @@ export default defineConfig({
       title: "App-Compose",
       description: "App Compose - Compose modules into apps",
       social: [
-        { icon: "open-book", label: "Learn", href: "/learn/" },
+        { icon: "open-book", label: "Learn", href: "/learn/quick-start/" },
         { icon: "rocket", label: "Sandbox", href: "/sandbox/" },
         { icon: "github", label: "GitHub", href: "https://github.com/grlt-hub/app-compose" },
       ],
@@ -22,7 +22,7 @@ export default defineConfig({
         {
           label: "Learn",
           items: [
-            { slug: "learn" },
+            { slug: "learn/quick-start" },
             { slug: "learn/installation" },
             { slug: "learn/linting" },
             { slug: "learn/typescript" },
@@ -43,7 +43,7 @@ export default defineConfig({
           autogenerate: { directory: "reference" },
           collapsed: true,
         },
-        { label: "Sandbox", slug: "sandbox" },
+        { slug: "sandbox" },
       ],
       customCss: ["./src/styles/custom.css"],
       plugins: [
