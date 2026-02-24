@@ -1,48 +1,34 @@
-import { difference, isObject, LIBRARY_NAME } from "@shared"
-import { Kind$, Optional$, RefID$ } from "@spot"
-import type { Registry, SpotImpl } from "./types"
+import { Build$, Literal$, Optional$, Read$, Spot$, type SpotInternal } from "@computable"
+import { isObject, LIBRARY_NAME } from "@shared"
 
 type Dependency = { required: Set<symbol>; optional: Set<symbol> }
-type DependencyMap = Map<unknown, Dependency>
+type DependencyEntry = { id: symbol; optional: boolean }
 
-function* flatten(thing: unknown): Generator<SpotImpl, void, void> {
-  if (isObject(thing))
-    if (Kind$ in thing) yield thing as SpotImpl
-    else for (const key of Object.keys(thing)) yield* flatten(thing[key as keyof typeof thing])
-  else if (Array.isArray(thing)) for (const item of thing) yield* flatten(item)
-  else /* unknown literal */ throw new Error(`${LIBRARY_NAME} Literal value found in context: ${String(thing)}.`)
+function* scanShape(shape: unknown): Generator<DependencyEntry, void, void> {
+  if (isObject(shape))
+    if (Spot$ in shape) yield* scanSpot(shape as SpotInternal)
+    else for (const key of Object.keys(shape)) yield* scanShape(shape[key as keyof typeof shape])
+  else if (Array.isArray(shape)) for (const item of shape) yield* scanShape(item)
+  else throw new Error(`${LIBRARY_NAME} Literal value found in context: ${String(shape)}.`)
 }
 
-const resolve = (context: unknown): Dependency => {
+function* scanSpot(spot: SpotInternal): Generator<DependencyEntry, void, void> {
+  if (Literal$ in spot) return
+  else if (Read$ in spot) return yield { id: spot[Read$], optional: spot[Optional$] }
+  else if (Build$ in spot)
+    for (const entry of scanShape(spot[Build$])) yield { id: entry.id, optional: entry.optional || spot[Optional$] }
+  else throw /* unknown unit */ new Error(`${LIBRARY_NAME} Invalid Unit.`)
+}
+
+function resolve(spot: SpotInternal): Dependency {
   const required = new Set<symbol>()
   const optional = new Set<symbol>()
 
-  for (const spot of flatten(context))
-    switch (spot[Kind$]) {
-      case "reference":
-        if (spot[Optional$]) optional.add(spot[RefID$])
-        else required.add(spot[RefID$])
-    }
+  for (const entry of scanSpot(spot))
+    if (entry.optional) optional.add(entry.id)
+    else required.add(entry.id)
 
-  return { required, optional: difference(optional, required) }
+  return { required, optional }
 }
 
-const createResolver = (repo: Registry) => {
-  const deps: DependencyMap = new Map()
-
-  const dependenciesOf = (context: unknown): Dependency => {
-    if (!deps.has(context)) deps.set(context, resolve(context))
-    return deps.get(context)!
-  }
-
-  const satisfies = (context: unknown) => {
-    const deps = Array.from(dependenciesOf(context).required)
-    return deps.every((id) => repo.has(id))
-  }
-
-  return { dependenciesOf, satisfies }
-}
-
-type Resolver = ReturnType<typeof createResolver>
-
-export { createResolver, type Resolver }
+export { resolve }

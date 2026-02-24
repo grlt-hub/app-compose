@@ -1,60 +1,69 @@
-import { difference, LIBRARY_NAME, UNKNOWN_NAME, type UnitName } from "@shared"
-import type { Resolver } from "./resolver"
-import { toContext } from "./toContext"
-import { toID } from "./toID"
-import type { Stage, StepType } from "./types"
+import { Context$, type RunnableInternal } from "@runnable"
+import { difference } from "@shared"
+import { toID } from "./convert"
+import type { ComposableKind, Stage } from "./definition"
+import { resolve } from "./resolver"
 
-type NotifyContext = { type: StepType; name: UnitName; index: number }
+type NotifyContext = { type: ComposableKind; name: string; index: number }
+type GuardHandler = Record<"warn" | "error", (message: string) => void>
 
-const TypeMap = { task: "Task", binding: "Binding" } as const
+const UNKNOWN_NAME = "<unknown>"
 
-const notify = {
+const TypeMap = { task: "Task", binding: "Binding" } satisfies Record<ComposableKind, string>
+const NameMap = { task: "Task", binding: "Tag" } satisfies Record<ComposableKind, string>
+
+const createNotify = (handler: GuardHandler) => ({
   duplicate: ({ type, name, index }: NotifyContext) => {
-    const message = `${LIBRARY_NAME} A duplicate ${TypeMap[type]} found with name: ${name} on stage #${index + 1}.`
-    throw new Error(message)
+    const message = `A duplicate ${TypeMap[type]} found with name: ${NameMap[type]}[${name}] on stage #${index + 1}.`
+    handler.error(message)
   },
 
   notSatisfied: ({ type, name, index, missing: set }: NotifyContext & { missing: Set<symbol> }) => {
     const list = Array.from(set, (id) => id.description ?? UNKNOWN_NAME).join(", ")
 
-    const message = `${LIBRARY_NAME} Unsatisfied dependencies found for ${TypeMap[type]} with name: ${name} on stage #${index + 1}: missing ${list}.`
-    throw new Error(message)
+    const message = `Unsatisfied dependencies found for ${TypeMap[type]} with name: ${NameMap[type]}[${name}] on stage #${index + 1}: missing ${list}.`
+    handler.error(message)
   },
 
   unused: ({ type, name, index }: NotifyContext) => {
-    const message = `${LIBRARY_NAME} Unused ${TypeMap[type]} found with name: ${name} on stage #${index + 1}.`
-    console.warn(message)
+    const message = `Unused ${TypeMap[type]} found with name: ${NameMap[type]}[${name}] on stage #${index + 1}.`
+    handler.warn(message)
   },
-}
+})
 
-const createGuard = (resolver: Resolver) => {
-  const duplicate = (stages: Stage[]) => {
+type GuardConfig = { handler: GuardHandler }
+
+const createGuard = ({ handler }: GuardConfig) => {
+  const notify = createNotify(handler)
+
+  const duplicate = (stages: readonly Stage[]) => {
     const seen = new Set<symbol>()
 
     for (const [index, stage] of stages.entries()) {
       for (const step of stage) {
         const { type, display, writes } = toID(step)
 
-        const isDuplicate = writes.some((id) => seen.has(id))
-        if (isDuplicate) notify.duplicate({ type, name: display.name, index })
+        const duplicate = writes.some((id) => seen.has(id))
+        if (duplicate) notify.duplicate({ type, name: display.name, index })
 
         writes.forEach((id) => seen.add(id))
       }
     }
   }
 
-  const unsatisfied = (stages: Stage[]) => {
+  const unsatisfied = (stages: readonly Stage[]) => {
     const available = new Set<symbol>()
 
     for (const [index, stage] of stages.entries()) {
       const added = new Set<symbol>()
 
       for (const step of stage) {
-        const { type, display, writes } = toID(step)
-        const context = toContext(step)
+        const internal = step as RunnableInternal
 
-        const dependencies = resolver.dependenciesOf(context)
-        const missing = difference(dependencies.required, available)
+        const { type, display, writes } = toID(step)
+        const deps = resolve(internal[Context$])
+
+        const missing = difference(deps.required, available)
         if (missing.size > 0) notify.notSatisfied({ type, name: display.name, index, missing })
 
         writes.forEach((id) => added.add(id))
@@ -64,27 +73,29 @@ const createGuard = (resolver: Resolver) => {
     }
   }
 
-  const unused = (stages: Stage[]) => {
+  const unused = (stages: readonly Stage[]) => {
     const candidates = new Map<symbol, NotifyContext>()
 
     for (const [index, stage] of stages.entries()) {
       for (const step of stage) {
+        const internal = step as RunnableInternal
+
         const { type, display, writes } = toID(step)
-        const context = toContext(step)
+
+        const deps = resolve(internal[Context$])
 
         if (type === "binding") writes.forEach((id) => candidates.set(id, { type, name: display.name, index }))
 
-        const dependencies = resolver.dependenciesOf(context)
-
-        dependencies.required.forEach((id) => candidates.delete(id))
-        dependencies.optional.forEach((id) => candidates.delete(id))
+        deps.required.forEach((id) => candidates.delete(id))
+        deps.optional.forEach((id) => candidates.delete(id))
       }
     }
 
     for (const context of candidates.values()) notify.unused(context)
   }
 
-  return (stages: Stage[]) => (duplicate(stages), unsatisfied(stages), unused(stages))
+  return (stages: readonly Stage[]) => (duplicate(stages), unsatisfied(stages), unused(stages))
 }
 
 export { createGuard }
+export type { GuardHandler }

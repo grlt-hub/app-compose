@@ -1,4 +1,3 @@
-export { compose } from "@compose"
-export { literal, optional } from "@spot"
-export { bind, createTag } from "@tag"
-export { createTask, status, type TaskResult, type TaskStatus } from "@task"
+export { compose, type ComposeLogger } from "@compose"
+export { literal, map, optional, type SpotValue } from "@computable"
+export { bind, createTag, createTask, type Task, type TaskStatus } from "@runnable"

@@ -1,20 +1,12 @@
-type AnyRecord = Record<string, unknown>
+type AnyShape = Record<string, unknown>
 type Eventual<T> = Promise<T> | T
 
-type NonEmptyArray<T = unknown> = [T, ...T[]]
-type ReadonlyNonEmptyArray<T> = readonly [T, ...(readonly T[])]
-
 const LIBRARY_NAME = "[app-compose]"
-const UNKNOWN_NAME = "<unknown>"
-
-const path = (value: any, path: PropertyKey[]): unknown => path.reduce((curr, key) => curr?.[key], value)
 
 const isObject = (x: unknown): x is object => Object.prototype.toString.call(x) === "[object Object]"
 
-const T = () => true
-const tap =
-  <T>(fn: (arg: T) => void) =>
-  (arg: T): T => (fn(arg), arg)
+const identity = <T>(x: T): T => x
+const T = (): true => true
 
 const difference = <T>(left: Set<T>, right: Set<T>): Set<T> => {
   const out = new Set<T>(left)
@@ -22,19 +14,5 @@ const difference = <T>(left: Set<T>, right: Set<T>): Set<T> => {
   return out
 }
 
-type UnitName = string
-
-export {
-  LIBRARY_NAME,
-  T,
-  UNKNOWN_NAME,
-  difference,
-  isObject,
-  path,
-  tap,
-  type AnyRecord,
-  type Eventual,
-  type NonEmptyArray,
-  type ReadonlyNonEmptyArray,
-  type UnitName,
-}
+export { LIBRARY_NAME, T, difference, identity, isObject }
+export type { AnyShape, Eventual }

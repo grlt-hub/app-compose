@@ -1,46 +1,45 @@
-import { T } from "@shared"
-import type { BindingInternal } from "@tag"
-import type { TaskInternal } from "@task"
-import type { Compiler } from "./compiler"
-import type { Resolver } from "./resolver"
+import { createComputer, type SpotInternal } from "@computable"
+import { Context$, Dispatch$, Execute$, type RunnableInternal, type Task } from "@runnable"
+import type { Registry, Stage } from "./definition"
+import type { LoggerEmit } from "./logger"
 
-type RunnerResult = { status: "done"; value: unknown } | { status: "fail"; error: unknown } | { status: "skip" }
-type RunnerContext = { compiler: Compiler; resolver: Resolver }
+type Scope = { get: <T>(task: Task<T>) => T | undefined }
 
-const createRunner = ({ compiler, resolver }: RunnerContext) => {
-  const binding = async (binding: BindingInternal): Promise<RunnerResult> => {
-    const satisfied = resolver.satisfies(binding.value)
-    if (!satisfied) return { status: "skip" }
+type RunConfig = { stages: readonly Stage[]; emit: LoggerEmit }
 
-    const value = compiler.build(binding.value)
-    return { status: "done", value }
+const run = async ({ stages, emit }: RunConfig): Promise<Scope> => {
+  const registry: Registry = new Map()
+
+  const { compute, computeSafe } = createComputer(registry)
+
+  for (let index = 0; index < stages.length; index++) {
+    const queue = [] as Promise<void>[]
+    const stage = stages[index] as RunnableInternal[]
+
+    for (const runnable of stage) {
+      const promise = Promise.resolve()
+        .then(() => compute(runnable[Context$]))
+        .then((ctx) => runnable[Execute$](ctx))
+        .then((value) => {
+          for (const key of Object.getOwnPropertySymbols(runnable[Dispatch$]))
+            registry.set(key, runnable[Dispatch$][key]!(value))
+
+          return value
+        })
+        .then((value) => emit({ type: "execute:complete", stage: index, runnable, value }))
+
+      queue.push(promise)
+    }
+
+    emit({ type: "stage:start", stage: index })
+    await Promise.all(queue)
+    emit({ type: "stage:complete", stage: index })
   }
 
-  const task = async (task: TaskInternal): Promise<RunnerResult> => {
-    const satisfied = resolver.satisfies(task.context)
-    if (!satisfied) return { status: "skip" }
-
-    const context = {
-      enabled: compiler.build(task.context.enabled),
-      run: compiler.build(task.context.run),
-    }
-
-    try {
-      const enabled = await (task.enabled ?? T)(context.enabled)
-      if (!enabled) return { status: "skip" }
-    } catch (error) {
-      return { status: "fail", error }
-    }
-
-    try {
-      const value = await task.run(context.run)
-      return { status: "done", value }
-    } catch (error) {
-      return { status: "fail", error }
-    }
+  return {
+    get: <T>(task: Task<T>): T | undefined => computeSafe(task.result as SpotInternal<T>),
   }
-
-  return { binding, task }
 }
 
-export { createRunner, type RunnerResult }
+export { run }
+export type { Scope }

@@ -1,22 +1,20 @@
-import type { UnitName } from "@shared"
-import { createResolver } from "./resolver"
-import { toContext } from "./toContext"
-import { toID } from "./toID"
-import type { Registry, Stage, StepType } from "./types"
+import { Context$, type RunnableInternal } from "@runnable"
+import { toID } from "./convert"
+import type { ComposableKind, Stage } from "./definition"
+import { resolve } from "./resolver"
 
 type EntryID = number
+
 type GraphEntry = {
   id: EntryID
-  name: UnitName
-  type: StepType
+  name: string
+  type: ComposableKind
   dependencies: { required: EntryID[]; optional: EntryID[] }
 }
 
 type Graph = GraphEntry[]
 
 const graph = (stages: Stage[]): Graph => {
-  const registry: Registry = new Map()
-  const resolver = createResolver(registry)
   const symbolToID = new Map<symbol, EntryID>()
 
   const steps = stages.flat()
@@ -25,19 +23,20 @@ const graph = (stages: Stage[]): Graph => {
   let entryID = 0
 
   for (const step of steps) {
-    const { type, name, writes } = toID(step)
-    const context = toContext(step)
-    const dependencies = resolver.dependenciesOf(context)
+    const internal = step as RunnableInternal
+
+    const { type, display, writes } = toID(step)
+    const deps = resolve(internal[Context$])
 
     writes.forEach((x) => symbolToID.set(x, entryID))
 
     result[entryID] = {
       id: entryID,
-      name,
+      name: display.name,
       type,
       dependencies: {
-        required: Array.from(dependencies.required, (x) => symbolToID.get(x) ?? -1),
-        optional: Array.from(dependencies.optional, (x) => symbolToID.get(x)).filter((x) => x !== undefined),
+        required: Array.from(deps.required, (x) => symbolToID.get(x) ?? -1),
+        optional: Array.from(deps.optional, (x) => symbolToID.get(x)).filter((x) => x !== undefined),
       },
     }
 

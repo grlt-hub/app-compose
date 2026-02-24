@@ -2,12 +2,10 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "paths": {
+      "@computable": ["./src/computable"],
+      "@runnable": ["./src/runnable"],
       "@compose": ["./src/compose"],
       "@shared": ["./src/shared"],
-      "@spot": ["./src/spot"],
-      "@tag": ["./src/tag"],
-      "@task": ["./src/task"],
-      "@meta": ["./src/meta"]
     }
   },
   "include": ["src"]
