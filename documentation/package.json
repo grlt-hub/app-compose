@@ -21,11 +21,11 @@
   },
   "dependencies": {
     "@astrojs/react": "4.4.2",
-    "@astrojs/starlight": "0.37.1",
+    "@astrojs/starlight": "0.37.6",
     "@codesandbox/sandpack-react": "2.20.0",
     "@grlt-hub/app-compose": "workspace:*",
     "@monaco-editor/react": "4.7.0",
-    "astro": "5.6.1",
+    "astro": "5.17.3",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "sharp": "0.34.2",
