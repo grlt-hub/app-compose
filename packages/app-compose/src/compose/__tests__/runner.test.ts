@@ -1,6 +1,6 @@
 import { literal, optional } from "@computable"
 import { createTask, type TaskStatus } from "@runnable"
-import { expect, it, vi } from "vitest"
+import { describe, expect, it, vi } from "vitest"
 import type { LoggerEmit } from "../logger"
 import { run } from "../runner"
 
@@ -200,4 +200,13 @@ it("optional | enabled.fn", async () => {
 
   expect(fn).toBeCalledWith(undefined)
   expect(enabled).toBeCalledWith(undefined)
+})
+
+describe("scope", () => {
+  it("can read from scope", async () => {
+    const scope = await run({ stages: [[alphaTask]], emit })
+
+    expect(scope.get(alphaTask.result)).toStrictEqual({ api: "alpha_api" })
+    expect(scope.get(alphaTask.status)).toBe("done")
+  })
 })

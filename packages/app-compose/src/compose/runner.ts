@@ -1,9 +1,9 @@
-import { createComputer, type SpotInternal } from "@computable"
-import { Context$, Dispatch$, Execute$, type RunnableInternal, type Task } from "@runnable"
+import { createComputer, type Spot, type SpotInternal } from "@computable"
+import { Context$, Dispatch$, Execute$, type RunnableInternal } from "@runnable"
 import type { Registry, Stage } from "./definition"
 import type { LoggerEmit } from "./logger"
 
-type Scope = { get: <T>(task: Task<T>) => T | undefined }
+type Scope = { get: <T>(spot: Spot<T>) => T | undefined }
 
 type RunConfig = { stages: readonly Stage[]; emit: LoggerEmit }
 
@@ -37,7 +37,7 @@ const run = async ({ stages, emit }: RunConfig): Promise<Scope> => {
   }
 
   return {
-    get: <T>(task: Task<T>): T | undefined => computeSafe(task.result as SpotInternal<T>),
+    get: <T>(spot: Spot<T>): T | undefined => computeSafe(spot as SpotInternal<T>),
   }
 }
 
