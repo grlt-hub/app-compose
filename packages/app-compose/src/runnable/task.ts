@@ -1,5 +1,5 @@
 import { build, literal, Missing$, reference, type Spot, type SpotProvider } from "@computable"
-import { T, type Eventual } from "@shared"
+import { T, type DeepReadonly, type Eventual } from "@shared"
 import type { ContextToSpot, IsSpot, SpotToContext } from "./context"
 import { Context$, Dispatch$, Execute$, type Runnable, type RunnableInternal, type RunnableKind } from "./definition"
 
@@ -7,9 +7,11 @@ const Task$ = Symbol("$task")
 
 type TaskConfig<Result, RunContext, EnabledContext> = {
   name: string
+
   run: { fn: (ctx: RunContext) => Eventual<Result> } & ([RunContext] extends [void]
     ? { context?: never }
-    : { context: ContextToSpot<NoInfer<RunContext>> })
+    : { context: NoInfer<ContextToSpot<DeepReadonly<RunContext>>> })
+
   enabled?: EnabledContext extends void
     ? { fn: () => Eventual<boolean>; context?: never }
     : IsSpot<EnabledContext> extends true

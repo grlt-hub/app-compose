@@ -2,156 +2,165 @@ import { literal, optional, type Spot, type SpotValue } from "@computable"
 import { describe, expectTypeOf, it } from "vitest"
 import { createTask, type Task, type TaskStatus } from "../task"
 
-describe("run context", () => {
-  it("no context", () => {
+describe("createTask", () => {
+  describe("run.context", () => {
+    it("optional when fn has no params", () => {
+      const task = createTask({ name: "test", run: { fn: () => null } })
+      expectTypeOf(task).toExtend<Task<null>>()
+    })
+
+    it("accepts Spot for whole context", () => {
+      const a = createTask({ name: "test", run: { fn: (_: boolean) => null, context: literal(true) } })
+      expectTypeOf(a).toExtend<Task<null>>()
+
+      const b = createTask({ name: "test", run: { fn: (_: 1 | 2) => null, context: literal<1 | 2>(1) } })
+      expectTypeOf(b).toExtend<Task<null>>()
+    })
+
+    it("accepts tuple as Spot or element-wise Spots", () => {
+      const a = createTask({
+        name: "test",
+        run: { fn: (_: [a: string, b: number]) => null, context: literal(["a", 1]) },
+      })
+      expectTypeOf(a).toExtend<Task<null>>()
+
+      const b = createTask({
+        name: "test",
+        run: { fn: (_: [a: string, b: number]) => null, context: [literal("a"), literal(1)] },
+      })
+
+      expectTypeOf(b).toExtend<Task<null>>()
+    })
+
+    it("accepts nested shape with task references", () => {
+      const dependency = createTask({ name: "dep", run: { fn: () => null } })
+
+      const a = createTask({
+        name: "test",
+        run: { fn: (_: TaskStatus[]) => null, context: [dependency.status, dependency.status] },
+      })
+      expectTypeOf(a).toExtend<Task<null>>()
+
+      const b = createTask({
+        name: "test",
+        run: {
+          fn: (_: { statuses: TaskStatus[] }) => null,
+          context: { statuses: [dependency.status, dependency.status] },
+        },
+      })
+      expectTypeOf(b).toExtend<Task<null>>()
+    })
+
+    it("rejects bare values", () => {
+      // @ts-expect-error - bare primitive not allowed
+      const task = createTask({ name: "test", run: { fn: (_: number) => null, context: 1 } })
+
+      expectTypeOf(task).toExtend<Task<null>>()
+    })
+
+    it("rejects mismatched types", () => {
+      // @ts-expect-error - string not assignable to boolean
+      const a = createTask({ name: "test", run: { fn: (_: boolean) => null, context: literal("x") } })
+      expectTypeOf(a).toExtend<Task<null>>()
+
+      const b = createTask({
+        name: "test",
+        // @ts-expect-error - wrong tuple element order
+        run: { fn: (_: [a: string, b: number]) => null, context: [literal(1), literal("a")] },
+      })
+      expectTypeOf(b).toExtend<Task<null>>()
+
+      const c = createTask({
+        name: "test",
+        // @ts-expect-error - wrong tuple element types
+        run: { fn: (_: [a: number, b: number]) => null, context: literal(["a", 1]) },
+      })
+
+      expectTypeOf(c).toExtend<Task<null>>()
+    })
+
+    it("rejects context when fn is void", () => {
+      // @ts-expect-error - void fn should not have context
+      const task = createTask({ name: "test", run: { fn: () => null, context: literal(1) } })
+
+      expectTypeOf(task).toExtend<Task<null>>()
+    })
+
+    it("requires context when fn has void union param", () => {
+      // @ts-expect-error - void union param requires explicit context
+      const task = createTask({ name: "test", run: { fn: (_: number | void) => null } })
+
+      expectTypeOf(task).toExtend<Task<null>>()
+    })
+  })
+
+  describe("enabled.context", () => {
     const fn = () => null
 
-    const task = createTask({ name: "test", run: { fn } })
+    it("optional when fn has no params", () => {
+      const task = createTask({ name: "test", run: { fn }, enabled: { fn: () => true } })
 
-    expectTypeOf(task).toExtend<Task<null>>()
-  })
-
-  it("accepts const literal union context", () => {
-    const a = createTask({ name: "test", run: { fn: (_: boolean) => null, context: literal(true) } })
-    expectTypeOf(a).toExtend<Task<null>>()
-
-    const b = createTask({ name: "test", run: { fn: (_: number) => null, context: literal<1 | 2>(1) } })
-    expectTypeOf(b).toExtend<Task<null>>()
-  })
-
-  it("accepts wide literal object context", () => {
-    const a = createTask({ name: "test", run: { fn: (_: boolean) => null, context: literal<boolean>(true) } })
-    expectTypeOf(a).toExtend<Task<null>>()
-
-    const b = createTask({ name: "test", run: { fn: (_: 1 | 2) => null, context: literal<1 | 2>(1) } })
-    expectTypeOf(b).toExtend<Task<null>>()
-  })
-
-  it("rejects void context", () => {
-    const task = createTask({
-      name: "test",
-      run: {
-        fn: () => null,
-        // @ts-expect-error
-        context: literal(1),
-      },
+      expectTypeOf(task).toExtend<Task<null>>()
     })
 
-    expectTypeOf(task).toExtend<Task<null>>()
-  })
-
-  it("requires void union context", () => {
-    const task = createTask({
-      name: "test",
-      // @ts-expect-error
-      run: { fn: (_: number | void) => null },
+    it("infers context type in fn", () => {
+      createTask({
+        name: "test",
+        run: { fn },
+        enabled: { fn: (ctx) => expectTypeOf(ctx).toEqualTypeOf<1>(), context: literal(1) },
+      })
     })
 
-    expectTypeOf(task).toExtend<Task<null>>()
-  })
+    it("infers shape context with optional", () => {
+      const dep = createTask({ name: "dep", run: { fn } })
 
-  it("rejects direct context", () => {
-    const task = createTask({
-      name: "test",
-      run: {
-        fn: (_: number) => null,
-        // @ts-expect-error
-        context: 1,
-      },
+      createTask({
+        name: "test",
+        run: { fn },
+        enabled: {
+          fn: (ctx) => expectTypeOf(ctx).toEqualTypeOf<{ a: TaskStatus; b: TaskStatus | undefined }>(),
+          context: { a: dep.status, b: optional(dep.status) },
+        },
+      })
     })
 
-    expectTypeOf(task).toExtend<Task<null>>()
-  })
-})
+    it("rejects bare values", () => {
+      const a = createTask({
+        name: "test",
+        run: { fn },
+        // @ts-expect-error - bare primitive not allowed
+        enabled: { fn: () => true, context: 1 },
+      })
+      expectTypeOf(a).toExtend<Task<null>>()
 
-describe("enabled context", () => {
-  const fn = () => null
+      const b = createTask({
+        name: "test",
+        run: { fn },
+        // @ts-expect-error - nested bare values not allowed
+        enabled: { fn: () => true, context: { a: [1, 2] } },
+      })
 
-  it("no context", () => {
-    const task = createTask({ name: "test", run: { fn }, enabled: { fn: () => true } })
-
-    expectTypeOf(task).toExtend<Task<null>>()
-  })
-
-  it("infers context", () => {
-    createTask({
-      name: "test",
-      run: { fn },
-      enabled: { fn: (ctx) => expectTypeOf(ctx).toEqualTypeOf<1>(), context: literal(1) },
+      expectTypeOf(b).toExtend<Task<null>>()
     })
   })
 
-  it("infers shape context", () => {
-    const task = createTask({ name: "test", run: { fn } })
+  describe("task properties", () => {
+    const task = createTask({ name: "test", run: { fn: () => "result" as const } })
 
-    createTask({
-      name: "test",
-      run: { fn },
-      enabled: {
-        fn: (ctx) => expectTypeOf(ctx).toEqualTypeOf<{ a: TaskStatus; b: TaskStatus | undefined }>(),
-        context: { a: task.status, b: optional(task.status) },
-      },
+    it("result has inferred Spot type", () => {
+      expectTypeOf(task.result).toEqualTypeOf<Spot<"result">>()
     })
 
-    createTask({
-      name: "test",
-      run: { fn },
-      enabled: {
-        fn: (ctx) => expectTypeOf(ctx).toEqualTypeOf<(TaskStatus | undefined)[]>(),
-        context: [task.status, optional(task.status)],
-      },
-    })
-  })
-
-  it("rejects direct context", () => {
-    createTask({
-      name: "test",
-      run: { fn },
-      enabled: {
-        fn: (ctx) => expectTypeOf(ctx).toBeUnknown(),
-        // @ts-expect-error
-        context: 1,
-      },
+    it("status is Spot<TaskStatus>", () => {
+      expectTypeOf(task.status).toEqualTypeOf<Spot<TaskStatus>>()
     })
 
-    createTask({
-      name: "test",
-      run: { fn },
-      enabled: {
-        fn: (ctx) => expectTypeOf(ctx).toBeUnknown(),
-        // @ts-expect-error
-        context: { a: [1, 2] },
-      },
+    it("error is Spot<unknown>", () => {
+      expectTypeOf(task.error).toEqualTypeOf<Spot<unknown>>()
     })
-  })
-})
 
-describe("status", () => {
-  const task = createTask({ name: "test", run: { fn: () => "result" } })
-
-  it("has correct spot type", () => {
-    expectTypeOf(task.status).toEqualTypeOf<Spot<TaskStatus>>()
-  })
-})
-
-describe("error", () => {
-  const task = createTask({ name: "test", run: { fn: () => "result" } })
-
-  it("has correct spot type", () => {
-    expectTypeOf(task.error).toEqualTypeOf<Spot<unknown>>()
-  })
-})
-
-describe("result", () => {
-  const task = createTask({ name: "test", run: { fn: () => "result" as const } })
-
-  it("has correct spot type", () => {
-    expectTypeOf(task.result).toEqualTypeOf<Spot<"result">>()
-  })
-
-  it("userland-unwrappable with SpotValue", () => {
-    type Result = SpotValue<typeof task.result>
-
-    expectTypeOf<Result>().toEqualTypeOf<"result">()
+    it("SpotValue unwraps result", () => {
+      expectTypeOf<SpotValue<typeof task.result>>().toEqualTypeOf<"result">()
+    })
   })
 })

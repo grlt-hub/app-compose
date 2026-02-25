@@ -1,11 +1,10 @@
 import type { Spot } from "@computable"
+import type { BuiltInObject } from "@shared"
+
+type ContextToSpot<T> = [T] extends [BuiltInObject] ? Spot<T> : Spot<T> | ContextShapeToSpot<T>
+type ContextShapeToSpot<T> = { readonly [K in keyof T]: ContextToSpot<T[K]> }
 
 type KeyValue = Record<string, unknown> | readonly unknown[]
-
-type ContextToSpot<T> = T extends T ? (T extends KeyValue ? Spot<T> | ContextRecordToSpot<T> : Spot<T>) : never
-type ContextRecordToSpot<T extends KeyValue> = T extends readonly unknown[]
-  ? { [Key in keyof T & number]: ContextToSpot<T[Key]> }
-  : { [Key in keyof T]: ContextToSpot<T[Key]> }
 
 type SpotToContext<T> =
   T extends Spot<infer Value> ? Value : T extends KeyValue ? { [Key in keyof T]: SpotToContext<T[Key]> } : never
