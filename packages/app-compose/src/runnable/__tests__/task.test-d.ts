@@ -1,4 +1,5 @@
 import { literal, optional, type Spot, type SpotValue } from "@computable"
+import type { DeepReadonly } from "@shared"
 import { describe, expectTypeOf, it } from "vitest"
 import { createTask, type Task, type TaskStatus } from "../task"
 
@@ -9,24 +10,29 @@ describe("createTask", () => {
       expectTypeOf(task).toExtend<Task<null>>()
     })
 
+    it("result type inferred from fn return when no context", () => {
+      const task = createTask({ name: "test", run: { fn: () => "ok" as const } })
+      expectTypeOf(task).toEqualTypeOf<Task<"ok">>()
+    })
+
     it("accepts Spot for whole context", () => {
-      const a = createTask({ name: "test", run: { fn: (_: boolean) => null, context: literal(true) } })
+      const a = createTask({ name: "test", run: { fn: (_) => null, context: literal(true) } })
       expectTypeOf(a).toExtend<Task<null>>()
 
-      const b = createTask({ name: "test", run: { fn: (_: 1 | 2) => null, context: literal<1 | 2>(1) } })
+      const b = createTask({ name: "test", run: { fn: (_) => null, context: literal<1 | 2>(1) } })
       expectTypeOf(b).toExtend<Task<null>>()
     })
 
     it("accepts tuple as Spot or element-wise Spots", () => {
       const a = createTask({
         name: "test",
-        run: { fn: (_: [a: string, b: number]) => null, context: literal(["a", 1]) },
+        run: { fn: (_) => null, context: literal(["a", 1]) },
       })
       expectTypeOf(a).toExtend<Task<null>>()
 
       const b = createTask({
         name: "test",
-        run: { fn: (_: [a: string, b: number]) => null, context: [literal("a"), literal(1)] },
+        run: { fn: (_) => null, context: [literal("a"), literal(1)] },
       })
 
       expectTypeOf(b).toExtend<Task<null>>()
@@ -37,14 +43,14 @@ describe("createTask", () => {
 
       const a = createTask({
         name: "test",
-        run: { fn: (_: TaskStatus[]) => null, context: [dependency.status, dependency.status] },
+        run: { fn: (_) => null, context: [dependency.status, dependency.status] },
       })
       expectTypeOf(a).toExtend<Task<null>>()
 
       const b = createTask({
         name: "test",
         run: {
-          fn: (_: { statuses: TaskStatus[] }) => null,
+          fn: (_) => null,
           context: { statuses: [dependency.status, dependency.status] },
         },
       })
@@ -53,7 +59,7 @@ describe("createTask", () => {
 
     it("rejects bare values", () => {
       // @ts-expect-error - bare primitive not allowed
-      const task = createTask({ name: "test", run: { fn: (_: number) => null, context: 1 } })
+      const task = createTask({ name: "test", run: { fn: () => null, context: 1 } })
 
       expectTypeOf(task).toExtend<Task<null>>()
     })
@@ -63,34 +69,29 @@ describe("createTask", () => {
       const a = createTask({ name: "test", run: { fn: (_: boolean) => null, context: literal("x") } })
       expectTypeOf(a).toExtend<Task<null>>()
 
-      const b = createTask({
-        name: "test",
-        // @ts-expect-error - wrong tuple element order
-        run: { fn: (_: [a: string, b: number]) => null, context: [literal(1), literal("a")] },
-      })
-      expectTypeOf(b).toExtend<Task<null>>()
-
-      const c = createTask({
-        name: "test",
-        // @ts-expect-error - wrong tuple element types
-        run: { fn: (_: [a: number, b: number]) => null, context: literal(["a", 1]) },
-      })
-
-      expectTypeOf(c).toExtend<Task<null>>()
+      // @ts-expect-error - empty context
+      createTask({ name: "test", run: { fn: (_) => null } })
     })
 
-    it("rejects context when fn is void", () => {
-      // @ts-expect-error - void fn should not have context
-      const task = createTask({ name: "test", run: { fn: () => null, context: literal(1) } })
+    it("infers fn type from context", () => {
+      const dep = createTask({ name: "dep", run: { fn: () => null } })
 
-      expectTypeOf(task).toExtend<Task<null>>()
+      createTask({
+        name: "test",
+        run: { fn: (ctx) => expectTypeOf(ctx).toEqualTypeOf<TaskStatus>(), context: dep.status },
+      })
     })
 
-    it("requires context when fn has void union param", () => {
-      // @ts-expect-error - void union param requires explicit context
-      const task = createTask({ name: "test", run: { fn: (_: number | void) => null } })
+    it("fn receives readonly context", () => {
+      const dep = createTask({ name: "dep", run: { fn: () => null } })
 
-      expectTypeOf(task).toExtend<Task<null>>()
+      createTask({
+        name: "test",
+        run: {
+          fn: (ctx) => expectTypeOf(ctx).toEqualTypeOf<DeepReadonly<{ a: TaskStatus }>>(),
+          context: { a: dep.status },
+        },
+      })
     })
   })
 
@@ -118,7 +119,7 @@ describe("createTask", () => {
         name: "test",
         run: { fn },
         enabled: {
-          fn: (ctx) => expectTypeOf(ctx).toEqualTypeOf<{ a: TaskStatus; b: TaskStatus | undefined }>(),
+          fn: (ctx) => expectTypeOf(ctx).toEqualTypeOf<DeepReadonly<{ a: TaskStatus; b: TaskStatus | undefined }>>(),
           context: { a: dep.status, b: optional(dep.status) },
         },
       })
