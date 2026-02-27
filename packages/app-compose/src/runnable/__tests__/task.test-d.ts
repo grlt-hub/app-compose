@@ -1,5 +1,4 @@
 import { literal, optional, type Spot, type SpotValue } from "@computable"
-import type { DeepReadonly } from "@shared"
 import { describe, expectTypeOf, it } from "vitest"
 import { createTask, type Task, type TaskStatus } from "../task"
 
@@ -82,13 +81,13 @@ describe("createTask", () => {
       })
     })
 
-    it("fn receives readonly context", () => {
+    it("fn receives context", () => {
       const dep = createTask({ name: "dep", run: { fn: () => null } })
 
       createTask({
         name: "test",
         run: {
-          fn: (ctx) => expectTypeOf(ctx).toEqualTypeOf<DeepReadonly<{ a: TaskStatus }>>(),
+          fn: (ctx) => expectTypeOf(ctx).toEqualTypeOf<{ a: TaskStatus }>(),
           context: { a: dep.status },
         },
       })
@@ -119,7 +118,7 @@ describe("createTask", () => {
         name: "test",
         run: { fn },
         enabled: {
-          fn: (ctx) => expectTypeOf(ctx).toEqualTypeOf<DeepReadonly<{ a: TaskStatus; b: TaskStatus | undefined }>>(),
+          fn: (ctx) => expectTypeOf(ctx).toEqualTypeOf<{ a: TaskStatus; b: TaskStatus | undefined }>(),
           context: { a: dep.status, b: optional(dep.status) },
         },
       })
