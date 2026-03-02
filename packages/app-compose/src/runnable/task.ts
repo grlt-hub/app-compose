@@ -1,25 +1,20 @@
 import { build, literal, Missing$, reference, type Spot, type SpotProvider } from "@computable"
-import { T, type DeepReadonly, type Eventual } from "@shared"
-import type { ContextToSpot, IsSpot, SpotToContext } from "./context"
+import { T, type Eventual } from "@shared"
+import type { IsSpot, SpotToContext } from "./context"
 import { Context$, Dispatch$, Execute$, type Runnable, type RunnableInternal, type RunnableKind } from "./definition"
 
 const Task$ = Symbol("$task")
 
+type WithContext<Context, Return> = Context extends void
+  ? { fn: () => Eventual<Return>; context?: never }
+  : IsSpot<Context> extends true
+    ? { fn: (ctx: NoInfer<SpotToContext<Context>>) => Eventual<Return>; context: Context }
+    : { fn: (ctx: unknown) => Eventual<Return>; context: never }
+
 type TaskConfig<Result, RunContext, EnabledContext> = {
   name: string
-
-  run: { fn: (ctx: RunContext) => Eventual<Result> } & ([RunContext] extends [void]
-    ? { context?: never }
-    : { context: NoInfer<ContextToSpot<DeepReadonly<RunContext>>> })
-
-  enabled?: EnabledContext extends void
-    ? { fn: () => Eventual<boolean>; context?: never }
-    : IsSpot<EnabledContext> extends true
-      ? {
-          fn: (ctx: SpotToContext<EnabledContext>) => Eventual<boolean>
-          context: EnabledContext
-        }
-      : { fn: (ctx: unknown) => Eventual<boolean>; context: never }
+  run: WithContext<RunContext, Result>
+  enabled?: WithContext<EnabledContext, boolean>
 }
 
 type Task<R> = {
@@ -57,7 +52,7 @@ const createTask = <Result, RunContext = void, EnabledContext = void>(
   }
 
   type ExecutionResult = TaskExecutionValue<Result>
-  type ExecutionContext = { run: RunContext; enabled: SpotToContext<EnabledContext> } | typeof Missing$
+  type ExecutionContext = { run: SpotToContext<RunContext>; enabled: SpotToContext<EnabledContext> } | typeof Missing$
 
   const runnable: RunnableInternal<ExecutionResult> & Task<Result> = {
     [Task$]: true,

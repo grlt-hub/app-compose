@@ -1,5 +1,4 @@
 import { type Spot } from "@computable"
-import type { DeepReadonly } from "@shared"
 import { describe, expectTypeOf, it } from "vitest"
 import type { ContextToSpot } from "../context"
 
@@ -67,17 +66,6 @@ describe("ContextToSpot", () => {
       expectTypeOf<Spot<[a: string, b: number]>>().toExtend<Result>()
       expectTypeOf<Spot<readonly [a: string, b: number]>>().toExtend<Result>()
       expectTypeOf<[Spot<string>, Spot<number>]>().toExtend<Result>()
-    })
-  })
-
-  describe("DeepReadonly", () => {
-    it("accepts both mutable and readonly Spots", () => {
-      type Arg = DeepReadonly<{ a: { b: [number, string] } }>
-      type Result = ContextToSpot<Arg>
-
-      expectTypeOf<Spot<{ a: { b: [number, string] } }>>().toExtend<Result>()
-      expectTypeOf<Spot<{ a: { b: readonly [number, string] } }>>().toExtend<Result>()
-      expectTypeOf<{ a: { b: readonly [Spot<number>, Spot<string>] } }>().toExtend<Result>()
     })
   })
 })

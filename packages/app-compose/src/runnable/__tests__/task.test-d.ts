@@ -9,51 +9,77 @@ describe("createTask", () => {
       expectTypeOf(task).toExtend<Task<null>>()
     })
 
-    it("accepts Spot for whole context", () => {
-      const a = createTask({ name: "test", run: { fn: (_: boolean) => null, context: literal(true) } })
-      expectTypeOf(a).toExtend<Task<null>>()
-
-      const b = createTask({ name: "test", run: { fn: (_: 1 | 2) => null, context: literal<1 | 2>(1) } })
-      expectTypeOf(b).toExtend<Task<null>>()
-    })
-
-    it("accepts tuple as Spot or element-wise Spots", () => {
+    it("provides Spot for whole context", () => {
       const a = createTask({
         name: "test",
-        run: { fn: (_: [a: string, b: number]) => null, context: literal(["a", 1]) },
-      })
-      expectTypeOf(a).toExtend<Task<null>>()
-
-      const b = createTask({
-        name: "test",
-        run: { fn: (_: [a: string, b: number]) => null, context: [literal("a"), literal(1)] },
+        run: {
+          context: literal(true),
+          fn: (ctx) => expectTypeOf(ctx).toEqualTypeOf<true>(),
+        },
       })
 
-      expectTypeOf(b).toExtend<Task<null>>()
-    })
-
-    it("accepts nested shape with task references", () => {
-      const dependency = createTask({ name: "dep", run: { fn: () => null } })
-
-      const a = createTask({
-        name: "test",
-        run: { fn: (_: TaskStatus[]) => null, context: [dependency.status, dependency.status] },
-      })
-      expectTypeOf(a).toExtend<Task<null>>()
+      expectTypeOf(a).toExtend<Task<true>>()
 
       const b = createTask({
         name: "test",
         run: {
-          fn: (_: { statuses: TaskStatus[] }) => null,
+          context: literal<1 | 2>(1),
+          fn: (ctx) => expectTypeOf(ctx).toEqualTypeOf<1 | 2>(),
+        },
+      })
+
+      expectTypeOf(b).toExtend<Task<true>>()
+    })
+
+    it("provides literal tuple preserving readonly", () => {
+      const a = createTask({
+        name: "test",
+        run: {
+          context: literal(["a", 1]),
+          fn: (ctx) => expectTypeOf(ctx).toEqualTypeOf<readonly ["a", 1]>(),
+        },
+      })
+
+      expectTypeOf(a).toExtend<Task<true>>()
+
+      const b = createTask({
+        name: "test",
+        run: {
+          context: [literal("a"), literal(1)] as const,
+          fn: (ctx) => expectTypeOf(ctx).toEqualTypeOf<readonly ["a", 1]>(),
+        },
+      })
+
+      expectTypeOf(b).toExtend<Task<true>>()
+    })
+
+    it("provides nested shape with task references", () => {
+      const dependency = createTask({ name: "dep", run: { fn: () => null } })
+
+      const a = createTask({
+        name: "test",
+        run: {
+          context: [dependency.status, dependency.status],
+          fn: (ctx) => expectTypeOf(ctx).toEqualTypeOf<TaskStatus[]>(),
+        },
+      })
+
+      expectTypeOf(a).toExtend<Task<true>>()
+
+      const b = createTask({
+        name: "test",
+        run: {
+          fn: (ctx) => expectTypeOf(ctx).toEqualTypeOf<{ statuses: TaskStatus[] }>(),
           context: { statuses: [dependency.status, dependency.status] },
         },
       })
-      expectTypeOf(b).toExtend<Task<null>>()
+
+      expectTypeOf(b).toExtend<Task<true>>()
     })
 
     it("rejects bare values", () => {
       // @ts-expect-error - bare primitive not allowed
-      const task = createTask({ name: "test", run: { fn: (_: number) => null, context: 1 } })
+      const task = createTask({ name: "test", run: { fn: () => null, context: 1 } })
 
       expectTypeOf(task).toExtend<Task<null>>()
     })
@@ -63,34 +89,32 @@ describe("createTask", () => {
       const a = createTask({ name: "test", run: { fn: (_: boolean) => null, context: literal("x") } })
       expectTypeOf(a).toExtend<Task<null>>()
 
-      const b = createTask({
-        name: "test",
-        // @ts-expect-error - wrong tuple element order
-        run: { fn: (_: [a: string, b: number]) => null, context: [literal(1), literal("a")] },
-      })
-      expectTypeOf(b).toExtend<Task<null>>()
-
-      const c = createTask({
-        name: "test",
-        // @ts-expect-error - wrong tuple element types
-        run: { fn: (_: [a: number, b: number]) => null, context: literal(["a", 1]) },
-      })
-
-      expectTypeOf(c).toExtend<Task<null>>()
+      // @ts-expect-error - empty context
+      createTask({ name: "test", run: { fn: (_) => null } })
     })
 
-    it("rejects context when fn is void", () => {
-      // @ts-expect-error - void fn should not have context
-      const task = createTask({ name: "test", run: { fn: () => null, context: literal(1) } })
+    it("infers fn type from context", () => {
+      const dep = createTask({ name: "dep", run: { fn: () => null } })
 
-      expectTypeOf(task).toExtend<Task<null>>()
+      createTask({
+        name: "test",
+        run: {
+          context: dep.status,
+          fn: (ctx) => expectTypeOf(ctx).toEqualTypeOf<TaskStatus>(),
+        },
+      })
     })
 
-    it("requires context when fn has void union param", () => {
-      // @ts-expect-error - void union param requires explicit context
-      const task = createTask({ name: "test", run: { fn: (_: number | void) => null } })
+    it("fn receives context", () => {
+      const dep = createTask({ name: "dep", run: { fn: () => null } })
 
-      expectTypeOf(task).toExtend<Task<null>>()
+      createTask({
+        name: "test",
+        run: {
+          context: { a: dep.status },
+          fn: (ctx) => expectTypeOf(ctx).toEqualTypeOf<{ a: TaskStatus }>(),
+        },
+      })
     })
   })
 
