@@ -4,8 +4,8 @@ import { type TSESTree as Node, AST_NODE_TYPES as NodeType, type TSESLint } from
 
 const GROUPS = [
   { key: "name" },
-  { key: "run", nested: ["fn", "context"] } as const,
-  { key: "enabled", nested: ["fn", "context"] } as const,
+  { key: "run", nested: ["context", "fn"] } as const,
+  { key: "enabled", nested: ["context", "fn"] } as const,
 ]
 
 const TRUE_ORDER = GROUPS.flatMap((group) => (group.nested ? group.nested.map((n) => `${group.key}.${n}`) : group.key))

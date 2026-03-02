@@ -73,14 +73,14 @@ You can also configure it manually.
 
 ### keep-options-order
 
-`createTask` accepts configuration in an object form. To maintain consistency and readability, configuration properties must follow the semantic order: `name` → `run.fn` → `run.context` → `enabled.fn` → `enabled.context`. This rule strictly enforces this sequence.
+`createTask` accepts configuration in an object form. To maintain consistency and readability, configuration properties must follow the semantic order: `name` → `run.context` → `run.fn` → `enabled.context` → `enabled.fn`. This rule strictly enforces this sequence.
 
 ```ts
 // 👍 great
 createTask({
   name: "alpha",
-  run: { fn: init, context: { timeout: timeoutTag } },
-  enabled: { fn: check, context: { authorized: authorizedTag } },
+  run: { context: { timeout: timeoutTag }, fn: init },
+  enabled: { context: { authorized: authorizedTag }, fn: check },
 })
 
 // 👎 weird
