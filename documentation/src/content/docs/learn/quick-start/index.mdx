@@ -44,8 +44,8 @@ const fetchUser = createTask({
 
 ## How to run a Task
 
-Tasks cannot be called directly. To run a Task, first define it on a _Stage_. A Stage is a logical step in your application’s workflow.
-You can define multiple Stages that execute sequentially. This gives you precise control over the execution flow, prioritizing critical Tasks before non-essential ones.<br/><br/>
+Tasks cannot be called directly. To run a Task, first define it on a _Stage_. A Stage is a logical phase in your application’s workflow.
+This gives you precise control over the execution flow, prioritizing critical Tasks before non-essential ones.<br/><br/>
 After defining the Stages, call `run()` to start execution.
 
 <Sandbox template="vanilla-ts" code={runTask} options={{ layout: "console", showConsoleButton: false }} />
@@ -53,8 +53,7 @@ After defining the Stages, call `run()` to start execution.
 ## How to pass data to a Task
 
 Tasks rarely operate in a vacuum. To be dynamic and reusable, they need access to external data like a username, a product ID, or the current interface language. Tasks access data through a _Context_, receiving everything they need from the environment without hardcoding values.
-The Context supplies all properties required by the `run.fn` function.<br/>
-**Note** that the Context can be either an _object_ or an _array_.
+`run.fn` receives the resolved value of `run.context`.<br/>
 
 <br />
 
@@ -73,7 +72,8 @@ The `bind` operator fills a Tag at the Stage level, making data available for up
 ```js
 import { bind } from "@grlt-hub/app-compose"
 
-.stage([bind(tag, value)]).stage([fetchUser])
+.stage({ steps: [bind(tag, value)] })
+.stage({ steps: [fetchUser] })
 ```
 
 <Aside type="caution">
@@ -81,11 +81,11 @@ Do not mix `bind` and Tasks within the same Stage.
 
 ```js
 // ❌ Wrong
-.stage([bind(...), task])
+.stage({ steps: [bind(...), task] })
 
 // ✅ Correct
-.stage([bind(...)]).stage([task])
-.stage([bind(...)], [task])
+.stage({ steps: [bind(...)] }).stage({ steps: [task] })
+.stage({ steps: [bind(...)] }, { steps: [task] })
 ```
 
 </Aside>
@@ -125,8 +125,8 @@ const fetchUser = createTask({
   name: "fetch-user",
   run: { fn: () => {...} },
   enabled: {
+    context: { enabled: tag.value },
     fn: ({ enabled }) => enabled,
-    context: { enabled: tag },
   },
 })
 ```

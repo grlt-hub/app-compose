@@ -1,15 +1,12 @@
 import { bind, compose, createTag, createTask } from "@grlt-hub/app-compose"
 
-type Context = {
-  userId: number
-}
-
-const tag = createTag<Context["userId"]>({ name: "userId" })
+const tag = createTag<number>({ name: "userId" })
 
 const fetchUser = createTask({
   name: "fetch-user",
   run: {
-    fn: async (ctx: Context) => {
+    context: { userId: tag.value },
+    fn: async (ctx) => {
       const response = await fetch(
         // 👇 userId is passed from Context
         `https://jsonplaceholder.typicode.com/users/${ctx.userId}`,
@@ -18,7 +15,6 @@ const fetchUser = createTask({
 
       console.log(JSON.stringify(result, null, 2))
     },
-    context: { userId: tag },
   },
 })
 
@@ -33,7 +29,7 @@ const logIn = createTask({
 })
 
 compose()
-  .stage([logIn])
-  .stage([bind(tag, logIn.id)])
-  .stage([fetchUser])
+  .stage({ steps: [logIn] })
+  .stage({ steps: [bind(tag, logIn.result.id)] })
+  .stage({ steps: [fetchUser] })
   .run()

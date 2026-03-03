@@ -3,7 +3,7 @@ const featureFlags = createTask({
   run: {
     fn: () => {
       // 👇 true = Task runs, false = Task is skipped
-      const flags = { fetchUser: true }
+      const flags = { fetchingAllowed: true }
       console.log(flags)
 
       return flags
@@ -19,14 +19,14 @@ const fetchUser = createTask({
     fn: () => console.log("[fetch-user]: user fetched"),
   },
   enabled: {
+    context: { enabled: tag.value },
     // 👇 Return false to skip this Task
     fn: ({ enabled }) => enabled,
-    context: { enabled: tag },
   },
 })
 
 compose()
-  .stage([featureFlags])
-  .stage([bind(tag, featureFlags.fetchUser)])
-  .stage([fetchUser])
+  .stage({ steps: [featureFlags] })
+  .stage({ steps: [bind(tag, featureFlags.result.fetchingAllowed)] })
+  .stage({ steps: [fetchUser] })
   .run()

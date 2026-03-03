@@ -13,4 +13,6 @@ const fetchUser = createTask({
   },
 })
 
-compose().stage([fetchUser]).run()
+compose()
+  .stage({ steps: [fetchUser] })
+  .run()
