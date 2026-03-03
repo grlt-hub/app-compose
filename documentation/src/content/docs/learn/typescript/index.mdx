@@ -6,6 +6,8 @@ description: App-Compose — Using TypeScript
 import Sandbox from "../../../../components/sandbox/index.astro"
 import tagType from "./tag-type.ts?raw"
 import taskResult from "./task-result.ts?raw"
+import taskType from "./task-type.ts?raw"
+import loggerType from "./logger-type.ts?raw"
 
 App-Compose comes with built-in TypeScript support, so you can start writing type-safe code right away.
 
@@ -16,7 +18,7 @@ When creating a Tag, you can specify the data type it holds.
 <Sandbox
   template="vanilla-ts"
   code={tagType}
-  options={{ layout: "console", editorHeight: 250, showConsoleButton: false, hideOutput: true }}
+  options={{ layout: "console", showConsoleButton: false, hideOutput: true }}
 />
 
 This provides full type safety for both Tag inputs and outputs.
@@ -30,7 +32,7 @@ Extracts the return type of a given Task.
 <Sandbox
   template="vanilla-ts"
   code={taskResult}
-  options={{ layout: "console", editorHeight: 250, showConsoleButton: false, hideOutput: true }}
+  options={{ layout: "console", showConsoleButton: false, hideOutput: true }}
 />
 
 ### TaskStatus
@@ -39,8 +41,25 @@ Represents the possible execution outcomes of a Task.
 
 {/* prettier-ignore */}
 ```ts
-type TaskStatus = 
-  | { name: "done" } 
-  | { name: "skip" } 
-  | { name: "fail"; error: unknown };
+type TaskStatus = 'done' | 'fail' | 'skip'
 ```
+
+### Task&lt;T&gt;
+
+Represents a Task created by `createTask`. Use it to type function parameters or variables that hold a Task reference.
+
+<Sandbox
+  template="vanilla-ts"
+  code={taskType}
+  options={{ layout: "console", showConsoleButton: false, hideOutput: true }}
+/>
+
+### ComposeLogger
+
+Defines lifecycle hooks for observing stage and task execution.
+
+<Sandbox
+  template="vanilla-ts"
+  code={loggerType}
+  options={{ layout: "console", showConsoleButton: false, hideOutput: true }}
+/>

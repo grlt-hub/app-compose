@@ -11,11 +11,26 @@ const dist = (file) => fileURLToPath(new URL(`../packages/app-compose/dist/${fil
 
 const buildDts = () => {
   const raw = readFileSync(dist("index.d.ts"), "utf-8")
+
+  const exportBlock = raw.match(/^export \{([^}]*)\};?\s*$/m)?.[1] ?? ""
+  const aliases = exportBlock
+    .split(",")
+    .map((s) => s.trim())
+    .filter((s) => /\bas\b/.test(s))
+    .map((s) => {
+      const m = s.match(/(?:type\s+)?(\w+)\s+as\s+(\w+)/)
+      return m ? `export type ${m[2]} = ${m[1]};` : null
+    })
+    .filter(Boolean)
+    .join("\n")
+
   const content = raw
     .replace(/^export \{[^}]*\};?\s*$/m, "")
     .replace(/\/\/#\s*sourceMappingURL=.*$/m, "")
     .trim()
-  return `export const APP_COMPOSE_DTS = ${JSON.stringify(`declare module "@grlt-hub/app-compose" {\n${content}\n}`)}`
+
+  const body = aliases ? `${content}\n${aliases}` : content
+  return `export const APP_COMPOSE_DTS = ${JSON.stringify(`declare module "@grlt-hub/app-compose" {\n${body}\n}`)}`
 }
 
 const buildJs = () => {
