@@ -17,5 +17,5 @@ Compose modules into apps.
 
 ## What is it?
 
-`@grlt-hub/app-compose` is a library for module-based applications.
+The library for modular application composition
 It helps developers easily connect different parts of an application — features, entities, services, and so on — so they work together as a single system.

@@ -5,6 +5,7 @@
   "publishConfig": {
     "access": "public"
   },
+  "description": "The library for modular application composition",
   "keywords": [
     "grlt",
     "grlt-hub",

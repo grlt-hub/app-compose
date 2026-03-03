@@ -15,7 +15,7 @@ export default defineConfig({
     react(),
     starlight({
       title: "App-Compose",
-      description: "App Compose - Compose modules into apps",
+      description: "App Compose - The library for modular application composition",
       social: [
         { icon: "open-book", label: "Learn", href: "/learn/quick-start/" },
         { icon: "rocket", label: "Sandbox", href: "/sandbox/" },
