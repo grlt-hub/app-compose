@@ -1,6 +1,6 @@
 // prettier-ignore
 import {
-  bind, compose, createTag, createTask, literal, optional, status
+bind,compose,createTag,createTask,literal,optional
 } from "@grlt-hub/app-compose"
 
 const task = createTask({
@@ -12,4 +12,6 @@ const task = createTask({
   },
 })
 
-compose().stage([task]).run()
+compose()
+  .stage({ steps: [task] })
+  .run()

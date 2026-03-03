@@ -8,6 +8,7 @@ const mainFeature = createTask({
       // throw new Error("Oops!")
     },
   },
+  // 👇 true = Task runs, false = Task is skipped
   enabled: { fn: () => true },
 })
 
