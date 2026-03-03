@@ -3,8 +3,12 @@ import react from "@astrojs/react"
 import starlight from "@astrojs/starlight"
 import { defineConfig } from "astro/config"
 import starlightLlmsTxt from "starlight-llms-txt"
+import { appComposePlugin } from "./app-compose-plugin.mjs"
 
 export default defineConfig({
+  vite: {
+    plugins: [appComposePlugin()],
+  },
   site: "https://grlt-hub.github.io",
   // base: "/app-compose",
   integrations: [

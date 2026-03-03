@@ -1,4 +1,4 @@
-import { status } from "@grlt-hub/app-compose"
+import { map } from "@grlt-hub/app-compose"
 
 const mainFeature = createTask({
   name: "main",
@@ -15,8 +15,8 @@ const dependentFeature = createTask({
   name: "dependent",
   run: { fn: () => {} },
   enabled: {
+    context: { mainFeatureEnabled: map(mainFeature.status, (v) => v === "done") },
     fn: ({ mainFeatureEnabled }) => mainFeatureEnabled,
-    context: { mainFeatureEnabled: status(mainFeature, "done") },
   },
 })
 
@@ -24,14 +24,17 @@ const render = createTask({
   name: "render",
   run: {
     fn: (status) => {
-      document.body.innerText = `[main]: ${status.main.name}
-      [dependent]: ${status.dependent.name}`
+      document.body.innerText = `[main]: ${status.main}
+      [dependent]: ${status.dependent}`
     },
     context: {
-      main: status(mainFeature),
-      dependent: status(dependentFeature),
+      main: mainFeature.status,
+      dependent: dependentFeature.status,
     },
   },
 })
 
-compose().stage([mainFeature], [dependentFeature]).stage([render]).run()
+compose()
+  .stage({ steps: [mainFeature] }, { steps: [dependentFeature] })
+  .stage({ steps: [render] })
+  .run()

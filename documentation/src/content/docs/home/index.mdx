@@ -19,10 +19,10 @@ import { LinkCard } from "@astrojs/starlight/components"
 import { CardGrid } from "@astrojs/starlight/components"
 import Sandbox from "../../../components/sandbox/index.astro"
 import example from "./example.js?raw"
-import logger from "./logger.js?raw"
+import reuse from "./reuse.js?raw"
 import featureToggle from "./feature-toggle.js?raw"
 import guard from "./guard.js?raw"
-import graph from "./graph.js?raw"
+import graph from "./graph.ts?raw"
 
 <Sandbox template="vanilla-ts" code={example} />
 
@@ -31,7 +31,7 @@ import graph from "./graph.js?raw"
 Write logic once and run it anywhere. Need to mock an API or change a config for a specific page? Just provide different values<br/>
 Build features that work in any part of the app.
 
-<Sandbox template="vanilla" code={logger} options={{ editorHeight: 440, showConsole: true }} />
+<Sandbox template="vanilla" code={reuse} options={{ editorHeight: 532, showConsole: true }} />
 
 ## Toggle features with ease
 
@@ -52,7 +52,7 @@ Never debug a missing dependency in production.
 Stop digging through folders to understand your architecture. Get a clear map of your system.<br/>
 Keep your project transparent, no matter how large it grows.
 
-<Sandbox template="vanilla" code={graph} options={{ layout: "console", showConsoleButton: false }} />
+<Sandbox template="vanilla-ts" code={graph} options={{ layout: "console", showConsoleButton: false }} />
 
 ## The way logic should be
 

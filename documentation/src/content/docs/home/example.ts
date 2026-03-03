@@ -1,26 +1,23 @@
 // prettier-ignore
 import {
-  bind, compose, createTag, createTask, literal
+bind,compose,createTag,createTask,literal,
 } from "@grlt-hub/app-compose"
 
-type Ctx = {
-  title: string
-}
-
-const tag = createTag<Ctx["title"]>({ name: "myFirstTag" })
+const tag = createTag<string>({ name: "myFirstTag" })
 
 const task = createTask({
   name: "page",
   run: {
-    fn: (ctx: Ctx) => {
+    context: { title: tag.value },
+    fn: (ctx) => {
       document.body.innerHTML = `<h1>${ctx.title}</h1>`
     },
-    context: { title: tag },
   },
 })
 
 const title = "Welcome to my app"
 
 compose()
-  .stage([bind(tag, literal(title))], [task])
+  .stage({ steps: [bind(tag, literal(title))] })
+  .stage({ steps: [task] })
   .run()

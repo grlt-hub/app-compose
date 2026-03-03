@@ -1,18 +1,18 @@
 const alpha = createTask({
   name: "alpha",
-  run: { fn: () => ({ result: false }) },
+  run: { fn: () => false },
 })
 
 const beta = createTask({
   name: "beta",
   run: {
-    fn: ({ value }) => (document.body.textContent = !value),
-    context: { value: alpha.result },
+    context: alpha.result,
+    fn: (value) => (document.body.textContent = !value),
   },
 })
 
 compose()
   // 👇 Try commenting me
-  .stage([alpha])
-  .stage([beta])
+  .stage({ steps: [alpha] })
+  .stage({ steps: [beta] })
   .run()

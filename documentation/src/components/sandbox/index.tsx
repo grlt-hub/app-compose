@@ -5,6 +5,7 @@ import {
   type SandpackOptions,
   type SandpackPredefinedTemplate,
 } from "@codesandbox/sandpack-react"
+import { APP_COMPOSE_JS } from "virtual:app-compose-js"
 import { Editor } from "./editor/index"
 import { sandboxStyle } from "./sandboxStyle"
 import { useTheme } from "./useTheme"
@@ -49,7 +50,12 @@ const SandpackEditor = ({ code: __code, template = "react", options, files = {} 
         files={{
           [fileName]: { code },
           ...files,
-          "/sandboxStyle.css": { code: sandboxStyle },
+          "/sandboxStyle.css": { code: sandboxStyle, hidden: true },
+          "/node_modules/@grlt-hub/app-compose/index.cjs": { code: APP_COMPOSE_JS, hidden: true },
+          "/node_modules/@grlt-hub/app-compose/package.json": {
+            code: JSON.stringify({ name: "@grlt-hub/app-compose", main: "index.cjs" }),
+            hidden: true,
+          },
           "/entry.js": {
             code: `
             import "./sandboxStyle.css";
@@ -68,9 +74,6 @@ const SandpackEditor = ({ code: __code, template = "react", options, files = {} 
           recompileMode: "delayed",
         }}
         customSetup={{
-          dependencies: {
-            "@grlt-hub/app-compose": "3.0.0-alpha.7",
-          },
           entry: "/entry.js",
         }}
       >

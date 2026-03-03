@@ -20,7 +20,8 @@
   ],
   "type": "module",
   "scripts": {
-    "doc:dev": "pnpm --dir ./documentation run dev",
+    "doc:dev": "pnpm --filter ./packages/app-compose build && pnpm --dir ./documentation run dev",
+    "doc:build": "pnpm --filter ./packages/app-compose build && pnpm --dir ./documentation run build",
     "build": "pnpm -r --filter='!./documentation' build",
     "test": "pnpm -r test",
     "lint": "pnpm -r lint"
