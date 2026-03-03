@@ -28,6 +28,7 @@ type Task<R> = {
 } & Runnable &
   RunnableKind<"task">
 
+type TaskResult<T> = T extends Task<infer R> ? R : never
 type TaskStatus = "done" | "fail" | "skip"
 type TaskExecutionValue<R> = { status: "done"; value: R } | { status: "fail"; error: unknown } | { status: "skip" }
 
@@ -89,4 +90,4 @@ const createTask = <Result, RunContext = void, EnabledContext = void>(
   return runnable
 }
 
-export { createTask, type Task, type TaskExecutionValue, type TaskStatus }
+export { createTask, type Task, type TaskExecutionValue, type TaskResult, type TaskStatus }
