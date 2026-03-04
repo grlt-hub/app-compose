@@ -8,6 +8,7 @@ import tagType from "./tag-type.ts?raw"
 import taskResult from "./task-result.ts?raw"
 import taskType from "./task-type.ts?raw"
 import loggerType from "./logger-type.ts?raw"
+import stageConfigType from "./stageConfig-type.ts?raw"
 
 App-Compose comes with built-in TypeScript support, so you can start writing type-safe code right away.
 
@@ -61,5 +62,15 @@ Defines lifecycle hooks for observing stage and task execution.
 <Sandbox
   template="vanilla-ts"
   code={loggerType}
+  options={{ layout: "console", showConsoleButton: false, hideOutput: true }}
+/>
+
+### StageConfig
+
+Represents the configuration for a single stage passed to `compose`.
+
+<Sandbox
+  template="vanilla-ts"
+  code={stageConfigType}
   options={{ layout: "console", showConsoleButton: false, hideOutput: true }}
 />
