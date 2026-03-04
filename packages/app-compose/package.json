@@ -1,6 +1,6 @@
 {
   "name": "@grlt-hub/app-compose",
-  "version": "3.0.0-alpha.9",
+  "version": "3.0.0-alpha.10",
   "private": false,
   "publishConfig": {
     "access": "public"
