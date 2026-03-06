@@ -9,8 +9,7 @@ export default defineConfig({
   vite: {
     plugins: [appComposePlugin()],
   },
-  site: "https://grlt-hub.github.io",
-  // base: "/app-compose",
+  site: "https://app-compose.dev",
   integrations: [
     react(),
     starlight({
