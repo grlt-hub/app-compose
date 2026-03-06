@@ -18,8 +18,6 @@ jobs:
 
       - uses: pnpm/action-setup@v4
         name: Install pnpm
-        with:
-          cache: true
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -43,13 +41,23 @@ jobs:
 
       - uses: pnpm/action-setup@v4
         name: Install pnpm
-        with:
-          cache: true
 
-      - name: Build and upload docs
-        uses: withastro/action@v5
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          path: documentation
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build docs
+        run: pnpm --filter ./documentation build
+
+      - name: Upload pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: documentation/dist
 
   deploy-docs:
     needs: build-docs
