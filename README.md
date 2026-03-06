@@ -15,6 +15,8 @@ Compose modules into apps.
   <img src="https://img.shields.io/bundlephobia/min/%40grlt-hub%2Fapp-compose?color=yellowgreen">
 <p>
 
+> **Alpha:** This project is currently in alpha. The API may change before the stable release.
+
 ## What is it?
 
 The library for modular application composition
