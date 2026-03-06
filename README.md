@@ -12,7 +12,7 @@ Compose modules into apps.
 <p align="center">
   <a href="https://www.npmjs.com/package/@grlt-hub/app-compose"><img src="https://img.shields.io/npm/v/%40grlt-hub%2Fapp-compose?color=orange"></a>
   <img src="https://img.shields.io/npm/l/%40grlt-hub%2Fapp-compose?color=blue">
-  <img src="https://img.shields.io/bundlephobia/min/%40grlt-hub%2Fapp-compose?color=yellowgreen">
+  <img src="https://deno.bundlejs.com/badge?q=@grlt-hub/app-compose&treeshake=[*]">
 <p>
 
 > **Alpha:** This project is currently in alpha. The API may change before the stable release.
