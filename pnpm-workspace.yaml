@@ -1,0 +1,14 @@
+packages:
+  - packages/*
+  - documentation
+
+ignoredBuiltDependencies:
+  - sharp
+
+minimumReleaseAge: 4320
+
+onlyBuiltDependencies:
+  - esbuild
+
+patchedDependencies:
+  starlight-llms-txt: patches/starlight-llms-txt.patch

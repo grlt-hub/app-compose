@@ -1,0 +1,21 @@
+---
+title: Sandbox
+template: splash
+tableOfContents: false
+head: [{ tag: "style", content: ".content-panel:has(h1) { display:none }" }]
+---
+
+import Sandbox from "../../components/sandbox/index.astro"
+import emptySandbox from "./sandbox.ts?raw"
+
+<Sandbox
+  template="vanilla-ts"
+  code={emptySandbox}
+  options={{
+    editorHeight: 800,
+    layout: "console",
+    showConsoleButton: false,
+    editorWidthPercentage: 65,
+    storageKey: "@app-compose::sandbox",
+  }}
+/>

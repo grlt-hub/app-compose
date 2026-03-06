@@ -1,0 +1,74 @@
+---
+title: Installation
+description: App-Compose — Installation
+---
+
+import { Tabs, TabItem, Steps } from "@astrojs/starlight/components"
+
+App-Compose is a lightweight and standalone library with zero dependencies. TypeScript support works out of the box. No separate `@types` packages are required.
+
+## Try App-Compose
+
+You don’t need to install anything to play with App-Compose. Try editing the [sandbox](/sandbox/) in a new tab
+
+## Install the package
+
+Use your preferred package manager.
+
+<Tabs>
+  <TabItem label="npm">
+  
+    ```bash
+    npm install --save-exact @grlt-hub/app-compose
+
+    ```
+
+  </TabItem>
+  <TabItem label="pnpm">
+
+    ```bash
+    pnpm add --save-exact @grlt-hub/app-compose
+
+    ```
+
+  </TabItem>
+  <TabItem label="yarn">
+
+    ```bash
+    yarn add --exact @grlt-hub/app-compose
+
+    ```
+
+  </TabItem>
+  <TabItem label="bun">
+
+    ```bash
+    bun add --exact @grlt-hub/app-compose
+
+    ```
+
+  </TabItem>
+</Tabs>
+
+## Using with AI assistants
+
+### Cursor
+
+<Steps>
+  1. Open chat and type `@docs`
+  2. Click **Add new doc**
+  3. Paste the URL and confirm:
+     ```
+     https://grlt-hub.github.io/llms-full.txt
+     ```
+</Steps>
+
+### Claude / ChatGPT / Copilot
+
+Add this URL to your assistant's context:
+
+```
+https://grlt-hub.github.io/llms-full.txt
+```
+
+Use [`llms-small.txt`](https://grlt-hub.github.io/llms-small.txt) if the model has a limited context window.

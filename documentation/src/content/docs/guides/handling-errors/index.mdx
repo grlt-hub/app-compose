@@ -1,0 +1,28 @@
+---
+title: Handling Errors
+description: App-Compose — Handling Errors
+---
+
+import Sandbox from "../../../../components/sandbox/index.astro"
+import failureBehaviour from "./failure-behaviour.js?raw"
+import onTaskFail from "./on-task-fail.js?raw"
+
+In real apps, things go wrong. A network request might fail, a data transformation might error out, or an external service might be unavailable. When this happens, App-Compose isolates the failure so the rest of your app continues to work as expected.
+
+Task errors only come from `run.fn` or `enabled.fn`.
+
+## Failure behavior
+
+If a Task fails, App-Compose marks it as _failed_ and keeps the app running. Any Task that strictly depends on it, directly or through Tags, is marked as _skipped_.
+
+<Sandbox template="vanilla" code={failureBehaviour} options={{ layout: "console" }} />
+
+## Logging Failures
+
+By default, App-Compose logs a warning to the console when a Task fails. You can customize this behavior with the `onTaskFail`. This is useful for separating dev and production handling, for example sending errors to a logging system like Sentry.
+
+<Sandbox
+  template="vanilla"
+  code={onTaskFail}
+  options={{ layout: "console", showConsoleButton: false, editorWidthPercentage: 70 }}
+/>

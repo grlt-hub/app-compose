@@ -1,0 +1,71 @@
+{
+  "name": "@grlt-hub/eslint-plugin-app-compose",
+  "version": "3.0.0-alpha.2",
+  "description": "Enforcing best practices for @grlt-hub/app-compose",
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "eslint",
+    "eslintplugin",
+    "eslint-plugin",
+    "grlt",
+    "grlt-hub",
+    "app-compose"
+  ],
+  "homepage": "https://grlt-hub.github.io/app-compose/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/grlt-hub/app-compose.git"
+  },
+  "license": "MIT",
+  "contributors": [
+    {
+      "name": "Mikhail Kireev",
+      "url": "https://github.com/kireevmp"
+    },
+    {
+      "name": "Viktor Pasynok",
+      "url": "https://github.com/binjospookie"
+    }
+  ],
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.cts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "prepack": "pnpm build",
+    "lint": "oxlint ./src",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@typescript-eslint/utils": "8.56.0"
+  },
+  "devDependencies": {
+    "@typescript-eslint/rule-tester": "8.56.0",
+    "eslint": "9.39.2"
+  },
+  "peerDependencies": {
+    "eslint": ">=9.0.0",
+    "typescript": ">=5.0.0"
+  },
+  "packageManager": "pnpm@10.24.0+sha512.01ff8ae71b4419903b65c60fb2dc9d34cf8bb6e06d03bde112ef38f7a34d6904c424ba66bea5cdcf12890230bf39f9580473140ed9c946fef328b6e5238a345a"
+}

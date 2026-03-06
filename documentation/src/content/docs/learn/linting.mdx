@@ -1,0 +1,92 @@
+---
+title: Linting
+description: App-Compose — Linting
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components"
+
+We recommend using ESLint to enforce best practices and coding standards in your App-Compose projects.<br/>
+Please note that this plugin requires ESLint 9+ and TypeScript.
+
+## Installation
+
+Use your preferred package manager.
+
+<Tabs>
+  <TabItem label="npm">
+
+    ```bash
+    npm install --save-dev --save-exact @grlt-hub/eslint-plugin-app-compose
+    ```
+
+  </TabItem>
+  <TabItem label="pnpm">
+
+    ```bash
+    pnpm add --save-dev --save-exact @grlt-hub/eslint-plugin-app-compose
+    ```
+
+  </TabItem>
+  <TabItem label="yarn">
+   
+    ```bash
+    yarn add --dev --exact @grlt-hub/eslint-plugin-app-compose
+    ```
+
+  </TabItem>
+  <TabItem label="bun">
+
+    ```bash
+    bun add --dev --exact @grlt-hub/eslint-plugin-app-compose
+    ```
+
+  </TabItem>
+</Tabs>
+
+## Usage
+
+Import the plugin and add it to your config. Use the recommended preset for a quick start.
+
+{/* prettier-ignore */}
+```js
+import appCompose from "@grlt-hub/eslint-plugin-app-compose"
+
+export default tseslint.config(
+  appCompose.configs.recommended
+)
+```
+
+You can also configure it manually.
+
+```js
+{
+  plugins: {
+    'app-compose': appCompose,
+  },
+  rules: {
+    'app-compose/task-options-order': 'error',
+  },
+}
+```
+
+## Rules
+
+### keep-options-order
+
+`createTask` accepts configuration in an object form. To maintain consistency and readability, configuration properties must follow the semantic order: `name` → `run.context` → `run.fn` → `enabled.context` → `enabled.fn`. This rule strictly enforces this sequence.
+
+```ts
+// 👍 great
+createTask({
+  name: "alpha",
+  run: { context: { timeout: timeoutTag }, fn: init },
+  enabled: { context: { authorized: authorizedTag }, fn: check },
+})
+
+// 👎 weird
+createTask({
+  name: "alpha",
+  enabled: { fn: check, context: { authorized: authorizedTag } },
+  run: { context: { timeout: timeoutTag }, fn: init },
+})
+```

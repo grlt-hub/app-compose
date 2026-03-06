@@ -1,0 +1,64 @@
+{
+  "name": "@grlt-hub/app-compose",
+  "version": "3.0.0-alpha.10",
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "The library for modular application composition",
+  "keywords": [
+    "grlt",
+    "grlt-hub",
+    "app-compose",
+    "dependency-injection",
+    "di",
+    "inversion-of-control",
+    "ioc",
+    "modular",
+    "typescript"
+  ],
+  "homepage": "https://grlt-hub.github.io/app-compose/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/grlt-hub/app-compose.git"
+  },
+  "license": "MIT",
+  "contributors": [
+    {
+      "name": "Mikhail Kireev",
+      "url": "https://github.com/kireevmp"
+    },
+    {
+      "name": "Viktor Pasynok",
+      "url": "https://github.com/binjospookie"
+    }
+  ],
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "prepack": "pnpm build",
+    "test": "vitest run",
+    "lint": "knip && oxlint ./src"
+  },
+  "packageManager": "pnpm@10.24.0+sha512.01ff8ae71b4419903b65c60fb2dc9d34cf8bb6e06d03bde112ef38f7a34d6904c424ba66bea5cdcf12890230bf39f9580473140ed9c946fef328b6e5238a345a"
+}

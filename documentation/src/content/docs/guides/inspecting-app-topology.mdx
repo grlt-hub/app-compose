@@ -1,0 +1,18 @@
+---
+title: Inspecting App Topology
+description: App-Compose — Inspecting App Topology
+---
+
+import Sandbox from "../../../components/sandbox/index.astro"
+import graph from "../home/graph.js?raw"
+
+As your app grows, understanding how different tasks interact can become difficult. Instead of digging through folders to trace dependencies, you can use the `.graph()` fn to get a clear map of your system.
+
+<Sandbox template="vanilla" code={graph} options={{ layout: "console", showConsoleButton: false }} />
+
+The `.graph()` returns a structured object representing your app topology. You can visualize this data using tools like Mermaid or render it as a simple text map to see the relationships between Tasks and Tags at a glance:
+
+```
+[alpha] ──> <title> ──> [beta]
+      └ ─ ─ > [gamma] (optional)
+```

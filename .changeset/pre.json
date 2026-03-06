@@ -1,0 +1,10 @@
+{
+  "mode": "pre",
+  "tag": "alpha",
+  "initialVersions": {
+    "@grlt-hub/app-compose": "2.0.2"
+  },
+  "changesets": [
+    "pink-melons-pay"
+  ]
+}

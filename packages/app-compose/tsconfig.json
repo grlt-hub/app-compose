@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "@computable": ["./src/computable"],
+      "@runnable": ["./src/runnable"],
+      "@compose": ["./src/compose"],
+      "@shared": ["./src/shared"],
+    }
+  },
+  "include": ["src"]
+}

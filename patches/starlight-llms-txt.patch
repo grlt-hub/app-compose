@@ -1,0 +1,13 @@
+diff --git a/entryToSimpleMarkdown.ts b/entryToSimpleMarkdown.ts
+index d0ce19a6abed550fe3a4eb09fa186815055daa15..72cb36ed1149cd58bea92c1368299d2b3e23931b 100644
+--- a/entryToSimpleMarkdown.ts
++++ b/entryToSimpleMarkdown.ts
+@@ -29,7 +29,7 @@ const selectors = [...minify.customSelectors];
+ if (minify.details) selectors.unshift('details');
+ 
+ const astroContainer = await experimental_AstroContainer.create({
+-	renderers: [{ name: 'astro:jsx', ssr: mdxServer }],
++	renderers: [{ name: '@astrojs/react', ssr: mdxServer }],
+ });
+ 
+ const htmlToMarkdownPipeline = unified()

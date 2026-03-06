@@ -1,13 +1,20 @@
-node_modules/
-.idea/
-dist/
-.cache/
-build/
+# Local
 .DS_Store
-coverage/
-**/*.zip
+*.local
+*.log*
+.env
+.env.production
+
+# Dist
+node_modules
+dist/
+storybook-static
+.astro/
+
+# IDE
 .vscode
-.swc/
-.nx
-tsconfig.vitest-temp.json
-./sandbox.ts
+!.vscode/extensions.json
+.idea
+
+# Coverage
+/coverage

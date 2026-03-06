@@ -1,0 +1,42 @@
+---
+title: Using Task Status
+description: App-Compose — Using Task Status
+---
+
+import { Aside } from "@astrojs/starlight/components"
+import Sandbox from "../../../../components/sandbox/index.astro"
+import usingStatus from "./using-task-status.js?raw"
+
+Sometimes you need to know Task statuses. For example, you might want to show a fallback UI if core functionality fails.<br />
+This is where the `status` operator comes in.
+
+The `status` operator takes a Task as the first argument and a status (done, skip, or fail) as the second. It returns true if the Task matches the specified status.
+
+```js {11}
+import { status } from "@grlt-hub/app-compose"
+
+const controlTask = createTask({
+  name: "control",
+  run: {
+    fn: ({ checks }) => {
+      /* Logic to handle checks */
+    },
+    context: {
+      // Returns true if tasks failed
+      checks: [status(fetchUser, "fail")],
+    },
+  },
+})
+```
+
+<Aside type="caution">
+  The `status` operator is only available in `run.context`, `enabled.context`, or Tag bindings.
+  <br />
+  You cannot call it inside arbitrary code like `run.fn`.
+</Aside>
+
+<br />
+
+Check out this interactive example to see `status` in action:
+
+<Sandbox template="vanilla" code={usingStatus} options={{ layout: "console", showConsoleButton: false }} />

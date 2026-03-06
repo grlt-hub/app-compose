@@ -1,0 +1,11 @@
+---
+import SandpackEditor from './index.tsx';
+import { Code } from "@astrojs/starlight/components"
+
+const { code: rawCode, template, options, files } = Astro.props;
+const sourceCode = rawCode.replace(/^[ \t]*\/\/\s*prettier-ignore[ \t]*\r?\n?/gm, '');
+---
+
+<Code class="sandbox-code" code={sourceCode} lang="ts" />
+
+<SandpackEditor client:only="react" code={sourceCode} template={template} options={options} files={files} />

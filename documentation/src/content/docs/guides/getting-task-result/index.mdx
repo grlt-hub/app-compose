@@ -1,0 +1,11 @@
+---
+title: Getting a Task Result
+description: App-Compose — Getting a Task Result
+---
+
+import Sandbox from "../../../../components/sandbox/index.astro"
+import scopeGet from "./scope-get.jsx?raw"
+
+Most of the time, you get Task results from Context. Sometimes you need the result after the app has finished running. For example, you might render a JSX that a Task returns once all stages complete. In that case, use the _Scope_ returned by `compose().run()` and call `get()`. If a Task was skipped or failed, `get()` returns _undefined_.
+
+<Sandbox template="react" code={scopeGet} options={{ editorWidthPercentage: 68 }} />

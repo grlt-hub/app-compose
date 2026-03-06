@@ -1,0 +1,28 @@
+:root {
+  --sl-content-width: 60rem;
+  --sl-color-text-accent: #58DC58;
+}
+
+.hero {
+  grid-template-columns: 1fr;
+}
+
+.hero .copy {
+  align-items: center;
+}
+
+.hero .actions {
+  justify-content: center;
+}
+
+@media (min-width: 992px) {
+  .sandbox-code {
+    display: none;
+  }
+}
+
+@media (max-width: 992px) {
+  .sandbox {
+    display: none;
+  }
+}
