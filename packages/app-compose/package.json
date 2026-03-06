@@ -17,7 +17,7 @@
     "modular",
     "typescript"
   ],
-  "homepage": "https://grlt-hub.github.io/app-compose/",
+  "homepage": "https://app-compose.dev",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/grlt-hub/app-compose.git"

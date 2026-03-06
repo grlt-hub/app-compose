@@ -55,7 +55,7 @@ Vault
 ### Added
 
 - `onFail` option to `compose.up` config for handling container failures, allowing centralized error tracking and custom recovery actions.
-  [How to](https://grlt-hub.github.io/app-compose/how-to-guides/handle-container-failures/)
+  [How to](https://app-compose.dev/app-compose/how-to-guides/handle-container-failures/)
 
 ## 1.3.0
 
@@ -80,7 +80,7 @@ in the `compose.up` and `compose.graph` configs. `autoResolveDeps` allows automa
 
 ### Added
 
-- [the ability to visualize](https://grlt-hub.github.io/app-compose/how-to-guides/visualize-the-system/) the system composed of containers effectively (including transitive dependencies and their paths)
+- [the ability to visualize](https://app-compose.dev/app-compose/how-to-guides/visualize-the-system/) the system composed of containers effectively (including transitive dependencies and their paths)
 
 ## 1.0.0
 

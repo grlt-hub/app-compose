@@ -1,5 +1,5 @@
 <p align="center">
-<a href="https://grlt-hub.github.io/app-compose/">
+<a href="https://app-compose.dev">
 <img src="https://github.com/user-attachments/assets/b9f87cf8-5af1-410b-8125-28689e668d47" height="150">
 </a>
 </p>

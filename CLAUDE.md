@@ -6,18 +6,18 @@ This file provides context for AI assistants working in this repository.
 
 `@grlt-hub/app-compose` is a TypeScript library for composing modular applications. It lets developers wire together features, services, and entities — managing their dependencies and startup order — as a single coherent system.
 
-- Docs: https://grlt-hub.github.io/app-compose/
+- Docs: https://app-compose.dev/
 - npm: https://www.npmjs.com/package/@grlt-hub/app-compose
 
 ## Monorepo structure
 
 This is a pnpm workspace. The packages are:
 
-| Path | Package | Role |
-|------|---------|------|
-| `packages/app-compose` | `@grlt-hub/app-compose` | Core library |
-| `packages/eslint-plugin` | `@grlt-hub/eslint-plugin-app-compose` | ESLint rules for the library |
-| `documentation` | — | Astro/Starlight documentation site |
+| Path                     | Package                               | Role                               |
+| ------------------------ | ------------------------------------- | ---------------------------------- |
+| `packages/app-compose`   | `@grlt-hub/app-compose`               | Core library                       |
+| `packages/eslint-plugin` | `@grlt-hub/eslint-plugin-app-compose` | ESLint rules for the library       |
+| `documentation`          | —                                     | Astro/Starlight documentation site |
 
 ## Common commands
 
