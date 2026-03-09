@@ -1,3 +1,14 @@
+.lead p {
+  font-size: 1.25rem;
+  line-height: 2rem;
+  text-align: center;
+}
+
+h2.section-title {
+  display: block;
+  text-align: center;
+}
+
 :root {
   --sl-content-width: 60rem;
   --sl-color-text-accent: #58DC58;
@@ -25,4 +36,21 @@
   .sandbox {
     display: none;
   }
+}
+
+@media (min-width: 993px) {
+  .desktop-hint {
+    display: none;
+  }
+}
+
+.desktop-hint {
+  margin: 1rem 0;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--sl-color-gray-5);
+  background: var(--sl-color-gray-7);
+  color: var(--sl-color-gray-2);
+  font-size: 0.9rem;
+  text-align: center;
 }

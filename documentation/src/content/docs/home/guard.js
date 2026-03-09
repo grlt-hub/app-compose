@@ -1,18 +1,19 @@
-const alpha = createTask({
-  name: "alpha",
-  run: { fn: () => false },
-})
+const label = createTag({ name: "label" })
 
-const beta = createTask({
-  name: "beta",
+const greet = createTask({
+  name: "greet",
   run: {
-    context: alpha.result,
-    fn: (value) => (document.body.textContent = !value),
+    context: label.value,
+    fn: (label) => console.log(`Hello, ${label}!`),
   },
 })
 
-compose()
-  // 👇 Try commenting me
-  .stage({ steps: [alpha] })
-  .stage({ steps: [beta] })
-  .run()
+test("catches missing context before runtime", () => {
+  expect(() =>
+    compose()
+      // 👇 uncomment me
+      //.stage({ steps: [bind(label, literal("World"))] })
+      .stage({ steps: [greet] })
+      .guard(),
+  ).not.toThrow()
+})

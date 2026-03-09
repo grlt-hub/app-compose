@@ -64,14 +64,14 @@ You can also configure it manually.
     'app-compose': appCompose,
   },
   rules: {
-    'app-compose/task-options-order': 'error',
+    'app-compose/task-options-order': 'warn',
   },
 }
 ```
 
 ## Rules
 
-### keep-options-order
+### task-options-order
 
 `createTask` accepts configuration in an object form. To maintain consistency and readability, configuration properties must follow the semantic order: `name` → `run.context` → `run.fn` → `enabled.context` → `enabled.fn`. This rule strictly enforces this sequence.
 

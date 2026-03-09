@@ -1,0 +1,25 @@
+---
+title: Mapping Values
+description: App-Compose — Mapping Values
+---
+
+import { Aside } from "@astrojs/starlight/components"
+import Sandbox from "../../../../components/sandbox/index.astro"
+import example from "./example.ts?raw"
+
+When you need only part of a task result or want to change its shape, `map` lets you transform a value before passing it as context to `run`, `enabled`, or a tag binding.
+
+<Aside type="caution">
+  If the source value is missing — because an upstream task failed or was skipped — `map` will not call your callback
+  and the downstream task will be silently skipped.
+  <br />
+  To handle a missing value explicitly, wrap the source with `optional` — in that case the callback receives `undefined` instead.
+</Aside>
+
+<br />
+
+<Sandbox
+  template="vanilla-ts"
+  code={example}
+  options={{ layout: "console", showConsoleButton: false, editorWidthPercentage: 70 }}
+/>

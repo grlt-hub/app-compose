@@ -1,4 +1,9 @@
-import { type Task } from "@grlt-hub/app-compose"
+import { type Task, createTask } from "@grlt-hub/app-compose"
 
-type MyTask = Task<{ T: () => true }>
-// => { name: string, result: F: () => false, status: TaskStatus, error: unknown }
+const alpha = createTask({
+  name: "alpha",
+  run: { fn: () => ({ value: "hello" }) },
+})
+
+// Use Task<T> to type a variable or function parameter that holds a Task reference
+const ref: Task<{ value: string }> = alpha

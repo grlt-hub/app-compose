@@ -19,5 +19,4 @@ Compose modules into apps.
 
 ## What is it?
 
-The library for modular application composition
-It helps developers easily connect different parts of an application — features, entities, services, and so on — so they work together as a single system.
+App-Compose is a TypeScript library that structures your frontend app around isolated tasks, explicit context, and predictable startup — by design.

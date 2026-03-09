@@ -1,63 +1,110 @@
 ---
 title: App-Compose
-description: The library for modular application composition
+description: Scale your app. Actually control it.
 template: splash
 hero:
-  tagline: The library for modular application composition
+  tagline: Scale your app. Actually control it.
   actions:
     - text: Learn
       link: /learn/quick-start/
       icon: open-book
 
-    - text: API Reference
-      link: https://starlight.astro.build
+    - text: Guides
+      link: /guides/
       variant: secondary
+      icon: pen
 slug: /
 ---
 
-import { LinkCard } from "@astrojs/starlight/components"
-import { CardGrid } from "@astrojs/starlight/components"
+import { LinkCard, CardGrid, Card, Tabs, TabItem } from "@astrojs/starlight/components"
 import Sandbox from "../../../components/sandbox/index.astro"
-import example from "./example.js?raw"
-import reuse from "./reuse.js?raw"
-import featureToggle from "./feature-toggle.js?raw"
-import guard from "./guard.js?raw"
 import graph from "./graph.ts?raw"
+import guard from "./guard.js?raw"
+import isolation from "./isolation.ts?raw"
+import reuse from "./reuse.ts?raw"
+import control from "./control.ts?raw"
+import performance from "./performance.ts?raw"
 
-<Sandbox template="vanilla-ts" code={example} />
+<div class="home-page">
 
-## Reuse code for any task
+<div class="lead">
+  Scaling a frontend app is easy. Keeping it under control is not. Features develop high coupling, startup order becomes
+  unpredictable, and things break in unexpected places. Every team works around these problems differently.
+</div>
 
-Write logic once and run it anywhere. Need to mock an API or change a config for a specific page? Just provide different values<br/>
-Build features that work in any part of the app.
-
-<Sandbox template="vanilla" code={reuse} options={{ editorHeight: 532, showConsole: true }} />
-
-## Toggle features with ease
-
-Enable or disable any feature with a single toggle. Turning off a feature automatically stops all its dependent features.<br/>
-Stop cluttering code with `if` conditions and manual cleanup.
-
-<Sandbox template="vanilla" code={featureToggle} />
-
-## Build with confidence
-
-Stop checking if everything is wired correctly. Catch missing dependencies the moment your app starts.<br/>
-Never debug a missing dependency in production.
-
-<Sandbox template="vanilla" code={guard} />
-
-## See how things connect
-
-Stop digging through folders to understand your architecture. Get a clear map of your system.<br/>
-Keep your project transparent, no matter how large it grows.
-
-<Sandbox template="vanilla-ts" code={graph} options={{ layout: "console", showConsoleButton: false }} />
-
-## The way logic should be
-
-No decorators, no hidden metadata. Just clean, scalable, and easy-to-test JavaScript.
+<h2 class="section-title">Sound familiar?</h2>
 
 <CardGrid>
-  <LinkCard title="Quick Start" href="/learn/quick-start/" />
+  <Card title="High coupling" icon="puzzle">
+    Change one feature — and you're touching three others.
+  </Card>
+  <Card title="Reuse means copy-paste" icon="add-document">
+    You need the same feature, just slightly different — so you duplicate it.
+  </Card>
+  <Card title="Silent breaks" icon="warning">
+    You changed something small and the app broke somewhere else — no clear error.
+  </Card>
+  <Card title="What's running here?" icon="list-format">
+    You open a page and have no idea which features are active on it.
+  </Card>
+  <Card title="No control over startup order" icon="random">
+    Startup order is a guess — non-critical stuff runs first, the important parts wait. You find out it's wrong at
+    runtime.
+  </Card>
+  <Card title="Performance black box" icon="magnifier">
+    No idea which initialization step is slow — or whether your last change made it worse.
+  </Card>
 </CardGrid>
+
+<h2 class="section-title">Meet App-Compose</h2>
+
+<div class="lead">
+  App-Compose is a TypeScript library that structures your frontend app around isolated tasks, explicit context, and
+  predictable startup — by design.
+</div>
+<div class="desktop-hint">These examples are interactive — open on desktop to run and edit them live.</div>
+<Tabs>
+  <TabItem label="No coupling">
+    <Sandbox
+      template="vanilla-ts"
+      code={isolation}
+      options={{ editorHeight: 500, layout: "console", showConsoleButton: false }}
+    />
+  </TabItem>
+  <TabItem label="No copy-paste">
+    <Sandbox template="vanilla-ts" code={reuse} options={{ layout: "console", editorHeight: 500 }} />
+  </TabItem>
+  <TabItem label="No silent breaks">
+    <Sandbox template="vanilla" code={guard} options={{ layout: "tests", editorHeight: 500 }} />
+  </TabItem>
+  <TabItem label="What's running here?">
+    <Sandbox
+      template="vanilla-ts"
+      code={graph}
+      options={{ layout: "console", showConsoleButton: false, editorHeight: 500 }}
+    />
+  </TabItem>
+  <TabItem label="Predictable startup">
+    <Sandbox
+      template="vanilla-ts"
+      code={control}
+      options={{ layout: "console", showConsoleButton: false, editorHeight: 500 }}
+    />
+  </TabItem>
+  <TabItem label="No performance black box">
+    <Sandbox
+      template="vanilla-ts"
+      code={performance}
+      options={{ layout: "console", showConsoleButton: false, editorHeight: 500 }}
+    />
+  </TabItem>
+</Tabs>
+<br />
+<br />
+<LinkCard
+  title="Ready to try it?"
+  href="/learn/quick-start/"
+  description="A step-by-step guide to the core concepts."
+/>
+
+</div>
