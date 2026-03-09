@@ -23,7 +23,7 @@ import guard from "./guard.js?raw"
 import isolation from "./isolation.ts?raw"
 import reuse from "./reuse.ts?raw"
 import control from "./control.ts?raw"
-import performance from "./performance.js?raw"
+import performance from "./performance.ts?raw"
 
 <div class="home-page">
 
@@ -93,7 +93,7 @@ import performance from "./performance.js?raw"
   </TabItem>
   <TabItem label="No performance black box">
     <Sandbox
-      template="vanilla"
+      template="vanilla-ts"
       code={performance}
       options={{ layout: "console", showConsoleButton: false, editorHeight: 500 }}
     />
