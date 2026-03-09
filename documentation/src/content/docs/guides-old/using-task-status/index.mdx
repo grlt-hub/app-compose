@@ -5,7 +5,7 @@ description: App-Compose — Using Task Status
 
 import { Aside } from "@astrojs/starlight/components"
 import Sandbox from "../../../../components/sandbox/index.astro"
-import example from "./example.ts?raw"
+import usingStatus from "./using-task-status.js?raw"
 
 Sometimes you need to know Task statuses. For example, you might want to show a fallback UI if core functionality fails.
 
@@ -36,4 +36,4 @@ const controlTask = createTask({
 
 Check out this interactive example to see `task.status` in action:
 
-<Sandbox template="vanilla-ts" code={example} options={{ layout: "console", showConsoleButton: false }} />
+<Sandbox template="vanilla" code={usingStatus} options={{ layout: "console", showConsoleButton: false }} />

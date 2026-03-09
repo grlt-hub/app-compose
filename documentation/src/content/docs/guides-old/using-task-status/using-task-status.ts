@@ -1,4 +1,4 @@
-import { status } from "@grlt-hub/app-compose"
+import { compose, createTask } from "@grlt-hub/app-compose"
 
 const fetchUser = createTask({
   name: "fetch-user",
@@ -13,8 +13,10 @@ const fetchUser = createTask({
 const controlTask = createTask({
   name: "control",
   run: {
-    fn: ({ checks }) => {
-      const failure = checks.some(Boolean)
+    // 👇 Pass task statuses via context
+    context: [fetchUser.status],
+    fn: (ctx) => {
+      const failure = ctx.some((status) => status === "fail")
 
       if (failure) {
         console.log("Something went wrong. Please try again.")
@@ -22,10 +24,10 @@ const controlTask = createTask({
         console.log("Everything is working!")
       }
     },
-    context: {
-      checks: [status(fetchUser, "fail")],
-    },
   },
 })
 
-compose().stage([fetchUser]).stage([controlTask]).run()
+compose()
+  .stage({ steps: [fetchUser] })
+  .stage({ steps: [controlTask] })
+  .run()

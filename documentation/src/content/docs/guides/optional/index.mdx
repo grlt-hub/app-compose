@@ -1,0 +1,73 @@
+---
+title: Optional Values
+description: App-Compose — Optional Values
+---
+
+import Sandbox from "../../../../components/sandbox/index.astro"
+import example from "./example.ts?raw"
+
+By default, every field in the context shape is **required**. If an upstream task failed or was skipped, any task that depends on its value is skipped as well — this is the safe default.
+
+But sometimes a task should run regardless of whether a particular value is available. A common example is an analytics tracker: it might be disabled in development or excluded from certain builds, yet the tasks that use it should still run normally.
+
+This is what `optional` is for.
+
+```ts {7}
+import { optional } from "@grlt-hub/app-compose"
+
+const checkout = createTask({
+  name: "checkout",
+  run: {
+    context: {
+      analytics: optional(analytics.result), // analytics.result | undefined
+      user: user.result,
+    },
+    fn: (ctx) => {
+      ctx.analytics?.track("checkout_started")
+      console.log(`checkout for ${ctx.user.name}`)
+    },
+  },
+})
+```
+
+Wrapping a field with `optional` changes its type from `T` to `T | undefined`. If the value isn't available — because the upstream task failed, was skipped, or wasn't included in the pipeline at all — the task still runs and receives `undefined`.
+
+<br />
+
+Check out this interactive example. Try removing `analytics` from the first stage to see `checkout` still run:
+
+<Sandbox template="vanilla-ts" code={example} options={{ layout: "console", showConsoleButton: false }} />
+
+Required fields in the shape still behave as before — if any of them is missing, the task is skipped. Only the fields explicitly wrapped with `optional` can be absent without affecting the task.
+
+## With map
+
+`optional` composes with `map`. When the source value is missing, `map`'s callback receives `undefined` — the task still runs, rather than being skipped:
+
+```ts {4}
+const checkout = createTask({
+  name: "checkout",
+  run: {
+    context: map(optional(analytics.result), (tracker) => tracker?.isEnabled ?? false),
+    fn: (isTracked) => {
+      console.log(`checkout: tracking=${isTracked}`)
+    },
+  },
+})
+```
+
+## In tag bindings
+
+When a tag is bound to an optional value, its type must allow `undefined` — otherwise it won't match the tasks that use it. `optional` works in `bind` for exactly this case: if the source task is absent, the tag carries `undefined`:
+
+```ts {6}
+const analyticsTag = createTag<Analytics | undefined>({ name: "analytics" })
+
+compose()
+  .stage({ steps: [analytics] })
+  .stage({
+    steps: [bind(analyticsTag, optional(analytics.result))],
+  })
+  .stage({ steps: [checkout] })
+  .run()
+```

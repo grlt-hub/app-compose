@@ -36,11 +36,9 @@ export default defineConfig({
           label: "Guides",
           items: [
             { slug: "guides" },
-            { slug: "guides/coupling-practices" },
-            { slug: "guides/getting-task-result" },
-            { slug: "guides/handling-errors" },
             { slug: "guides/using-task-status" },
-            { slug: "guides/inspecting-app-topology" },
+            { slug: "guides/mapping-values" },
+            { slug: "guides/optional" },
           ],
           collapsed: true,
         },
