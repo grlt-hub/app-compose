@@ -1,11 +1,20 @@
-import { SandpackConsole, SandpackPreview, SandpackStack, type SandpackOptions } from "@codesandbox/sandpack-react"
+import { SandpackConsole, SandpackPreview, SandpackStack, SandpackTests, type SandpackOptions } from "@codesandbox/sandpack-react"
 
-type Props = Pick<SandpackOptions, "layout" | "showConsole"> & {
+type Props = Pick<SandpackOptions, "showConsole"> & {
+  layout?: SandpackOptions["layout"] | "tests"
   editorWidthPercentage: number
 }
 
 const Output = (props: Props) => {
   const width = `${100 - props.editorWidthPercentage - 0.2}%`
+
+  if (props.layout === "tests") {
+    return (
+      <SandpackStack style={{ height: "100%", width }}>
+        <SandpackTests style={{ height: "100%" }} />
+      </SandpackStack>
+    )
+  }
 
   if (props.layout === "console") {
     return (

@@ -17,8 +17,9 @@ type Props = {
   files?: Record<string, string>
   options?: Pick<
     SandpackOptions,
-    "showConsole" | "layout" | "editorHeight" | "editorWidthPercentage" | "showConsoleButton"
+    "showConsole" | "editorHeight" | "editorWidthPercentage" | "showConsoleButton"
   > & {
+    layout?: SandpackOptions["layout"] | "tests"
     hideOutput: boolean
     storageKey?: string
   }
@@ -28,14 +29,17 @@ const SandpackEditor = ({ code: __code, template = "react", options, files = {} 
   const code = options?.storageKey ? (localStorage.getItem(options.storageKey) ?? __code) : __code
 
   const theme = useTheme()
+  const isTests = options?.layout === "tests"
   const fileName =
-    template === "react"
-      ? "App.js"
-      : template === "react-ts"
-        ? "App.tsx"
-        : template === "vanilla-ts"
-          ? "index.ts"
-          : "index.js"
+    isTests
+      ? "index.test.ts"
+      : template === "react"
+        ? "App.js"
+        : template === "react-ts"
+          ? "App.tsx"
+          : template === "vanilla-ts"
+            ? "index.ts"
+            : "index.js"
 
   const lines = code.replace(/\r\n/g, "\n").split("\n").length
   const fullEditorHeight = options?.editorHeight ?? lines * 18
@@ -57,7 +61,13 @@ const SandpackEditor = ({ code: __code, template = "react", options, files = {} 
             hidden: true,
           },
           "/entry.js": {
-            code: `
+            code: isTests
+              ? `
+            import "./sandboxStyle.css";
+            import * as AppCompose from "@grlt-hub/app-compose";
+            Object.assign(window, AppCompose);
+            `
+              : `
             import "./sandboxStyle.css";
             import * as AppCompose from "@grlt-hub/app-compose";
             Object.assign(window, AppCompose);
@@ -75,6 +85,7 @@ const SandpackEditor = ({ code: __code, template = "react", options, files = {} 
         }}
         customSetup={{
           entry: "/entry.js",
+          ...(isTests && { dependencies: { vitest: "latest" } }),
         }}
       >
         <FileTabs />

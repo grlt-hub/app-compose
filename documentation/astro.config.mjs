@@ -14,7 +14,7 @@ export default defineConfig({
     react(),
     starlight({
       title: "App-Compose",
-      description: "App Compose - The library for modular application composition",
+      description: "App Compose - Scale your app. Actually control it.",
       social: [
         { icon: "open-book", label: "Learn", href: "/learn/quick-start/" },
         { icon: "rocket", label: "Sandbox", href: "/sandbox/" },
@@ -35,6 +35,7 @@ export default defineConfig({
         {
           label: "Guides",
           items: [
+            { slug: "guides" },
             { slug: "guides/coupling-practices" },
             { slug: "guides/getting-task-result" },
             { slug: "guides/handling-errors" },

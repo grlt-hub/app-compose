@@ -5,7 +5,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "description": "The library for modular application composition",
+  "description": "App-Compose is a TypeScript library that structures your frontend app around isolated tasks, explicit context, and predictable startup — by design.",
   "keywords": [
     "grlt",
     "grlt-hub",

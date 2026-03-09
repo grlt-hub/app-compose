@@ -1,3 +1,14 @@
+.lead p {
+  font-size: 1.25rem;
+  line-height: 2rem;
+  text-align: center;
+}
+
+h2.section-title {
+  display: block;
+  text-align: center;
+}
+
 :root {
   --sl-content-width: 60rem;
   --sl-color-text-accent: #58DC58;

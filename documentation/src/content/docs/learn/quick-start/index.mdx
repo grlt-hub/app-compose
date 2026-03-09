@@ -10,20 +10,19 @@ import passData from "./how-to-pass-data.ts?raw"
 import disable from "./how-to-disable.js?raw"
 import staticValues from "./static-values.js?raw"
 
-Welcome to the App-Compose documentation! This page covers 80% of the App-Compose concepts you will use on a daily basis.
+App-Compose is built on two primitives: _Task_ and _Tag_. Everything else — isolation, reuse, and predictable startup — flows from these core concepts. This guide teaches you how to use them.
 
 <Aside title="You will learn" type="note">
 - How to create a Task
 - How to run a Task
 - How to pass data to a Task
-- How to pass static data
-- How to enable and disable Task
+- How to disable a Task
 
 </Aside>
 
 ## How to create a Task
 
-App-Compose apps are made out of _Tasks_. A Task is a piece of logic that has its own identity and execution function. A Task can be as small as a single API request, or as large as a product feature.
+A Task is a piece of logic that has its own identity and execution function. A Task can be as small as a single API request, or as large as a product feature.
 
 ```js {2,4}
 const fetchUser = createTask({
@@ -49,6 +48,18 @@ This gives you precise control over the execution flow, prioritizing critical Ta
 After defining the Stages, call `run()` to start execution.
 
 <Sandbox template="vanilla-ts" code={runTask} options={{ layout: "console", showConsoleButton: false }} />
+
+<br />
+
+Steps within the same Stage run in parallel. Stages execute one after another — the next Stage starts only when all Steps in the current one have finished.
+
+```
+Stage 1        Stage 2        Stage 3
+┌──────────┐   ┌──────────┐   ┌──────┐
+│ A  B  C  │ → │   D  E   │ → │  F   │
+└──────────┘   └──────────┘   └──────┘
+  parallel       parallel      parallel
+```
 
 ## How to pass data to a Task
 
@@ -100,13 +111,13 @@ Have a look at the result:
   options={{ layout: "console", showConsoleButton: false, editorWidthPercentage: 65 }}
 />
 
-## How to pass static data
+<br />
 
-Typically, you pass Tags or Task APIs to connect data between Tasks. While a Task might use dynamic data on one page, it may need a fixed value on another. To pass a plain value like a string, number, or object, you wrap it in `literal`.
+Sometimes a value doesn’t come from another Task — it’s just a plain string, number, or object known upfront. To pass a static value, wrap it in `literal`.
 
-This tells App-Compose that your value is just data and not a link to another Task or Tag. Using `literal` also allows the library to handle complex data like circular references or custom classes that shouldn't be searched. This keeps your application fast by skipping unnecessary work.
+This tells App-Compose that the value is data, not a reference to another Task or Tag. It also lets the library skip searching through complex structures like circular references or custom class instances — keeping your application fast.
 
-Whether you’re providing a value in a Task context or binding a Tag to a static value, `literal` works exactly the same way.
+`literal` works the same way everywhere: in `context` and in `bind`.
 
 <Sandbox
   template="vanilla"
@@ -114,7 +125,7 @@ Whether you’re providing a value in a Task context or binding a Tag to a stati
   options={{ layout: "console", showConsoleButton: false, editorWidthPercentage: 70 }}
 />
 
-## How to enable and disable Task
+## How to disable a Task
 
 Tasks are enabled by default. Use the `enabled` property to skip a Task based on feature toggles, application state, or any internal logic.
 
