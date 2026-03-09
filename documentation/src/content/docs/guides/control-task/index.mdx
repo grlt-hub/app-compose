@@ -1,0 +1,51 @@
+---
+title: Control Task
+description: App-Compose — Control Task
+---
+
+import { Aside } from "@astrojs/starlight/components"
+import Sandbox from "../../../../components/sandbox/index.astro"
+import example from "./example.ts?raw"
+
+Not all features are equally important. An analytics tracker failing is acceptable — a missing user session is not. When a critical feature fails, the app shouldn't silently show a broken page; it should acknowledge the problem.
+
+A _control task_ is a pattern for this. It observes the statuses of critical tasks and returns a result — `{ passed: true }` or `{ passed: false }` — that other parts of your app can use to decide what to do.
+
+Using `task.status` in context means the control task always runs — even when upstream tasks have failed or were skipped — which is what makes it a reliable observer.
+
+```ts
+const control = createTask({
+  name: "control",
+  run: {
+    context: [fetchUser.status],
+    fn: (ctx) => {
+      const passed = ctx.every((status) => status === "done")
+
+      return { ok: { passed } }
+    },
+  },
+})
+
+compose()
+  .stage({ steps: [fetchUser, analytics] })
+  .stage({ steps: [control] })
+  .run()
+  .then((scope) => scope.get(control.result))
+  .then(console.log)
+```
+
+<Aside type="tip">
+  The `scope.get` call here is just for the sandbox. In a real app, the next stage would have two tasks — one for the
+  success path, one for the failure path — each reading `control.result` from context and enabling itself based on
+  `passed`.
+</Aside>
+
+<br />
+
+Try uncommenting the failure in `fetchUser` to see the control task catch it:
+
+<Sandbox
+  template="vanilla-ts"
+  code={example}
+  options={{ layout: "console", showConsoleButton: false, editorWidthPercentage: 70 }}
+/>

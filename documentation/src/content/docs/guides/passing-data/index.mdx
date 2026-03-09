@@ -1,0 +1,68 @@
+---
+title: Passing Data — Advanced
+description: App-Compose — Passing Data to a Task
+---
+
+import { Aside } from "@astrojs/starlight/components"
+import Sandbox from "../../../../components/sandbox/index.astro"
+import tagExample from "./tag.ts?raw"
+import directExample from "./direct.ts?raw"
+
+In [Quick Start](/learn/quick-start/), you learned the basics: tasks receive data through a context, and tags keep them decoupled. This guide goes deeper — covering the two ways to provide data to a task and when to choose each.
+
+## Via a Tag
+
+Using a tag is the recommended default. A task declares what it needs through a tag, and the pipeline decides what fills it. The task has no knowledge of where the data comes from — it only knows the contract.
+
+```ts
+const userIdTag = createTag<number>({ name: "userId" })
+
+const fetchUser = createTask({
+  name: "fetch-user",
+  run: {
+    context: { userId: userIdTag.value },
+    fn: ({ userId }) => { ... },
+  },
+})
+```
+
+The pipeline fills the tag using `bind`. The source can be a task result or a static value via `literal` — either way, `fetchUser` is not affected:
+
+```ts
+// From a task result
+.stage({ steps: [bind(userIdTag, auth.result.userId)] })
+
+// Or a static value — same tag, same task, different source
+.stage({ steps: [bind(userIdTag, literal(42))] })
+```
+
+<Aside type="tip">
+  Passing a static value through a tag keeps the door open — swapping it for a real task result later requires no
+  changes inside the task.
+</Aside>
+
+<Sandbox
+  template="vanilla-ts"
+  code={tagExample}
+  options={{ layout: "console", showConsoleButton: false, editorWidthPercentage: 65 }}
+/>
+
+## Directly
+
+You can also provide data directly in the context — either a static value or another task's result:
+
+```ts
+// static value baked into the task
+context: {
+  userId: literal(1)
+}
+
+// another task's result referenced directly
+context: {
+  userId: auth.result.userId
+}
+```
+
+Both couple the task to something specific. The task can no longer be reused in a different context without modifying it. Treat this as a deliberate choice, not a default. When in doubt, prefer a tag.
+
+<Sandbox template="vanilla-ts" code={directExample} options={{ layout: "console", showConsoleButton: false }} />
