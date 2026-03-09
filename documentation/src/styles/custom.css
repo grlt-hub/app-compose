@@ -37,3 +37,20 @@ h2.section-title {
     display: none;
   }
 }
+
+@media (min-width: 993px) {
+  .desktop-hint {
+    display: none;
+  }
+}
+
+.desktop-hint {
+  margin: 1rem 0;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--sl-color-gray-5);
+  background: var(--sl-color-gray-7);
+  color: var(--sl-color-gray-2);
+  font-size: 0.9rem;
+  text-align: center;
+}
