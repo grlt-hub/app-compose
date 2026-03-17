@@ -1,11 +1,11 @@
+import type { ContextToSpot } from "@computable"
 import { build, reference, type SpotProvider } from "@computable"
 import { identity } from "@shared"
-import type { ContextToSpot } from "./context"
 import { Context$, Dispatch$, Execute$, type Runnable, type RunnableInternal, type RunnableKind } from "./definition"
 
 const Tag$ = Symbol("$tag")
 
-type Tag<T> = { [Tag$]: symbol; name: string; value: SpotProvider<T> }
+export type Tag<T> = { [Tag$]: symbol; name: string; value: SpotProvider<T> }
 type TagConfig = { name: string }
 
 const createTag = <T = never>(config: TagConfig): Tag<T> => {

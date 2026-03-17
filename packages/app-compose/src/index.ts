@@ -1,3 +1,3 @@
 export { compose, type ComposeLogger, type StageConfig } from "@compose"
-export { literal, map, optional, type SpotValue } from "@computable"
-export { bind, createTag, createTask, type Task, type TaskResult, type TaskStatus } from "@runnable"
+export { literal, optional, shape, type SpotValue } from "@computable"
+export { bind, createTag, createTask, type Tag, type Task, type TaskResult, type TaskStatus } from "@runnable"
