@@ -1,7 +1,6 @@
 import { build } from "./build"
-import type { ContextToSpot, SpotToContext } from "./context"
-import { Compute$, Missing$, Spot$, type ComputeStep, type Spot, type SpotInternal } from "./definition"
-import { proxy } from "./lens"
+import type { ContextToSpot } from "./context"
+import { Compute$, Missing$, type ComputeStep, type Spot } from "./definition"
 
 const wrap =
   <Fn extends (value: any) => any>(fn: Fn): ComputeStep =>

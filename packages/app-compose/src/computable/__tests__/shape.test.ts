@@ -1,5 +1,4 @@
-import { describe } from "node:test"
-import { expect, it, vi } from "vitest"
+import { describe, expect, it, vi } from "vitest"
 import { createComputer } from "../computer"
 import { Missing$, type SpotInternal } from "../definition"
 import { literal } from "../literal"

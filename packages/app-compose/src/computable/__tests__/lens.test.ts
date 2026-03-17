@@ -1,5 +1,4 @@
-import { describe } from "node:test"
-import { expect, it } from "vitest"
+import { describe, expect, it } from "vitest"
 import { reference } from "../reference"
 
 describe("lens", () => {
