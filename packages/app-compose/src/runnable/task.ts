@@ -1,6 +1,6 @@
+import type { IsSpot, SpotToContext } from "@computable"
 import { build, literal, Missing$, reference, type Spot, type SpotProvider } from "@computable"
 import { T, type Eventual } from "@shared"
-import type { IsSpot, SpotToContext } from "./context"
 import { Context$, Dispatch$, Execute$, type Runnable, type RunnableInternal, type RunnableKind } from "./definition"
 
 const Task$ = Symbol("$task")
