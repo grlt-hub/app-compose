@@ -5,7 +5,7 @@ import { Context$, Dispatch$, Execute$, type Runnable, type RunnableInternal, ty
 
 const Tag$ = Symbol("$tag")
 
-export type Tag<T> = { [Tag$]: symbol; name: string; value: SpotProvider<T> }
+type Tag<T> = { [Tag$]: symbol; name: string; value: SpotProvider<T> }
 type TagConfig = { name: string }
 
 const createTag = <T = never>(config: TagConfig): Tag<T> => {
@@ -31,4 +31,4 @@ const bind = <T>(tag: Tag<T>, value: ContextToSpot<T>): Binding => {
   return runnable
 }
 
-export { bind, createTag, type Binding }
+export { bind, createTag, Tag$, type Binding, type Tag, }
