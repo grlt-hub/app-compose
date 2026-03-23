@@ -7,10 +7,10 @@ type ObserverEvent =
   | { type: "execute:complete"; stack: ComposeNode[]; runnable: RunnableInternal; value: unknown }
 
 type ComposeHookMap = {
-  onStart?: (event: { meta?: ComposeMeta }) => void
-  onComplete?: (event: { meta?: ComposeMeta }) => void
+  onStart: (event: { meta?: ComposeMeta }) => void
+  onComplete: (event: { meta?: ComposeMeta }) => void
 
-  onTaskFail?: (event: { task: Task<unknown>; error: unknown }) => void
+  onTaskFail: (event: { task: Task<unknown>; error: unknown }) => void
 }
 
 const eventToUserland = {
