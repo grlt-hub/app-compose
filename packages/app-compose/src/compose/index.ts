@@ -1,3 +1,2 @@
-export { compose } from "./compose"
-export type { Logger as ComposeLogger } from "./logger"
-export type { StageConfig } from "./definition"
+export { compose, type Composer } from "./compose"
+export type { ComposeHookMap } from "./observer"

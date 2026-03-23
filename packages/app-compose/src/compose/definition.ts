@@ -1,13 +1,16 @@
-import type { Runnable, RunnableKind } from "@runnable"
-import type { Logger } from "./logger"
+import type { Runnable } from "@runnable"
+import type { ComposeHookMap } from "./observer"
 
-type Stage = readonly Runnable[]
+type ComposeMeta = { name?: string; hooks?: ComposeHookMap }
 
-type StageConfig =
-  | { steps: ReadonlyArray<Runnable & RunnableKind<"task">>; logger?: Logger }
-  | { steps: ReadonlyArray<Runnable & RunnableKind<"binding">>; logger?: never }
+type ComposeNodeSeq = { type: "seq"; meta?: ComposeMeta; children: ComposeNode[] }
+type ComposeNodeCon = { type: "con"; meta?: ComposeMeta; children: ComposeNode[] }
+type ComposeNodeRun = { type: "run"; value: Runnable }
+
+type ComposeNode = ComposeNodeSeq | ComposeNodeCon | ComposeNodeRun
+type ComposeInner = ComposeNodeCon | ComposeNodeSeq
 
 type Registry = Map<symbol, unknown>
 type ComposableKind = "task" | "binding"
 
-export type { ComposableKind, Registry, Stage, StageConfig }
+export type { ComposableKind, ComposeInner, ComposeMeta, ComposeNode, Registry }

@@ -1,4 +1,4 @@
-export { compose, type ComposeLogger, type StageConfig } from "@compose"
+export { compose, type ComposeHookMap, type Composer } from "@compose"
 export { literal, optional, shape, type Spot, type SpotValue } from "@computable"
 export {
   bind,

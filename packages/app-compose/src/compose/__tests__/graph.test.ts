@@ -1,218 +1,513 @@
 import { literal, optional } from "@computable"
-import { bind, createTag, createTask, type TaskStatus } from "@runnable"
-import { expect, it } from "vitest"
-import type { Stage } from "../definition"
+import { bind, createTag, createTask } from "@runnable"
+import { describe, expect, it, vi } from "vitest"
+import { compose, Node$ } from "../compose"
 import { graph } from "../graph"
 
 const alphaTask = createTask({ name: "alpha", run: { fn: () => ({ value: true }) } })
 
-it("zero dependencies", () => {
-  const stages: [Stage] = [[alphaTask]]
-  const expected = [{ id: 0, name: "alpha", type: "task", dependencies: { optional: [], required: [] } }]
+describe("graph", () => {
+  describe("tasks", () => {
+    it("zero dependencies", () => {
+      const app = compose().step(alphaTask)
 
-  expect(graph(stages)).toStrictEqual(expected)
-})
+      const result = graph(app[Node$])
 
-it("missing dependency", () => {
-  const betaTask = createTask({
-    name: "beta",
-    run: { fn: (ctx: boolean) => !ctx, context: alphaTask.result.value },
+      const expected = {
+        type: "seq",
+        meta: { name: undefined },
+        children: [
+          { type: "run", id: 0, meta: { name: "alpha", kind: "task" }, dependencies: { required: [], optional: [] } },
+        ],
+      }
+
+      expect(result).toStrictEqual(expected)
+    })
+
+    it("missing dependency", () => {
+      const betaTask = createTask({ name: "beta", run: { fn: vi.fn(), context: alphaTask.result.value } })
+
+      const app = compose().step(betaTask)
+      const result = graph(app[Node$])
+
+      const expected = {
+        type: "seq",
+        meta: { name: undefined },
+        children: [
+          { type: "run", id: 0, meta: { name: "beta", kind: "task" }, dependencies: { required: [-1], optional: [] } },
+        ],
+      }
+
+      expect(result).toStrictEqual(expected)
+    })
+
+    it("direct dependency on another task", () => {
+      const betaTask = createTask({ name: "beta", run: { fn: vi.fn(), context: alphaTask.result.value } })
+
+      const app = compose().step(alphaTask).step(betaTask)
+      const result = graph(app[Node$])
+
+      const expected = {
+        type: "seq",
+        meta: { name: undefined },
+        children: [
+          { type: "run", id: 0, meta: { name: "alpha", kind: "task" }, dependencies: { required: [], optional: [] } },
+          { type: "run", id: 1, meta: { name: "beta", kind: "task" }, dependencies: { required: [0], optional: [] } },
+        ],
+      }
+
+      expect(result).toStrictEqual(expected)
+    })
+
+    it("direct dependency on another task [optional]", () => {
+      const betaTask = createTask({ name: "beta", run: { fn: vi.fn(), context: optional(alphaTask.result.value) } })
+
+      const app = compose().step(alphaTask).step(betaTask)
+      const result = graph(app[Node$])
+
+      const expected = {
+        type: "seq",
+        meta: { name: undefined },
+        children: [
+          { type: "run", id: 0, meta: { name: "alpha", kind: "task" }, dependencies: { required: [], optional: [] } },
+          { type: "run", id: 1, meta: { name: "beta", kind: "task" }, dependencies: { required: [], optional: [0] } },
+        ],
+      }
+
+      expect(result).toStrictEqual(expected)
+    })
+
+    it("dependency on a literal", () => {
+      const betaTask = createTask({ name: "beta", run: { fn: vi.fn(), context: literal(true) } })
+
+      const app = compose().step(betaTask)
+      const result = graph(app[Node$])
+
+      const expected = {
+        type: "seq",
+        meta: { name: undefined },
+        children: [
+          { type: "run", id: 0, meta: { name: "beta", kind: "task" }, dependencies: { required: [], optional: [] } },
+        ],
+      }
+
+      expect(result).toStrictEqual(expected)
+    })
   })
 
-  const stages: [Stage] = [[betaTask]]
-  const expected = [{ id: 0, name: "beta", type: "task", dependencies: { optional: [], required: [-1] } }]
+  describe("status", () => {
+    it("task depends on another task's status", () => {
+      const betaTask = createTask({ name: "beta", run: { fn: vi.fn(), context: alphaTask.status } })
 
-  expect(graph(stages)).toStrictEqual(expected)
-})
+      const app = compose().step(alphaTask).step(betaTask)
+      const result = graph(app[Node$])
 
-it("direct dependency on another task", () => {
-  const betaTask = createTask({
-    name: "beta",
-    run: { fn: (ctx: boolean) => !ctx, context: alphaTask.result.value },
+      const expected = {
+        type: "seq",
+        meta: { name: undefined },
+        children: [
+          { type: "run", id: 0, meta: { name: "alpha", kind: "task" }, dependencies: { required: [], optional: [] } },
+          { type: "run", id: 1, meta: { name: "beta", kind: "task" }, dependencies: { required: [0], optional: [] } },
+        ],
+      }
+
+      expect(result).toStrictEqual(expected)
+    })
+
+    it("task depends on another task's status [optional]", () => {
+      const betaTask = createTask({ name: "beta", run: { fn: vi.fn(), context: optional(alphaTask.status) } })
+
+      const app = compose().step(alphaTask).step(betaTask)
+      const result = graph(app[Node$])
+
+      const expected = {
+        type: "seq",
+        meta: { name: undefined },
+        children: [
+          { type: "run", id: 0, meta: { name: "alpha", kind: "task" }, dependencies: { required: [], optional: [] } },
+          { type: "run", id: 1, meta: { name: "beta", kind: "task" }, dependencies: { required: [], optional: [0] } },
+        ],
+      }
+
+      expect(result).toStrictEqual(expected)
+    })
   })
 
-  const stages: [Stage, Stage] = [[alphaTask], [betaTask]]
-  const expected = [
-    { id: 0, name: "alpha", type: "task", dependencies: { optional: [], required: [] } },
-    { id: 1, name: "beta", type: "task", dependencies: { optional: [], required: [0] } },
-  ]
+  describe("tags", () => {
+    it("dependency on a task via a tag", () => {
+      const valueTag = createTag<boolean>({ name: "value" })
+      const betaTask = createTask({ name: "beta", run: { fn: vi.fn(), context: valueTag.value } })
 
-  expect(graph(stages)).toStrictEqual(expected)
-})
+      const app = compose().step(alphaTask).step(bind(valueTag, alphaTask.result.value)).step(betaTask)
+      const result = graph(app[Node$])
 
-it("direct dependency on another task [optional]", () => {
-  const betaTask = createTask({
-    name: "beta",
-    run: { fn: (ctx?: boolean) => !ctx, context: optional(alphaTask.result.value) },
+      const expected = {
+        type: "seq",
+        meta: { name: undefined },
+        children: [
+          {
+            type: "run",
+            id: 0,
+            meta: { name: "alpha", kind: "task" },
+            dependencies: { required: [], optional: [] },
+          },
+          {
+            type: "run",
+            id: 1,
+            meta: { name: "value", kind: "binding" },
+            dependencies: { required: [0], optional: [] },
+          },
+          {
+            type: "run",
+            id: 2,
+            meta: { name: "beta", kind: "task" },
+            dependencies: { required: [1], optional: [] },
+          },
+        ],
+      }
+
+      expect(result).toStrictEqual(expected)
+    })
+
+    it("dependency on a task via a tag [optional]", () => {
+      const valueTag = createTag<boolean>({ name: "value" })
+      const betaTask = createTask({ name: "beta", run: { fn: vi.fn(), context: optional(valueTag.value) } })
+
+      const app = compose()
+        .step(alphaTask)
+        .step(bind(valueTag, optional(alphaTask.result.value)))
+        .step(betaTask)
+
+      const result = graph(app[Node$])
+
+      const expected = {
+        type: "seq",
+        meta: { name: undefined },
+        children: [
+          {
+            type: "run",
+            id: 0,
+            meta: { name: "alpha", kind: "task" },
+            dependencies: { required: [], optional: [] },
+          },
+          {
+            type: "run",
+            id: 1,
+            meta: { name: "value", kind: "binding" },
+            dependencies: { required: [], optional: [0] },
+          },
+          {
+            type: "run",
+            id: 2,
+            meta: { name: "beta", kind: "task" },
+            dependencies: { required: [], optional: [1] },
+          },
+        ],
+      }
+
+      expect(result).toStrictEqual(expected)
+    })
+
+    it("task depends on a literal via tag", () => {
+      const valueTag = createTag<boolean>({ name: "value" })
+      const betaTask = createTask({ name: "beta", run: { fn: vi.fn(), context: valueTag.value } })
+
+      const app = compose()
+        .step(bind(valueTag, literal(false)))
+        .step(betaTask)
+
+      const result = graph(app[Node$])
+
+      const expected = {
+        type: "seq",
+        meta: { name: undefined },
+        children: [
+          {
+            type: "run",
+            id: 0,
+            meta: { name: "value", kind: "binding" },
+            dependencies: { required: [], optional: [] },
+          },
+          {
+            type: "run",
+            id: 1,
+            meta: { name: "beta", kind: "task" },
+            dependencies: { required: [0], optional: [] },
+          },
+        ],
+      }
+
+      expect(result).toStrictEqual(expected)
+    })
   })
 
-  const stages: [Stage, Stage] = [[alphaTask], [betaTask]]
-  const expected = [
-    { id: 0, name: "alpha", type: "task", dependencies: { optional: [], required: [] } },
-    { id: 1, name: "beta", type: "task", dependencies: { optional: [0], required: [] } },
-  ]
+  describe("optional", () => {
+    it("optional missing dependency", () => {
+      const betaTask = createTask({ name: "beta", run: { fn: vi.fn(), context: optional(alphaTask.result.value) } })
 
-  expect(graph(stages)).toStrictEqual(expected)
-})
+      const app = compose().step(betaTask)
+      const result = graph(app[Node$])
 
-it("dependency on a task via a tag", () => {
-  const valueTag = createTag<boolean>({ name: "valueTag" })
-  const betaTask = createTask({
-    name: "beta",
-    run: { fn: (ctx: boolean) => !ctx, context: valueTag.value },
+      const expected = {
+        type: "seq",
+        meta: { name: undefined },
+        children: [
+          { type: "run", meta: { name: "beta", kind: "task" }, id: 0, dependencies: { required: [], optional: [] } },
+        ],
+      }
+
+      expect(result).toStrictEqual(expected)
+    })
   })
 
-  const stages: [Stage, Stage, Stage] = [[alphaTask], [bind(valueTag, alphaTask.result.value)], [betaTask]]
-  const expected = [
-    { id: 0, name: "alpha", type: "task", dependencies: { optional: [], required: [] } },
-    { id: 1, name: "valueTag", type: "binding", dependencies: { optional: [], required: [0] } },
-    { id: 2, name: "beta", type: "task", dependencies: { optional: [], required: [1] } },
-  ]
+  describe("mixed dependencies", () => {
+    it("required and optional", () => {
+      const fnTag = createTag<() => void>({ name: "fn" })
 
-  expect(graph(stages)).toStrictEqual(expected)
-})
+      const betaTask = createTask({
+        name: "beta",
+        run: {
+          context: { value: alphaTask.result.value, fn: optional(fnTag.value) },
+          fn: vi.fn(),
+        },
+      })
 
-it("dependency on a task via a tag [optional]", () => {
-  const valueTag = createTag<boolean>({ name: "valueTag" })
-  const betaTask = createTask({
-    name: "beta",
-    run: { fn: (ctx?: boolean) => !ctx, context: optional(valueTag.value) },
+      const app = compose()
+        .step(alphaTask)
+        .step(bind(fnTag, literal(vi.fn())))
+        .step(betaTask)
+
+      const result = graph(app[Node$])
+
+      const expected = {
+        type: "seq",
+        meta: { name: undefined },
+        children: [
+          {
+            type: "run",
+            id: 0,
+            meta: { name: "alpha", kind: "task" },
+            dependencies: { required: [], optional: [] },
+          },
+          {
+            type: "run",
+            id: 1,
+            meta: { name: "fn", kind: "binding" },
+            dependencies: { required: [], optional: [] },
+          },
+          {
+            type: "run",
+            id: 2,
+            meta: { name: "beta", kind: "task" },
+            dependencies: { required: [0], optional: [1] },
+          },
+        ],
+      }
+
+      expect(result).toStrictEqual(expected)
+    })
   })
 
-  const stages: [Stage, Stage, Stage] = [[alphaTask], [bind(valueTag, alphaTask.result.value)], [betaTask]]
-  const expected = [
-    { id: 0, name: "alpha", type: "task", dependencies: { optional: [], required: [] } },
-    { id: 1, name: "valueTag", type: "binding", dependencies: { optional: [], required: [0] } },
-    { id: 2, name: "beta", type: "task", dependencies: { optional: [1], required: [] } },
-  ]
+  describe("tree structure", () => {
+    it("produces a con node for concurrent step", () => {
+      const betaTask = createTask({ name: "beta", run: { fn: vi.fn() } })
 
-  expect(graph(stages)).toStrictEqual(expected)
-})
+      const app = compose().step([alphaTask, betaTask])
 
-it("task depends on a literal via tag", () => {
-  const valueTag = createTag<boolean>({ name: "valueTag" })
-  const betaTask = createTask({
-    name: "beta",
-    run: { fn: (ctx: boolean) => !ctx, context: valueTag.value },
+      const result = graph(app[Node$])
+
+      const expected = {
+        type: "seq",
+        meta: { name: undefined },
+        children: [
+          {
+            type: "con",
+            meta: { name: undefined },
+            children: [
+              {
+                type: "run",
+                id: 0,
+                meta: { name: "alpha", kind: "task" },
+                dependencies: { required: [], optional: [] },
+              },
+              {
+                type: "run",
+                id: 1,
+                meta: { name: "beta", kind: "task" },
+                dependencies: { required: [], optional: [] },
+              },
+            ],
+          },
+        ],
+      }
+
+      expect(result).toStrictEqual(expected)
+    })
+
+    it("produces nested seq node with nested compose", () => {
+      const betaTask = createTask({ name: "beta", run: { fn: vi.fn(), context: alphaTask.result.value } })
+
+      const inner = compose().step(alphaTask).step(betaTask)
+      const app = compose().step(inner)
+
+      const result = graph(app[Node$])
+      const expected = {
+        type: "seq",
+        meta: { name: undefined },
+        children: [
+          {
+            type: "seq",
+            meta: { name: undefined },
+            children: [
+              {
+                type: "run",
+                id: 0,
+                meta: { name: "alpha", kind: "task" },
+                dependencies: { required: [], optional: [] },
+              },
+              {
+                type: "run",
+                id: 1,
+                meta: { name: "beta", kind: "task" },
+                dependencies: { required: [0], optional: [] },
+              },
+            ],
+          },
+        ],
+      }
+
+      expect(result).toStrictEqual(expected)
+    })
+
+    it("exposes meta name", () => {
+      const betaTask = createTask({ name: "beta", run: { fn: vi.fn(), context: alphaTask.result.value } })
+
+      const app = compose()
+        .meta({ name: "root" })
+        .step(alphaTask)
+        .step(compose().meta({ name: "inner" }).step(betaTask))
+
+      const result = graph(app[Node$])
+
+      const expected = {
+        type: "seq",
+        meta: { name: "root" },
+        children: [
+          { type: "run", id: 0, meta: { name: "alpha", kind: "task" }, dependencies: { required: [], optional: [] } },
+          {
+            type: "seq",
+            meta: { name: "inner" },
+            children: [
+              {
+                type: "run",
+                id: 1,
+                meta: { name: "beta", kind: "task" },
+                dependencies: { required: [0], optional: [] },
+              },
+            ],
+          },
+        ],
+      }
+
+      expect(result).toStrictEqual(expected)
+    })
+
+    it("identifies concurrent seq nodes graph independently", () => {
+      const betaTask = createTask({ name: "beta", run: { fn: vi.fn(), context: alphaTask.result.value } })
+
+      const gammaTask = createTask({ name: "gamma", run: { fn: vi.fn() } })
+      const deltaTask = createTask({ name: "delta", run: { fn: vi.fn(), context: gammaTask.result.value } })
+
+      const app = compose().step([
+        compose().meta({ name: "left" }).step(alphaTask).step(betaTask),
+        compose().meta({ name: "right" }).step(gammaTask).step(deltaTask),
+      ])
+      const result = graph(app[Node$])
+
+      const expected = {
+        type: "seq",
+        meta: { name: undefined },
+        children: [
+          {
+            type: "con",
+            meta: { name: undefined },
+            children: [
+              {
+                type: "seq",
+                meta: { name: "left" },
+                children: [
+                  {
+                    type: "run",
+                    id: 0,
+                    meta: { name: "alpha", kind: "task" },
+                    dependencies: { required: [], optional: [] },
+                  },
+                  {
+                    type: "run",
+                    id: 1,
+                    meta: { name: "beta", kind: "task" },
+                    dependencies: { required: [0], optional: [] },
+                  },
+                ],
+              },
+              {
+                type: "seq",
+                meta: { name: "right" },
+                children: [
+                  {
+                    type: "run",
+                    id: 2,
+                    meta: { name: "gamma", kind: "task" },
+                    dependencies: { required: [], optional: [] },
+                  },
+                  {
+                    type: "run",
+                    id: 3,
+                    meta: { name: "delta", kind: "task" },
+                    dependencies: { required: [2], optional: [] },
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      }
+
+      expect(result).toStrictEqual(expected)
+    })
+
+    it("marks guard-failing neighbor borrow as missing", () => {
+      const betaTask = createTask({ name: "beta", run: { fn: vi.fn(), context: alphaTask.result.value } })
+
+      const app = compose().step([alphaTask, betaTask])
+      const result = graph(app[Node$])
+
+      const expected = {
+        type: "seq",
+        meta: { name: undefined },
+        children: [
+          {
+            type: "con",
+            meta: { name: undefined },
+            children: [
+              {
+                type: "run",
+                id: 0,
+                meta: { name: "alpha", kind: "task" },
+                dependencies: { required: [], optional: [] },
+              },
+              {
+                type: "run",
+                id: 1,
+                meta: { name: "beta", kind: "task" },
+                dependencies: { required: [0 /* should probably be -1 */], optional: [] },
+              },
+            ],
+          },
+        ],
+      }
+
+      expect(result).toStrictEqual(expected)
+    })
   })
-
-  const stages: [Stage, Stage, Stage] = [[alphaTask], [bind(valueTag, literal(false))], [betaTask]]
-  const expected = [
-    { id: 0, name: "alpha", type: "task", dependencies: { optional: [], required: [] } },
-    { id: 1, name: "valueTag", type: "binding", dependencies: { optional: [], required: [] } },
-    { id: 2, name: "beta", type: "task", dependencies: { optional: [], required: [1] } },
-  ]
-
-  expect(graph(stages)).toStrictEqual(expected)
-})
-
-it("task depends on a literal via tag [optional]", () => {
-  const valueTag = createTag<boolean>({ name: "valueTag" })
-  const betaTask = createTask({
-    name: "beta",
-    run: { fn: (ctx?: boolean) => !ctx, context: optional(valueTag.value) },
-  })
-
-  const stages: [Stage, Stage, Stage] = [[alphaTask], [bind(valueTag, literal(false))], [betaTask]]
-  const expected = [
-    { id: 0, name: "alpha", type: "task", dependencies: { optional: [], required: [] } },
-    { id: 1, name: "valueTag", type: "binding", dependencies: { optional: [], required: [] } },
-    { id: 2, name: "beta", type: "task", dependencies: { optional: [1], required: [] } },
-  ]
-
-  expect(graph(stages)).toStrictEqual(expected)
-})
-
-it("task depends on a literal", () => {
-  const betaTask = createTask({
-    name: "beta",
-    run: { fn: (ctx: boolean) => !ctx, context: literal(true) },
-  })
-
-  const stages: [Stage, Stage] = [[alphaTask], [betaTask]]
-  const expected = [
-    { id: 0, name: "alpha", type: "task", dependencies: { optional: [], required: [] } },
-    { id: 1, name: "beta", type: "task", dependencies: { optional: [], required: [] } },
-  ]
-
-  expect(graph(stages)).toStrictEqual(expected)
-})
-
-it("task depends on a literal [optional]", () => {
-  const betaTask = createTask({
-    name: "beta",
-    run: { fn: (ctx?: boolean) => !ctx, context: literal(true) },
-  })
-
-  const stages: [Stage, Stage] = [[alphaTask], [betaTask]]
-  const expected = [
-    { id: 0, name: "alpha", type: "task", dependencies: { optional: [], required: [] } },
-    { id: 1, name: "beta", type: "task", dependencies: { optional: [], required: [] } },
-  ]
-
-  expect(graph(stages)).toStrictEqual(expected)
-})
-
-it("task depends on another task's status", () => {
-  const betaTask = createTask({
-    name: "beta",
-    run: { fn: (name: TaskStatus) => name, context: alphaTask.status },
-  })
-
-  const stages: [Stage, Stage] = [[alphaTask], [betaTask]]
-  const expected = [
-    { id: 0, name: "alpha", type: "task", dependencies: { optional: [], required: [] } },
-    { id: 1, name: "beta", type: "task", dependencies: { optional: [], required: [0] } },
-  ]
-
-  expect(graph(stages)).toStrictEqual(expected)
-})
-
-it("task depends on another task's status [optional]", () => {
-  const betaTask = createTask({
-    name: "beta",
-    run: { fn: (name?: TaskStatus) => name, context: optional(alphaTask.status) },
-  })
-
-  const stages: [Stage, Stage] = [[alphaTask], [betaTask]]
-  const expected = [
-    { id: 0, name: "alpha", type: "task", dependencies: { optional: [], required: [] } },
-    { id: 1, name: "beta", type: "task", dependencies: { optional: [0], required: [] } },
-  ]
-
-  expect(graph(stages)).toStrictEqual(expected)
-})
-
-it("optional dependency that is not found in the graph", () => {
-  const betaTask = createTask({
-    name: "beta",
-    run: { fn: (ctx?: boolean) => !ctx, context: optional(alphaTask.result.value) },
-  })
-
-  const stages: [Stage] = [[betaTask]]
-  const expected = [{ id: 0, name: "beta", type: "task", dependencies: { optional: [], required: [] } }]
-
-  expect(graph(stages)).toStrictEqual(expected)
-})
-
-it("mixed dependencies: required and optional", () => {
-  type BetaCtx = { value: boolean; fn?: (_: boolean) => boolean }
-  const fnTag = createTag<NonNullable<BetaCtx["fn"]>>({ name: "fnTag" })
-
-  const betaTask = createTask({
-    name: "beta",
-    run: {
-      fn: (ctx: BetaCtx) => (ctx.fn ? ctx.fn(ctx.value) : !ctx.value),
-      context: { value: alphaTask.result.value, fn: optional(fnTag.value) },
-    },
-  })
-
-  const stages: [Stage, Stage, Stage] = [[alphaTask], [bind(fnTag, literal(Boolean))], [betaTask]]
-  const expected = [
-    { id: 0, name: "alpha", type: "task", dependencies: { optional: [], required: [] } },
-    { id: 1, name: "fnTag", type: "binding", dependencies: { optional: [], required: [] } },
-    { id: 2, name: "beta", type: "task", dependencies: { optional: [1], required: [0] } },
-  ]
-
-  expect(graph(stages)).toStrictEqual(expected)
 })

@@ -1,7 +1,12 @@
 import { isObject, LIBRARY_NAME } from "@shared"
 import { Build$, Compute$, Literal$, Missing$, Optional$, Read$, Spot$, type SpotInternal } from "./definition"
 
-const createComputer = (registry: Map<symbol, unknown>) => {
+type Computer = {
+  compute: <T = unknown>(spot: SpotInternal<T>) => T | typeof Missing$
+  computeSafe: <T = unknown>(spot: SpotInternal<T>) => T | undefined
+}
+
+const createComputer = (registry: Map<symbol, unknown>): Computer => {
   const context = (value: unknown): unknown | typeof Missing$ => {
     if (isObject(value))
       if (Spot$ in value) return compute(value as SpotInternal)
@@ -63,4 +68,4 @@ const createComputer = (registry: Map<symbol, unknown>) => {
   return { compute, computeSafe }
 }
 
-export { createComputer }
+export { createComputer, type Computer }
