@@ -43,5 +43,11 @@ const difference = <T>(left: Set<T>, right: Set<T>): Set<T> => {
   return out
 }
 
-export { LIBRARY_NAME, T, difference, identity, isObject }
+const union = <T>(left: Set<T>, right: Set<T>): Set<T> => {
+  const out = new Set<T>(left)
+  for (const item of right) out.add(item)
+  return out
+}
+
+export { LIBRARY_NAME, T, difference, identity, isObject, union }
 export type { AnyShape, BuiltInObject, Eventual }

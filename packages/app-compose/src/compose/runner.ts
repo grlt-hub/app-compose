@@ -1,45 +1,57 @@
-import { createComputer, type Spot, type SpotInternal } from "@computable"
+import { createComputer, type Computer, type Spot, type SpotInternal } from "@computable"
 import { Context$, Dispatch$, Execute$, type RunnableInternal } from "@runnable"
-import type { Registry, Stage } from "./definition"
-import type { LoggerEmit } from "./logger"
+import type { ComposeNode, Registry } from "./definition"
+import { observe } from "./observer"
 
+type Context = { computer: Computer; registry: Registry }
 type Scope = { get: <T>(spot: Spot<T>) => T | undefined }
 
-type RunConfig = { stages: readonly Stage[]; emit: LoggerEmit }
+const execute = (ctx: Context, runnable: RunnableInternal): Promise<unknown> =>
+  Promise.resolve()
+    .then(() => ctx.computer.compute(runnable[Context$]))
+    .then((value) => runnable[Execute$](value))
+    .then((value) => {
+      for (const key of Object.getOwnPropertySymbols(runnable[Dispatch$]))
+        ctx.registry.set(key, runnable[Dispatch$][key]!(value))
+      return value
+    })
 
-const run = async ({ stages, emit }: RunConfig): Promise<Scope> => {
-  const registry: Registry = new Map()
+const traverse = async (ctx: Context, stack: ComposeNode[]) => {
+  const current = stack.at(-1)!
 
-  const { compute, computeSafe } = createComputer(registry)
+  observe({ type: "node:start", stack })
 
-  for (let index = 0; index < stages.length; index++) {
-    const queue = [] as Promise<void>[]
-    const stage = stages[index] as RunnableInternal[]
+  switch (current.type) {
+    case "seq":
+      for (const child of current.children) await traverse(ctx, [...stack, child])
+      break
 
-    for (const runnable of stage) {
-      const promise = Promise.resolve()
-        .then(() => compute(runnable[Context$]))
-        .then((ctx) => runnable[Execute$](ctx))
-        .then((value) => {
-          for (const key of Object.getOwnPropertySymbols(runnable[Dispatch$]))
-            registry.set(key, runnable[Dispatch$][key]!(value))
+    case "con":
+      await Promise.all(current.children.map((child) => traverse(ctx, [...stack, child])))
+      break
 
-          return value
-        })
-        .then((value) => emit({ type: "execute:complete", stage: index, runnable, value }))
+    case "run":
+      const runnable = current.value as RunnableInternal
 
-      queue.push(promise)
-    }
+      await execute(ctx, runnable).then((value) => observe({ type: "execute:complete", stack, runnable, value }))
 
-    emit({ type: "stage:start", stage: index })
-    await Promise.all(queue)
-    emit({ type: "stage:complete", stage: index })
+      break
   }
 
+  observe({ type: "node:complete", stack })
+}
+
+const run = async (node: ComposeNode): Promise<Scope> => {
+  const registry: Registry = new Map()
+  const computer = createComputer(registry)
+
+  const ctx: Context = { computer, registry }
+
+  await traverse(ctx, [node])
+
   return {
-    get: <T>(spot: Spot<T>): T | undefined => computeSafe(spot as SpotInternal<T>),
+    get: <T>(spot: Spot<T>): T | undefined => computer.computeSafe(spot as SpotInternal<T>),
   }
 }
 
-export { run }
-export type { Scope }
+export { run, type Scope }

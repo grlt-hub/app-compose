@@ -1,49 +1,52 @@
 import { Context$, type RunnableInternal } from "@runnable"
 import { toID } from "./convert"
-import type { ComposableKind, Stage } from "./definition"
+import type { ComposableKind, ComposeNode } from "./definition"
 import { resolve } from "./resolver"
 
 type EntryID = number
 
-type GraphEntry = {
-  id: EntryID
-  name: string
-  type: ComposableKind
-  dependencies: { required: EntryID[]; optional: EntryID[] }
-}
+type GraphExecutionMeta = { name?: string }
+type GraphRunMeta = { name: string; kind: ComposableKind }
+type GraphRunDeps = { required: EntryID[]; optional: EntryID[] }
 
-type Graph = GraphEntry[]
+type GraphNode =
+  | { type: "con"; meta: GraphExecutionMeta; children: GraphNode[] }
+  | { type: "seq"; meta: GraphExecutionMeta; children: GraphNode[] }
+  | { type: "run"; meta: GraphRunMeta; id: EntryID; dependencies: GraphRunDeps }
 
-const graph = (stages: Stage[]): Graph => {
+const graph = (root: ComposeNode): GraphNode => {
+  let entryID = 0
   const symbolToID = new Map<symbol, EntryID>()
 
-  const steps = stages.flat()
-  const result: Graph = Array.from({ length: steps.length })
-
-  let entryID = 0
-
-  for (const step of steps) {
-    const internal = step as RunnableInternal
-
-    const { type, display, writes } = toID(step)
-    const deps = resolve(internal[Context$])
+  const toEntry = (runnable: RunnableInternal): GraphNode => {
+    const deps = resolve(runnable[Context$])
+    const { type, display, writes } = toID(runnable)
 
     writes.forEach((x) => symbolToID.set(x, entryID))
 
-    result[entryID] = {
-      id: entryID,
-      name: display.name,
-      type,
+    return {
+      type: "run",
+      meta: { name: display.name, kind: type },
+      id: entryID++,
       dependencies: {
         required: Array.from(deps.required, (x) => symbolToID.get(x) ?? -1),
         optional: Array.from(deps.optional, (x) => symbolToID.get(x)).filter((x) => x !== undefined),
       },
     }
-
-    entryID++
   }
 
-  return result
+  const traverse = (node: ComposeNode): GraphNode => {
+    switch (node.type) {
+      case "con":
+      case "seq":
+        return { type: node.type, meta: { name: node.meta?.name }, children: node.children.map(traverse) }
+
+      case "run":
+        return toEntry(node.value as RunnableInternal)
+    }
+  }
+
+  return traverse(root)
 }
 
-export { graph, type Graph }
+export { graph, type GraphNode }

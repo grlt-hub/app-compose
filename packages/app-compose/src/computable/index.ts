@@ -1,5 +1,5 @@
 export { build } from "./build"
-export { createComputer } from "./computer"
+export { createComputer, type Computer } from "./computer"
 export type { ContextToSpot, IsSpot, SpotToContext } from "./context"
 export {
   Build$,
