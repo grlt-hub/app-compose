@@ -1,5 +1,4 @@
 import type { RunnableInternal } from "@runnable"
-import { difference, union } from "@shared"
 import { createAnalyzer } from "./analyze"
 import type { ComposableKind, ComposeMeta, ComposeNode } from "./definition"
 
@@ -99,34 +98,38 @@ const createGuard = ({ handler }: GuardConfig) => {
     const traverse = (stack: NotifyEntry[], available: Set<symbol>): Set<symbol> => {
       const { node: current } = stack.at(-1)!
 
-      if (current.type === "run") {
-        const { type, display, writes, dependencies } = analyzer.get(current.value as RunnableInternal)
+      switch (current.type) {
+        case "run":
+          const { type, display, writes, dependencies } = analyzer.get(current.value as RunnableInternal)
 
-        const missing = difference(dependencies.required, available)
-        if (missing.size > 0) notify.notSatisfied({ type, name: display.name, stack, missing })
+          const missing = new Set<symbol>()
+          for (const id of dependencies.required) if (!available.has(id)) missing.add(id)
 
-        return new Set(writes)
-      }
+          if (missing.size > 0) notify.notSatisfied({ type, name: display.name, stack, missing })
 
-      // all concurrent steps are isolated
-      if (current.type === "con")
-        return current.children.map((node, index) => traverse([...stack, { node, index }], available)).reduce(union)
+          return new Set(writes)
 
-      // sequential steps provide their writes to the next steps
-      if (current.type === "seq") {
-        let wrote = new Set<symbol>()
+        // all concurrent steps are isolated
+        case "con": {
+          const wrote = new Set<symbol>()
 
-        for (const [index, node] of current.children.entries()) {
-          const local = union(wrote, available)
-          const added = traverse([...stack, { node, index }], local)
+          for (const [index, node] of current.children.entries())
+            traverse([...stack, { node, index }], available).forEach((item) => wrote.add(item))
 
-          wrote = union(wrote, added)
+          return wrote
         }
 
-        return wrote
-      }
+        // sequential steps share the context of previous steps
+        case "seq": {
+          const wrote = new Set<symbol>(),
+            local = new Set<symbol>(available)
 
-      throw new Error(/* unreachable */)
+          for (const [index, node] of current.children.entries())
+            traverse([...stack, { node, index }], local).forEach((item) => (wrote.add(item), local.add(item)))
+
+          return wrote
+        }
+      }
     }
 
     traverse([{ node: root }], new Set())

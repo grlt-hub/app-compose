@@ -37,17 +37,5 @@ const isObject = (x: unknown): x is object => Object.prototype.toString.call(x) 
 const identity = <T>(x: T): T => x
 const T = (): true => true
 
-const difference = <T>(left: Set<T>, right: Set<T>): Set<T> => {
-  const out = new Set<T>(left)
-  for (const item of right) out.delete(item)
-  return out
-}
-
-const union = <T>(left: Set<T>, right: Set<T>): Set<T> => {
-  const out = new Set<T>(left)
-  for (const item of right) out.add(item)
-  return out
-}
-
-export { LIBRARY_NAME, T, difference, identity, isObject, union }
+export { LIBRARY_NAME, T, identity, isObject }
 export type { AnyShape, BuiltInObject, Eventual }

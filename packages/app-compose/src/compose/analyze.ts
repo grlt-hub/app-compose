@@ -28,4 +28,4 @@ const createAnalyzer = (): ComposeAnalyzer => {
   return { get }
 }
 
-export { createAnalyzer, type ComposeAnalyzer, type RunnableMeta }
+export { createAnalyzer }
