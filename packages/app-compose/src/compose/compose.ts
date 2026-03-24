@@ -28,7 +28,7 @@ type Composer = {
 const normalize = (arg: Composable): ComposeNode => {
   if (Node$ in arg) return arg[Node$]
   else if (Execute$ in arg) return { type: "run", value: arg as Runnable }
-  else throw new Error(/* TODO: better error messaging, but unreachable given correct types */)
+  else throw new Error(`${LIBRARY_NAME} Invalid argument passed to step.`)
 }
 
 const raiseOnGuard = (message: string): never => {
@@ -36,16 +36,15 @@ const raiseOnGuard = (message: string): never => {
 }
 
 const builder = (node: ComposeInner): Composer => {
-  const self: Composer = {
+  return {
     [Node$]: node,
 
-    meta: (meta) => ((node.meta = { ...node.meta, ...meta }), self),
+    meta: (meta) => builder({ ...node, meta: { ...node.meta, ...meta } }),
 
     step: (arg) => {
-      if (Array.isArray(arg)) node.children.push({ type: "con", children: arg.map(normalize) })
-      else node.children.push(normalize(arg))
-
-      return self
+      if (Array.isArray(arg))
+        return builder({ ...node, children: [...node.children, { type: "con", children: arg.map(normalize) }] })
+      return builder({ ...node, children: [...node.children, normalize(arg)] })
     },
 
     run: () => {
@@ -64,8 +63,6 @@ const builder = (node: ComposeInner): Composer => {
 
     graph: () => graph(node),
   }
-
-  return self
 }
 
 const compose = (): Composer => {
