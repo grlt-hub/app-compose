@@ -264,6 +264,18 @@ describe("runner", () => {
 
       expect(log).toStrictEqual(["a", "b"]) // b isn't locked by a
     })
+
+    it("exposes concurrent tasks in scope", async () => {
+      const taskA = createTask({ name: "a", run: { fn: () => "a" } })
+      const taskB = createTask({ name: "b", run: { fn: () => "b" } })
+
+      const app = compose().step([taskA, taskB])
+
+      const scope = await run(app[Node$])
+
+      expect(scope.get(taskA.result)).toBe("a")
+      expect(scope.get(taskB.status)).toBe("done")
+    })
   })
 
   describe("nested compose", () => {

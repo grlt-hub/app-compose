@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest"
 import { Execute$, type RunnableInternal } from "../definition"
-import { createTask, type TaskExecutionValue } from "../task"
+import { createTask } from "../task"
 
 describe("task", () => {
   describe("execute.enabled", () => {

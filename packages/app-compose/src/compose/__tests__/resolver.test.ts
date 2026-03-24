@@ -1,4 +1,5 @@
 import { build, literal, optional, reference, Spot$, type SpotInternal } from "@computable"
+import { LIBRARY_NAME } from "@shared"
 import { describe, expect, it } from "vitest"
 import { resolve } from "../resolver"
 
@@ -83,6 +84,6 @@ describe("throws", () => {
   it("on raw literal value in build context", () => {
     const ctx = build({ a: 42 })
 
-    expect(() => resolve(ctx)).toThrow("Literal value found in context")
+    expect(() => resolve(ctx)).toThrow(`${LIBRARY_NAME} Literal value found in context`)
   })
 })

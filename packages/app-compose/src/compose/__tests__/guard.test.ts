@@ -1,4 +1,4 @@
-import { literal, reference, shape } from "@computable"
+import { literal, reference } from "@computable"
 import { bind, createTag, createTask } from "@runnable"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { compose, Node$ } from "../compose"
