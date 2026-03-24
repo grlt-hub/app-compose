@@ -31,4 +31,4 @@ function resolve(spot: SpotInternal): Dependency {
   return { required, optional }
 }
 
-export { resolve }
+export { resolve, type Dependency }
