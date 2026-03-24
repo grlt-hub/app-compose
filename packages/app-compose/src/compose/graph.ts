@@ -1,7 +1,6 @@
-import { Context$, type RunnableInternal } from "@runnable"
-import { toID } from "./convert"
+import type { RunnableInternal } from "@runnable"
+import { createAnalyzer } from "./analyze"
 import type { ComposableKind, ComposeNode } from "./definition"
-import { resolve } from "./resolver"
 
 type EntryID = number
 
@@ -18,9 +17,10 @@ const graph = (root: ComposeNode): GraphNode => {
   let entryID = 0
   const symbolToID = new Map<symbol, EntryID>()
 
+  const analyzer = createAnalyzer()
+
   const toEntry = (runnable: RunnableInternal): GraphNode => {
-    const deps = resolve(runnable[Context$])
-    const { type, display, writes } = toID(runnable)
+    const { type, display, writes, dependencies } = analyzer.get(runnable)
 
     writes.forEach((x) => symbolToID.set(x, entryID))
 
@@ -29,8 +29,8 @@ const graph = (root: ComposeNode): GraphNode => {
       meta: { name: display.name, kind: type },
       id: entryID++,
       dependencies: {
-        required: Array.from(deps.required, (x) => symbolToID.get(x) ?? -1),
-        optional: Array.from(deps.optional, (x) => symbolToID.get(x)).filter((x) => x !== undefined),
+        required: Array.from(dependencies.required, (x) => symbolToID.get(x) ?? -1),
+        optional: Array.from(dependencies.optional, (x) => symbolToID.get(x)).filter((x) => x !== undefined),
       },
     }
   }

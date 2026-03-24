@@ -1,8 +1,7 @@
-import { Context$, type RunnableInternal } from "@runnable"
+import type { RunnableInternal } from "@runnable"
 import { difference, union } from "@shared"
-import { toID } from "./convert"
+import { createAnalyzer } from "./analyze"
 import type { ComposableKind, ComposeMeta, ComposeNode } from "./definition"
-import { resolve } from "./resolver"
 
 type NotifyEntry = { index?: number; node: ComposeNode }
 
@@ -49,6 +48,7 @@ type GuardConfig = { handler: GuardHandler }
 
 const createGuard = ({ handler }: GuardConfig) => {
   const notify = createNotify(handler)
+  const analyzer = createAnalyzer()
 
   const duplicate = (root: ComposeNode) => {
     const seen = new Set<symbol>()
@@ -60,7 +60,7 @@ const createGuard = ({ handler }: GuardConfig) => {
         return current.children.forEach((node, index) => traverse([...stack, { node, index }]))
 
       if (current.type === "run") {
-        const { type, display, writes } = toID(current.value)
+        const { type, display, writes } = analyzer.get(current.value as RunnableInternal)
 
         if (writes.some((write) => seen.has(write))) notify.duplicate({ type, name: display.name, stack })
 
@@ -81,15 +81,12 @@ const createGuard = ({ handler }: GuardConfig) => {
         return current.children.forEach((node, index) => traverse([...stack, { node, index }]))
 
       if (current.type === "run") {
-        const internal = current.value as RunnableInternal
-
-        const { type, display, writes } = toID(current.value),
-          deps = resolve(internal[Context$])
+        const { type, display, writes, dependencies } = analyzer.get(current.value as RunnableInternal)
 
         if (type === "binding") writes.forEach((id) => candidates.set(id, { type, name: display.name, stack }))
 
-        deps.required.forEach((id) => candidates.delete(id))
-        deps.optional.forEach((id) => candidates.delete(id))
+        dependencies.required.forEach((id) => candidates.delete(id))
+        dependencies.optional.forEach((id) => candidates.delete(id))
       }
     }
 
@@ -103,12 +100,9 @@ const createGuard = ({ handler }: GuardConfig) => {
       const { node: current } = stack.at(-1)!
 
       if (current.type === "run") {
-        const internal = current.value as RunnableInternal
-        const { type, display, writes } = toID(current.value)
+        const { type, display, writes, dependencies } = analyzer.get(current.value as RunnableInternal)
 
-        const deps = resolve(internal[Context$])
-
-        const missing = difference(deps.required, available)
+        const missing = difference(dependencies.required, available)
         if (missing.size > 0) notify.notSatisfied({ type, name: display.name, stack, missing })
 
         return new Set(writes)

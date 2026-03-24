@@ -57,6 +57,7 @@
     "build": "tsdown",
     "dev": "tsdown --watch",
     "prepack": "pnpm build",
+    "bench": "vitest bench",
     "test": "vitest run",
     "lint": "knip && oxlint ./src"
   },
