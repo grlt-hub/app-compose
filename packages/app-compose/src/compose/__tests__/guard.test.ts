@@ -133,15 +133,64 @@ describe("unsatisfied guard", () => {
 
   it("calls error on binding missing task context", () => {
     const provider = createTask({ name: "alpha", run: { fn: () => 0 } })
-    const intermediate = createTag<number>({ name: "beta" })
+    const intermediate = createTag<string>({ name: "beta" })
 
-    const app = compose().step(bind(intermediate, provider.result))
+    const app = compose().step(bind(intermediate, provider.status))
 
     guard(app[Node$])
 
     const message =
-      "Unsatisfied dependencies found for Binding with name Tag[beta] in step root > #1: missing Task[alpha]::result."
+      "Unsatisfied dependencies found for Binding with name Tag[beta] in step root > #1: missing Task[alpha]::status."
     expect(handler.error).toHaveBeenCalledExactlyOnceWith(message)
+  })
+
+  it("calls error on task missing context in its local con thread", () => {
+    const provider = createTag<number>({ name: "alpha" })
+
+    const taskA = createTask({ name: "A", run: { fn: vi.fn(), context: provider.value } })
+    const taskB = createTask({ name: "B", run: { fn: vi.fn(), context: provider.value } })
+
+    const app = compose().step([
+      compose()
+        .step(bind(provider, literal(1)))
+        .step(taskA),
+      compose().step(taskB),
+    ])
+
+    guard(app[Node$])
+
+    const message =
+      "Unsatisfied dependencies found for Task with name Task[B] in step root > #1 > #2 > #1: missing Tag[alpha]."
+    expect(handler.error).toHaveBeenCalledExactlyOnceWith(message)
+  })
+
+  describe("missing list", () => {
+    const alpha = createTag<number>({ name: "alpha" })
+    const beta = createTag<number>({ name: "beta" })
+
+    const task = createTask({ name: "beta", run: { fn: vi.fn(), context: [alpha.value, beta.value] } })
+
+    it("calls error with a full missing list", () => {
+      const app = compose().step(task)
+
+      guard(app[Node$])
+
+      const message =
+        "Unsatisfied dependencies found for Task with name Task[beta] in step root > #1: missing Tag[alpha], Tag[beta]."
+      expect(handler.error).toHaveBeenCalledExactlyOnceWith(message)
+    })
+
+    it("only reports missing dependencies for the task", () => {
+      const app = compose()
+        .step(bind(alpha, literal(1)))
+        .step(task)
+
+      guard(app[Node$])
+
+      const message =
+        "Unsatisfied dependencies found for Task with name Task[beta] in step root > #2: missing Tag[beta]."
+      expect(handler.error).toHaveBeenCalledExactlyOnceWith(message)
+    })
   })
 
   it("provides rich path", () => {
@@ -187,14 +236,28 @@ describe("unsatisfied guard", () => {
 })
 
 describe("unused guard", () => {
-  const tag = createTag<number>({ name: "alpha" })
+  const alpha = createTag<number>({ name: "alpha" })
 
-  it("warns on unused binding", () => {
-    const node = compose().step(bind(tag, literal(1)))
+  it("warns on unused binding (seq)", () => {
+    const node = compose().step(bind(alpha, literal(1)))
 
     guard(node[Node$])
 
-    const message = "Unused Binding found with name: Tag[alpha] in step root > #1."
+    const message = "Unused Binding found with name Tag[alpha] in step root > #1."
+    expect(handler.warn).toHaveBeenCalledWith(message)
+  })
+
+  it("warns on unused binding (con)", () => {
+    const beta = createTag<number>({ name: "alpha" })
+    const task = createTask({ name: "test", run: { fn: vi.fn(), context: beta.value } })
+
+    const node = compose()
+      .step([bind(alpha, literal(1)), bind(beta, literal(2))])
+      .step(task)
+
+    guard(node[Node$])
+
+    const message = "Unused Binding found with name Tag[alpha] in step root > #1 > #1."
     expect(handler.warn).toHaveBeenCalledWith(message)
   })
 
@@ -204,12 +267,12 @@ describe("unused guard", () => {
       .step(
         compose()
           .meta({ name: "Layout" })
-          .step(bind(tag, literal(2))),
+          .step(bind(alpha, literal(2))),
       )
 
     guard(node[Node$])
 
-    const message = "Unused Binding found with name: Tag[alpha] in step MyApp > #1 (Layout) > #1."
+    const message = "Unused Binding found with name Tag[alpha] in step MyApp > #1 (Layout) > #1."
     expect(handler.warn).toHaveBeenCalledWith(message)
   })
 })

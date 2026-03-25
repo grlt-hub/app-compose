@@ -38,7 +38,7 @@ const createNotify = (handler: GuardHandler) => ({
   },
 
   unused: ({ type, name, stack }: NotifyContext) => {
-    const message = `Unused ${TypeMap[type]} found with name: ${NameMap[type]}[${name}] in step ${stackToName(stack)}.`
+    const message = `Unused ${TypeMap[type]} found with name ${NameMap[type]}[${name}] in step ${stackToName(stack)}.`
     handler.warn(message)
   },
 })

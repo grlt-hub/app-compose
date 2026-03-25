@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest"
 import { createComputer } from "../computer"
-import { Missing$, type SpotInternal } from "../definition"
+import { Compute$, Missing$, type SpotInternal } from "../definition"
 import { literal } from "../literal"
 import { shape } from "../shape"
 
@@ -38,13 +38,15 @@ describe("shape", () => {
   })
 
   it("skips mapping over missing value", () => {
-    const fn = vi.fn((x: number) => x + 1)
+    const fn = vi.fn((x: unknown) => x)
+    const value = shape(literal(0), fn) as SpotInternal
 
-    const a = shape(literal(1), () => Missing$ as unknown as number)
-    const b = shape(a, fn)
+    // note: unrealistic, computer does not run `fn` if `build` is missing
+    value[Compute$].unshift(() => Missing$)
 
-    compute(b as SpotInternal)
+    const result = compute(value as SpotInternal)
 
     expect(fn).not.toHaveBeenCalled()
+    expect(result).toBe(Missing$)
   })
 })

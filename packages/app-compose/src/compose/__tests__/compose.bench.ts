@@ -8,7 +8,7 @@ const double = (x: number) => x * 2
 describe("multi layer, compute shapes", () => {
   const rootTag = createTag<number>({ name: "root" })
 
-  const app = compose()
+  let app = compose()
     .meta({ name: "bench" })
     .step(bind(rootTag, literal(1)))
 
@@ -30,7 +30,7 @@ describe("multi layer, compute shapes", () => {
       },
     })
 
-    app
+    app = app
       .step([bind(a, shape(l, double)), bind(b, shape(l, double))])
       .step([bind(c, shape(l, double)), bind(d, shape(l, double))])
       .step(task)
@@ -48,12 +48,12 @@ describe("multi layer, compute shapes", () => {
 })
 
 describe("single layer, wide sequence", () => {
-  const layer = compose()
+  let layer = compose()
 
   for (let i = 0; i < 100; i++) {
     const task = createTask({ name: `task:${i}`, run: { fn: vi.fn() } })
 
-    layer.step(task)
+    layer = layer.step(task)
   }
 
   const app = compose().meta({ name: "bench" }).step(layer)
