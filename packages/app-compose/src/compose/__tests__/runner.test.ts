@@ -1,5 +1,5 @@
 import { literal, optional } from "@computable"
-import { bind, createTag, createTask, type TaskStatus } from "@runnable"
+import { createTask, createWire, tag, type TaskStatus } from "@runnable"
 import { describe, expect, it, vi } from "vitest"
 import { compose, Node$ } from "../compose"
 import { run } from "../runner"
@@ -239,12 +239,12 @@ describe("runner", () => {
     })
 
     it("can read tag value from scope", async () => {
-      const tag = createTag<string>({ name: "test" })
-      const app = compose().step(bind(tag, literal("value")))
+      const test = tag<string>("test")
+      const app = compose().step(createWire(test, literal("value")))
 
       const scope = await run(app[Node$])
 
-      expect(scope.get(tag.value)).toBe("value")
+      expect(scope.get(test.value)).toBe("value")
     })
   })
 

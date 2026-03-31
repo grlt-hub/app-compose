@@ -44,7 +44,7 @@ const builder = (node: ComposeInner): Composer => {
     step: (arg) => {
       if (Array.isArray(arg))
         return builder({ ...node, children: [...node.children, { type: "con", children: arg.map(normalize) }] })
-      return builder({ ...node, children: [...node.children, normalize(arg)] })
+      else return builder({ ...node, children: [...node.children, normalize(arg)] })
     },
 
     run: () => {

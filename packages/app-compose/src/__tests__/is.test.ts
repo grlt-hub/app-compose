@@ -1,12 +1,12 @@
-import { createTag, createTask } from "@runnable"
+import { createTask, tag } from "@runnable"
 import { describe, expect, it } from "vitest"
 import { is } from "../is"
 
 describe("is.tag", () => {
   it("returns true for a tag", () => {
-    const tag = createTag({ name: "_" })
+    const value = tag("_")
 
-    expect(is.tag(tag)).toBe(true)
+    expect(is.tag(value)).toBe(true)
   })
 
   it("returns false for a non object", () => {

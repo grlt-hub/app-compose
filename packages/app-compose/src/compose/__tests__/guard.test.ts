@@ -1,5 +1,5 @@
 import { literal, reference } from "@computable"
-import { bind, createTag, createTask } from "@runnable"
+import { createTask, createWire, tag } from "@runnable"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { compose, Node$ } from "../compose"
 import { createGuard } from "../guard"
@@ -13,26 +13,26 @@ describe("duplicate guard", () => {
   const fn = vi.fn<() => void>()
 
   const task = createTask({ name: "beta", run: { fn } })
-  const tag = createTag<number>({ name: "alpha" })
+  const alpha = tag<number>("alpha")
 
-  describe("calls error on duplicate binding", () => {
+  describe("calls error on duplicate wire", () => {
     it("in the same step (concurrent)", () => {
-      const app = compose().step([bind(tag, literal(1)), bind(tag, literal(2))])
+      const app = compose().step([createWire(alpha, literal(1)), createWire(alpha, literal(2))])
 
       guard(app[Node$])
 
-      const message = "A duplicate Binding found with name Tag[alpha] in step root > #1 > #2."
+      const message = "A duplicate Wire found with name Tag[alpha] in step root > #1 > #2."
       expect(handler.error).toHaveBeenCalledExactlyOnceWith(message)
     })
 
     it("in different steps (sequential)", () => {
       const app = compose()
-        .step(bind(tag, literal(1)))
-        .step(bind(tag, literal(2)))
+        .step(createWire(alpha, literal(1)))
+        .step(createWire(alpha, literal(2)))
 
       guard(app[Node$])
 
-      const message = "A duplicate Binding found with name Tag[alpha] in step root > #2."
+      const message = "A duplicate Wire found with name Tag[alpha] in step root > #2."
       expect(handler.error).toHaveBeenCalledExactlyOnceWith(message)
     })
   })
@@ -60,27 +60,27 @@ describe("duplicate guard", () => {
   it("provides rich path", () => {
     const app = compose()
       .meta({ name: "MyApp" })
-      .step(bind(tag, literal(1)))
+      .step(createWire(alpha, literal(1)))
       .step([
         compose()
           .meta({ name: "Layout" })
-          .step(bind(tag, literal(2))),
+          .step(createWire(alpha, literal(2))),
       ])
 
     guard(app[Node$])
 
-    const message = "A duplicate Binding found with name Tag[alpha] in step MyApp > #2 > #1 (Layout) > #1."
+    const message = "A duplicate Wire found with name Tag[alpha] in step MyApp > #2 > #1 (Layout) > #1."
     expect(handler.error).toHaveBeenCalledExactlyOnceWith(message)
   })
 
   it("passes with no duplicates", () => {
     const fn = vi.fn<(n: number) => void>()
 
-    const tag = createTag<number>({ name: "alpha" })
-    const task = createTask({ name: "beta", run: { fn, context: tag.value } })
+    const alpha = tag<number>("alpha")
+    const task = createTask({ name: "beta", run: { fn, context: alpha.value } })
 
     const app = compose()
-      .step(bind(tag, literal(1)))
+      .step(createWire(alpha, literal(1)))
       .step(task)
 
     guard(app[Node$])
@@ -92,8 +92,8 @@ describe("duplicate guard", () => {
 describe("unsatisfied guard", () => {
   const fn = vi.fn<(n: number) => void>()
 
-  it("calls error on task missing binding context", () => {
-    const provider = createTag<number>({ name: "alpha" })
+  it("calls error on task missing wire context", () => {
+    const provider = tag<number>("alpha")
     const consumer = createTask({ name: "beta", run: { fn, context: provider.value } })
 
     const app = compose().step(consumer)
@@ -118,41 +118,40 @@ describe("unsatisfied guard", () => {
     expect(handler.error).toHaveBeenCalledExactlyOnceWith(message)
   })
 
-  it("calls error on binding missing binding context", () => {
-    const provider = createTag<number>({ name: "alpha" })
-    const intermediate = createTag<number>({ name: "beta" })
+  it("calls error on wire missing wire context", () => {
+    const alpha = tag<number>("alpha")
+    const beta = tag<number>("beta")
 
-    const app = compose().step(bind(intermediate, provider.value))
+    const app = compose().step(createWire(beta, alpha.value))
 
     guard(app[Node$])
 
-    const message =
-      "Unsatisfied dependencies found for Binding with name Tag[beta] in step root > #1: missing Tag[alpha]."
+    const message = "Unsatisfied dependencies found for Wire with name Tag[beta] in step root > #1: missing Tag[alpha]."
     expect(handler.error).toHaveBeenCalledExactlyOnceWith(message)
   })
 
-  it("calls error on binding missing task context", () => {
+  it("calls error on wire missing task context", () => {
     const provider = createTask({ name: "alpha", run: { fn: () => 0 } })
-    const intermediate = createTag<string>({ name: "beta" })
+    const intermediate = tag<string>("beta")
 
-    const app = compose().step(bind(intermediate, provider.status))
+    const app = compose().step(createWire(intermediate, provider.status))
 
     guard(app[Node$])
 
     const message =
-      "Unsatisfied dependencies found for Binding with name Tag[beta] in step root > #1: missing Task[alpha]::status."
+      "Unsatisfied dependencies found for Wire with name Tag[beta] in step root > #1: missing Task[alpha]::status."
     expect(handler.error).toHaveBeenCalledExactlyOnceWith(message)
   })
 
   it("calls error on task missing context in its local con thread", () => {
-    const provider = createTag<number>({ name: "alpha" })
+    const provider = tag<number>("alpha")
 
     const taskA = createTask({ name: "A", run: { fn: vi.fn(), context: provider.value } })
     const taskB = createTask({ name: "B", run: { fn: vi.fn(), context: provider.value } })
 
     const app = compose().step([
       compose()
-        .step(bind(provider, literal(1)))
+        .step(createWire(provider, literal(1)))
         .step(taskA),
       compose().step(taskB),
     ])
@@ -165,8 +164,8 @@ describe("unsatisfied guard", () => {
   })
 
   describe("missing list", () => {
-    const alpha = createTag<number>({ name: "alpha" })
-    const beta = createTag<number>({ name: "beta" })
+    const alpha = tag<number>("alpha")
+    const beta = tag<number>("beta")
 
     const task = createTask({ name: "beta", run: { fn: vi.fn(), context: [alpha.value, beta.value] } })
 
@@ -182,7 +181,7 @@ describe("unsatisfied guard", () => {
 
     it("only reports missing dependencies for the task", () => {
       const app = compose()
-        .step(bind(alpha, literal(1)))
+        .step(createWire(alpha, literal(1)))
         .step(task)
 
       guard(app[Node$])
@@ -194,7 +193,7 @@ describe("unsatisfied guard", () => {
   })
 
   it("provides rich path", () => {
-    const provider = createTag<number>({ name: "alpha" })
+    const provider = tag<number>("alpha")
     const consumer = createTask({ name: "beta", run: { fn, context: provider.value } })
 
     const app = compose()
@@ -209,11 +208,11 @@ describe("unsatisfied guard", () => {
   })
 
   it("passes when satisfied", () => {
-    const provider = createTag<number>({ name: "alpha" })
+    const provider = tag<number>("alpha")
     const consumer = createTask({ name: "beta", run: { fn, context: provider.value } })
 
     const app = compose()
-      .step(bind(provider, literal(1)))
+      .step(createWire(provider, literal(1)))
       .step(consumer)
 
     guard(app[Node$])
@@ -236,28 +235,28 @@ describe("unsatisfied guard", () => {
 })
 
 describe("unused guard", () => {
-  const alpha = createTag<number>({ name: "alpha" })
+  const alpha = tag<number>("alpha")
 
-  it("warns on unused binding (seq)", () => {
-    const node = compose().step(bind(alpha, literal(1)))
+  it("warns on unused wire (seq)", () => {
+    const node = compose().step(createWire(alpha, literal(1)))
 
     guard(node[Node$])
 
-    const message = "Unused Binding found with name Tag[alpha] in step root > #1."
+    const message = "Unused Wire found with name Tag[alpha] in step root > #1."
     expect(handler.warn).toHaveBeenCalledWith(message)
   })
 
-  it("warns on unused binding (con)", () => {
-    const beta = createTag<number>({ name: "alpha" })
+  it("warns on unused wire (con)", () => {
+    const beta = tag<number>("alpha")
     const task = createTask({ name: "test", run: { fn: vi.fn(), context: beta.value } })
 
     const node = compose()
-      .step([bind(alpha, literal(1)), bind(beta, literal(2))])
+      .step([createWire(alpha, literal(1)), createWire(beta, literal(2))])
       .step(task)
 
     guard(node[Node$])
 
-    const message = "Unused Binding found with name Tag[alpha] in step root > #1 > #1."
+    const message = "Unused Wire found with name Tag[alpha] in step root > #1 > #1."
     expect(handler.warn).toHaveBeenCalledWith(message)
   })
 
@@ -267,12 +266,12 @@ describe("unused guard", () => {
       .step(
         compose()
           .meta({ name: "Layout" })
-          .step(bind(alpha, literal(2))),
+          .step(createWire(alpha, literal(2))),
       )
 
     guard(node[Node$])
 
-    const message = "Unused Binding found with name Tag[alpha] in step MyApp > #1 (Layout) > #1."
+    const message = "Unused Wire found with name Tag[alpha] in step MyApp > #1 (Layout) > #1."
     expect(handler.warn).toHaveBeenCalledWith(message)
   })
 })

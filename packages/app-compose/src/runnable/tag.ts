@@ -6,22 +6,19 @@ import { Context$, Dispatch$, Execute$, type Runnable, type RunnableInternal, ty
 const Tag$ = Symbol("$tag")
 
 type Tag<T> = { [Tag$]: symbol; name: string; value: SpotProvider<T> }
-type TagConfig = { name: string }
 
-const createTag = <T = never>(config: TagConfig): Tag<T> => {
-  const id = Symbol(`Tag[${config.name}]`)
+const tag = <T = never>(name: string): Tag<T> => {
+  const id = Symbol(`Tag[${name}]`)
 
-  const tag: Tag<T> = { [Tag$]: id, name: config.name, value: reference.lensed<T>(id) }
-
-  return tag
+  return { [Tag$]: id, name, value: reference.lensed<T>(id) }
 }
 
-type Binding = { name: string } & Runnable & RunnableKind<"binding">
+type Wire = { name: string } & Runnable & RunnableKind<"wire">
 
-const bind = <T>(tag: Tag<T>, value: ContextToSpot<T>): Binding => {
-  const runnable: RunnableInternal & Binding = {
+const createWire = <T>(tag: Tag<T>, value: ContextToSpot<T>): Wire => {
+  const runnable: RunnableInternal & Wire = {
     name: tag.name,
-    kind: "binding",
+    kind: "wire",
 
     [Context$]: build(value),
     [Execute$]: identity,
@@ -31,4 +28,4 @@ const bind = <T>(tag: Tag<T>, value: ContextToSpot<T>): Binding => {
   return runnable
 }
 
-export { bind, createTag, Tag$, type Binding, type Tag, }
+export { createWire, tag, Tag$, type Tag, type Wire }
