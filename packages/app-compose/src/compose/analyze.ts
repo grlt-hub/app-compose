@@ -1,4 +1,4 @@
-import { Context$, Dispatch$, type Binding, type Runnable, type RunnableInternal, type Task } from "@runnable"
+import { Context$, Dispatch$, type Runnable, type RunnableInternal, type Task, type Wire } from "@runnable"
 import type { ComposableKind } from "./definition"
 import { resolve, type Dependency } from "./resolver"
 
@@ -9,7 +9,7 @@ type ComposeAnalyzer = {
 }
 
 const analyze = (runnable: RunnableInternal): RunnableMeta => {
-  const internal = runnable as RunnableInternal & (Task<unknown> | Binding)
+  const internal = runnable as RunnableInternal & (Task<unknown> | Wire)
 
   const writes = Object.getOwnPropertySymbols(internal[Dispatch$])
   const dependencies = resolve(internal[Context$])

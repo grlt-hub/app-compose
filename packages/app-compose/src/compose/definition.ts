@@ -11,6 +11,6 @@ type ComposeNode = ComposeNodeSeq | ComposeNodeCon | ComposeNodeRun
 type ComposeInner = ComposeNodeCon | ComposeNodeSeq
 
 type Registry = Map<symbol, unknown>
-type ComposableKind = "task" | "binding"
+type ComposableKind = "task" | "wire"
 
 export type { ComposableKind, ComposeInner, ComposeMeta, ComposeNode, Registry }

@@ -1,26 +1,26 @@
 import { literal, shape, type Spot } from "@computable"
-import { bind, createTag, createTask } from "@runnable"
+import { createWire, tag, createTask } from "@runnable"
 import { bench, describe, vi } from "vitest"
 import { compose } from "../compose"
 
 const double = (x: number) => x * 2
 
 describe("multi layer, compute shapes", () => {
-  const rootTag = createTag<number>({ name: "root" })
+  const rootTag = tag<number>("root")
 
   let app = compose()
     .meta({ name: "bench" })
-    .step(bind(rootTag, literal(1)))
+    .step(createWire(rootTag, literal(1)))
 
   let previous: Spot<number> = rootTag.value
 
   for (let layer = 0; layer < 20; layer++) {
     const l = shape({ layer: literal(layer), previous }, ({ layer, previous }) => layer + previous)
 
-    const a = createTag<number>({ name: `${layer}:a` })
-    const b = createTag<number>({ name: `${layer}:b` })
-    const c = createTag<number>({ name: `${layer}:c` })
-    const d = createTag<number>({ name: `${layer}:d` })
+    const a = tag<number>(`${layer}:a`)
+    const b = tag<number>(`${layer}:b`)
+    const c = tag<number>(`${layer}:c`)
+    const d = tag<number>(`${layer}:d`)
 
     const task = createTask({
       name: `${layer}:task`,
@@ -31,8 +31,8 @@ describe("multi layer, compute shapes", () => {
     })
 
     app = app
-      .step([bind(a, shape(l, double)), bind(b, shape(l, double))])
-      .step([bind(c, shape(l, double)), bind(d, shape(l, double))])
+      .step([createWire(a, shape(l, double)), createWire(b, shape(l, double))])
+      .step([createWire(c, shape(l, double)), createWire(d, shape(l, double))])
       .step(task)
 
     previous = task.result

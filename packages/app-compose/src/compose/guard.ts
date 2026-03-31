@@ -9,8 +9,8 @@ type GuardHandler = Record<"warn" | "error", (message: string) => void>
 
 const UNKNOWN_NAME = "<unknown>"
 
-const TypeMap = { task: "Task", binding: "Binding" } satisfies Record<ComposableKind, string>
-const NameMap = { task: "Task", binding: "Tag" } satisfies Record<ComposableKind, string>
+const TypeMap = { task: "Task", wire: "Wire" } satisfies Record<ComposableKind, string>
+const NameMap = { task: "Task", wire: "Tag" } satisfies Record<ComposableKind, string>
 
 const metaOf = <const K extends keyof ComposeMeta>(node: ComposeNode, key: K): ComposeMeta[K] =>
   "meta" in node && node.meta?.[key] ? node.meta[key] : undefined
@@ -82,7 +82,7 @@ const createGuard = ({ handler }: GuardConfig) => {
       if (current.type === "run") {
         const { type, display, writes, dependencies } = analyzer.get(current.value as RunnableInternal)
 
-        if (type === "binding") writes.forEach((id) => candidates.set(id, { type, name: display.name, stack }))
+        if (type === "wire") writes.forEach((id) => candidates.set(id, { type, name: display.name, stack }))
 
         dependencies.required.forEach((id) => candidates.delete(id))
         dependencies.optional.forEach((id) => candidates.delete(id))

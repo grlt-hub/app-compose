@@ -1,5 +1,5 @@
 import { literal, optional } from "@computable"
-import { bind, createTag, createTask } from "@runnable"
+import { createTask, createWire, tag } from "@runnable"
 import { describe, expect, it, vi } from "vitest"
 import { compose, Node$ } from "../compose"
 import { graph } from "../graph"
@@ -135,10 +135,10 @@ describe("graph", () => {
 
   describe("tags", () => {
     it("dependency on a task via a tag", () => {
-      const valueTag = createTag<boolean>({ name: "value" })
+      const valueTag = tag<boolean>("value")
       const betaTask = createTask({ name: "beta", run: { fn: vi.fn(), context: valueTag.value } })
 
-      const app = compose().step(alphaTask).step(bind(valueTag, alphaTask.result.value)).step(betaTask)
+      const app = compose().step(alphaTask).step(createWire(valueTag, alphaTask.result.value)).step(betaTask)
       const result = graph(app[Node$])
 
       const expected = {
@@ -154,7 +154,7 @@ describe("graph", () => {
           {
             type: "run",
             id: 1,
-            meta: { name: "value", kind: "binding" },
+            meta: { name: "value", kind: "wire" },
             dependencies: { required: [0], optional: [] },
           },
           {
@@ -170,12 +170,12 @@ describe("graph", () => {
     })
 
     it("dependency on a task via a tag [optional]", () => {
-      const valueTag = createTag<boolean>({ name: "value" })
+      const valueTag = tag<boolean>("value")
       const betaTask = createTask({ name: "beta", run: { fn: vi.fn(), context: optional(valueTag.value) } })
 
       const app = compose()
         .step(alphaTask)
-        .step(bind(valueTag, optional(alphaTask.result.value)))
+        .step(createWire(valueTag, optional(alphaTask.result.value)))
         .step(betaTask)
 
       const result = graph(app[Node$])
@@ -193,7 +193,7 @@ describe("graph", () => {
           {
             type: "run",
             id: 1,
-            meta: { name: "value", kind: "binding" },
+            meta: { name: "value", kind: "wire" },
             dependencies: { required: [], optional: [0] },
           },
           {
@@ -209,11 +209,11 @@ describe("graph", () => {
     })
 
     it("task depends on a literal via tag", () => {
-      const valueTag = createTag<boolean>({ name: "value" })
+      const valueTag = tag<boolean>("value")
       const betaTask = createTask({ name: "beta", run: { fn: vi.fn(), context: valueTag.value } })
 
       const app = compose()
-        .step(bind(valueTag, literal(false)))
+        .step(createWire(valueTag, literal(false)))
         .step(betaTask)
 
       const result = graph(app[Node$])
@@ -225,7 +225,7 @@ describe("graph", () => {
           {
             type: "run",
             id: 0,
-            meta: { name: "value", kind: "binding" },
+            meta: { name: "value", kind: "wire" },
             dependencies: { required: [], optional: [] },
           },
           {
@@ -262,19 +262,19 @@ describe("graph", () => {
 
   describe("mixed dependencies", () => {
     it("required and optional", () => {
-      const fnTag = createTag<() => void>({ name: "fn" })
+      const fn = tag<() => void>("fn")
 
       const betaTask = createTask({
         name: "beta",
         run: {
-          context: { value: alphaTask.result.value, fn: optional(fnTag.value) },
+          context: { value: alphaTask.result.value, fn: optional(fn.value) },
           fn: vi.fn(),
         },
       })
 
       const app = compose()
         .step(alphaTask)
-        .step(bind(fnTag, literal(vi.fn())))
+        .step(createWire(fn, literal(vi.fn())))
         .step(betaTask)
 
       const result = graph(app[Node$])
@@ -292,7 +292,7 @@ describe("graph", () => {
           {
             type: "run",
             id: 1,
-            meta: { name: "fn", kind: "binding" },
+            meta: { name: "fn", kind: "wire" },
             dependencies: { required: [], optional: [] },
           },
           {
