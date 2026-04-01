@@ -15,6 +15,7 @@ export default defineConfig({
       "@runnable": resolve("./src/runnable"),
       "@compose": resolve("./src/compose"),
       "@shared": resolve("./src/shared"),
+      "@is": resolve("./src/is"),
     },
   },
 })

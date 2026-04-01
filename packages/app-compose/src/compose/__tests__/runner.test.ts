@@ -240,7 +240,7 @@ describe("runner", () => {
 
     it("can read tag value from scope", async () => {
       const test = tag<string>("test")
-      const app = compose().step(createWire(test, literal("value")))
+      const app = compose().step(createWire({ from: literal("value"), to: test }))
 
       const scope = await run(app[Node$])
 

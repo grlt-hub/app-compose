@@ -10,7 +10,6 @@ type GuardHandler = Record<"warn" | "error", (message: string) => void>
 const UNKNOWN_NAME = "<unknown>"
 
 const TypeMap = { task: "Task", wire: "Wire" } satisfies Record<ComposableKind, string>
-const NameMap = { task: "Task", wire: "Tag" } satisfies Record<ComposableKind, string>
 
 const metaOf = <const K extends keyof ComposeMeta>(node: ComposeNode, key: K): ComposeMeta[K] =>
   "meta" in node && node.meta?.[key] ? node.meta[key] : undefined
@@ -26,19 +25,22 @@ const stackToName = (stack: NotifyEntry[]): string =>
 
 const createNotify = (handler: GuardHandler) => ({
   duplicate: ({ type, name, stack }: NotifyContext) => {
-    const message = `A duplicate ${TypeMap[type]} found with name ${NameMap[type]}[${name}] in step ${stackToName(stack)}.`
+    const message = `A duplicate ${TypeMap[type]} found with name ${TypeMap[type]}[${name}] in step ${stackToName(stack)}.`
+
     handler.error(message)
   },
 
   notSatisfied: ({ type, name, stack, missing: set }: NotifyContext & { missing: Set<symbol> }) => {
     const list = Array.from(set, (id) => id.description ?? UNKNOWN_NAME).join(", ")
+    const message = `Unsatisfied dependencies found for ${TypeMap[type]} with name ${TypeMap[type]}[${name}] in step ${stackToName(stack)}: missing ${list}.`
 
-    const message = `Unsatisfied dependencies found for ${TypeMap[type]} with name ${NameMap[type]}[${name}] in step ${stackToName(stack)}: missing ${list}.`
     handler.error(message)
   },
 
-  unused: ({ type, name, stack }: NotifyContext) => {
-    const message = `Unused ${TypeMap[type]} found with name ${NameMap[type]}[${name}] in step ${stackToName(stack)}.`
+  unused: ({ type, name, stack, id }: NotifyContext & { id: symbol }) => {
+    const target = `${TypeMap[type]}[${name}] for ${id.description ?? UNKNOWN_NAME}`
+    const message = `Unused ${TypeMap[type]} found with name ${target} in step ${stackToName(stack)}.`
+
     handler.warn(message)
   },
 })
@@ -71,7 +73,7 @@ const createGuard = ({ handler }: GuardConfig) => {
   }
 
   const unused = (root: ComposeNode) => {
-    const candidates: Map<symbol, NotifyContext> = new Map()
+    const candidates: Map<symbol, NotifyContext & { id: symbol }> = new Map()
 
     const traverse = (stack: NotifyEntry[]) => {
       const { node: current } = stack.at(-1)!
@@ -82,7 +84,7 @@ const createGuard = ({ handler }: GuardConfig) => {
       if (current.type === "run") {
         const { type, display, writes, dependencies } = analyzer.get(current.value as RunnableInternal)
 
-        if (type === "wire") writes.forEach((id) => candidates.set(id, { type, name: display.name, stack }))
+        if (type === "wire") writes.forEach((id) => candidates.set(id, { id, type, name: display.name, stack }))
 
         dependencies.required.forEach((id) => candidates.delete(id))
         dependencies.optional.forEach((id) => candidates.delete(id))

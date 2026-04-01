@@ -20,11 +20,11 @@ describe("compose", () => {
   describe("guard", () => {
     it("throws on warning graph", () => {
       const alpha = tag<number>("alpha")
-      const wire = createWire(alpha, literal(1))
+      const wire = createWire({ from: literal(1), to: alpha })
 
       const app = compose().step(wire)
 
-      const message = `Unused Wire found with name Tag[alpha] in step root > #1.`
+      const message = `Unused Wire found with name Wire[alpha] for Tag[alpha] in step root > #1.`
 
       expect(() => app.guard()).toThrowError(message)
     })
@@ -33,10 +33,10 @@ describe("compose", () => {
       const alpha = tag<number>("alpha")
 
       const app = compose()
-        .step(createWire(alpha, literal(1)))
-        .step(createWire(alpha, literal(2)))
+        .step(createWire({ from: literal(1), to: alpha }))
+        .step(createWire({ from: literal(2), to: alpha }))
 
-      const message = `A duplicate Wire found with name Tag[alpha] in step root > #2.`
+      const message = `A duplicate Wire found with name Wire[alpha] in step root > #2.`
 
       expect(() => app.guard()).toThrowError(message)
     })
@@ -47,7 +47,7 @@ describe("compose", () => {
       const alpha = tag<number>("alpha")
 
       const task = createTask({ name: "task", run: { fn: () => {} } })
-      const wire = createWire(alpha, literal(1))
+      const wire = createWire({ from: literal(1), to: alpha })
 
       const graph = compose().meta({ name: "app" }).step(wire).step(task).graph()
 

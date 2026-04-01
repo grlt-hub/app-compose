@@ -3,8 +3,6 @@ import { build, literal, Missing$, reference, type Spot, type SpotProvider } fro
 import { T, type Eventual } from "@shared"
 import { Context$, Dispatch$, Execute$, type Runnable, type RunnableInternal, type RunnableKind } from "./definition"
 
-const Task$ = Symbol("$task")
-
 type WithContext<Context, Return> = Context extends void
   ? { fn: () => Eventual<Return>; context?: never }
   : IsSpot<Context> extends true
@@ -18,8 +16,6 @@ type TaskConfig<Result, RunContext, EnabledContext> = {
 }
 
 type Task<R> = {
-  [Task$]: true
-
   name: string
 
   result: SpotProvider<R>
@@ -56,8 +52,6 @@ const createTask = <Result, RunContext = void, EnabledContext = void>(
   type ExecutionContext = { run: SpotToContext<RunContext>; enabled: SpotToContext<EnabledContext> } | typeof Missing$
 
   const runnable: RunnableInternal<ExecutionResult> & Task<Result> = {
-    [Task$]: true,
-
     name: config.name,
     kind: "task",
 
@@ -90,4 +84,4 @@ const createTask = <Result, RunContext = void, EnabledContext = void>(
   return runnable
 }
 
-export { createTask, Task$, type Task, type TaskExecutionValue, type TaskResult, type TaskStatus }
+export { createTask, type Task, type TaskExecutionValue, type TaskResult, type TaskStatus }
