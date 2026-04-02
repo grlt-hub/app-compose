@@ -3,6 +3,7 @@ import { LIBRARY_NAME } from "@shared"
 import { describe, expect, it } from "vitest"
 import { compose, Node$ } from "../../compose/compose"
 import { run } from "../../compose/runner"
+import { createTask } from "../task"
 import { createWire, tag } from "../wire"
 
 describe("createWire", () => {
@@ -74,12 +75,14 @@ describe("createWire", () => {
       const a = tag<number>("a")
       const b = tag<string>("b")
 
+      const task = createTask({ name: "test", run: { fn: () => "beta" } })
+
       const wire = createWire({
-        from: { nested: { a: literal(42) }, b: literal("beta") },
+        from: { nested: { a: literal(42) }, b: task.result },
         to: { nested: { a }, b },
       })
 
-      const app = compose().step(wire)
+      const app = compose().step(task).step(wire)
       const scope = await run(app[Node$])
 
       expect(scope.get(a.value)).toBe(42)
