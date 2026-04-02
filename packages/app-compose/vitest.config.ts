@@ -1,16 +1,10 @@
 import { defineConfig } from "vitest/config"
 import tsconfig from "./tsconfig.json"
 
-const getAlias = () => {
-  const res: Record<string, string> = {}
-
-  for (const k in tsconfig.compilerOptions.paths) {
-    // @ts-expect-error
-    res[k] = tsconfig.compilerOptions.paths[k][0]
-  }
-
-  return res
-}
+const alias = Object.fromEntries(Object.entries(tsconfig.compilerOptions.paths).map(([k, v]) => [k, v[0]])) as Record<
+  string,
+  string
+>
 
 export default defineConfig({
   test: {
@@ -18,5 +12,5 @@ export default defineConfig({
     typecheck: { enabled: true },
   },
 
-  resolve: { alias: getAlias() },
+  resolve: { alias },
 })
