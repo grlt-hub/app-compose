@@ -1,10 +1,10 @@
 import { defineConfig } from "vitest/config"
 import tsconfig from "./tsconfig.json"
 
-const alias = Object.fromEntries(Object.entries(tsconfig.compilerOptions.paths).map(([k, v]) => [k, v[0]])) as Record<
-  string,
-  string
->
+const alias = Object.entries(tsconfig.compilerOptions.paths).reduce<Record<string, string>>(
+  (acc, [k, v]) => ((acc[k] = v[0] as string), acc),
+  {},
+)
 
 export default defineConfig({
   test: {
