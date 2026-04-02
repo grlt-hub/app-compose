@@ -2,26 +2,19 @@
   "name": "@grlt-hub/app-compose",
   "version": "3.0.0-beta.0",
   "private": false,
-  "publishConfig": {
-    "access": "public"
-  },
   "description": "App-Compose is a TypeScript library that structures your frontend app around isolated tasks, explicit context, and predictable startup — by design.",
   "keywords": [
-    "grlt",
-    "grlt-hub",
     "app-compose",
     "dependency-injection",
     "di",
+    "grlt",
+    "grlt-hub",
     "inversion-of-control",
     "ioc",
     "modular",
     "typescript"
   ],
   "homepage": "https://app-compose.dev",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/grlt-hub/app-compose.git"
-  },
   "license": "MIT",
   "contributors": [
     {
@@ -33,7 +26,17 @@
       "url": "https://github.com/binjospookie"
     }
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/grlt-hub/app-compose.git"
+  },
+  "files": [
+    "dist"
+  ],
   "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "import": {
@@ -47,12 +50,9 @@
     },
     "./package.json": "./package.json"
   },
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "files": [
-    "dist"
-  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsdown",
     "dev": "tsdown --watch",

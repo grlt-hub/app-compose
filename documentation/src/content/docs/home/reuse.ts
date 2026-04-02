@@ -1,4 +1,4 @@
-// prettier-ignore
+// oxfmt-ignore
 import {
 bind,compose,createTag,createTask,literal
 } from "@grlt-hub/app-compose";

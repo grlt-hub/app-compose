@@ -1,7 +1,5 @@
 import type { TSESLint } from "@typescript-eslint/utils"
-
 import { name, version } from "../package.json"
-
 import taskOptionsOrder from "./rules/task-options-order/task-options-order"
 import { ruleset } from "./ruleset"
 
