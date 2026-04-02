@@ -1,6 +1,6 @@
 // oxfmt-ignore
 import {
-bind,compose,createTag,createTask
+bind, compose, createTag, createTask
 } from "@grlt-hub/app-compose"
 
 const user = createTask({

@@ -1,6 +1,6 @@
 // oxfmt-ignore
 import {
-bind,compose,createTag,createTask,literal
+bind, compose, createTag, createTask, literal
 } from "@grlt-hub/app-compose";
 
 const label = createTag<string>({ name: "label" })
