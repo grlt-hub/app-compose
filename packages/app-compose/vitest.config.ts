@@ -1,7 +1,16 @@
-import path from "node:path"
 import { defineConfig } from "vitest/config"
+import tsconfig from "./tsconfig.json"
 
-const resolve = (segment: string) => path.resolve(import.meta.dirname, segment)
+const getAlias = () => {
+  const res: Record<string, string> = {}
+
+  for (const k in tsconfig.compilerOptions.paths) {
+    // @ts-expect-error
+    res[k] = tsconfig.compilerOptions.paths[k][0]
+  }
+
+  return res
+}
 
 export default defineConfig({
   test: {
@@ -9,13 +18,5 @@ export default defineConfig({
     typecheck: { enabled: true },
   },
 
-  resolve: {
-    alias: {
-      "@computable": resolve("./src/computable"),
-      "@runnable": resolve("./src/runnable"),
-      "@compose": resolve("./src/compose"),
-      "@shared": resolve("./src/shared"),
-      "@is": resolve("./src/is"),
-    },
-  },
+  resolve: { alias: getAlias() },
 })
