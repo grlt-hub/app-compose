@@ -2,6 +2,6 @@
   "$schema": "https://unpkg.com/knip@6/schema.json",
   "ignore": ["**/__tests__/**", "*.config.ts"],
   "entry": ["./src/index.ts!"],
-  "ignoreBinaries": ["tsdown", "knip", "oxlint", "vitest", "oxfmt", "tsc"],
+  "ignoreBinaries": ["tsdown", "knip", "oxlint", "vitest", "tsc"],
   "vitest": { "config": "vitest.config.ts", "entry": "src/**/*.{test,test-d,bench}.ts" }
 }
