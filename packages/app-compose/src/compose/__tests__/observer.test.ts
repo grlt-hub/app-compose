@@ -1,8 +1,8 @@
 import { literal, shape } from "@computable"
 import { createTask, createWire, tag } from "@runnable"
 import { describe, expect, it, vi } from "vitest"
-import { compose } from "../compose"
 import type { ComposeHookMap } from "../observer"
+import { compose } from "../compose"
 
 describe("observer", () => {
   describe("onTaskFail", () => {

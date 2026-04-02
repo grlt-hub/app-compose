@@ -1,5 +1,5 @@
-import { ts } from "@/shared/tag"
 import { RuleTester } from "@typescript-eslint/rule-tester"
+import { ts } from "@/shared/tag"
 import rule from "./task-options-order"
 
 const ruleTester = new RuleTester()

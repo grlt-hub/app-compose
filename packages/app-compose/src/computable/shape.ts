@@ -1,5 +1,5 @@
-import { build } from "./build"
 import type { ContextToSpot } from "./context"
+import { build } from "./build"
 import { Compute$, Missing$, type ComputeStep, type Spot } from "./definition"
 
 const wrap =

@@ -1,24 +1,17 @@
 {
   "name": "@grlt-hub/eslint-plugin-app-compose",
   "version": "3.0.0-alpha.2",
-  "description": "Enforcing best practices for @grlt-hub/app-compose",
   "private": false,
-  "publishConfig": {
-    "access": "public"
-  },
+  "description": "Enforcing best practices for @grlt-hub/app-compose",
   "keywords": [
+    "app-compose",
     "eslint",
-    "eslintplugin",
     "eslint-plugin",
+    "eslintplugin",
     "grlt",
-    "grlt-hub",
-    "app-compose"
+    "grlt-hub"
   ],
   "homepage": "https://app-compose.dev",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/grlt-hub/app-compose.git"
-  },
   "license": "MIT",
   "contributors": [
     {
@@ -30,7 +23,17 @@
       "url": "https://github.com/binjospookie"
     }
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/grlt-hub/app-compose.git"
+  },
+  "files": [
+    "dist"
+  ],
   "type": "module",
+  "main": "dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.cts",
   "exports": {
     ".": {
       "import": {
@@ -44,12 +47,9 @@
     },
     "./package.json": "./package.json"
   },
-  "main": "dist/index.cjs",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.cts",
-  "files": [
-    "dist"
-  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsdown",
     "prepack": "pnpm build",

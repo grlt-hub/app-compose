@@ -1,6 +1,6 @@
 import type { RunnableInternal } from "@runnable"
-import { createAnalyzer } from "./analyze"
 import type { ComposableKind, ComposeNode } from "./definition"
+import { createAnalyzer } from "./analyze"
 
 type EntryID = number
 

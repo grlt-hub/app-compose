@@ -1,6 +1,6 @@
+import { type TSESTree as Node, AST_NODE_TYPES as NodeType, type TSESLint } from "@typescript-eslint/utils"
 import { PACKAGE_NAME, UNITS } from "@/shared/constants"
 import { createRule } from "@/shared/create"
-import { type TSESTree as Node, AST_NODE_TYPES as NodeType, type TSESLint } from "@typescript-eslint/utils"
 
 const GROUPS = [
   { key: "name" },
@@ -46,7 +46,7 @@ export default createRule({
         const [config] = node.arguments
 
         const hasWeirdProperty = config.properties.some(
-          (prop) => prop.type === NodeType.SpreadElement || prop.key.type !== NodeType.Identifier
+          (prop) => prop.type === NodeType.SpreadElement || prop.key.type !== NodeType.Identifier,
         )
         if (hasWeirdProperty) return
 

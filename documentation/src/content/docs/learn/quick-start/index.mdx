@@ -126,7 +126,8 @@ This tells App-Compose that the value is data, not a reference to another Task o
 />
 
 <Aside type="caution">
-Prefer routing static values through a tag via `bind(tag, literal(value))`. Using `literal` directly in `run.context` bakes the value into the task — it can no longer be reused without modifying it.
+  Prefer routing static values through a tag via `bind(tag, literal(value))`. Using `literal` directly in `run.context`
+  bakes the value into the task — it can no longer be reused without modifying it.
 </Aside>
 
 ## How to disable a Task

@@ -1,4 +1,10 @@
-import { SandpackConsole, SandpackPreview, SandpackStack, SandpackTests, type SandpackOptions } from "@codesandbox/sandpack-react"
+import {
+  SandpackConsole,
+  SandpackPreview,
+  SandpackStack,
+  SandpackTests,
+  type SandpackOptions,
+} from "@codesandbox/sandpack-react"
 
 type Props = Pick<SandpackOptions, "showConsole"> & {
   layout?: SandpackOptions["layout"] | "tests"

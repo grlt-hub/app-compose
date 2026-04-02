@@ -1,6 +1,6 @@
-// prettier-ignore
+// oxfmt-ignore
 import {
-bind,compose,createTag,createTask,literal,optional
+bind, compose, createTag, createTask, literal, optional
 } from "@grlt-hub/app-compose"
 
 const task = createTask({
