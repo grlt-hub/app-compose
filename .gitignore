@@ -10,3 +10,5 @@ coverage/
 .swc/
 .nx
 tsconfig.vitest-temp.json
+*.log.ts
+.astro
