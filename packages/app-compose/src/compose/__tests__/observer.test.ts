@@ -38,7 +38,10 @@ describe("observer", () => {
         throw new Error("error")
       })
 
-      const app = compose().meta({ name: "app", hooks: { onTaskFail } }).step(createWire(test, value)).step(task)
+      const app = compose()
+        .meta({ name: "app", hooks: { onTaskFail } })
+        .step(createWire({ from: value, to: test }))
+        .step(task)
 
       await app.run()
 

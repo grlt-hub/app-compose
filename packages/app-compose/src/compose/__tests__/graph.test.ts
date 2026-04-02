@@ -138,7 +138,11 @@ describe("graph", () => {
       const valueTag = tag<boolean>("value")
       const betaTask = createTask({ name: "beta", run: { fn: vi.fn(), context: valueTag.value } })
 
-      const app = compose().step(alphaTask).step(createWire(valueTag, alphaTask.result.value)).step(betaTask)
+      const app = compose()
+        .step(alphaTask)
+        .step(createWire({ from: alphaTask.result.value, to: valueTag }))
+        .step(betaTask)
+
       const result = graph(app[Node$])
 
       const expected = {
@@ -170,12 +174,12 @@ describe("graph", () => {
     })
 
     it("dependency on a task via a tag [optional]", () => {
-      const valueTag = tag<boolean>("value")
+      const valueTag = tag<boolean | undefined>("value")
       const betaTask = createTask({ name: "beta", run: { fn: vi.fn(), context: optional(valueTag.value) } })
 
       const app = compose()
         .step(alphaTask)
-        .step(createWire(valueTag, optional(alphaTask.result.value)))
+        .step(createWire({ from: optional(alphaTask.result.value), to: valueTag }))
         .step(betaTask)
 
       const result = graph(app[Node$])
@@ -213,7 +217,7 @@ describe("graph", () => {
       const betaTask = createTask({ name: "beta", run: { fn: vi.fn(), context: valueTag.value } })
 
       const app = compose()
-        .step(createWire(valueTag, literal(false)))
+        .step(createWire({ from: literal(false), to: valueTag }))
         .step(betaTask)
 
       const result = graph(app[Node$])
@@ -274,7 +278,7 @@ describe("graph", () => {
 
       const app = compose()
         .step(alphaTask)
-        .step(createWire(fn, literal(vi.fn())))
+        .step(createWire({ from: literal(vi.fn()), to: fn }))
         .step(betaTask)
 
       const result = graph(app[Node$])
@@ -501,6 +505,54 @@ describe("graph", () => {
                 id: 1,
                 meta: { name: "beta", kind: "task" },
                 dependencies: { required: [0 /* should probably be -1 */], optional: [] },
+              },
+            ],
+          },
+        ],
+      }
+
+      expect(result).toStrictEqual(expected)
+    })
+  })
+
+  describe("multi-tag wire", () => {
+    it("multi-tag wire satisfies multiple downstream tasks", () => {
+      const a = tag<number>("a")
+      const b = tag<string>("b")
+
+      const taskA = createTask({ name: "useA", run: { fn: vi.fn(), context: a.value } })
+      const taskB = createTask({ name: "useB", run: { fn: vi.fn(), context: b.value } })
+
+      const wire = createWire({ from: literal({ a: 1, b: "x" }), to: { a, b } })
+      const app = compose().step(wire).step([taskA, taskB])
+
+      const result = graph(app[Node$])
+
+      const expected = {
+        type: "seq",
+        meta: { name: undefined },
+        children: [
+          {
+            type: "run",
+            id: 0,
+            meta: { name: "a + b", kind: "wire" },
+            dependencies: { required: [], optional: [] },
+          },
+          {
+            type: "con",
+            meta: { name: undefined },
+            children: [
+              {
+                type: "run",
+                id: 1,
+                meta: { name: "useA", kind: "task" },
+                dependencies: { required: [0], optional: [] },
+              },
+              {
+                type: "run",
+                id: 2,
+                meta: { name: "useB", kind: "task" },
+                dependencies: { required: [0], optional: [] },
               },
             ],
           },

@@ -17,22 +17,25 @@ describe("duplicate guard", () => {
 
   describe("calls error on duplicate wire", () => {
     it("in the same step (concurrent)", () => {
-      const app = compose().step([createWire(alpha, literal(1)), createWire(alpha, literal(2))])
+      const app = compose().step([
+        createWire({ from: literal(1), to: alpha }),
+        createWire({ from: literal(2), to: alpha }),
+      ])
 
       guard(app[Node$])
 
-      const message = "A duplicate Wire found with name Tag[alpha] in step root > #1 > #2."
+      const message = "A duplicate Wire found with name Wire[alpha] in step root > #1 > #2."
       expect(handler.error).toHaveBeenCalledExactlyOnceWith(message)
     })
 
     it("in different steps (sequential)", () => {
       const app = compose()
-        .step(createWire(alpha, literal(1)))
-        .step(createWire(alpha, literal(2)))
+        .step(createWire({ from: literal(1), to: alpha }))
+        .step(createWire({ from: literal(2), to: alpha }))
 
       guard(app[Node$])
 
-      const message = "A duplicate Wire found with name Tag[alpha] in step root > #2."
+      const message = "A duplicate Wire found with name Wire[alpha] in step root > #2."
       expect(handler.error).toHaveBeenCalledExactlyOnceWith(message)
     })
   })
@@ -60,16 +63,16 @@ describe("duplicate guard", () => {
   it("provides rich path", () => {
     const app = compose()
       .meta({ name: "MyApp" })
-      .step(createWire(alpha, literal(1)))
+      .step(createWire({ from: literal(1), to: alpha }))
       .step([
         compose()
           .meta({ name: "Layout" })
-          .step(createWire(alpha, literal(2))),
+          .step(createWire({ from: literal(2), to: alpha })),
       ])
 
     guard(app[Node$])
 
-    const message = "A duplicate Wire found with name Tag[alpha] in step MyApp > #2 > #1 (Layout) > #1."
+    const message = "A duplicate Wire found with name Wire[alpha] in step MyApp > #2 > #1 (Layout) > #1."
     expect(handler.error).toHaveBeenCalledExactlyOnceWith(message)
   })
 
@@ -80,7 +83,7 @@ describe("duplicate guard", () => {
     const task = createTask({ name: "beta", run: { fn, context: alpha.value } })
 
     const app = compose()
-      .step(createWire(alpha, literal(1)))
+      .step(createWire({ from: literal(1), to: alpha }))
       .step(task)
 
     guard(app[Node$])
@@ -122,11 +125,12 @@ describe("unsatisfied guard", () => {
     const alpha = tag<number>("alpha")
     const beta = tag<number>("beta")
 
-    const app = compose().step(createWire(beta, alpha.value))
+    const app = compose().step(createWire({ from: alpha.value, to: beta }))
 
     guard(app[Node$])
 
-    const message = "Unsatisfied dependencies found for Wire with name Tag[beta] in step root > #1: missing Tag[alpha]."
+    const message =
+      "Unsatisfied dependencies found for Wire with name Wire[beta] in step root > #1: missing Tag[alpha]."
     expect(handler.error).toHaveBeenCalledExactlyOnceWith(message)
   })
 
@@ -134,12 +138,12 @@ describe("unsatisfied guard", () => {
     const provider = createTask({ name: "alpha", run: { fn: () => 0 } })
     const intermediate = tag<string>("beta")
 
-    const app = compose().step(createWire(intermediate, provider.status))
+    const app = compose().step(createWire({ from: provider.status, to: intermediate }))
 
     guard(app[Node$])
 
     const message =
-      "Unsatisfied dependencies found for Wire with name Tag[beta] in step root > #1: missing Task[alpha]::status."
+      "Unsatisfied dependencies found for Wire with name Wire[beta] in step root > #1: missing Task[alpha]::status."
     expect(handler.error).toHaveBeenCalledExactlyOnceWith(message)
   })
 
@@ -151,7 +155,7 @@ describe("unsatisfied guard", () => {
 
     const app = compose().step([
       compose()
-        .step(createWire(provider, literal(1)))
+        .step(createWire({ from: literal(1), to: provider }))
         .step(taskA),
       compose().step(taskB),
     ])
@@ -181,7 +185,7 @@ describe("unsatisfied guard", () => {
 
     it("only reports missing dependencies for the task", () => {
       const app = compose()
-        .step(createWire(alpha, literal(1)))
+        .step(createWire({ from: literal(1), to: alpha }))
         .step(task)
 
       guard(app[Node$])
@@ -207,17 +211,35 @@ describe("unsatisfied guard", () => {
     expect(handler.error).toHaveBeenCalledExactlyOnceWith(message)
   })
 
-  it("passes when satisfied", () => {
-    const provider = tag<number>("alpha")
-    const consumer = createTask({ name: "beta", run: { fn, context: provider.value } })
+  describe("passes when satisfied", () => {
+    it("plain wire to task", () => {
+      const provider = tag<number>("alpha")
 
-    const app = compose()
-      .step(createWire(provider, literal(1)))
-      .step(consumer)
+      const consumer = createTask({ name: "beta", run: { fn, context: provider.value } })
+      const wire = createWire({ from: literal(1), to: provider })
 
-    guard(app[Node$])
+      const app = compose().step(wire).step(consumer)
 
-    expect(handler.error).not.toHaveBeenCalled()
+      guard(app[Node$])
+
+      expect(handler.error).not.toHaveBeenCalled()
+      expect(handler.warn).not.toHaveBeenCalled()
+    })
+
+    it("multiwire to task", () => {
+      const a = tag<number>("a")
+      const b = tag<string>("b")
+
+      const consumer = createTask({ name: "gamma", run: { fn: vi.fn(), context: { a: a.value, b: b.value } } })
+      const wire = createWire({ from: literal({ a: 1, b: "x" }), to: { a, b } })
+
+      const app = compose().step(wire).step(consumer)
+
+      guard(app[Node$])
+
+      expect(handler.error).not.toHaveBeenCalled()
+      expect(handler.warn).not.toHaveBeenCalled()
+    })
   })
 
   it("handles unknown dependency", () => {
@@ -238,11 +260,11 @@ describe("unused guard", () => {
   const alpha = tag<number>("alpha")
 
   it("warns on unused wire (seq)", () => {
-    const node = compose().step(createWire(alpha, literal(1)))
+    const node = compose().step(createWire({ from: literal(1), to: alpha }))
 
     guard(node[Node$])
 
-    const message = "Unused Wire found with name Tag[alpha] in step root > #1."
+    const message = "Unused Wire found with name Wire[alpha] for Tag[alpha] in step root > #1."
     expect(handler.warn).toHaveBeenCalledWith(message)
   })
 
@@ -251,13 +273,27 @@ describe("unused guard", () => {
     const task = createTask({ name: "test", run: { fn: vi.fn(), context: beta.value } })
 
     const node = compose()
-      .step([createWire(alpha, literal(1)), createWire(beta, literal(2))])
+      .step([createWire({ from: literal(1), to: alpha }), createWire({ from: literal(2), to: beta })])
       .step(task)
 
     guard(node[Node$])
 
-    const message = "Unused Wire found with name Tag[alpha] in step root > #1 > #1."
+    const message = "Unused Wire found with name Wire[alpha] for Tag[alpha] in step root > #1 > #1."
     expect(handler.warn).toHaveBeenCalledWith(message)
+  })
+
+  it("warns on partially unused multiwire", () => {
+    const a = tag<number>("a")
+    const b = tag<string>("b")
+
+    const consumer = createTask({ name: "gamma", run: { fn: vi.fn(), context: a.value } })
+    const wire = createWire({ from: literal({ a: 1, b: "x" }), to: { a, b } })
+
+    const app = compose().step(wire).step(consumer)
+
+    guard(app[Node$])
+
+    expect(handler.warn).toHaveBeenCalledWith("Unused Wire found with name Wire[a + b] for Tag[b] in step root > #1.")
   })
 
   it("provides rich path", () => {
@@ -266,12 +302,12 @@ describe("unused guard", () => {
       .step(
         compose()
           .meta({ name: "Layout" })
-          .step(createWire(alpha, literal(2))),
+          .step(createWire({ from: literal(2), to: alpha })),
       )
 
     guard(node[Node$])
 
-    const message = "Unused Wire found with name Tag[alpha] in step MyApp > #1 (Layout) > #1."
+    const message = "Unused Wire found with name Wire[alpha] for Tag[alpha] in step MyApp > #1 (Layout) > #1."
     expect(handler.warn).toHaveBeenCalledWith(message)
   })
 })

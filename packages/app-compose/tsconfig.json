@@ -6,6 +6,7 @@
       "@runnable": ["./src/runnable"],
       "@compose": ["./src/compose"],
       "@shared": ["./src/shared"],
+      "@is": ["./src/is"]
     }
   },
   "include": ["src"]

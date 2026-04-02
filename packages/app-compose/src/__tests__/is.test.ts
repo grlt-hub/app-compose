@@ -1,4 +1,5 @@
-import { createTask, tag } from "@runnable"
+import { literal } from "@computable"
+import { createTask, createWire, tag } from "@runnable"
 import { describe, expect, it } from "vitest"
 import { is } from "../is"
 
@@ -31,5 +32,21 @@ describe("is.task", () => {
 
   it("returns false for an object", () => {
     expect(is.task({})).toBe(false)
+  })
+})
+
+describe("is.wire", () => {
+  it("returns true for a wire", () => {
+    const wire = createWire({ from: literal(1), to: tag<number>("x") })
+
+    expect(is.wire(wire)).toBe(true)
+  })
+
+  it("returns false for a non object", () => {
+    expect(is.wire(1)).toBe(false)
+  })
+
+  it("returns false for an object", () => {
+    expect(is.wire({})).toBe(false)
   })
 })

@@ -1,16 +1,15 @@
+import { compose } from "@compose"
 import { literal, shape, type Spot } from "@computable"
-import { createWire, tag, createTask } from "@runnable"
+import { createTask, createWire, tag } from "@runnable"
 import { bench, describe, vi } from "vitest"
-import { compose } from "../compose"
 
 const double = (x: number) => x * 2
 
 describe("multi layer, compute shapes", () => {
   const rootTag = tag<number>("root")
+  const wire = createWire({ from: literal(1), to: rootTag })
 
-  let app = compose()
-    .meta({ name: "bench" })
-    .step(createWire(rootTag, literal(1)))
+  let app = compose().meta({ name: "bench" }).step(wire)
 
   let previous: Spot<number> = rootTag.value
 
@@ -31,8 +30,8 @@ describe("multi layer, compute shapes", () => {
     })
 
     app = app
-      .step([createWire(a, shape(l, double)), createWire(b, shape(l, double))])
-      .step([createWire(c, shape(l, double)), createWire(d, shape(l, double))])
+      .step([createWire({ from: shape(l, double), to: a }), createWire({ from: shape(l, double), to: b })])
+      .step([createWire({ from: shape(l, double), to: c }), createWire({ from: shape(l, double), to: d })])
       .step(task)
 
     previous = task.result
