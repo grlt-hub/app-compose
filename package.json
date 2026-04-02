@@ -27,16 +27,16 @@
     "lint": "pnpm -r lint"
   },
   "devDependencies": {
-    "@changesets/cli": "2.29.8",
-    "@types/node": "25.3.2",
-    "@vitest/coverage-v8": "4.0.18",
-    "knip": "5.85.0",
-    "oxlint": "1.50.0",
+    "@changesets/cli": "2.30.0",
+    "@types/node": "25.5.0",
+    "@vitest/coverage-v8": "4.1.2",
+    "knip": "6.1.0",
+    "oxlint": "1.57.0",
     "prettier": "3.8.1",
     "prettier-plugin-organize-imports": "4.3.0",
-    "tsdown": "0.20.3",
-    "typescript": "5.9.3",
-    "vitest": "4.0.18"
+    "tsdown": "0.21.7",
+    "typescript": "6.0.2",
+    "vitest": "4.1.2"
   },
   "packageManager": "pnpm@10.24.0+sha512.01ff8ae71b4419903b65c60fb2dc9d34cf8bb6e06d03bde112ef38f7a34d6904c424ba66bea5cdcf12890230bf39f9580473140ed9c946fef328b6e5238a345a"
 }
