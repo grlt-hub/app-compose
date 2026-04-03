@@ -56,12 +56,3 @@ pnpm --filter ./packages/eslint-plugin lint
 
 - Strict TypeScript. Avoid `any` except in internal plumbing where variance is intentional.
 - Internal-only symbols use the `$` suffix convention: `Task$`, `Meta$`, `Kind$`.
-
-### Releases
-
-Releases are managed with **Changesets**. To propose a release:
-
-```sh
-pnpm changeset          # create a changeset
-pnpm changeset version  # bump versions
-```

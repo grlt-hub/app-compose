@@ -1,7 +1,4 @@
-import path from "node:path"
 import { defineConfig } from "vitest/config"
-
-const resolve = (segment: string) => path.resolve(__dirname, segment)
 
 export default defineConfig({
   test: {
@@ -11,11 +8,11 @@ export default defineConfig({
 
   resolve: {
     alias: {
-      "@computable": resolve("./src/computable"),
-      "@runnable": resolve("./src/runnable"),
-      "@compose": resolve("./src/compose"),
-      "@shared": resolve("./src/shared"),
-      "@is": resolve("./src/is"),
+      "@computable": "./src/computable",
+      "@runnable": "./src/runnable",
+      "@compose": "./src/compose",
+      "@shared": "./src/shared",
+      "@is": "./src/is",
     },
   },
 })

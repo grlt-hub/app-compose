@@ -9,5 +9,9 @@ export default defineConfig({
 
   minify: "dce-only",
 
-  external: ["typescript", "@typescript-eslint/utils"],
+  deps: {
+    neverBundle: ["typescript", "@typescript-eslint/utils"],
+  },
+
+  dts: { tsgo: true },
 })

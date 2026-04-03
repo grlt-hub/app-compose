@@ -1,7 +1,4 @@
-import path from "node:path"
 import { defineConfig } from "vitest/config"
-
-const resolve = (segment: string) => path.resolve(__dirname, segment)
 
 export default defineConfig({
   test: {
@@ -9,5 +6,5 @@ export default defineConfig({
     coverage: { reporter: ["text"] },
   },
 
-  resolve: { alias: { "@": resolve("src") } },
+  resolve: { alias: { "@": "./src" } },
 })
