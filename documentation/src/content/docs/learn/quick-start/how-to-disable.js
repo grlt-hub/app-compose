@@ -11,7 +11,7 @@ const featureFlags = createTask({
   },
 })
 
-const tag = createTag({ name: "fetch-user::enabled" })
+const enabledTag = tag("fetch-user::enabled")
 
 const fetchUser = createTask({
   name: "fetch-user",
@@ -19,14 +19,14 @@ const fetchUser = createTask({
     fn: () => console.log("[fetch-user]: user fetched"),
   },
   enabled: {
-    context: { enabled: tag.value },
+    context: { enabled: enabledTag.value },
     // 👇 Return false to skip this Task
     fn: ({ enabled }) => enabled,
   },
 })
 
 compose()
-  .stage({ steps: [featureFlags] })
-  .stage({ steps: [bind(tag, featureFlags.result.fetchingAllowed)] })
-  .stage({ steps: [fetchUser] })
+  .step(featureFlags)
+  .step(createWire({ to: tag, from: featureFlags.result.fetchingAllowed }))
+  .step(fetchUser)
   .run()

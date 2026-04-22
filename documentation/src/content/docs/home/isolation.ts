@@ -1,6 +1,6 @@
 // oxfmt-ignore
 import {
-bind, compose, createTag, createTask
+createWire, compose, tag, createTask
 } from "@grlt-hub/app-compose"
 
 const user = createTask({
@@ -8,7 +8,7 @@ const user = createTask({
   run: { fn: () => ({ id: 14 }) },
 })
 
-const userId = createTag<number>({ name: "userId" })
+const userId = tag<number>("userId")
 
 const analytics = createTask({
   name: "analytics",
@@ -20,7 +20,7 @@ const analytics = createTask({
 })
 
 compose()
-  .stage({ steps: [user] })
-  .stage({ steps: [bind(userId, user.result.id)] })
-  .stage({ steps: [analytics] })
+  .step(user)
+  .step(createWire({ from: user.result.id, to: userId }))
+  .step(analytics)
   .run()

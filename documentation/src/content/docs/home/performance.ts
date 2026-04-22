@@ -1,4 +1,4 @@
-import { compose, createTask, type ComposeLogger } from "@grlt-hub/app-compose"
+import { compose, createTask, type ComposeHookMap } from "@grlt-hub/app-compose"
 
 const auth = createTask({
   name: "auth",
@@ -20,21 +20,31 @@ const ui = createTask({
   },
 })
 
-const createLogger = (name: string): ComposeLogger => {
-  let start = 0
-
-  return {
-    onStageStart: () => (start = performance.now()),
-    onStageComplete: () => {
-      const ms = (performance.now() - start).toFixed(1)
-      console.log(`stage ${name}: ${ms}ms`)
-    },
-  }
-}
+const createLogger = (): Partial<ComposeHookMap> => ({
+  onStart: ({ meta }) => performance.mark(`${meta?.name}:start`),
+  onComplete: ({ meta }) => {
+    const ms = performance.measure(meta?.name!, `${meta?.name}:start`).duration.toFixed(1)
+    console.log(`stage ${meta?.name}: ${ms}ms sss`)
+  },
+})
 
 compose()
-  .stage({ steps: [auth], logger: createLogger("auth") })
-  .stage({ steps: [ui], logger: createLogger("ui") })
+  .step(
+    compose()
+      .meta({
+        name: "auth",
+        hooks: createLogger(),
+      })
+      .step(auth),
+  )
+  .step(
+    compose()
+      .meta({
+        name: "ui",
+        hooks: createLogger(),
+      })
+      .step(ui),
+  )
   .run()
 
 // Chrome throttles setTimeout in cross-origin iframes (Sandpack),

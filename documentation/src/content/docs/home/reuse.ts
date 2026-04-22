@@ -1,9 +1,9 @@
 // oxfmt-ignore
 import {
-bind, compose, createTag, createTask, literal
+createWire, compose, tag, createTask, literal
 } from "@grlt-hub/app-compose";
 
-const label = createTag<string>({ name: "label" })
+const label = tag<string>("label")
 
 // 👇 same task — different context each time
 const greet = createTask({
@@ -15,11 +15,11 @@ const greet = createTask({
 })
 
 compose()
-  .stage({ steps: [bind(label, literal("Alice"))] })
-  .stage({ steps: [greet] })
+  .step(createWire({ from: literal("Alice"), to: label }))
+  .step(greet)
   .run()
 
 compose()
-  .stage({ steps: [bind(label, literal("Bob"))] })
-  .stage({ steps: [greet] })
+  .step(createWire({ from: literal("Bob"), to: label }))
+  .step(greet)
   .run()

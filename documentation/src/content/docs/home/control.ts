@@ -19,7 +19,7 @@ const metrics = createTask({
 
 compose()
   // 👇 runs first
-  .stage({ steps: [auth] })
+  .step(auth)
   // 👇 runs after — ui and metrics run in parallel
-  .stage({ steps: [ui, metrics] })
+  .step([ui, metrics])
   .run()

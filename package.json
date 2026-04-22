@@ -27,15 +27,15 @@
     "lint": "pnpm -r lint"
   },
   "devDependencies": {
-    "@types/node": "25.5.0",
-    "@typescript/native-preview": "7.0.0-dev.20260330.1",
-    "@vitest/coverage-v8": "4.1.2",
-    "knip": "6.1.0",
-    "oxfmt": "0.42.0",
-    "oxlint": "1.57.0",
-    "tsdown": "0.21.7",
-    "typescript": "6.0.2",
-    "vitest": "4.1.2"
+    "@types/node": "25.6.0",
+    "@typescript/native-preview": "7.0.0-dev.20260418.1",
+    "@vitest/coverage-v8": "4.1.4",
+    "knip": "6.4.1",
+    "oxfmt": "0.45.0",
+    "oxlint": "1.60.0",
+    "tsdown": "0.21.9",
+    "typescript": "6.0.3",
+    "vitest": "4.1.4"
   },
   "packageManager": "pnpm@10.24.0+sha512.01ff8ae71b4419903b65c60fb2dc9d34cf8bb6e06d03bde112ef38f7a34d6904c424ba66bea5cdcf12890230bf39f9580473140ed9c946fef328b6e5238a345a"
 }
