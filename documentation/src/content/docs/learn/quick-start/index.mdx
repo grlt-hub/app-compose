@@ -43,22 +43,28 @@ const fetchUser = createTask({
 
 ## How to run a Task
 
-Tasks cannot be called directly. To run a Task, first define it on a _Stage_. A Stage is a logical phase in your application’s workflow.
+Tasks cannot be called directly. To run a Task, first define it on a _Step_. A Step is a logical phase in your application’s workflow.
 This gives you precise control over the execution flow, prioritizing critical Tasks before non-essential ones.<br/><br/>
-After defining the Stages, call `run()` to start execution.
+After defining the Steps, call `run()` to start execution.
 
 <Sandbox template="vanilla-ts" code={runTask} options={{ layout: "console", showConsoleButton: false }} />
 
 <br />
 
-Steps within the same Stage run in parallel. Stages execute one after another — the next Stage starts only when all Steps in the current one have finished.
+Steps follow two rules:
 
-```
-Stage 1        Stage 2        Stage 3
-┌──────────┐   ┌──────────┐   ┌──────┐
-│ A  B  C  │ → │   D  E   │ → │  F   │
-└──────────┘   └──────────┘   └──────┘
-  parallel       parallel      parallel
+1. **Each `.step()` runs after the previous one.** `.step(a).step(b)` — first `a`, then `b`.
+2. **Passing an array runs Tasks in parallel.** `.step([a, b])` — `a` and `b` run at the same time.
+
+```js
+.step(alpha)
+.step([beta, gamma])
+.step(delta)
+
+// is equivalent to:
+alpha()
+  .then(() => Promise.all([beta(), gamma()]))
+  .then(() => delta())
 ```
 
 ## How to pass data to a Task
@@ -71,32 +77,32 @@ Tasks rarely operate in a vacuum. To be dynamic and reusable, they need access t
 To share data without linking tasks together, use _Tag_. A Tag is a placeholder for data that avoids direct imports between Tasks, keeping them isolated and reusable across any workflow.
 
 ```ts
-import { createTag } from "@grlt-hub/app-compose"
+import { tag } from "@grlt-hub/app-compose"
 
-const tag = createTag({ name: "userId" })
+const userId = tag("userId")
 ```
 
 <br />
 
-The `bind` operator fills a Tag at the Stage level, making data available for upcoming Tasks.
+The `createWire` operator fills a Tag at the Step level, making data available for upcoming Tasks.
 
 ```js
 import { bind } from "@grlt-hub/app-compose"
 
-.stage({ steps: [bind(tag, value)] })
-.stage({ steps: [fetchUser] })
+.stage(createWire({ from: value, to: tag }))
+.stage(fetchUser)
 ```
 
 <Aside type="caution">
-Do not mix `bind` and Tasks within the same Stage.
+Do not mix `createWire` and Tasks within the same Stage.
 
 ```js
 // ❌ Wrong
-.stage({ steps: [bind(...), task] })
+.stage([createWire(...), task])
 
 // ✅ Correct
-.stage({ steps: [bind(...)] }).stage({ steps: [task] })
-.stage({ steps: [bind(...)] }, { steps: [task] })
+.stage(createWire(...)).stage(task)
+.stage(createWire(...), task)
 ```
 
 </Aside>

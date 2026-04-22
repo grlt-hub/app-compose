@@ -13,6 +13,9 @@ const fetchUser = createTask({
   },
 })
 
+// oxfmt-ignore
 compose()
-  .stage({ steps: [fetchUser] })
+  // 👇 define
+  .step(fetchUser)
+  // 👇 run
   .run()

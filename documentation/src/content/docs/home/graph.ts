@@ -1,9 +1,9 @@
 // oxfmt-ignore
 import {
-bind, compose, createTag, createTask, optional
+createWire, compose, tag, createTask, optional
 } from "@grlt-hub/app-compose"
 
-const tag = createTag<string>({ name: "title" })
+const title = tag<string>("title")
 
 const alpha = createTask({
   name: "alpha",
@@ -13,7 +13,7 @@ const alpha = createTask({
 const beta = createTask({
   name: "beta",
   run: {
-    context: { title: tag.value },
+    context: { title: title.value },
     fn: console.log,
   },
 })
@@ -27,9 +27,9 @@ const gamma = createTask({
 })
 
 const graph = compose()
-  .stage({ steps: [alpha] })
-  .stage({ steps: [bind(tag, alpha.result.title)] })
-  .stage({ steps: [beta, gamma] })
+  .step(alpha)
+  .step(createWire({ from: alpha.result.title, to: title }))
+  .step([beta, gamma])
   // 👇 use .graph() instead of .run() to get the dependency graph
   .graph()
 

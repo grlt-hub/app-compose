@@ -1,4 +1,4 @@
-const label = createTag({ name: "label" })
+const label = tag("label")
 
 const greet = createTask({
   name: "greet",
@@ -11,9 +11,9 @@ const greet = createTask({
 test("catches missing context before runtime", () => {
   expect(() =>
     compose()
-      // 👇 uncomment me
-      //.stage({ steps: [bind(label, literal("World"))] })
-      .stage({ steps: [greet] })
+      // 👇 comment me
+      .step(createWire({ to: label, from: literal("World") }))
+      .step(greet)
       .guard(),
   ).not.toThrow()
 })

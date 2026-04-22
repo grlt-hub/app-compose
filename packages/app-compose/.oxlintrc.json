@@ -14,6 +14,7 @@
     "vitest/no-standalone-expect": "error",
     "vitest/require-local-test-context-for-concurrent-snapshots": "error",
     "vitest/valid-describe-callback": "error",
-    "vitest/valid-expect": "error"
+    "vitest/valid-expect": "error",
+    "vitest/require-mock-type-parameters": "off"
   }
 }
