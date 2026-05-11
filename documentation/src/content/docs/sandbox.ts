@@ -1,6 +1,6 @@
 // oxfmt-ignore
 import {
-bind, compose, createTag, createTask, literal, optional
+createWire, compose, tag, createTask, literal, optional, shape
 } from "@grlt-hub/app-compose"
 
 const task = createTask({
@@ -12,6 +12,4 @@ const task = createTask({
   },
 })
 
-compose()
-  .stage({ steps: [task] })
-  .run()
+compose().step(task).run()

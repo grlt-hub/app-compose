@@ -1,11 +1,11 @@
-import { bind, compose, createTag, createTask } from "@grlt-hub/app-compose"
+import { createWire, compose, tag, createTask } from "@grlt-hub/app-compose"
 
-const tag = createTag<number>({ name: "userId" })
+const userId = tag<number>("userId")
 
 const fetchUser = createTask({
   name: "fetch-user",
   run: {
-    context: { userId: tag.value },
+    context: { userId: userId.value },
     fn: async (ctx) => {
       const response = await fetch(
         // 👇 userId is passed from Context
@@ -29,7 +29,7 @@ const logIn = createTask({
 })
 
 compose()
-  .stage({ steps: [logIn] })
-  .stage({ steps: [bind(tag, logIn.result.id)] })
-  .stage({ steps: [fetchUser] })
+  .step(logIn)
+  .step(createWire({ from: logIn.result.id, to: userId }))
+  .step(fetchUser)
   .run()
