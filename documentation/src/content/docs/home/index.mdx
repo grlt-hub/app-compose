@@ -1,9 +1,9 @@
 ---
 title: App-Compose
-description: Scale your app. Actually control it.
+description: App-Compose is a TypeScript library for composing apps — independent Tasks, typed context, predictable startup, framework-agnostic.
 template: splash
 hero:
-  tagline: Scale your app. Actually control it.
+  tagline: Compose apps you can control and trust
   actions:
     - text: Learn
       link: /learn/quick-start/
@@ -16,95 +16,40 @@ hero:
 slug: /
 ---
 
-import { LinkCard, CardGrid, Card, Tabs, TabItem } from "@astrojs/starlight/components"
+import { LinkCard, CardGrid, Card } from "@astrojs/starlight/components"
 import Sandbox from "../../../components/sandbox/index.astro"
-import graph from "./graph.ts?raw"
-import guard from "./guard.js?raw"
-import isolation from "./isolation.ts?raw"
-import reuse from "./reuse.ts?raw"
-import control from "./control.ts?raw"
-import performance from "./performance.ts?raw"
-
-<div class="home-page">
-
-<div class="lead">
-  Scaling a frontend app is easy. Keeping it under control is not. Features develop high coupling, startup order becomes
-  unpredictable, and things break in unexpected places. Every team works around these problems differently.
-</div>
-
-<h2 class="section-title">Sound familiar?</h2>
+import example from "./example.ts?raw"
 
 <CardGrid>
-  <Card title="High coupling" icon="puzzle">
-    Change one feature — and you're touching three others.
+  <Card title="Simplicity" icon="puzzle">
+    A small API: lightweight IoC, no containers, providers, or decorators. Works with any UI or server framework.
   </Card>
-  <Card title="Reuse means copy-paste" icon="add-document">
-    You need the same feature, just slightly different — so you duplicate it.
+  <Card title="Clarity" icon="sun">
+    No magic, no globals. Context moves through clear, typed wiring. Your app runs exactly as you composed it.
   </Card>
-  <Card title="Silent breaks" icon="warning">
-    You changed something small and the app broke somewhere else — no clear error.
+  <Card title="Reusability" icon="random">
+    Same code, different context per compose. Reuse across apps, tests, and environments — no copy-paste.
   </Card>
-  <Card title="What's running here?" icon="list-format">
-    You open a page and have no idea which features are active on it.
+  <Card title="Testability" icon="approve-check-circle">
+    Validate your composition in tests. Missing context, duplicates, and unused wires fail in CI — not at startup.
   </Card>
-  <Card title="No control over startup order" icon="random">
-    Startup order is a guess — non-critical stuff runs first, the important parts wait. You find out it's wrong at
-    runtime.
-  </Card>
-  <Card title="Performance black box" icon="magnifier">
-    No idea which initialization step is slow — or whether your last change made it worse.
+  <Card title="Observability" icon="magnifier">
+    Inspect your app as plain JSON — log it, render it, diff it across environments. Hook into start, complete, and fail
+    events for timing, logs, or traces.
   </Card>
 </CardGrid>
 
-<h2 class="section-title">Meet App-Compose</h2>
+<h2 class="section-title">See it run</h2>
 
 <div class="lead">
-  App-Compose is a TypeScript library that structures your frontend app around isolated tasks, explicit context, and
-  predictable startup — by design.
+  A minimal example built on the three key pieces: Task, Tag, and Wire (how they connect).
+  <br /> Two features share data without knowing about each other.
 </div>
-<div class="desktop-hint">These examples are interactive — open on desktop to run and edit them live.</div>
-<Tabs>
-  <TabItem label="No coupling">
-    <Sandbox
-      template="vanilla-ts"
-      code={isolation}
-      options={{ editorHeight: 500, layout: "console", showConsoleButton: false }}
-    />
-  </TabItem>
-  <TabItem label="No copy-paste">
-    <Sandbox template="vanilla-ts" code={reuse} options={{ layout: "console", editorHeight: 500 }} />
-  </TabItem>
-  <TabItem label="No silent breaks">
-    <Sandbox template="vanilla" code={guard} options={{ layout: "tests", editorHeight: 500 }} />
-  </TabItem>
-  <TabItem label="What's running here?">
-    <Sandbox
-      template="vanilla-ts"
-      code={graph}
-      options={{ layout: "console", showConsoleButton: false, editorHeight: 500 }}
-    />
-  </TabItem>
-  <TabItem label="Predictable startup">
-    <Sandbox
-      template="vanilla-ts"
-      code={control}
-      options={{ layout: "console", showConsoleButton: false, editorHeight: 500 }}
-    />
-  </TabItem>
-  <TabItem label="No performance black box">
-    <Sandbox
-      template="vanilla-ts"
-      code={performance}
-      options={{ layout: "console", showConsoleButton: false, editorHeight: 500 }}
-    />
-  </TabItem>
-</Tabs>
-<br />
-<br />
-<LinkCard
-  title="Ready to try it?"
-  href="/learn/quick-start/"
-  description="A step-by-step guide to the core concepts."
-/>
 
-</div>
+<div class="desktop-hint">Interactive — open on desktop to run and edit it live.</div>
+
+<Sandbox template="vanilla-ts" code={example} options={{ layout: "console", showConsoleButton: false }} />
+
+<br />
+<br />
+<LinkCard title="Ready to try it?" href="/learn/quick-start/" description="A step-by-step guide to the core concepts" />

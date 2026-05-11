@@ -11,7 +11,18 @@ h2.section-title {
 
 :root {
   --sl-content-width: 60rem;
-  --sl-color-text-accent: #58dc58;
+
+  --sl-color-accent-low: #082f49;
+  --sl-color-accent: #0284c7;
+  --sl-color-accent-high: #bae6fd;
+  --sl-color-text-accent: #7dd3fc;
+}
+
+:root[data-theme="light"] {
+  --sl-color-accent-low: #e0f2fe;
+  --sl-color-accent: #0ea5e9;
+  --sl-color-accent-high: #0c4a6e;
+  --sl-color-text-accent: #0c4a6e;
 }
 
 .hero {

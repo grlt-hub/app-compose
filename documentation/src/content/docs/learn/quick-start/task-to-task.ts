@@ -1,7 +1,7 @@
 import { compose, createTask } from "@grlt-hub/app-compose"
 
 const logIn = createTask({
-  name: "logIn",
+  name: "log-in",
   run: {
     fn: () => ({ userId: 1 }),
   },
@@ -10,16 +10,20 @@ const logIn = createTask({
 const fetchUser = createTask({
   name: "fetch-user",
   run: {
-    // 👇 directly coupled to logIn
     context: {
+      // 👇 directly coupled to logIn
       userId: logIn.result.userId,
     },
     fn: async (ctx) => {
-      const response = await fetch(`https://jsonplaceholder.typicode.com/users//${ctx.userId}`)
+      const response = await fetch(`https://jsonplaceholder.typicode.com/users/${ctx.userId}`)
       const result = await response.json()
       console.log(JSON.stringify(result, null, 2))
     },
   },
 })
 
-compose().step(auth).step(fetchUser).run()
+// oxfmt-ignore
+compose()
+  .step(logIn)
+  .step(fetchUser)
+  .run()

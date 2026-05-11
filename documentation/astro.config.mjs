@@ -20,7 +20,6 @@ export default defineConfig({
         { icon: "rocket", label: "Sandbox", href: "/sandbox/" },
         { icon: "github", label: "GitHub", href: "https://github.com/grlt-hub/app-compose" },
       ],
-      logo: { src: "./src/assets/logo.svg", replacesTitle: true },
       sidebar: [
         {
           label: "Learn",
@@ -36,9 +35,9 @@ export default defineConfig({
           label: "Guides",
           items: [
             { slug: "guides" },
+            { slug: "guides/optional" },
             { slug: "guides/passing-data" },
             { slug: "guides/guard" },
-            { slug: "guides/optional" },
             { slug: "guides/mapping-values" },
             { slug: "guides/using-task-status" },
             { slug: "guides/control-task" },

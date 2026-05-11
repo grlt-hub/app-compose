@@ -7,24 +7,28 @@ import { Aside, Code } from "@astrojs/starlight/components"
 import Sandbox from "../../../../components/sandbox/index.astro"
 import runTask from "./how-to-run-task.ts?raw"
 import passData from "./how-to-pass-data.ts?raw"
-import disable from "./how-to-disable.js?raw"
-import staticValues from "./static-values.js?raw"
+import disable from "./how-to-disable.ts?raw"
+import taskToTask from "./task-to-task.ts?raw"
+import whenFailOrSkip from "./when-fail-or-skip.ts?raw"
 
-App-Compose is built on two primitives: _Task_ and _Tag_. Everything else — isolation, reuse, and predictable startup — flows from these core concepts. This guide teaches you how to use them.
+App-Compose is built on the three key pieces: _Task_, _Tag_, and _Wire_. A Task does the work. A Tag holds a value. A Wire supplies it.
+
+No magic, no copy-paste, no surprises at startup — everything else flows from these three. Five short steps follow.
 
 <Aside title="You will learn" type="note">
 - How to create a Task
 - How to run a Task
 - How to pass data to a Task
 - How to disable a Task
+- When a Task fails or is skipped
 
 </Aside>
 
 ## How to create a Task
 
-A Task is a piece of logic that has its own identity and execution function. A Task can be as small as a single API request, or as large as a product feature.
+A Task is one unit of work — it has a `name` and a function to `run`. A Task can be as small as a single API request, or as large as a product feature.
 
-```js {2,4}
+```ts {2,4}
 const fetchUser = createTask({
   name: "fetch-user",
   run: {
@@ -39,17 +43,11 @@ const fetchUser = createTask({
 })
 ```
 
-**Note** that every Task must have a `name` and a `run.fn`. These are the only mandatory properties. The `run.fn` can be either a synchronous or an asynchronous function. It can return a value to be used by other Tasks, or return nothing if the Task only performs a side effect.
+**Note** that every Task must have a `name` and a `run.fn`. These are the only required properties. The `run.fn` can be either a synchronous or an asynchronous function. It can return a value to be used by other Tasks, or return nothing if the Task only performs a side effect.
 
 ## How to run a Task
 
-Tasks cannot be called directly. To run a Task, first define it on a _Step_. A Step is a logical phase in your application’s workflow.
-This gives you precise control over the execution flow, prioritizing critical Tasks before non-essential ones.<br/><br/>
-After defining the Steps, call `run()` to start execution.
-
-<Sandbox template="vanilla-ts" code={runTask} options={{ layout: "console", showConsoleButton: false }} />
-
-<br />
+To run a Task, place it in a _Step_. A Step is a position in the run order. Steps let you say what runs before what, and what runs together.
 
 Steps follow two rules:
 
@@ -67,45 +65,41 @@ alpha()
   .then(() => delta())
 ```
 
+Once all the Steps are listed, all that's left is to call `run()`.
+
+<Sandbox template="vanilla-ts" code={runTask} options={{ layout: "console", showConsoleButton: false }} />
+
+<br />
+
 ## How to pass data to a Task
 
-Tasks rarely operate in a vacuum. To be dynamic and reusable, they need access to external data like a username, a product ID, or the current interface language. Tasks access data through a _Context_, receiving everything they need from the environment without hardcoding values.
-`run.fn` receives the resolved value of `run.context`.<br/>
+Most Tasks need data from outside — a username, a product ID, the current locale. To stay reusable, they read it through a _Context_ (a property of the Task config) instead of hardcoding values. `run.fn` receives whatever `run.context` resolves to.
 
-<br />
+```ts {4,5}
+const fetchUser = createTask({
+  name: "fetch-user",
+  run: {
+    context: { id: userId.value },
+    fn: (ctx) => console.log(`Fetching user ${ctx.id}`),
+  },
+})
+```
 
-To share data without linking tasks together, use _Tag_. A Tag is a placeholder for data that avoids direct imports between Tasks, keeping them isolated and reusable across any workflow.
+There are two ways to fill it.
+
+### Through a Tag
+
+A _Tag_ is a placeholder for data. A Task reads it through `tag.value`. A `createWire` supplies that value — so the Task never knows where it came from.
 
 ```ts
-import { tag } from "@grlt-hub/app-compose"
+.step(logIn)
+.step(createWire({ from: logIn.result.id, to: userId }))
+.step(fetchUser)
 
-const userId = tag("userId")
+// is equivalent to:
+[ logIn.result.id ] => [ userId ] => [ fetchUser reads userId.value ]
+      (source)            (Tag)                (reader)
 ```
-
-<br />
-
-The `createWire` operator fills a Tag at the Step level, making data available for upcoming Tasks.
-
-```js
-import { bind } from "@grlt-hub/app-compose"
-
-.stage(createWire({ from: value, to: tag }))
-.stage(fetchUser)
-```
-
-<Aside type="caution">
-Do not mix `createWire` and Tasks within the same Stage.
-
-```js
-// ❌ Wrong
-.stage([createWire(...), task])
-
-// ✅ Correct
-.stage(createWire(...)).stage(task)
-.stage(createWire(...), task)
-```
-
-</Aside>
 
 <br />
 
@@ -117,53 +111,78 @@ Have a look at the result:
   options={{ layout: "console", showConsoleButton: false, editorWidthPercentage: 65 }}
 />
 
-<br />
+For values you already know upfront — a string, a number, an object — wrap them in `literal`. That tells App-Compose the value is data, not a reference to another Task or Tag.
 
-Sometimes a value doesn’t come from another Task — it’s just a plain string, number, or object known upfront. To pass a static value, wrap it in `literal`.
+```ts
+import { literal } from "@grlt-hub/app-compose"
 
-This tells App-Compose that the value is data, not a reference to another Task or Tag. It also lets the library skip searching through complex structures like circular references or custom class instances — keeping your application fast.
+.step(createWire({ from: literal(42), to: userId }))
+```
 
-`literal` works the same way everywhere: in `context` and in `bind`.
+The path is the same — only the source changes.
+
+<Aside type="caution">
+Keep `createWire` and Tasks in separate `.step()` calls. If they share a Step, App-Compose throws an error.
+
+```ts
+// ❌ Wrong
+.step([createWire(...), task])
+
+// ✅ Correct
+.step(createWire(...)).step(task)
+
+// ✅ Correct
+.step(
+  compose().step(createWire(...)).step(task)
+)
+```
+
+</Aside>
+
+### Task to Task
+
+One Task reads another's result directly — no Tag, no Wire. The two are now coupled. Reasonable when they always run together; otherwise, prefer a Tag.
 
 <Sandbox
-  template="vanilla"
-  code={staticValues}
-  options={{ layout: "console", showConsoleButton: false, editorWidthPercentage: 70 }}
+  template="vanilla-ts"
+  code={taskToTask}
+  options={{ layout: "console", showConsoleButton: false, editorWidthPercentage: 65 }}
 />
 
 <Aside type="caution">
-  Prefer routing static values through a tag via `bind(tag, literal(value))`. Using `literal` directly in `run.context`
-  bakes the value into the task — it can no longer be reused without modifying it.
+Coupled Tasks need separate `.step()` calls. In `.step([logIn, fetchUser])` they run in parallel — `fetchUser` tries to read `logIn`'s result before it exists. App-Compose throws an error.
+
+```ts
+// ❌ Wrong
+.step([logIn, fetchUser])
+
+// ✅ Correct
+.step(logIn).step(fetchUser)
+```
+
 </Aside>
 
 ## How to disable a Task
 
-Tasks are enabled by default. Use the `enabled` property to skip a Task based on feature toggles, application state, or any internal logic.
+Every Task is enabled by default. To skip one based on a feature flag, the current user, or any other state — add an `enabled` block next to `run`.
 
-```js {6-9}
-const tag = createTag({ name: "fetch-user::enabled" })
+`enabled` has the same shape as `run`, but `enabled.fn` returns `boolean | Promise<boolean>`. A `false` result skips the Task.
 
-const fetchUser = createTask({
-  name: "fetch-user",
-  run: { fn: () => {...} },
-  enabled: {
-    context: { enabled: tag.value },
-    fn: ({ enabled }) => enabled,
-  },
-})
-```
+<Sandbox template="vanilla-ts" code={disable} options={{ layout: "console", showConsoleButton: false }} />
 
-The `enabled` property works as follows:
+## When a Task fails or is skipped
 
-- Data from `enabled.context` is passed to `enabled.fn`
-- `enabled.fn` must return a _boolean | Promise&lt;boolean&gt;_
-- If it returns false, the Task is skipped
+When a Task fails or is skipped, every Task that reads from it is **skipped** too. The path doesn't matter — Tag or direct, the result is the same.
+Your app keeps running.
 
-<Sandbox template="vanilla" code={disable} options={{ layout: "console", showConsoleButton: false }} />
+<Sandbox
+  template="vanilla-ts"
+  code={whenFailOrSkip}
+  options={{ layout: "console", showConsoleButton: false, editorHeight: 630 }}
+/>
+
+An [optional](/guides/optional) modifier lets a Task keep running even when its source fails or skips. That's a topic for the guides.
 
 ## Next Steps
 
-By now, you know how to build with App-Compose.
-
-<br />
-Next, head over to [Installation](/learn/installation/) to get everything set up.
+The guides cover more. But first, set up your project — head to **[Installation](/learn/installation/)**.
