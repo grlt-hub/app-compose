@@ -1,0 +1,19 @@
+---
+title: Fallback on critical failures
+description: App-Compose — Fallback on critical failures
+---
+
+import Sandbox from "../../../../components/sandbox/index.astro"
+import example from "./example.ts?raw"
+
+Some Tasks are critical to the app — auth, user data. When one of them fails, everything that reads its result skips. To run something else instead — a fallback page, a retry, a smaller app — add a Task that watches them: a _Control Task_. Reading `.status` (not `.result`) keeps it running even when the critical Tasks fail. It produces a decision, and downstream Tasks use that decision to choose what to do.
+
+Uncomment the `throw` to see the fallback path run instead:
+
+<Sandbox
+  template="vanilla-ts"
+  code={example}
+  options={{ layout: "console", showConsoleButton: false, editorWidthPercentage: 80 }}
+/>
+
+Watch more critical Tasks by adding them to the `context` array.
