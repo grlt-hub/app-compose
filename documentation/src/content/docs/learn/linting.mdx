@@ -5,8 +5,7 @@ description: App-Compose — Linting
 
 import { Tabs, TabItem } from "@astrojs/starlight/components"
 
-We recommend using ESLint to enforce best practices and coding standards in your App-Compose projects.<br/>
-Please note that this plugin requires ESLint 9+ and TypeScript.
+An ESLint plugin enforces App-Compose conventions in TypeScript code. It requires ESLint 9+.
 
 ## Installation
 
@@ -51,6 +50,7 @@ Import the plugin and add it to your config. Use the recommended preset for a qu
 
 ```js
 import appCompose from "@grlt-hub/eslint-plugin-app-compose"
+import tseslint from "typescript-eslint"
 
 export default tseslint.config(appCompose.configs.recommended)
 ```
@@ -72,20 +72,32 @@ You can also configure it manually.
 
 ### task-options-order
 
-`createTask` accepts configuration in an object form. To maintain consistency and readability, configuration properties must follow the semantic order: `name` → `run.context` → `run.fn` → `enabled.context` → `enabled.fn`. This rule strictly enforces this sequence.
+This order matches how a Task reads top-to-bottom: `name` first, then `run` before the optional `enabled`. Inside both, `context` comes before `fn`. The plugin warns when the order differs.
 
 ```ts
-// 👍 great
+// ❌ Wrong
 createTask({
   name: "alpha",
-  run: { context: { timeout: timeoutTag }, fn: init },
-  enabled: { context: { authorized: authorizedTag }, fn: check },
+  enabled: {
+    fn: check,
+    context: { authorized: authorizedTag },
+  },
+  run: {
+    context: { timeout: timeoutTag },
+    fn: init,
+  },
 })
 
-// 👎 weird
+// ✅ Correct
 createTask({
   name: "alpha",
-  enabled: { fn: check, context: { authorized: authorizedTag } },
-  run: { context: { timeout: timeoutTag }, fn: init },
+  run: {
+    context: { timeout: timeoutTag },
+    fn: init,
+  },
+  enabled: {
+    context: { authorized: authorizedTag },
+    fn: check,
+  },
 })
 ```

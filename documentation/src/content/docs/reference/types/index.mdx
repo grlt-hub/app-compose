@@ -1,0 +1,49 @@
+---
+title: Exported Types
+description: App-Compose — Exported types reference
+---
+
+import Sandbox from "../../../../components/sandbox/index.astro"
+import taskResult from "./task-result.ts?raw"
+import taskType from "./task-type.ts?raw"
+import hooksType from "./hooks-type.ts?raw"
+
+Types exported from `@grlt-hub/app-compose`
+
+## Task&lt;T&gt;
+
+The type of a Task — `T` is its return type. Use it for parameters and variables that hold a Task.
+
+<Sandbox
+  template="vanilla-ts"
+  code={taskType}
+  options={{ layout: "console", showConsoleButton: false, hideOutput: true }}
+/>
+
+## TaskResult&lt;T&gt;
+
+Extracts the return type from a Task — `T` is the Task type.
+
+<Sandbox
+  template="vanilla-ts"
+  code={taskResult}
+  options={{ layout: "console", showConsoleButton: false, hideOutput: true }}
+/>
+
+## TaskStatus
+
+A Task's final state: `done`, `fail`, or `skip`.
+
+```ts
+type TaskStatus = "done" | "fail" | "skip"
+```
+
+## ComposeHookMap
+
+Type for compose lifecycle hooks: `onStart`, `onComplete`, `onTaskFail`.
+
+<Sandbox
+  template="vanilla-ts"
+  code={hooksType}
+  options={{ layout: "console", showConsoleButton: false, hideOutput: true }}
+/>

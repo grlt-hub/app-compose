@@ -46,7 +46,7 @@ export default defineConfig({
         },
         {
           label: "Reference",
-          autogenerate: { directory: "reference" },
+          items: [{ slug: "reference/types" }],
           collapsed: true,
         },
         { slug: "sandbox" },
