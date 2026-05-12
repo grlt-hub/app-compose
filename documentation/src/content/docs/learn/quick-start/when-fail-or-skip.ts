@@ -33,20 +33,33 @@ const loadCart = createTask({
   },
 })
 
-// always "done"
+// independent — runs no matter what
 const sendAnalytics = createTask({
   name: "send-analytics",
   run: { fn: () => {} },
+})
+
+// 👇 control-task pattern. More in /guides/
+const controlTask = createTask({
+  name: "control-task",
+  run: {
+    context: {
+      [logIn.name]: logIn.status,
+      [fetchUser.name]: fetchUser.status,
+      [loadCart.name]: loadCart.status,
+      [sendAnalytics.name]: sendAnalytics.status,
+    },
+    fn: (ctx) => {
+      Object.entries(ctx).forEach(([name, status]) => {
+        console.log(`${name} status: ${status}`)
+      })
+    },
+  },
 })
 
 compose()
   .step(logIn)
   .step(createWire({ from: logIn.result.userId, to: userId }))
   .step([fetchUser, loadCart, sendAnalytics])
+  .step(controlTask)
   .run()
-  .then((scope) => {
-    console.log(`logIn status: ${scope.get(logIn.status)}`)
-    console.log(`fetchUser status: ${scope.get(fetchUser.status)}`)
-    console.log(`loadCart status: ${scope.get(loadCart.status)}`)
-    console.log(`sendAnalytics status: ${scope.get(sendAnalytics.status)}`)
-  })

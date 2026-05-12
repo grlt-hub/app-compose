@@ -5,5 +5,4 @@ const alpha = createTask({
   run: { fn: () => ({ value: "hello" }) },
 })
 
-// Use Task<T> to type a variable or function parameter that holds a Task reference
 const ref: Task<{ value: string }> = alpha
