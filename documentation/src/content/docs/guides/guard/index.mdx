@@ -1,59 +1,24 @@
 ---
-title: Checking Configuration
-description: App-Compose — Checking Configuration
+title: Testing your configuration
+description: App-Compose — Testing your configuration
 ---
 
 import Sandbox from "../../../../components/sandbox/index.astro"
 import example from "./example.js?raw"
 
-_Guard_ statically validates your composition before the app starts. It catches structural problems — like a task consuming context that was never provided — so they never reach production.
+App-Compose checks the configuration on every `.run()`:
 
-Guard performs three checks. When an error is found, it stops immediately — fix it, then run again to catch the next one.
+- a Task registered twice
+- a Tag wired twice
+- a Task reading from a Tag that's never wired
+- an unused Wire
 
-| Check           | Severity in `.run()` | Severity in `.guard()` | What it catches                                                     |
-| --------------- | -------------------- | ---------------------- | ------------------------------------------------------------------- |
-| **Duplicate**   | error                | error                  | A Task or Binding registered more than once across all stages       |
-| **Unsatisfied** | error                | error                  | A Task or Binding needs context not provided by any preceding stage |
-| **Unused**      | warning              | error                  | A Binding is never consumed by any Task or Binding                  |
+`.guard()` runs the same check stricter, in a test: unused Wires throw instead of warning. All others throw in both.
 
-## Built into run
+Guard reports the first error it finds — fix and re-run to see the next.
 
-Guard runs automatically every time you call `.run()`. If an error is found, `.run()` rejects before any task starts — the app won't start with a broken configuration.
+## Writing the test
 
-```ts
-compose()
-  .stage({ steps: [bind(apiUrl, literal("https://api.example.com"))] })
-  .stage({ steps: [auth, dashboard] })
-  .run() // guard runs here, statically, before the app starts
-```
-
-Duplicate and unsatisfied issues reject with an error. Unused bindings print a `console.warn` — they don't block the app but signal dead configuration worth cleaning up.
-
-## Guard in CI
-
-`.guard()` is the standalone version. It performs the same three checks but is stricter: unused bindings also throw, not just warn.
-
-Call it in a test to assert that your composition is correctly wired:
-
-```ts
-import { describe, expect, it } from "vitest"
-import { bind, compose, literal } from "@grlt-hub/app-compose"
-import { apiUrl, auth, dashboard } from "./features"
-
-const stages = compose()
-  .stage({ steps: [bind(apiUrl, literal("https://api.example.com"))] })
-  .stage({ steps: [auth] })
-  .stage({ steps: [dashboard] })
-
-describe("app configuration", () => {
-  it("is valid", () => {
-    expect(() => stages.guard()).not.toThrow()
-  })
-})
-```
-
-This makes broken wiring a CI failure. If a team member removes a task or renames a tag without updating the composition, the test catches it before the change ships.
-
-Try commenting out the first stage or uncommenting the duplicate to see guard catch it:
+In any test framework, call `.guard()` and assert it doesn't throw.
 
 <Sandbox template="vanilla" code={example} options={{ layout: "tests" }} />

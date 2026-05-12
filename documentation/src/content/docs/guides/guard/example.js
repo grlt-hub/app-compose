@@ -1,4 +1,6 @@
-const apiUrl = createTag({ name: "apiUrl" })
+import { createWire, literal, compose, tag, createTask } from "@grlt-hub/app-compose"
+
+const apiUrl = tag("apiUrl")
 
 const auth = createTask({
   name: "auth",
@@ -12,20 +14,31 @@ const dashboard = createTask({
   name: "dashboard",
   run: {
     context: { token: auth.result.token },
-    fn: ({ token }) => console.log(`dashboard: token=${token}`),
+    fn: ({ token }) => console.log(`token=${token}`),
   },
 })
 
-const stages = compose()
-  // 👇 try commenting this out
-  .stage({ steps: [bind(apiUrl, literal("https://api.example.com"))] })
-  .stage({ steps: [auth] })
-  // 👇 or uncomment this to add a duplicate
-  // .stage({ steps: [auth] })
-  .stage({ steps: [dashboard] })
+const orphanTag = tag("orphan")
+
+const app = compose()
+  // 👇 comment out — apiUrl never gets wired
+  .step(createWire({ from: literal("<url>"), to: apiUrl }))
+
+  // 👇 uncomment — apiUrl wired twice
+  // .step(createWire({ from: literal("<other-url>"), to: apiUrl }))
+
+  .step(auth)
+
+  // 👇 uncomment — auth registered twice
+  // .step(auth)
+
+  // 👇 uncomment — orphan Wire (nothing reads it)
+  // .step(createWire({ from: literal(null), to: orphanTag }))
+
+  .step(dashboard)
 
 describe("app configuration", () => {
   it("is valid", () => {
-    expect(() => stages.guard()).not.toThrow()
+    expect(() => app.guard()).not.toThrow()
   })
 })

@@ -1,0 +1,51 @@
+---
+title: Inspecting your app
+description: App-Compose — Inspecting your app
+---
+
+import Sandbox from "../../../../components/sandbox/index.astro"
+import example from "./example.ts?raw"
+
+Your composition spans many files. `.graph()` returns it as a JSON tree — log it, render it as a diagram, feed it to an LLM. Or snapshot it to catch unintended changes.
+
+## Inspecting
+
+Call `.graph()` to get the tree without executing Tasks.
+
+**Output:**
+
+```json
+{
+  "type": "seq",
+  "meta": {},
+  "children": [
+    {
+      "type": "run",
+      "meta": { "name": "alpha", "kind": "task" },
+      "id": 0,
+      "dependencies": { "required": [], "optional": [] }
+    }
+  ]
+}
+```
+
+<Sandbox
+  template="vanilla-ts"
+  code={example}
+  options={{ layout: "console", showConsoleButton: false, editorHeight: 666 }}
+/>
+
+## Snapshotting the graph
+
+Snapshot `.graph()` in a test to catch unintended changes.
+
+```ts
+import { describe, expect, it } from "vitest"
+import { app } from "./app"
+
+describe("app graph", () => {
+  it("matches snapshot", () => {
+    expect(app.graph()).toMatchSnapshot()
+  })
+})
+```

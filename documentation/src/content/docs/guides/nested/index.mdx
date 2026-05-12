@@ -1,0 +1,49 @@
+---
+title: Organizing your composition
+description: App-Compose — Organizing your composition
+---
+
+import Sandbox from "../../../../components/sandbox/index.astro"
+import example from "./example.ts?raw"
+
+A flat chain of `.step(...)` works for a small app. Once it grows, the layout stops reflecting the structure:
+
+```ts
+compose()
+  .step(createWire({ from: literal("https://api"), to: apiUrl }))
+  .step([auth, loadTranslations])
+  .step([fetchUser, fetchPermissions])
+  .step(dashboard)
+  .run()
+```
+
+The shape carries order — nothing about what belongs to what. The Wire for `apiUrl` and the `auth` Task that reads it are in different steps. `auth` shares its step with `loadTranslations`, which isn't part of `auth`. The auth chain spreads across three steps; reusing it elsewhere means copying lines.
+
+## Nesting
+
+A `.step(...)` also accepts another `compose()` — group related work into a block, mix sequential and parallel in one step, name reusable parts of your app.
+
+```ts
+compose()
+  .step([
+    loadTranslations,
+    compose()
+      .step(createWire({ from: literal("https://api"), to: apiUrl }))
+      .step(auth)
+      .step([fetchUser, fetchPermissions]),
+  ])
+  .step(dashboard)
+  .run()
+```
+
+Only the outer `compose()` calls `.run()` — it runs everything inside.
+
+## Presets
+
+A preset is a named `compose()` — a variable when no arguments are needed, a function when they are.
+
+<Sandbox
+  template="vanilla-ts"
+  code={example}
+  options={{ layout: "console", showConsoleButton: false, editorWidthPercentage: 70 }}
+/>
