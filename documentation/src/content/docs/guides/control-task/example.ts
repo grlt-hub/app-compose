@@ -1,44 +1,54 @@
 import { compose, createTask } from "@grlt-hub/app-compose"
 
-// Critical — the page can't work without this
-const fetchUser = createTask({
-  name: "fetchUser",
+// critical to the app
+const auth = createTask({
+  name: "auth",
   run: {
     fn: () => {
-      // 👇 Uncomment to simulate failure
-      // throw new Error("[fetchUser]: failed")
-      return { ok: { id: 1, name: "Alice" } }
+      // uncomment to make auth fail
+      // console shows "fallback shown" instead of "dashboard ready"
+      // 👇
+      // throw new Error("[auth]: failed")
+      return { id: 1 }
     },
   },
 })
 
-// Non-critical — nice to have, but the page works without it
-const analytics = createTask({
-  name: "analytics",
-  run: {
-    fn: () => {
-      throw new Error("service unavailable")
-    },
-  },
-})
-
-// Control task:
-// observes critical tasks and decides if the app start succeeded
+// reads critical Task statuses → { ok: boolean }
 const control = createTask({
   name: "control",
   run: {
-    context: [fetchUser.status],
-    fn: (ctx) => {
-      const passed = ctx.every((status) => status === "done")
+    context: [auth.status],
+    fn: (statuses) => {
+      // works for any number of statuses
+      const passed = statuses.every((status) => status === "done")
 
-      return { ok: { passed } }
+      return { ok: passed }
     },
   },
 })
 
+const dashboard = createTask({
+  name: "dashboard",
+  run: { fn: () => console.log("dashboard ready") },
+  enabled: {
+    context: control.result.ok,
+    fn: (ok) => ok,
+  },
+})
+
+const fallback = createTask({
+  name: "fallback",
+  run: { fn: () => console.log("fallback shown") },
+  enabled: {
+    context: control.result.ok,
+    fn: (ok) => !ok,
+  },
+})
+
+// oxfmt-ignore
 compose()
-  .stage({ steps: [fetchUser, analytics] })
-  .stage({ steps: [control] })
+  .step(auth)
+  .step(control)
+  .step([dashboard, fallback])
   .run()
-  .then((scope) => scope.get(control.result))
-  .then(console.log)

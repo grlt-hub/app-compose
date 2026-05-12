@@ -38,10 +38,10 @@ export default defineConfig({
             { slug: "guides/guard" },
             { slug: "guides/graph" },
             { slug: "guides/nested" },
+            { slug: "guides/control-task" },
 
             { slug: "guides/optional", badge: "old" },
             { slug: "guides/mapping-values", badge: "old" },
-            { slug: "guides/control-task", badge: "old" },
           ],
           collapsed: true,
         },
