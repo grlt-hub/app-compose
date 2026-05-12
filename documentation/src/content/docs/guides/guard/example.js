@@ -21,10 +21,10 @@ const dashboard = createTask({
 const orphanTag = tag("orphan")
 
 const app = compose()
-  // 👇 comment out — apiUrl never gets supplied
+  // 👇 comment out — apiUrl never gets wired
   .step(createWire({ from: literal("<url>"), to: apiUrl }))
 
-  // 👇 uncomment — apiUrl supplied twice
+  // 👇 uncomment — apiUrl wired twice
   // .step(createWire({ from: literal("<other-url>"), to: apiUrl }))
 
   .step(auth)
