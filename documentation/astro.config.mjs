@@ -35,11 +35,13 @@ export default defineConfig({
           label: "Guides",
           items: [
             { slug: "guides" },
-            { slug: "guides/optional" },
             { slug: "guides/guard" },
             { slug: "guides/graph" },
-            { slug: "guides/mapping-values" },
-            { slug: "guides/control-task" },
+            { slug: "guides/nested" },
+
+            { slug: "guides/optional", badge: "old" },
+            { slug: "guides/mapping-values", badge: "old" },
+            { slug: "guides/control-task", badge: "old" },
           ],
           collapsed: true,
         },
