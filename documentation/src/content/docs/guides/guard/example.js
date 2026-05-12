@@ -33,7 +33,7 @@ const app = compose()
   // .step(auth)
 
   // 👇 uncomment — orphan Wire (nothing reads it)
-  // .step(createWire({ from: literal("anything"), to: orphanTag }))
+  // .step(createWire({ from: literal(null), to: orphanTag }))
 
   .step(dashboard)
 

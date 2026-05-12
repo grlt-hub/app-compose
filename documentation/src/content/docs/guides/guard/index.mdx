@@ -9,8 +9,8 @@ import example from "./example.js?raw"
 App-Compose checks the configuration on every `.run()`:
 
 - a Task registered twice
-- a Tag supplied twice
-- a Task reading from a Tag that's never supplied
+- a Tag wired twice
+- a Task reading from a Tag that's never wired
 - an unused Wire
 
 `.guard()` runs the same check stricter, in a test: unused Wires throw instead of warning. All others throw in both.
