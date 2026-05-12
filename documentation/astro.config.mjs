@@ -39,7 +39,6 @@ export default defineConfig({
             { slug: "guides/guard" },
             { slug: "guides/graph" },
             { slug: "guides/mapping-values" },
-            { slug: "guides/using-task-status" },
             { slug: "guides/control-task" },
           ],
           collapsed: true,
