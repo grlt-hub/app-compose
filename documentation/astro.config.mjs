@@ -36,7 +36,6 @@ export default defineConfig({
           items: [
             { slug: "guides" },
             { slug: "guides/optional" },
-            { slug: "guides/passing-data" },
             { slug: "guides/guard" },
             { slug: "guides/mapping-values" },
             { slug: "guides/using-task-status" },
