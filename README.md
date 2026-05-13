@@ -10,25 +10,11 @@
 
 ## Features
 
-### Simplicity
-
-A small API: lightweight IoC, no containers, providers, or decorators. Works with any UI or server framework.
-
-### Clarity
-
-No magic, no globals. Context moves through clear, typed wiring. Your app runs exactly as you composed it.
-
-### Reusability
-
-Same code, different context per compose. Reuse across apps, tests, and environments — no copy-paste.
-
-### Testability
-
-Validate your composition in tests. Missing context, duplicates, and unused wires fail in CI — not at startup.
-
-### Observability
-
-Inspect your app as plain JSON — log it, render it, diff it across environments. Hook into start, complete, and fail events for timing, logs, or traces.
+- **Simplicity** — lightweight IoC, no containers/providers/decorators. Framework-agnostic.
+- **Clarity** — no magic, no globals; context flows through typed wiring.
+- **Reusability** — same code, different context per compose.
+- **Testability** — missing context, duplicates, unused wires fail in CI.
+- **Observability** — your app as plain JSON; hooks for start, complete, fail.
 
 ## See it run
 
