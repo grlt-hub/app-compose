@@ -39,9 +39,9 @@ export default defineConfig({
             { slug: "guides/graph" },
             { slug: "guides/nested" },
             { slug: "guides/fallback" },
+            { slug: "guides/mapping" },
 
             { slug: "guides/optional", badge: "old" },
-            { slug: "guides/mapping-values", badge: "old" },
           ],
           collapsed: true,
         },

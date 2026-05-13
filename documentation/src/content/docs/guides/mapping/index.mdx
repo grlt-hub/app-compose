@@ -1,0 +1,50 @@
+---
+title: Mapping values
+description: App-Compose — Mapping values
+---
+
+import Sandbox from "../../../../components/sandbox/index.astro"
+import context from "./context.ts?raw"
+import wire from "./wire.ts?raw"
+import several from "./several.ts?raw"
+
+Values flow between Tasks and Wires. `shape` transforms a value between them — picking a piece of it, deriving a new one from it, or merging several into one. Its input is one or several sources. The transform lives in `shape`, not in `fn`.
+
+## Inside a context
+
+`shape` works in both `run.context` and `enabled.context`.
+
+<Sandbox
+  template="vanilla-ts"
+  code={context}
+  options={{ layout: "console", showConsoleButton: false, editorWidthPercentage: 70 }}
+/>
+
+## Inside a Wire
+
+`shape` works in `createWire.from`.
+
+<Sandbox
+  template="vanilla-ts"
+  code={wire}
+  options={{ layout: "console", showConsoleButton: false, editorWidthPercentage: 70 }}
+/>
+
+## Several sources
+
+Pass an array or an object instead of a single source — either works:
+
+<Sandbox
+  template="vanilla-ts"
+  code={several}
+  options={{ layout: "console", showConsoleButton: false, editorWidthPercentage: 70 }}
+/>
+
+## Failure behavior
+
+When `shape` fails, the downstream Task skips. Two cases:
+
+- The source Task fails
+- The `shape` callback throws an error
+
+The rest of the composition runs as usual.
