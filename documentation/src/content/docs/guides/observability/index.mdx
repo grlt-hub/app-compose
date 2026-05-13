@@ -1,0 +1,45 @@
+---
+title: Observing your composition
+description: App-Compose — Observing your composition
+---
+
+import Sandbox from "../../../../components/sandbox/index.astro"
+import start from "./start.ts?raw"
+import complete from "./complete.ts?raw"
+import fail from "./fail.ts?raw"
+
+A compose chain emits lifecycle events: start, complete, task failure. `.meta({ name, hooks })` attaches callbacks for each: `onStart`, `onComplete`, `onTaskFail`. The `name` identifies each chain in logs and metrics.
+
+## Hooks
+
+### onStart
+
+Fires when the compose chain starts.
+
+<Sandbox
+  template="vanilla-ts"
+  code={start}
+  options={{ layout: "console", showConsoleButton: false, editorWidthPercentage: 70 }}
+/>
+
+### onComplete
+
+Fires when the compose chain completes.
+
+<Sandbox
+  template="vanilla-ts"
+  code={complete}
+  options={{ layout: "console", showConsoleButton: false, editorWidthPercentage: 70 }}
+/>
+
+### onTaskFail
+
+Fires when a task inside the compose chain fails.
+
+<Sandbox
+  template="vanilla-ts"
+  code={fail}
+  options={{ layout: "console", showConsoleButton: false, editorWidthPercentage: 70 }}
+/>
+
+## Nested compose
