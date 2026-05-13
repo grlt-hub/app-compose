@@ -40,8 +40,7 @@ export default defineConfig({
             { slug: "guides/nested" },
             { slug: "guides/fallback" },
             { slug: "guides/mapping" },
-
-            { slug: "guides/optional", badge: "old" },
+            { slug: "guides/optional" },
           ],
           collapsed: true,
         },
