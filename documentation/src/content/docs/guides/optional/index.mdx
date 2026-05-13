@@ -1,73 +1,41 @@
 ---
-title: Optional Values
-description: App-Compose — Optional Values
+title: Optional values
+description: App-Compose — Optional values
 ---
 
 import Sandbox from "../../../../components/sandbox/index.astro"
-import example from "./example.ts?raw"
+import context from "./context.ts?raw"
+import wire from "./wire.ts?raw"
+import shape from "./shape.ts?raw"
 
-By default, every field in the context shape is **required**. If an upstream task failed or was skipped, any task that depends on its value is skipped as well — this is the safe default.
+Values flow between Tasks and Wires. Every value a Task reads is required by default. `optional` marks one as not required — when the source is missing, the Task still runs and the field is `undefined`.
 
-But sometimes a task should run regardless of whether a particular value is available. A common example is an analytics tracker: it might be disabled in development or excluded from certain builds, yet the tasks that use it should still run normally.
+## Inside a context
 
-This is what `optional` is for.
+`optional` works in both `run.context` and `enabled.context`.
 
-```ts {7}
-import { optional } from "@grlt-hub/app-compose"
+<Sandbox
+  template="vanilla-ts"
+  code={context}
+  options={{ layout: "console", showConsoleButton: false, editorWidthPercentage: 70 }}
+/>
 
-const checkout = createTask({
-  name: "checkout",
-  run: {
-    context: {
-      analytics: optional(analytics.result), // analytics.result | undefined
-      user: user.result,
-    },
-    fn: (ctx) => {
-      ctx.analytics?.track("checkout_started")
-      console.log(`checkout for ${ctx.user.name}`)
-    },
-  },
-})
-```
+## Inside a Wire
 
-Wrapping a field with `optional` changes its type from `T` to `T | undefined`. If the value isn't available — because the upstream task failed, was skipped, or wasn't included in the pipeline at all — the task still runs and receives `undefined`.
+`optional` works in `createWire.from`. The destination tag carries `T | undefined`.
 
-<br />
+<Sandbox
+  template="vanilla-ts"
+  code={wire}
+  options={{ layout: "console", showConsoleButton: false, editorWidthPercentage: 70 }}
+/>
 
-Check out this interactive example. Try removing `analytics` from the first stage to see `checkout` still run:
+## Inside a shape
 
-<Sandbox template="vanilla-ts" code={example} options={{ layout: "console", showConsoleButton: false }} />
+`optional` works in `shape`. The callback receives `T | undefined`.
 
-Required fields in the shape still behave as before — if any of them is missing, the task is skipped. Only the fields explicitly wrapped with `optional` can be absent without affecting the task.
-
-## With map
-
-`optional` composes with `map`. When the source value is missing, `map`'s callback receives `undefined` — the task still runs, rather than being skipped:
-
-```ts {4}
-const checkout = createTask({
-  name: "checkout",
-  run: {
-    context: map(optional(analytics.result), (tracker) => tracker?.isEnabled ?? false),
-    fn: (isTracked) => {
-      console.log(`checkout: tracking=${isTracked}`)
-    },
-  },
-})
-```
-
-## In tag bindings
-
-When a tag is bound to an optional value, its type must allow `undefined` — otherwise it won't match the tasks that use it. `optional` works in `bind` for exactly this case: if the source task is absent, the tag carries `undefined`:
-
-```ts {6}
-const analyticsTag = createTag<Analytics | undefined>({ name: "analytics" })
-
-compose()
-  .stage({ steps: [analytics] })
-  .stage({
-    steps: [bind(analyticsTag, optional(analytics.result))],
-  })
-  .stage({ steps: [checkout] })
-  .run()
-```
+<Sandbox
+  template="vanilla-ts"
+  code={shape}
+  options={{ layout: "console", showConsoleButton: false, editorWidthPercentage: 70 }}
+/>
