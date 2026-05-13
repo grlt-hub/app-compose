@@ -56,7 +56,6 @@ export default defineConfig({
       plugins: [
         starlightLlmsTxt({
           rawContent: false,
-          promote: ["learn*"],
         }),
       ],
     }),
