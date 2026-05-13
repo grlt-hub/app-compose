@@ -41,6 +41,7 @@ export default defineConfig({
             { slug: "guides/fallback" },
             { slug: "guides/mapping" },
             { slug: "guides/optional" },
+            { slug: "guides/observability" },
           ],
           collapsed: true,
         },
@@ -55,7 +56,6 @@ export default defineConfig({
       plugins: [
         starlightLlmsTxt({
           rawContent: false,
-          promote: ["learn*"],
         }),
       ],
     }),
