@@ -27,8 +27,9 @@ export default defineConfig({
           items: [
             { slug: "learn/quick-start" },
             { slug: "learn/installation" },
-            { slug: "learn/linting" },
             { slug: "learn/typescript" },
+            { slug: "learn/linting" },
+            { slug: "learn/ai-tools" },
           ],
           collapsed: true,
         },
