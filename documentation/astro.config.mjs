@@ -16,6 +16,12 @@ export default defineConfig({
       title: "App-Compose",
       description:
         "A small TypeScript library for composing apps from independent pieces. Each piece declares what it needs; the runtime wires them together.",
+      head: [
+        {
+          tag: "meta",
+          attrs: { name: "google-site-verification", content: "Bc3PhqZ8n4SZHdKTHQPj_vr8XPQKL50Ns7Q8GE8u-xc" },
+        },
+      ],
       social: [
         { icon: "open-book", label: "Learn", href: "/learn/quick-start/" },
         { icon: "forward-slash", label: "Sandbox", href: "/sandbox/" },
