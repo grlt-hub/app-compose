@@ -8,3 +8,10 @@ Creates a typed placeholder for a value that a Wire supplies and a Task reads.
 - `tag<T>(name)` — Returns a Tag of value type `T` (default `never`). `name` is a debug string used in error messages and Wire names
 - `tag.name` — The string passed to `tag(...)`
 - `tag.value` — Typed reference to the Tag's value, used inside `run.context`
+
+```ts
+const userId = tag<number>("userId")
+
+userId.name  // "userId"
+userId.value // Spot<number>
+```

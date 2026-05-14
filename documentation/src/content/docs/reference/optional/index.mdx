@@ -6,3 +6,8 @@ description: App-Compose — optional reference
 Marks a value as not required — the Task still runs when the source is missing.
 
 `optional<T>(spot)` — Wraps a `Spot<T>` and returns a `Spot<T | undefined>`. Works inside `run.context`, `enabled.context`, `createWire.from`, and `shape`
+
+```ts
+optional(user.result)
+optional(myTag.value)
+```
