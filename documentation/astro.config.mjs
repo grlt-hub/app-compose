@@ -56,6 +56,7 @@ export default defineConfig({
             { slug: "reference/is" },
             { slug: "reference/shape" },
             { slug: "reference/create-wire" },
+            { slug: "reference/create-task" },
           ],
           collapsed: true,
         },
