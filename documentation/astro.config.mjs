@@ -55,6 +55,7 @@ export default defineConfig({
             { slug: "reference/tag" },
             { slug: "reference/is" },
             { slug: "reference/shape" },
+            { slug: "reference/createWire" },
           ],
           collapsed: true,
         },
