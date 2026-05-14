@@ -47,7 +47,14 @@ export default defineConfig({
         },
         {
           label: "Reference",
-          items: [{ slug: "reference" }, { slug: "reference/types" }, { slug: "reference/is" }],
+          items: [
+            { slug: "reference" },
+            { slug: "reference/types" },
+            { slug: "reference/literal" },
+            { slug: "reference/optional" },
+            { slug: "reference/tag" },
+            { slug: "reference/is" },
+          ],
           collapsed: true,
         },
         { slug: "sandbox" },
