@@ -14,7 +14,8 @@ export default defineConfig({
     react(),
     starlight({
       title: "App-Compose",
-      description: "App Compose - Scale your app. Actually control it.",
+      description:
+        "A small TypeScript library for composing apps from independent pieces. Each piece declares what it needs; the runtime wires them together.",
       social: [
         { icon: "open-book", label: "Learn", href: "/learn/quick-start/" },
         { icon: "forward-slash", label: "Sandbox", href: "/sandbox/" },
