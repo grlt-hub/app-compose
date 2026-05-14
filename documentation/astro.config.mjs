@@ -17,8 +17,9 @@ export default defineConfig({
       description: "App Compose - Scale your app. Actually control it.",
       social: [
         { icon: "open-book", label: "Learn", href: "/learn/quick-start/" },
-        { icon: "rocket", label: "Sandbox", href: "/sandbox/" },
+        { icon: "forward-slash", label: "Sandbox", href: "/sandbox/" },
         { icon: "github", label: "GitHub", href: "https://github.com/grlt-hub/app-compose" },
+        { icon: "document", label: "DeepWiki", href: "https://deepwiki.com/grlt-hub/app-compose" },
       ],
       sidebar: [
         {

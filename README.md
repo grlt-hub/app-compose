@@ -4,6 +4,7 @@
   <a href="https://www.npmjs.com/package/@grlt-hub/app-compose"><img src="https://img.shields.io/npm/v/%40grlt-hub%2Fapp-compose?color=orange"></a>
   <img src="https://img.shields.io/npm/l/%40grlt-hub%2Fapp-compose?color=blue">
   <img src="https://deno.bundlejs.com/badge?q=@grlt-hub/app-compose&treeshake=[*]">
+  <a href="https://deepwiki.com/grlt-hub/app-compose"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"></a>
 <p>
 
 <p align="center">
