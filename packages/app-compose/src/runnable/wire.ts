@@ -6,7 +6,7 @@ import { Context$, Dispatch$, Execute$, type Runnable, type RunnableInternal, ty
 
 const Tag$ = Symbol("$tag")
 
-type Tag<T> = { [Tag$]: symbol; name: string; value: SpotProvider<T> }
+type Tag<T> = { [Tag$]: symbol; readonly name: string; readonly value: SpotProvider<T> }
 
 const tag = <T = never>(name: string): Tag<T> => {
   const id = Symbol(`Tag[${name}]`)
@@ -14,7 +14,7 @@ const tag = <T = never>(name: string): Tag<T> => {
   return { [Tag$]: id, name, value: reference.lensed<T>(id) }
 }
 
-type Wire = { name: string } & Runnable & RunnableKind<"wire">
+type Wire = { readonly name: string } & Runnable & RunnableKind<"wire">
 
 type TagShape<T> =
   T extends Tag<unknown>
