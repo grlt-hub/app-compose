@@ -1,0 +1,25 @@
+---
+title: createWire
+description: App-Compose — createWire reference
+---
+
+Supplies a value to a Tag.
+
+- `createWire(config)` — Returns a Wire
+- `config.from` — A `Spot`, or a record or array of Spots
+- `config.to` — A Tag, or a record or array of Tags; must match `from`'s shape
+- `wire.name` — Destination Tag names joined with `+`
+- `wire.kind` — Literal string `"wire"`
+
+```ts
+const userId = tag<number>("userId")
+
+createWire({ from: user.result.id, to: userId })
+
+const userRole = tag<number>("userRole")
+
+createWire({
+  from: { id: user.result.id, role: user.result.role },
+  to: { id: userId, role: userRole },
+})
+```
