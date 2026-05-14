@@ -1,0 +1,25 @@
+---
+title: shape
+description: App-Compose — shape reference
+---
+
+Transforms one or several Spots into a new value. Works inside `run.context`, `enabled.context`, and `createWire.from`.
+
+- `shape<S, T>(spot, fn)` — Returns a `Spot<T>`. `fn` receives the value of `spot`
+- `shape<S, T>(sources, fn)` — Returns a `Spot<T>` from a record or array of Spots. `fn` receives an object or array of their values
+
+```ts
+shape(user.result, (u) => u.name.toUpperCase())
+
+shape(
+  { first: firstName.result, last: lastName.result },
+  (v) => `${v.first} ${v.last}`,
+)
+
+shape(
+  [firstName.result, lastName.result],
+  ([first, last]) => `${first} ${last}`,
+)
+```
+
+When `shape` fails, the downstream Task skips — the source Task fails, or the callback throws

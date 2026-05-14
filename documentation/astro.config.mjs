@@ -54,6 +54,7 @@ export default defineConfig({
             { slug: "reference/optional" },
             { slug: "reference/tag" },
             { slug: "reference/is" },
+            { slug: "reference/shape" },
           ],
           collapsed: true,
         },
