@@ -1,0 +1,41 @@
+---
+title: createTask
+description: App-Compose — createTask reference
+---
+
+Creates a Task — one unit of work with a `name` and a `run.fn`.
+
+- `createTask(config)` — Returns a Task
+- `config.name` — Required string used in errors and `task.name`
+- `config.run.fn` — Required function; receives `config.run.context` resolved, returns the Task's value. Sync or async
+- `config.run.context` — Optional `Spot`, or record or array of Spots
+- `config.enabled.fn` — Optional function; receives `config.enabled.context` resolved, returns a boolean. `false` skips the Task. Sync or async
+- `config.enabled.context` — Optional `Spot`, or record or array of Spots
+- `task.name` — Mirror of `config.name`
+- `task.kind` — Literal string `"task"`
+- `task.result` — What `run.fn` returns
+- `task.status` — `Spot<"done" | "fail" | "skip">`
+- `task.error` — `Spot<unknown>`; set when status is `"fail"`
+
+```ts
+createTask({
+  name: "ping",
+  run: { fn: () => "pong" },
+})
+
+createTask({
+  name: "fetchUser",
+  run: {
+    context: userId.value,
+    fn: (id) => fetch(`/users/${id}`).then((r) => r.json()),
+  },
+})
+
+createTask({
+  name: "loadProfile",
+  run: { context: user.result, fn: (u) => u.profile },
+  enabled: { context: featureFlag.value, fn: (f) => f.profile },
+})
+```
+
+Status is `"fail"` when `run.fn` or `enabled.fn` throws, `"skip"` when `enabled.fn` returns `false` or any required context is missing, `"done"` otherwise.
