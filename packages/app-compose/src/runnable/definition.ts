@@ -6,7 +6,7 @@ const Execute$ = Symbol("$execute")
 const Dispatch$ = Symbol("$dispatch")
 
 type Runnable = { [Execute$]: unknown }
-type RunnableKind<T extends string> = { kind: T }
+type RunnableKind<T extends string> = { readonly kind: T }
 
 type RunnableInternal<T = unknown> = {
   [Context$]: SpotInternal<unknown>

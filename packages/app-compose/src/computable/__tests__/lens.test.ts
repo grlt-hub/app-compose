@@ -8,6 +8,7 @@ describe("lens", () => {
     const x = reference.lensed<{ a: number }>(id)
     const a = reference<number>(id)
 
+    // @ts-expect-error: x.a readonly by type, checking runtime error
     expect(() => (x.a = a)).toThrow("Modifying a Reference is not allowed.")
   })
 })

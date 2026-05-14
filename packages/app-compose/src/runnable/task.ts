@@ -16,11 +16,11 @@ type TaskConfig<Result, RunContext, EnabledContext> = {
 }
 
 type Task<R> = {
-  name: string
+  readonly name: string
 
-  result: SpotProvider<R>
-  status: Spot<TaskStatus>
-  error: Spot<unknown>
+  readonly result: SpotProvider<R>
+  readonly status: Spot<TaskStatus>
+  readonly error: Spot<unknown>
 } & Runnable &
   RunnableKind<"task">
 
