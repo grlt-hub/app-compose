@@ -7,6 +7,7 @@ import Sandbox from "../../../../components/sandbox/index.astro"
 import taskResult from "./task-result.ts?raw"
 import taskType from "./task-type.ts?raw"
 import hooksType from "./hooks-type.ts?raw"
+import spotValue from "./spot-value.ts?raw"
 
 Types exported from `@grlt-hub/app-compose`
 
@@ -45,5 +46,19 @@ Type for compose lifecycle hooks: `onStart`, `onComplete`, `onTaskFail`.
 <Sandbox
   template="vanilla-ts"
   code={hooksType}
+  options={{ layout: "console", showConsoleButton: false, hideOutput: true }}
+/>
+
+## Spot&lt;T&gt;
+
+The type of a value source — created by `literal`, `optional`, `shape`, or exposed as `task.result`, `task.status`, `task.error`, and `tag.value`. `T` is the value type.
+
+## SpotValue&lt;T&gt;
+
+Extracts the value type from a Spot — `T` is the Spot type.
+
+<Sandbox
+  template="vanilla-ts"
+  code={spotValue}
   options={{ layout: "console", showConsoleButton: false, hideOutput: true }}
 />

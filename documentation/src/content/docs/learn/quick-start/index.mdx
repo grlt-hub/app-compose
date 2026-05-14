@@ -111,7 +111,7 @@ Have a look at the result:
   options={{ layout: "console", showConsoleButton: false, editorWidthPercentage: 65 }}
 />
 
-For values you already know upfront — a string, a number, an object — wrap them in `literal`. That tells App-Compose the value is data, not a reference to another Task or Tag.
+For values you already know upfront — a primitive or object — wrap them in `literal`. That tells App-Compose the value is data, not a reference to another Task or Tag.
 
 ```ts
 import { literal } from "@grlt-hub/app-compose"
