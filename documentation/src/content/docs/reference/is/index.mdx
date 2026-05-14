@@ -1,0 +1,16 @@
+---
+title: is
+description: App-Compose — type predicates reference
+---
+
+import Sandbox from "../../../../components/sandbox/index.astro"
+import example from "./example.js?raw"
+
+Runtime checks for App-Compose units.
+
+- `is.tag` — Predicate for values returned by `tag(...)`
+- `is.task` — Predicate for values returned by `createTask(...)`
+- `is.wire` — Predicate for values returned by `createWire(...)`
+- `is.runnable` — Predicate for any value returned by `createTask(...)` or `createWire(...)`
+
+<Sandbox template="vanilla" code={example} options={{ layout: "tests" }} />
