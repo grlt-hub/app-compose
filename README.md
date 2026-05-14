@@ -6,6 +6,12 @@
   <img src="https://deno.bundlejs.com/badge?q=@grlt-hub/app-compose&treeshake=[*]">
 <p>
 
+<p align="center">
+  <a href="https://app-compose.dev/learn/quick-start/">Learn</a>
+  |
+  <a href="https://app-compose.dev/guides/">Guides</a>
+</p>
+
 > **Beta:** This project is currently in beta. The API may change before the stable release.
 
 ## Features
