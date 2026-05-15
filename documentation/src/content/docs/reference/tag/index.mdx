@@ -1,6 +1,7 @@
 ---
 title: tag
 description: Creates a Tag — a typed, named placeholder that a Wire supplies and a Task reads.
+tableOfContents: false
 ---
 
 Creates a typed placeholder for a value that a Wire supplies and a Task reads.
@@ -12,6 +13,6 @@ Creates a typed placeholder for a value that a Wire supplies and a Task reads.
 ```ts
 const userId = tag<number>("userId")
 
-userId.name  // "userId"
+userId.name // "userId"
 userId.value // Spot<number>
 ```

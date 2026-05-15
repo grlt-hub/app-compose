@@ -1,6 +1,7 @@
 ---
 title: shape
-description: "Transforms one or several source values into a new one — inside run.context, enabled.context, or a Wire."
+description: Transforms one or several source values into a new one — inside run.context, enabled.context, or a Wire.
+tableOfContents: false
 ---
 
 Transforms one or several Spots into a new value. Works inside `run.context`, `enabled.context`, and `createWire.from`.
@@ -11,15 +12,9 @@ Transforms one or several Spots into a new value. Works inside `run.context`, `e
 ```ts
 shape(user.result, (u) => u.name.toUpperCase())
 
-shape(
-  { first: firstName.result, last: lastName.result },
-  (v) => `${v.first} ${v.last}`,
-)
+shape({ first: firstName.result, last: lastName.result }, (v) => `${v.first} ${v.last}`)
 
-shape(
-  [firstName.result, lastName.result],
-  ([first, last]) => `${first} ${last}`,
-)
+shape([firstName.result, lastName.result], ([first, last]) => `${first} ${last}`)
 ```
 
 When `shape` fails, the downstream Task skips — the source Task fails, or the callback throws

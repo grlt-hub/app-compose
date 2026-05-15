@@ -57,6 +57,7 @@ export default defineConfig({
             { slug: "guides/optional" },
             { slug: "guides/observability" },
             { slug: "guides/sharing-tags" },
+            { slug: "guides/react" },
           ],
           collapsed: true,
         },
