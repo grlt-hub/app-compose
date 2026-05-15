@@ -56,6 +56,7 @@ export default defineConfig({
             { slug: "guides/mapping" },
             { slug: "guides/optional" },
             { slug: "guides/observability" },
+            { slug: "guides/sharing-tags" },
           ],
           collapsed: true,
         },
