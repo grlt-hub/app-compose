@@ -2,6 +2,7 @@
 import react from "@astrojs/react"
 import starlight from "@astrojs/starlight"
 import { defineConfig } from "astro/config"
+import starlightLinksValidator from "starlight-links-validator"
 import starlightLlmsTxt from "starlight-llms-txt"
 import { appComposePlugin } from "./app-compose-plugin.mjs"
 
@@ -21,6 +22,10 @@ export default defineConfig({
           tag: "meta",
           attrs: { name: "google-site-verification", content: "Bc3PhqZ8n4SZHdKTHQPj_vr8XPQKL50Ns7Q8GE8u-xc" },
         },
+        { tag: "meta", attrs: { property: "og:image", content: "https://app-compose.dev/og.png" } },
+        { tag: "meta", attrs: { property: "og:image:width", content: "1200" } },
+        { tag: "meta", attrs: { property: "og:image:height", content: "630" } },
+        { tag: "meta", attrs: { name: "twitter:image", content: "https://app-compose.dev/og.png" } },
       ],
       social: [
         { icon: "open-book", label: "Learn", href: "/learn/quick-start/" },
@@ -76,6 +81,7 @@ export default defineConfig({
         starlightLlmsTxt({
           rawContent: false,
         }),
+        starlightLinksValidator(),
       ],
     }),
   ],

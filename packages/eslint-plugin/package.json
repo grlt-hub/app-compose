@@ -57,15 +57,15 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@typescript-eslint/utils": "8.56.0"
+    "@typescript-eslint/utils": "^8.59.3"
   },
   "devDependencies": {
-    "@typescript-eslint/rule-tester": "8.56.0",
-    "eslint": "9.39.2"
+    "@typescript-eslint/rule-tester": "8.59.3",
+    "eslint": "10.3.0"
   },
   "peerDependencies": {
-    "eslint": ">=9.0.0",
-    "typescript": ">=5.0.0"
+    "eslint": "^9.0.0 || ^10.0.0",
+    "typescript": "^5.0.0 || ^6.0.0"
   },
   "packageManager": "pnpm@10.24.0+sha512.01ff8ae71b4419903b65c60fb2dc9d34cf8bb6e06d03bde112ef38f7a34d6904c424ba66bea5cdcf12890230bf39f9580473140ed9c946fef328b6e5238a345a"
 }
