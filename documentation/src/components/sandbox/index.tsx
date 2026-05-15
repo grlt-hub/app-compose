@@ -34,9 +34,15 @@ const SandpackEditor = ({ code: __code, template = "react", options, files = {},
       ? "App.js"
       : template === "react-ts"
         ? "App.tsx"
-        : template === "vanilla-ts"
-          ? "index.ts"
-          : "index.js"
+        : template === "vite-react"
+          ? "App.jsx"
+          : template === "vite-react-ts"
+            ? "App.tsx"
+            : template === "vanilla-ts"
+              ? "index.ts"
+              : "index.js"
+
+  const isVite = template === "vite-react" || template === "vite-react-ts"
 
   const lines = code.replace(/\r\n/g, "\n").split("\n").length
   const fullEditorHeight = options?.editorHeight ?? lines * 18
@@ -57,6 +63,12 @@ const SandpackEditor = ({ code: __code, template = "react", options, files = {},
             code: JSON.stringify({ name: "@grlt-hub/app-compose", main: "index.cjs" }),
             hidden: true,
           },
+          ...(isVite && {
+            "/index.html": {
+              code: `<!DOCTYPE html><html><body><div id="root"></div><script type="module" src="/entry.js"></script></body></html>`,
+              hidden: true,
+            },
+          }),
           "/entry.js": {
             code: isTests
               ? `
