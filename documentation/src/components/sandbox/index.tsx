@@ -15,6 +15,7 @@ type Props = {
   code: string
   template?: SandpackPredefinedTemplate
   files?: Record<string, string>
+  visibleFiles?: string[]
   options?: Pick<SandpackOptions, "showConsole" | "editorHeight" | "editorWidthPercentage" | "showConsoleButton"> & {
     layout?: SandpackOptions["layout"] | "tests"
     hideOutput: boolean
@@ -22,7 +23,7 @@ type Props = {
   }
 }
 
-const SandpackEditor = ({ code: __code, template = "react", options, files = {} }: Props) => {
+const SandpackEditor = ({ code: __code, template = "react", options, files = {}, visibleFiles }: Props) => {
   const code = options?.storageKey ? (localStorage.getItem(options.storageKey) ?? __code) : __code
 
   const theme = useTheme()
@@ -76,12 +77,16 @@ const SandpackEditor = ({ code: __code, template = "react", options, files = {} 
           initMode: "user-visible",
           initModeObserverOptions: { rootMargin: "1400px 0px" },
           activeFile: fileName,
-          visibleFiles: [fileName],
+          visibleFiles: [fileName, ...(visibleFiles ?? [])],
           recompileMode: "delayed",
         }}
         customSetup={{
           entry: "/entry.js",
-          ...(isTests && { dependencies: { vitest: "latest" } }),
+          dependencies: {
+            ...(isTests && { vitest: "latest" }),
+            "nanostores": "1.3.0",
+            "@nanostores/react": "1.1.0",
+          },
         }}
       >
         <FileTabs />

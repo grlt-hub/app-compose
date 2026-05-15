@@ -1,0 +1,40 @@
+---
+title: Composing a React app
+description: Compose a React app from independent features — each feature is its own Task.
+tableOfContents: false
+---
+
+import Sandbox from "../../../../components/sandbox/index.astro"
+import example from "./example.jsx?raw"
+import features from "./features.jsx?raw"
+import settings from "./settings.jsx?raw"
+import sharedTags from "./shared-tags.jsx?raw"
+import themeProvider from "./theme-provider.jsx?raw"
+
+In a React app, each feature — or a group of features — is a Task. A Task can return anything — this example uses `{ ui, api }`.
+
+One Task at the end — a _Render Task_ — mounts the UI into the page. It usually reads upstream Tasks directly: every Task is known here, so a Tag adds nothing.
+
+**What the example does:**
+
+- `ThemeSelect` is a feature — it returns the chosen theme and a way to choose it.
+- `LanguageSelect` is a feature — it returns the chosen language and a way to choose it.
+- `Settings` is a layout — through its context it reads the language from a shared Tag and the widgets from another Tag.
+- `ThemeProvider` is a provider — through its context it reads the chosen theme.
+- The Render Task renders the `Layout` from `Settings` wrapped in the `Provider` from `ThemeProvider`.
+- `compose()` wires it all; the Render Task runs last.
+
+[nanostores](https://github.com/nanostores/nanostores) here is only for the `task.api` demo. Features can use any state manager.
+
+<Sandbox
+  template="react"
+  code={example}
+  files={{
+    "/settings.jsx": settings,
+    "/features.jsx": features,
+    "/shared-tags.jsx": sharedTags,
+    "/theme-provider.jsx": themeProvider,
+  }}
+  visibleFiles={["/features.jsx", "/shared-tags.jsx", "/settings.jsx", "/theme-provider.jsx"]}
+  options={{ editorWidthPercentage: 70, editorHeight: 700 }}
+/>
