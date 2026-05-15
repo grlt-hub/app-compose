@@ -8,9 +8,11 @@ const useFileLanguage = (template: SandpackPredefinedTemplate) =>
   useMemo(() => {
     switch (template) {
       case "react-ts":
+      case "vite-react-ts":
       case "vanilla-ts":
         return "typescript"
       case "react":
+      case "vite-react":
       case "vanilla":
         return "javascript"
       default:
