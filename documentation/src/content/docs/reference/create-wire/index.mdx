@@ -23,4 +23,9 @@ createWire({
   from: { id: user.result.id, role: user.result.role },
   to: { id: userId, role: userRole },
 })
+
+createWire({
+  from: [user.result.id, user.result.role],
+  to: [userId, userRole],
+})
 ```
