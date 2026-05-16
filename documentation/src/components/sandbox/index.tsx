@@ -28,19 +28,24 @@ const SandpackEditor = ({ code: __code, template = "react", options, files = {},
 
   const theme = useTheme()
   const isTests = options?.layout === "tests"
+  const isVue = template === "vue" || template === "vue-ts" || template === "vite-vue" || template === "vite-vue-ts"
+  const vueIsTs = template === "vue-ts" || template === "vite-vue-ts"
+  const vueMainPath = `/src/main.${vueIsTs ? "ts" : "js"}`
   const fileName = isTests
-    ? "index.test.ts"
-    : template === "react"
-      ? "App.js"
-      : template === "react-ts"
-        ? "App.tsx"
-        : template === "vite-react"
-          ? "App.jsx"
-          : template === "vite-react-ts"
-            ? "App.tsx"
-            : template === "vanilla-ts"
-              ? "index.ts"
-              : "index.js"
+    ? "index.test.js"
+    : isVue
+      ? "/src/App.vue"
+      : template === "react"
+        ? "App.js"
+        : template === "react-ts"
+          ? "App.tsx"
+          : template === "vite-react"
+            ? "App.jsx"
+            : template === "vite-react-ts"
+              ? "App.tsx"
+              : template === "vanilla-ts"
+                ? "index.ts"
+                : "index.js"
 
   const isVite = template === "vite-react" || template === "vite-react-ts"
 
@@ -69,21 +74,38 @@ const SandpackEditor = ({ code: __code, template = "react", options, files = {},
               hidden: true,
             },
           }),
-          "/entry.js": {
-            code: isTests
-              ? `
+          ...(isVue
+            ? {
+                [vueMainPath]: {
+                  code: `
+            import { createApp } from "vue";
+            import App from "./App.vue";
+            import "/sandboxStyle.css";
+            import * as AppCompose from "@grlt-hub/app-compose";
+            Object.assign(window, AppCompose);
+            console.clear();
+            createApp(App).mount("#app");
+            `,
+                  hidden: true,
+                },
+              }
+            : {
+                "/entry.js": {
+                  code: isTests
+                    ? `
             import "./sandboxStyle.css";
             import * as AppCompose from "@grlt-hub/app-compose";
             Object.assign(window, AppCompose);
             `
-              : `
+                    : `
             import "./sandboxStyle.css";
             import * as AppCompose from "@grlt-hub/app-compose";
             Object.assign(window, AppCompose);
             console.clear();
             import("./${fileName}").catch(err => console.error(err.message));
             `,
-          },
+                },
+              }),
         }}
         options={{
           initMode: "user-visible",
@@ -93,11 +115,17 @@ const SandpackEditor = ({ code: __code, template = "react", options, files = {},
           recompileMode: "delayed",
         }}
         customSetup={{
-          entry: "/entry.js",
+          entry: isVue ? vueMainPath : "/entry.js",
           dependencies: {
             ...(isTests && { vitest: "latest" }),
-            "nanostores": "1.3.0",
-            "@nanostores/react": "1.1.0",
+            ...(template === "vite-react" && {
+              "nanostores": "1.3.0",
+              "@nanostores/react": "1.1.0",
+            }),
+            ...(template === "vite-vue" && {
+              "nanostores": "1.3.0",
+              "@nanostores/vue": "1.1.0",
+            }),
           },
         }}
       >

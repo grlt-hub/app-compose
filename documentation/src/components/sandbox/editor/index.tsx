@@ -4,8 +4,13 @@ import { useMemo } from "react"
 import { useTheme } from "../useTheme"
 import { APP_COMPOSE_DTS } from "./compose-types"
 
-const useFileLanguage = (template: SandpackPredefinedTemplate) =>
+const useFileLanguage = (template: SandpackPredefinedTemplate, activeFile: string) =>
   useMemo(() => {
+    if (activeFile.endsWith(".vue")) return "html"
+    if (activeFile.endsWith(".ts") || activeFile.endsWith(".tsx")) return "typescript"
+    if (activeFile.endsWith(".js") || activeFile.endsWith(".jsx")) return "javascript"
+    if (activeFile.endsWith(".json")) return "json"
+    if (activeFile.endsWith(".css")) return "css"
     switch (template) {
       case "react-ts":
       case "vite-react-ts":
@@ -18,7 +23,7 @@ const useFileLanguage = (template: SandpackPredefinedTemplate) =>
       default:
         return "plaintext"
     }
-  }, [template])
+  }, [template, activeFile])
 
 const beforeMount = (monaco: Monaco) => {
   const currentOptions = monaco.languages.typescript.typescriptDefaults.getCompilerOptions()
@@ -56,7 +61,7 @@ const Editor = (props: Props) => {
   const { sandpack } = useSandpack()
   const activeFile = sandpack.activeFile
   const activeCode = sandpack.files[activeFile].code
-  const language = useFileLanguage(props.template)
+  const language = useFileLanguage(props.template, activeFile)
   const theme = useEditorTheme()
   const onChange = (code: string | undefined) => {
     sandpack.updateFile(activeFile, code ?? "", true)

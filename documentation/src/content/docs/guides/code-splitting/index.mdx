@@ -1,0 +1,28 @@
+---
+title: Ship only enabled features
+description: Ship a feature's code only when it's enabled — load it dynamically inside run.fn.
+---
+
+import Sandbox from "../../../../components/sandbox/index.astro"
+import example from "./example.js?raw"
+import themeSelect from "./theme-select.js?raw"
+import languageSelect from "./language-select.js?raw"
+
+A Task runs only when its `enabled` returns true. Otherwise it's skipped — `run.fn` never executes.
+
+But a skipped Task still ships its code. Static imports go into the bundle whether the Task runs or not.
+
+Load a feature's code with a dynamic `import()` inside `run.fn`, and the bundler emits it as a separate chunk. The browser fetches it only when the Task runs.
+
+Disable the Task, and the chunk never loads.
+
+<Sandbox
+  template="vanilla"
+  code={example}
+  files={{
+    "/theme-select.js": themeSelect,
+    "/language-select.js": languageSelect,
+  }}
+  visibleFiles={["/theme-select.js", "/language-select.js"]}
+  options={{ layout: "console", showConsoleButton: false, editorWidthPercentage: 70 }}
+/>
