@@ -8,10 +8,12 @@ import example from "./example.js?raw"
 
 App-Compose checks the configuration on every `.run()`:
 
-- a Task registered twice
-- a Tag wired twice
+- the same Task added twice
+- two Wires writing into the same Tag
 - a Task reading from a Tag that's never wired
 - an unused Wire
+
+"Same" means the same instance, not the same name.
 
 `.guard()` runs the same check stricter, in a test: unused Wires throw instead of warning. All others throw in both.
 
