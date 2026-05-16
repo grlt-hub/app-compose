@@ -1,7 +1,7 @@
 import { compose, createTask, createWire, literal } from "@grlt-hub/app-compose"
 import { createRoot } from "react-dom/client"
+import { Appearance, appearanceWidgets } from "./appearance.jsx"
 import { LanguageSelect, ThemeSelect } from "./features.jsx"
-import { Settings, settingsWidgets } from "./settings.jsx"
 import { selectedTheme, selectedLanguage } from "./shared-tags.jsx"
 import { ThemeProvider } from "./theme-provider.jsx"
 
@@ -10,14 +10,14 @@ const renderApp = createTask({
   name: "render-app",
   run: {
     context: {
-      SettingsLayout: Settings.result.ui.Layout,
+      AppearanceLayout: Appearance.result.ui.Layout,
       ThemeProvider: ThemeProvider.result.ui.Provider,
     },
     fn: (ctx) => {
       const root = createRoot(document.getElementById("root"))
       root.render(
         <ctx.ThemeProvider>
-          <ctx.SettingsLayout />
+          <ctx.AppearanceLayout />
         </ctx.ThemeProvider>,
       )
     },
@@ -49,9 +49,9 @@ compose()
           key: literal(LanguageSelect.name),
         },
       ],
-      to: settingsWidgets,
+      to: appearanceWidgets,
     }),
   )
-  .step([Settings, ThemeProvider])
+  .step([Appearance, ThemeProvider])
   .step(renderApp)
   .run()

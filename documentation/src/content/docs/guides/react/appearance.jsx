@@ -2,22 +2,22 @@ import { createTask, tag } from "@grlt-hub/app-compose"
 import { useStore } from "@nanostores/react"
 import { selectedLanguage } from "./shared-tags"
 
-// tag: { Widget, key }[]
-const settingsWidgets = tag("settingsWidgets")
-
 const titles = {
-  en: "Settings",
-  zh: "设置",
-  hi: "सेटिंग्स",
-  es: "Ajustes",
-  fr: "Paramètres",
+  en: "Appearance",
+  zh: "外观",
+  hi: "रूप",
+  es: "Apariencia",
+  fr: "Apparence",
 }
 
-const Settings = createTask({
-  name: "Settings",
+// tag: { Widget, key }[]
+const appearanceWidgets = tag("appearanceWidgets")
+
+const Appearance = createTask({
+  name: "Appearance",
   run: {
     context: {
-      widgets: settingsWidgets.value,
+      widgets: appearanceWidgets.value,
       $selectedLanguage: selectedLanguage.value,
     },
     fn: (ctx) => {
@@ -26,7 +26,7 @@ const Settings = createTask({
 
         return (
           <section>
-            <h1>{titles[lang] ?? titles["en"]}</h1>
+            <h1>{titles[lang]}</h1>
             <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "center" }}>
               {ctx.widgets.map(({ Widget, key }) => (
                 <Widget key={key} />
@@ -41,4 +41,4 @@ const Settings = createTask({
   },
 })
 
-export { settingsWidgets, Settings }
+export { appearanceWidgets, Appearance }
