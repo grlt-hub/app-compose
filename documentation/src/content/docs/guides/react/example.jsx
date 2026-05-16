@@ -1,9 +1,9 @@
 import { compose, createTask, createWire, literal } from "@grlt-hub/app-compose"
 import { createRoot } from "react-dom/client"
-import { Appearance, appearanceWidgets } from "./appearance.jsx"
-import { LanguageSelect, ThemeSelect } from "./features.jsx"
-import { selectedTheme, selectedLanguage } from "./shared-tags.jsx"
-import { ThemeProvider } from "./theme-provider.jsx"
+import { Appearance, appearanceWidgets } from "./appearance"
+import { LanguageSelect, ThemeSelect } from "./features"
+import { selectedTheme, selectedLanguage } from "./shared-tags"
+import { ThemeProvider } from "./theme-provider"
 
 // page-level — reads Tasks directly
 const renderApp = createTask({

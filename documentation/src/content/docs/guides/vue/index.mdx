@@ -1,0 +1,61 @@
+---
+title: Composing a Vue app
+description: Compose a Vue app from independent features — each feature is its own Task.
+tableOfContents: false
+---
+
+import Sandbox from "../../../../components/sandbox/index.astro"
+import example from "./App.vue?raw"
+import features from "./features.js?raw"
+import themeSelectView from "./theme-select.vue?raw"
+import languageSelectView from "./language-select.vue?raw"
+import appearance from "./appearance.js?raw"
+import appearanceView from "./appearance.vue?raw"
+import sharedTags from "./shared-tags.js?raw"
+import themeProvider from "./theme-provider.js?raw"
+import themeProviderView from "./theme-provider.vue?raw"
+
+In a Vue app, each feature — or a group of features — is a Task. A Task can return anything — this example uses `{ ui, api }`.
+
+Each feature is split into a View (`.vue` SFC) and a Task: the View takes the feature's atom as a prop and stays a plain SFC; the Task creates the atom, wraps the View into a `Widget` closure that supplies it, and returns both `ui.Widget` and `api.$atom`.
+
+One Task at the end — a _Render Task_ — mounts the UI into the page. It reads upstream Tasks directly: every Task is known here, so a Tag adds nothing.
+
+`App.vue` only hosts the mount target (`<div id="root">`) and runs `compose()`.
+
+**What the example does:**
+
+- `ThemeSelect` is a feature — it returns the chosen theme and a way to choose it.
+- `LanguageSelect` is a feature — it returns the chosen language and a way to choose it.
+- `Appearance` is a layout — through its context it reads the language from a shared Tag and the widgets from another Tag.
+- `ThemeProvider` is a provider — through its context it reads the chosen theme.
+- The Render Task mounts the `Layout` from `Appearance` wrapped in the `Provider` from `ThemeProvider`.
+- `compose()` wires it all; the Render Task runs last.
+
+[nanostores](https://github.com/nanostores/nanostores) here is only for the `task.api` demo. Features can use any state manager.
+
+<Sandbox
+  template="vite-vue"
+  code={example}
+  files={{
+    "/src/features.js": features,
+    "/src/theme-select.vue": themeSelectView,
+    "/src/language-select.vue": languageSelectView,
+    "/src/appearance.js": appearance,
+    "/src/appearance.vue": appearanceView,
+    "/src/theme-provider.js": themeProvider,
+    "/src/theme-provider.vue": themeProviderView,
+    "/src/shared-tags.js": sharedTags,
+  }}
+  visibleFiles={[
+    "/src/features.js",
+    "/src/theme-select.vue",
+    "/src/language-select.vue",
+    "/src/appearance.js",
+    "/src/appearance.vue",
+    "/src/theme-provider.js",
+    "/src/theme-provider.vue",
+    "/src/shared-tags.js",
+  ]}
+  options={{ editorWidthPercentage: 70, editorHeight: 700 }}
+/>

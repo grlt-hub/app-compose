@@ -8,7 +8,7 @@ import Sandbox from "../../../../components/sandbox/index.astro"
 import example from "./example.jsx?raw"
 import features from "./features.jsx?raw"
 import appearance from "./appearance.jsx?raw"
-import sharedTags from "./shared-tags.jsx?raw"
+import sharedTags from "./shared-tags.js?raw"
 import themeProvider from "./theme-provider.jsx?raw"
 
 In a React app, each feature — or a group of features — is a Task. A Task can return anything — this example uses `{ ui, api }`.
@@ -32,9 +32,9 @@ One Task at the end — a _Render Task_ — mounts the UI into the page. It usua
   files={{
     "/appearance.jsx": appearance,
     "/features.jsx": features,
-    "/shared-tags.jsx": sharedTags,
+    "/shared-tags.js": sharedTags,
     "/theme-provider.jsx": themeProvider,
   }}
-  visibleFiles={["/features.jsx", "/shared-tags.jsx", "/appearance.jsx", "/theme-provider.jsx"]}
+  visibleFiles={["/features.jsx", "/shared-tags.js", "/appearance.jsx", "/theme-provider.jsx"]}
   options={{ editorWidthPercentage: 70, editorHeight: 700 }}
 />
