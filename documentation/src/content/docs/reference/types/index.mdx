@@ -1,11 +1,12 @@
 ---
 title: Exported Types
-description: "Public TypeScript types exported from App-Compose: Task, TaskResult, Hooks, and Spot."
+description: "Public TypeScript types exported from App-Compose."
 ---
 
 import Sandbox from "../../../../components/sandbox/index.astro"
 import taskResult from "./task-result.ts?raw"
 import taskType from "./task-type.ts?raw"
+import composerType from "./composer-type.ts?raw"
 import hooksType from "./hooks-type.ts?raw"
 import spotValue from "./spot-value.ts?raw"
 
@@ -38,6 +39,16 @@ A Task's final state: `done`, `fail`, or `skip`.
 ```ts
 type TaskStatus = "done" | "fail" | "skip"
 ```
+
+## Composer
+
+The type returned by `compose()`.
+
+<Sandbox
+  template="vanilla-ts"
+  code={composerType}
+  options={{ layout: "console", showConsoleButton: false, hideOutput: true }}
+/>
 
 ## ComposeHookMap
 
