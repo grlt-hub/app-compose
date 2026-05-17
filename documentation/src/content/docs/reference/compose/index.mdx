@@ -1,0 +1,157 @@
+---
+title: compose
+description: Creates a Composer — chains Tasks and Wires through .step(), then runs, inspects, or guards them.
+tableOfContents: false
+---
+
+`compose()` returns a Composer. `.step()` adds Tasks and Wires; `.run()`, `.graph()`, and `.guard()` consume the chain.
+
+## graph
+
+Returns the chain as a tree without executing it.
+
+- `.graph()` — Returns a JSON-serializable tree
+- Each node has a `type`: `"seq"`, `"con"`, or `"run"`
+- `seq` — Sequential group; children run one after another. The tree's root is always a `seq`
+- `con` — Concurrent group; children run in parallel
+- Both `seq` and `con` have `meta.name` (from `.meta({ name })`, or `undefined`) and `children`
+- `children` may contain `run`, `seq`, or `con` nodes; a nested `compose()` appears as a nested `seq`
+- `run` — Leaf for a Task or Wire with `meta.name` (Task name, or destination Tag names joined with `+` for a Wire), `meta.kind` (`"task"` or `"wire"`), `id`, and `dependencies`
+- `id` — Increments in tree-traversal order from `0`
+- `dependencies` — `{ required: number[], optional: number[] }`. IDs of `run` nodes this leaf reads from. In `required`, an entry of `-1` means no earlier `run` produces that value; `optional` omits missing producers
+
+```ts
+compose()
+  .meta({ name: "app" })
+  .step(createWire({ from: literal(1), to: userId }))
+  .step([fetchUser, fetchPermissions])
+  .step(compose().meta({ name: "cleanup" }).step(close))
+  .graph()
+```
+
+```json
+{
+  "type": "seq",
+  "meta": { "name": "app" },
+  "children": [
+    {
+      "type": "run",
+      "meta": { "name": "userId", "kind": "wire" },
+      "id": 0,
+      "dependencies": { "required": [], "optional": [] }
+    },
+    {
+      "type": "con",
+      "meta": {},
+      "children": [
+        {
+          "type": "run",
+          "meta": { "name": "fetchUser", "kind": "task" },
+          "id": 1,
+          "dependencies": { "required": [0], "optional": [] }
+        },
+        {
+          "type": "run",
+          "meta": { "name": "fetchPermissions", "kind": "task" },
+          "id": 2,
+          "dependencies": { "required": [0], "optional": [] }
+        }
+      ]
+    },
+    {
+      "type": "seq",
+      "meta": { "name": "cleanup" },
+      "children": [
+        {
+          "type": "run",
+          "meta": { "name": "close", "kind": "task" },
+          "id": 3,
+          "dependencies": { "required": [], "optional": [] }
+        }
+      ]
+    }
+  ]
+}
+```
+
+## guard
+
+Checks the chain configuration without executing it.
+
+- `.guard()` — Returns nothing; throws on the first problem found
+- Duplicate Task or Wire — same instance added twice
+- Missing context — a Spot has no producer in the chain
+- Unused Wire — its value is never read
+
+```ts
+expect(() => app.guard()).not.toThrow()
+```
+
+Same checks run inside `.run()`, where unused Wires log a warning via `console.warn` instead of throwing.
+
+## meta
+
+Attaches metadata to the chain: a `name` and lifecycle hooks.
+
+- `.meta({ name?, hooks? })` — Updates `name` and/or `hooks` on the chain
+- `name` — String identifier. Appears in `.graph()` output, in messages from the guard, and in `onStart`/`onComplete` payloads
+- `hooks.onStart({ meta })` — Fires when the chain starts; receives the chain's meta
+- `hooks.onComplete({ meta })` — Fires when the chain completes; receives the chain's meta
+- `hooks.onTaskFail({ task, error })` — Fires when a Task inside the chain fails; receives the failing Task and its error
+- Returns a Composer
+
+```ts
+compose()
+  .meta({
+    name: "app",
+    hooks: {
+      onStart: ({ meta }) => console.log(`${meta?.name}: start`),
+      onComplete: ({ meta }) => console.log(`${meta?.name}: complete`),
+      onTaskFail: ({ task, error }) => console.error(`${task.name}:`, error),
+    },
+  })
+  .step(loadUser)
+```
+
+## run
+
+Executes the chain.
+
+- `.run()` — Returns `Promise<Scope>`
+- `scope.get(spot)` — Returns the resolved value of `spot`, or `undefined`
+
+```ts
+const scope = await compose()
+  .step(loadUser)
+  .step(createWire({ from: loadUser.result.id, to: userId }))
+  .run()
+
+scope.get(loadUser.result) // { id, name }
+scope.get(loadUser.status) // "done"
+scope.get(userId.value) // the id
+```
+
+Before execution, `.run()` runs the guard. Duplicate Tasks or Wires and missing context throw; unused Wires log a warning via `console.warn`. Use `.guard()` for a strict variant where unused Wires also throw.
+
+`.get` returns `undefined` when the Spot has no value — a Task's `result` after it failed or was skipped, or a Tag that no Wire has supplied.
+
+## step
+
+Appends a Task, Wire, or nested Composer to the chain.
+
+- `.step(child)` — Appends `child` as the next sequential step
+- `.step([...children])` — Appends an array as a concurrent group. Members start together
+- `child`, array member — A Task, a Wire, or another Composer
+- Returns a Composer
+- Throws when the argument is anything else
+
+```ts
+compose()
+  .step(loadConfig)
+  .step([fetchUser, fetchPermissions])
+  .step(createWire({ from: literal("/api"), to: apiUrl }))
+  .step(compose().step(setup).step(start))
+  .step([compose().step(dashboard), compose().step(analytics)])
+```
+
+Each `.step()` runs after the previous one completes; later steps can read values produced by earlier steps. Members of a concurrent group cannot read each other's values.

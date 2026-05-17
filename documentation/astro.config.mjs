@@ -67,6 +67,7 @@ export default defineConfig({
           label: "Reference",
           items: [
             { slug: "reference" },
+            { slug: "reference/compose" },
             { slug: "reference/create-task" },
             { slug: "reference/create-wire" },
             { slug: "reference/is" },
