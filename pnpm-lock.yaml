@@ -86,6 +86,12 @@ importers:
 
   packages/app-compose: {}
 
+  packages/coda:
+    devDependencies:
+      '@grlt-hub/app-compose':
+        specifier: workspace:*
+        version: link:../app-compose
+
   packages/eslint-plugin:
     dependencies:
       '@typescript-eslint/utils':
