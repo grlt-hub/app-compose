@@ -1,6 +1,6 @@
 {
   "name": "@grlt-hub/eslint-plugin-app-compose",
-  "version": "3.0.0-alpha.2",
+  "version": "3.0.1",
   "private": false,
   "description": "Enforcing best practices for @grlt-hub/app-compose",
   "keywords": [

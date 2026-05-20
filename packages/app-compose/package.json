@@ -1,6 +1,6 @@
 {
   "name": "@grlt-hub/app-compose",
-  "version": "3.0.0-beta.0",
+  "version": "3.0.1",
   "private": false,
   "description": "App-Compose is a TypeScript library that structures your frontend app around isolated tasks, explicit context, and predictable startup — by design.",
   "keywords": [
