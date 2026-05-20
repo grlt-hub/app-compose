@@ -1,0 +1,16 @@
+name: Publish
+
+on:
+  push:
+    tags: ["v*"]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    container:
+      image: node:24.8.0-slim
+    environment: Release
+
+    steps:
+      - name: Publish (stubbed)
+        run: echo "would publish ${GITHUB_REF_NAME}"
