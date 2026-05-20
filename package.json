@@ -25,16 +25,19 @@
     "build": "pnpm -r --filter='!./documentation' build",
     "test": "pnpm -r test",
     "lint": "pnpm -r lint",
-    "release": "node ./scripts/release.ts"
+    "release": "node ./scripts/release.ts",
+    "publish-ci": "node ./scripts/publish-ci.ts"
   },
   "devDependencies": {
     "@types/node": "25.6.2",
+    "@types/semver": "7.7.1",
     "@typescript/native-preview": "7.0.0-dev.20260510.1",
     "@vitest/coverage-v8": "4.1.5",
     "bumpp": "10.4.1",
     "knip": "6.12.2",
     "oxfmt": "0.48.0",
     "oxlint": "1.63.0",
+    "semver": "7.8.0",
     "tsdown": "0.22.0",
     "typescript": "6.0.3",
     "vitest": "4.1.5"
