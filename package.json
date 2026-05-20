@@ -1,6 +1,6 @@
 {
   "name": "@grlt-hub/app-compose-dev",
-  "version": "3.0.0-beta.0",
+  "version": "3.0.0-beta.1",
   "private": true,
   "homepage": "https://app-compose.dev",
   "license": "MIT",
@@ -24,7 +24,8 @@
     "doc:build": "pnpm --filter ./packages/app-compose build && pnpm --dir ./documentation run build",
     "build": "pnpm -r --filter='!./documentation' build",
     "test": "pnpm -r test",
-    "lint": "pnpm -r lint"
+    "lint": "pnpm -r lint",
+    "release": "node ./scripts/release.ts"
   },
   "devDependencies": {
     "@types/node": "25.6.2",
