@@ -5,6 +5,8 @@ on:
     tags:
       - "v*"
 
+permissions: {}
+
 jobs:
   publish:
     if: github.repository == 'grlt-hub/app-compose'
@@ -43,5 +45,5 @@ jobs:
       - name: Run tests
         run: pnpm test
 
-      - name: Publish (stubbed)
-        run: echo "would publish ${GITHUB_REF_NAME}"
+      - name: Publish
+        run: npm i -g npm@^11.5.2 && pnpm run publish-ci "${GITHUB_REF_NAME}"
