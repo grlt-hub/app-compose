@@ -6,6 +6,7 @@ on:
 
 jobs:
   publish:
+    if: github.repository == 'grlt-hub/app-compose'
     runs-on: ubuntu-latest
     container:
       image: node:24.8.0-slim
