@@ -7,6 +7,8 @@
   <a href="https://deepwiki.com/grlt-hub/app-compose"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"></a>
 <p>
 
+[![npm provenance](https://img.shields.io/badge/provenance-yes-brightgreen?logo=npm)](https://www.npmjs.com/package/app-compose)
+
 <p align="center">
   <a href="https://app-compose.dev/learn/quick-start/">Learn</a>
   |
