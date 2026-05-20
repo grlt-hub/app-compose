@@ -1,19 +1,14 @@
-<h1 align="center">App Compose</h1>
-<p align="center">Compose apps you can control and trust</p>
-<p align="center">
-  <a href="https://www.npmjs.com/package/@grlt-hub/app-compose"><img src="https://img.shields.io/npm/v/%40grlt-hub%2Fapp-compose?color=orange"></a>
-  <img src="https://img.shields.io/npm/l/%40grlt-hub%2Fapp-compose?color=blue">
-  <img src="https://deno.bundlejs.com/badge?q=@grlt-hub/app-compose&treeshake=[*]">
-  <a href="https://deepwiki.com/grlt-hub/app-compose"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"></a>
-<p>
+# App Compose
 
-[![npm provenance](https://img.shields.io/badge/provenance-yes-brightgreen?logo=npm)](https://www.npmjs.com/package/app-compose)
+Compose apps you can control and trust
 
-<p align="center">
-  <a href="https://app-compose.dev/learn/quick-start/">Learn</a>
-  |
-  <a href="https://app-compose.dev/guides/">Guides</a>
-</p>
+[![npm version](https://img.shields.io/npm/v/%40grlt-hub%2Fapp-compose?color=orange)](https://www.npmjs.com/package/@grlt-hub/app-compose)
+![npm license](https://img.shields.io/npm/l/%40grlt-hub%2Fapp-compose?color=blue)
+![bundle size](https://deno.bundlejs.com/badge?q=@grlt-hub/app-compose&treeshake=[*])
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/grlt-hub/app-compose)
+[![npm provenance](https://img.shields.io/badge/provenance-yes-brightgreen?logo=npm)](https://www.npmjs.com/@grlt-hub/app-compose)
+
+[Learn](https://app-compose.dev/learn/quick-start/) | [Guides](https://app-compose.dev/guides/) | [Reference](https://app-compose.dev/reference/)
 
 > **Beta:** This project is currently in beta. The API may change before the stable release.
 
