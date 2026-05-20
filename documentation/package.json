@@ -1,6 +1,7 @@
 {
   "name": "documentation",
   "version": "0.0.1",
+  "private": true,
   "contributors": [
     {
       "name": "Mikhail Kireev",
