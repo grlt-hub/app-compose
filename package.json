@@ -1,6 +1,6 @@
 {
   "name": "@grlt-hub/app-compose-dev",
-  "version": "3.0.1",
+  "version": "3.0.0",
   "private": true,
   "homepage": "https://app-compose.dev",
   "license": "MIT",
@@ -30,7 +30,6 @@
     "@types/node": "25.6.2",
     "@typescript/native-preview": "7.0.0-dev.20260510.1",
     "@vitest/coverage-v8": "4.1.5",
-    "bumpp": "11.1.0",
     "knip": "6.12.2",
     "oxfmt": "0.48.0",
     "oxlint": "1.63.0",
