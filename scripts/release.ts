@@ -13,7 +13,7 @@ try {
   // execSync("git push origin release", { stdio: "inherit" })
 
   console.log(
-    `New release is v${result.newVersion} ready, waiting for conformation at https://github.com/vitest-dev/vitest/actions`,
+    `New release ${result.newVersion} is ready, waiting for conformation at https://github.com/grlt-hub/app-compose/actions`,
   )
 } catch (err) {
   console.error(err)
