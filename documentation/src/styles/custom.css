@@ -284,7 +284,7 @@ body:is(:has(.hero), :has([data-splash-bg])) {
 }
 
 /* ── 4. Prose H2 — quiet sky accent before each section ── */
-.sl-markdown-content h2::before {
+.sl-markdown-content h2:not(.section-title)::before {
   content: "";
   display: block;
   width: 24px;
