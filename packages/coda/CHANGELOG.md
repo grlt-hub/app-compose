@@ -9,3 +9,5 @@ and this project adheres to [Semantic Versioning](http://semver.org).
 
 - every
 - some
+- whenWvery
+- whenSome
