@@ -15,11 +15,19 @@ type TaskValue<T> = { result: TaskResult<T>; status: TaskStatus; error: SpotValu
 type ItemValue<T> =
   T extends Task<unknown> ? TaskValue<T> : T extends Tag<infer V> ? V : T extends Spot<infer V> ? V : never
 
-const createQuantifier = (mode: "some" | "every") => {
-  const quantifier = <const List extends readonly (Task<unknown> | Tag<unknown> | Spot<unknown>)[]>(
+type Quantifier<R> = {
+  <const List extends readonly (Task<unknown> | Tag<unknown> | Spot<unknown>)[]>(
     list: List,
-    predicate: (state: ItemValue<List[number]>) => boolean,
-  ): Spot<boolean> =>
+    predicate: (values: ItemValue<List[number]>) => boolean,
+  ): R
+  status: <const Items extends readonly (Task<unknown> | Spot<TaskStatus | undefined>)[]>(
+    items: Items,
+    status: TaskStatus,
+  ) => R
+}
+
+const createQuantifier = (mode: "some" | "every"): Quantifier<Spot<boolean>> => {
+  const quantifier: Quantifier<Spot<boolean>> = (list, predicate) =>
     shape(
       list.map((item) =>
         is.tag(item)
@@ -31,10 +39,7 @@ const createQuantifier = (mode: "some" | "every") => {
       (values) => values[mode](predicate as (v: any) => boolean),
     )
 
-  quantifier.status = <const Items extends readonly (Task<unknown> | Spot<TaskStatus | undefined>)[]>(
-    items: Items,
-    status: TaskStatus,
-  ): Spot<boolean> =>
+  quantifier.status = (items, status) =>
     shape(
       items.map((item) => (is.task(item) ? item.status : item)),
       (statuses) => statuses[mode]((s) => s === status),
@@ -43,4 +48,4 @@ const createQuantifier = (mode: "some" | "every") => {
   return quantifier
 }
 
-export { createQuantifier }
+export { createQuantifier, type Quantifier }

@@ -1,6 +1,8 @@
 import { compose, createTask, createWire, literal, optional, tag } from "@grlt-hub/app-compose"
-import { describe, expect, it } from "vitest"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 import { every } from "../index"
+
+beforeEach(() => vi.spyOn(console, "warn").mockImplementation(() => {}))
 
 describe("every", () => {
   it("returns true when predicate holds for all tasks", async () => {
