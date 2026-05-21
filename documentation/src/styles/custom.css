@@ -4,6 +4,45 @@
   text-align: center;
 }
 
+.hero h1 {
+  font-size: clamp(var(--sl-text-3xl), 1rem + 4.5vw, var(--sl-text-6xl));
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--sl-color-white);
+}
+
+.hero .tagline {
+  font-size: clamp(var(--sl-text-xl), 0.5rem + 1.6vw, var(--sl-text-3xl));
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--sl-color-gray-1);
+}
+
+.hl-control,
+.hl-trust {
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.hl-control {
+  background-image: linear-gradient(180deg, #7dd3fc 0%, #38bdf8 100%);
+}
+
+.hl-trust {
+  background-image: linear-gradient(180deg, #c4b5fd 0%, #8b5cf6 100%);
+}
+
+:root[data-theme="light"] .hl-control {
+  background-image: linear-gradient(180deg, #0ea5e9 0%, #0369a1 100%);
+}
+
+:root[data-theme="light"] .hl-trust {
+  background-image: linear-gradient(180deg, #8b5cf6 0%, #6d28d9 100%);
+}
+
 h2.section-title {
   display: block;
   text-align: center;
@@ -25,16 +64,157 @@ h2.section-title {
   --sl-color-text-accent: #0c4a6e;
 }
 
-.hero {
-  grid-template-columns: 1fr;
+body:is(:has(.hero), :has([data-splash-bg])) header {
+  background: color-mix(in srgb, var(--sl-color-bg) 65%, transparent);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border-bottom-color: transparent;
 }
 
-.hero .copy {
-  align-items: center;
+body:is(:has(.hero), :has([data-splash-bg])) .content-panel {
+  border-top-color: transparent;
 }
 
-.hero .actions {
-  justify-content: center;
+body:is(:has(.hero), :has([data-splash-bg])) site-search button[data-open-modal] {
+  background-color: rgba(15, 23, 42, 0.55);
+  border: 1px solid rgba(125, 211, 252, 0.12);
+  border-radius: 9999px;
+  color: var(--sl-color-gray-3);
+}
+
+body:is(:has(.hero), :has([data-splash-bg])) site-search button[data-open-modal]:hover {
+  border-color: rgba(125, 211, 252, 0.25);
+  background-color: rgba(15, 23, 42, 0.7);
+}
+
+body:is(:has(.hero), :has([data-splash-bg])) site-search button[data-open-modal] kbd {
+  background-color: rgba(125, 211, 252, 0.06);
+  color: var(--sl-color-gray-3);
+}
+
+:root[data-theme="light"] body:is(:has(.hero), :has([data-splash-bg])) site-search button[data-open-modal] {
+  background-color: rgba(255, 255, 255, 0.6);
+  border-color: rgba(14, 165, 233, 0.18);
+  color: var(--sl-color-gray-2);
+}
+
+:root[data-theme="light"] body:is(:has(.hero), :has([data-splash-bg])) site-search button[data-open-modal]:hover {
+  border-color: rgba(14, 165, 233, 0.32);
+  background-color: rgba(255, 255, 255, 0.85);
+}
+
+:root[data-theme="light"] body:is(:has(.hero), :has([data-splash-bg])) site-search button[data-open-modal] kbd {
+  background-color: rgba(14, 165, 233, 0.08);
+  color: var(--sl-color-gray-2);
+}
+
+body:is(:has(.hero), :has([data-splash-bg])) .card {
+  --card-tint: 56, 189, 248;
+  --sl-card-border: rgba(var(--card-tint), 0.32);
+  --sl-card-bg: rgba(var(--card-tint), 0.1);
+
+  position: relative;
+  background-color: #0c1322;
+  border: 1px solid rgba(125, 211, 252, 0.08);
+  color: var(--sl-color-white);
+  border-radius: 0.875rem;
+  overflow: hidden;
+  transition:
+    border-color 0.3s ease,
+    background-color 0.3s ease;
+}
+
+body:is(:has(.hero), :has([data-splash-bg])) .card::before {
+  content: "";
+  position: absolute;
+  top: -45%;
+  right: -25%;
+  width: 70%;
+  height: 110%;
+  background: radial-gradient(circle, rgba(var(--card-tint), 1) 0%, transparent 55%);
+  opacity: 0;
+  filter: blur(36px);
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+body:is(:has(.hero), :has([data-splash-bg])) .card:hover::before {
+  opacity: 0.35;
+}
+
+body:is(:has(.hero), :has([data-splash-bg])) .card:hover {
+  border-color: rgba(var(--card-tint), 0.28);
+}
+
+body:is(:has(.hero), :has([data-splash-bg])) .card:nth-child(1) {
+  --card-tint: 56, 189, 248;
+}
+body:is(:has(.hero), :has([data-splash-bg])) .card:nth-child(2) {
+  --card-tint: 34, 211, 238;
+}
+body:is(:has(.hero), :has([data-splash-bg])) .card:nth-child(3) {
+  --card-tint: 45, 212, 191;
+}
+body:is(:has(.hero), :has([data-splash-bg])) .card:nth-child(4) {
+  --card-tint: 167, 139, 250;
+}
+body:is(:has(.hero), :has([data-splash-bg])) .card:nth-child(5) {
+  --card-tint: 96, 165, 250;
+}
+
+:root[data-theme="light"] body:is(:has(.hero), :has([data-splash-bg])) .card {
+  background-color: #ffffff;
+  border-color: rgba(15, 23, 42, 0.08);
+  color: var(--sl-color-gray-1);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+:root[data-theme="light"] body:is(:has(.hero), :has([data-splash-bg])) .card:hover {
+  border-color: rgba(var(--card-tint), 0.4);
+}
+
+body:is(:has(.hero), :has([data-splash-bg])) .card .icon {
+  color: rgb(var(--card-tint));
+}
+
+body:is(:has(.hero), :has([data-splash-bg])) .card .title,
+body:is(:has(.hero), :has([data-splash-bg])) .card .body {
+  position: relative;
+  z-index: 1;
+}
+
+body:is(:has(.hero), :has([data-splash-bg])) {
+  background-color: #060912;
+  background-image:
+    radial-gradient(ellipse 80% 70% at 50% 50%, rgba(15, 23, 42, 0) 40%, rgba(2, 6, 23, 0.85) 100%),
+    radial-gradient(circle, rgba(125, 211, 252, 0.7) 1px, transparent 1.5px),
+    radial-gradient(circle, rgba(125, 211, 252, 0.5) 1px, transparent 1.5px),
+    linear-gradient(rgba(125, 211, 252, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(125, 211, 252, 0.05) 1px, transparent 1px);
+  background-size:
+    100% 100%,
+    520px 380px,
+    700px 540px,
+    44px 44px,
+    44px 44px;
+  background-position:
+    0 0,
+    72% 18%,
+    18% 72%,
+    0 0,
+    0 0;
+  background-repeat: no-repeat, no-repeat, no-repeat, repeat, repeat;
+  background-attachment: fixed;
+}
+
+:root[data-theme="light"] body:is(:has(.hero), :has([data-splash-bg])) {
+  background-color: var(--sl-color-bg);
+  background-image:
+    radial-gradient(ellipse 80% 70% at 50% 50%, rgba(255, 255, 255, 0) 40%, rgba(15, 23, 42, 0.06) 100%),
+    radial-gradient(circle, rgba(12, 74, 110, 0.5) 1px, transparent 1.5px),
+    radial-gradient(circle, rgba(12, 74, 110, 0.35) 1px, transparent 1.5px),
+    linear-gradient(rgba(12, 74, 110, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(12, 74, 110, 0.06) 1px, transparent 1px);
 }
 
 @media (min-width: 992px) {
@@ -64,4 +244,62 @@ h2.section-title {
   color: var(--sl-color-gray-2);
   font-size: 0.9rem;
   text-align: center;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   Universal brand touches — apply to every page, no exceptions
+════════════════════════════════════════════════════════════════ */
+
+/* ── 1. Selection — when user highlights text ── */
+::selection {
+  background: rgba(56, 189, 248, 0.28);
+  color: var(--sl-color-white);
+}
+
+/* ── 2. Focus ring — keyboard navigation hint ── */
+:focus-visible {
+  outline: 2px solid var(--sl-color-text-accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ── 3. Scrollbars — sidebar, TOC, code blocks, anywhere ── */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(56, 189, 248, 0.25) transparent;
+}
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background: rgba(56, 189, 248, 0.2);
+  border-radius: 4px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(56, 189, 248, 0.4);
+}
+
+/* ── 4. Prose H2 — quiet sky accent before each section ── */
+.sl-markdown-content h2:not(.section-title)::before {
+  content: "";
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--sl-color-accent);
+  border-radius: 2px;
+  margin-bottom: 14px;
+  opacity: 0.7;
+}
+
+/* ── 5. Prev/Next pagination — sky hover ── */
+.pagination-links a {
+  transition: border-color 0.15s, background 0.15s;
+}
+.pagination-links a:hover {
+  border-color: rgba(56, 189, 248, 0.3);
+  background: rgba(56, 189, 248, 0.04);
 }
