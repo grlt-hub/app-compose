@@ -1,6 +1,4 @@
 import { versionBump } from "bumpp"
-import { execSync } from "node:child_process"
-import semver from "semver"
 
 try {
   const result = await versionBump({
@@ -9,11 +7,6 @@ try {
     tag: true,
     push: true,
   })
-
-  if (semver.prerelease(result.newVersion) === null) {
-    execSync("git update-ref refs/heads/release refs/heads/main", { stdio: "inherit" })
-    execSync("git push origin release", { stdio: "inherit" })
-  }
 
   console.log(
     `New release ${result.newVersion} is ready, waiting for confirmation at https://github.com/grlt-hub/app-compose/actions`,
