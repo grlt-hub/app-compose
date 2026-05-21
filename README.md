@@ -5,6 +5,7 @@ Compose apps you can control and trust
 [![npm version](https://img.shields.io/npm/v/%40grlt-hub%2Fapp-compose?color=orange)](https://www.npmjs.com/package/@grlt-hub/app-compose)
 ![npm license](https://img.shields.io/npm/l/%40grlt-hub%2Fapp-compose?color=blue)
 ![bundle size](https://deno.bundlejs.com/badge?q=@grlt-hub/app-compose&treeshake=[*])
+![zero dependencies](https://img.shields.io/badge/dependencies-0-blue)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/grlt-hub/app-compose)
 [![npm provenance](https://img.shields.io/badge/provenance-yes-brightgreen?logo=npm)](https://www.npmjs.com/@grlt-hub/app-compose)
 
@@ -14,7 +15,7 @@ Compose apps you can control and trust
 
 ## Features
 
-- **Simplicity** — lightweight IoC, no containers/providers/decorators. Framework-agnostic.
+- **Simplicity** — lightweight IoC, no containers/providers/decorators, zero dependencies. Framework-agnostic.
 - **Clarity** — no magic, no globals; context flows through typed wiring.
 - **Reusability** — same code, different context per compose.
 - **Testability** — missing context, duplicates, unused wires fail in CI.
