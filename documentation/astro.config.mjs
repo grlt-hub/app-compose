@@ -15,6 +15,10 @@ export default defineConfig({
     react(),
     starlight({
       title: "App-Compose",
+      logo: {
+        src: "./src/assets/logo.svg",
+        replacesTitle: true,
+      },
       description:
         "A small TypeScript library for composing apps from independent pieces. Each piece declares what it needs; the runtime wires them together.",
       head: [

@@ -9,6 +9,8 @@ head: [{ tag: "style", content: ".content-panel:has(h1) { display:none }" }]
 import Sandbox from "../../components/sandbox/index.astro"
 import emptySandbox from "./sandbox.ts?raw"
 
+<div data-splash-bg hidden />
+
 <Sandbox
   template="vanilla-ts"
   code={emptySandbox}
