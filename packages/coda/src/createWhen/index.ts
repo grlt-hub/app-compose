@@ -3,7 +3,7 @@ import { createQuantifier, type Quantifier } from "../createQuantifier"
 
 type Result = { context: Spot<boolean>; fn: typeof Boolean }
 
-const createWhen = (mode: "some" | "every"): Quantifier<Result> => {
+const createWhen = (mode: "some" | "every") => {
   const q = createQuantifier(mode)
 
   const when: Quantifier<Result> = (list, predicate) => ({ fn: Boolean, context: q(list, predicate) })
