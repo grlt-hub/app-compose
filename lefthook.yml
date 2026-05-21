@@ -1,0 +1,27 @@
+output:
+  - summary
+  - empty_summary
+  - success
+  - failure
+  - execution
+  - execution_out
+  - skips
+
+commit-msg:
+  scripts:
+    "commit_linter.ts":
+      runner: node
+pre-commit:
+  commands:
+    oxfmt:
+      glob: "*.{ts,tsx,js,jsx,md,yml,yaml}"
+      run: pnpm oxfmt --write {staged_files}
+      stage_fixed: true
+      exclude:
+        - "documentation/**"
+        - "pnpm-lock.yaml"
+    oxlint:
+      glob: "*.{ts,tsx}"
+      exclude:
+        - "documentation/**"
+      run: pnpm oxlint {staged_files}
