@@ -17,6 +17,9 @@ pre-commit:
       glob: "*.{ts,tsx,js,jsx,md,yml,yaml}"
       run: pnpm oxfmt --write {staged_files}
       stage_fixed: true
+      exclude:
+        - "documentation/**"
+        - "pnpm-lock.yaml"
     oxlint:
       glob: "*.{ts,tsx}"
       exclude:
