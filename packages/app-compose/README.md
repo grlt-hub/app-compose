@@ -11,8 +11,6 @@ Lightweight IoC for the front-end. Compose apps you can control and trust.
 
 [Learn](https://app-compose.dev/learn/quick-start/) | [Guides](https://app-compose.dev/guides/) | [Reference](https://app-compose.dev/reference/)
 
-> **Beta:** This project is currently in beta. The API may change before the stable release.
-
 ## Features
 
 - **Simplicity** — lightweight, no containers/providers/decorators, zero dependencies. Framework-agnostic.

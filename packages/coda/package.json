@@ -1,6 +1,6 @@
 {
   "name": "@grlt-hub/app-coda",
-  "version": "3.0.0-beta.0",
+  "version": "3.0.0-beta.4",
   "private": false,
   "description": "Helper utilities for @grlt-hub/app-compose — reusable building blocks for tasks, wires, and context.",
   "keywords": [

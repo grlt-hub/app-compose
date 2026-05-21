@@ -1,6 +1,6 @@
 {
   "name": "@grlt-hub/app-compose-dev",
-  "version": "3.0.0",
+  "version": "3.0.0-beta.4",
   "private": true,
   "homepage": "https://app-compose.dev",
   "license": "MIT",
@@ -24,18 +24,23 @@
     "doc:build": "pnpm --filter ./packages/app-compose build && pnpm --dir ./documentation run build",
     "build": "pnpm -r --filter='!./documentation' build",
     "test": "pnpm -r test",
-    "lint": "pnpm -r lint"
+    "lint": "pnpm -r lint",
+    "release": "node ./scripts/release.ts",
+    "publish-ci": "node ./scripts/publish-ci.ts"
   },
   "devDependencies": {
-    "@types/node": "25.6.2",
-    "@typescript/native-preview": "7.0.0-dev.20260510.1",
-    "@vitest/coverage-v8": "4.1.5",
-    "knip": "6.12.2",
-    "oxfmt": "0.48.0",
-    "oxlint": "1.63.0",
+    "@types/node": "25.8.0",
+    "@types/semver": "7.7.1",
+    "@typescript/native-preview": "7.0.0-dev.20260517.1",
+    "bumpp": "10.4.1",
+    "knip": "6.14.1",
+    "lefthook": "2.1.6",
+    "oxfmt": "0.50.0",
+    "oxlint": "1.65.0",
+    "semver": "7.8.0",
     "tsdown": "0.22.0",
     "typescript": "6.0.3",
-    "vitest": "4.1.5"
+    "vitest": "4.1.6"
   },
   "packageManager": "pnpm@10.24.0+sha512.01ff8ae71b4419903b65c60fb2dc9d34cf8bb6e06d03bde112ef38f7a34d6904c424ba66bea5cdcf12890230bf39f9580473140ed9c946fef328b6e5238a345a"
 }
