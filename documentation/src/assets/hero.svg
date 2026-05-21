@@ -1,0 +1,160 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="app-compose">
+  <title>app-compose</title>
+
+  <style><![CDATA[
+    svg { --cycle: 6.5s; }
+
+    .breathe {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: ac-breathe var(--cycle) ease-in-out infinite;
+    }
+    @keyframes ac-breathe {
+      0%, 100% { transform: scale(1);    opacity: 0.85; }
+      50%      { transform: scale(1.04); opacity: 1; }
+    }
+
+    .node {
+      transform-box: fill-box;
+      transform-origin: center;
+    }
+    .node-B { animation: flash-bc var(--cycle) ease-out infinite; }
+    .node-C { animation: flash-bc var(--cycle) ease-out infinite; }
+    .node-D { animation: flash-d  var(--cycle) ease-out infinite; }
+
+    @keyframes flash-bc {
+      0%, 32% { filter: brightness(1); }
+      35%     { filter: brightness(1.4); }
+      42%, 100% { filter: brightness(1); }
+    }
+    @keyframes flash-d {
+      0%, 65% { filter: brightness(1); }
+      68%     { filter: brightness(1.4); }
+      75%, 100% { filter: brightness(1); }
+    }
+
+    .pulse {
+      fill: #dff3fd;
+      opacity: 0;
+      filter: drop-shadow(0 0 8px #38bdf8);
+    }
+    .pulse-ab { animation: pulse-ab var(--cycle) linear infinite; }
+    .pulse-ac { animation: pulse-ac var(--cycle) linear infinite; }
+    .pulse-bd { animation: pulse-bd var(--cycle) linear infinite; }
+    .pulse-cd { animation: pulse-cd var(--cycle) linear infinite; }
+
+    @keyframes pulse-ab {
+      0%,  4%   { opacity: 0; transform: translate(256px, 152px); }
+      6%        { opacity: 1; transform: translate(256px, 152px); }
+      32%       { opacity: 1; transform: translate(160px, 256px); }
+      35%, 100% { opacity: 0; transform: translate(160px, 256px); }
+    }
+    @keyframes pulse-ac {
+      0%,  4%   { opacity: 0; transform: translate(256px, 152px); }
+      6%        { opacity: 1; transform: translate(256px, 152px); }
+      32%       { opacity: 1; transform: translate(352px, 256px); }
+      35%, 100% { opacity: 0; transform: translate(352px, 256px); }
+    }
+    @keyframes pulse-bd {
+      0%,  38%  { opacity: 0; transform: translate(160px, 256px); }
+      40%       { opacity: 1; transform: translate(160px, 256px); }
+      65%       { opacity: 1; transform: translate(256px, 360px); }
+      68%, 100% { opacity: 0; transform: translate(256px, 360px); }
+    }
+    @keyframes pulse-cd {
+      0%,  38%  { opacity: 0; transform: translate(352px, 256px); }
+      40%       { opacity: 1; transform: translate(352px, 256px); }
+      65%       { opacity: 1; transform: translate(256px, 360px); }
+      68%, 100% { opacity: 0; transform: translate(256px, 360px); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .pulse { display: none; }
+      .breathe,
+      .node-B,
+      .node-C,
+      .node-D { animation: none; }
+    }
+  ]]></style>
+
+  <defs>
+    <radialGradient id="ac-bigGlow" cx="50%" cy="50%" r="45%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.55" />
+      <stop offset="22%" stop-color="#38bdf8" stop-opacity="0.22" />
+      <stop offset="55%" stop-color="#38bdf8" stop-opacity="0.04" />
+      <stop offset="100%" stop-color="#38bdf8" stop-opacity="0" />
+    </radialGradient>
+
+    <linearGradient id="ac-nodeGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#dff3fd" />
+      <stop offset="100%" stop-color="#38bdf8" />
+    </linearGradient>
+    <linearGradient id="ac-edgeGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#7dd3fc" />
+      <stop offset="100%" stop-color="#0ea5e9" />
+    </linearGradient>
+
+    <filter id="ac-markGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="9" />
+      <feFlood flood-color="#38bdf8" flood-opacity="0.7" />
+      <feComposite in2="SourceAlpha" operator="in" />
+      <feMerge>
+        <feMergeNode />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <filter id="ac-dustGlow" x="-400%" y="-400%" width="900%" height="900%">
+      <feGaussianBlur stdDeviation="4.5" />
+    </filter>
+  </defs>
+
+  <circle class="breathe" cx="256" cy="256" r="256" fill="url(#ac-bigGlow)" />
+
+  <g fill="none" stroke="#38bdf8">
+    <circle cx="256" cy="256" r="190" stroke-opacity="0.07" stroke-width="0.75" />
+    <circle cx="256" cy="256" r="150" stroke-opacity="0.13" stroke-width="0.75" />
+    <circle cx="256" cy="256" r="115" stroke-opacity="0.07" stroke-width="0.75" />
+  </g>
+
+  <g fill="#bae6fd">
+    <g filter="url(#ac-dustGlow)" fill-opacity="0.85">
+      <circle cx="79" cy="116" r="4" />
+      <circle cx="103" cy="394" r="3" />
+      <circle cx="412" cy="101" r="3.5" />
+      <circle cx="436" cy="354" r="4" />
+      <circle cx="459" cy="234" r="2.5" />
+      <circle cx="139" cy="304" r="2" />
+      <circle cx="372" cy="442" r="3" />
+      <circle cx="306" cy="71" r="2" />
+    </g>
+    <circle cx="79" cy="116" r="2.2" />
+    <circle cx="103" cy="394" r="1.7" />
+    <circle cx="412" cy="101" r="2" />
+    <circle cx="436" cy="354" r="2.2" />
+    <circle cx="459" cy="234" r="1.4" />
+    <circle cx="139" cy="304" r="1.2" />
+    <circle cx="372" cy="442" r="1.7" />
+    <circle cx="306" cy="71" r="1.2" />
+  </g>
+
+  <g filter="url(#ac-markGlow)">
+    <g stroke="url(#ac-edgeGrad)" stroke-width="37" stroke-linecap="round" fill="none">
+      <line x1="256" y1="152" x2="160" y2="256" />
+      <line x1="256" y1="152" x2="352" y2="256" />
+      <line x1="160" y1="256" x2="256" y2="360" />
+      <line x1="352" y1="256" x2="256" y2="360" />
+    </g>
+    <g fill="url(#ac-nodeGrad)">
+      <circle class="node node-A" cx="256" cy="152" r="46" />
+      <circle class="node node-B" cx="160" cy="256" r="46" />
+      <circle class="node node-C" cx="352" cy="256" r="46" />
+      <circle class="node node-D" cx="256" cy="360" r="46" />
+    </g>
+  </g>
+
+  <circle class="pulse pulse-ab" r="9" />
+  <circle class="pulse pulse-ac" r="9" />
+  <circle class="pulse pulse-bd" r="9" />
+  <circle class="pulse pulse-cd" r="9" />
+</svg>
