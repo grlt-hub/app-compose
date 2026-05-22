@@ -24,6 +24,7 @@
     "@astrojs/react": "5.0.5",
     "@astrojs/starlight": "0.39.2",
     "@codesandbox/sandpack-react": "2.20.0",
+    "@grlt-hub/app-coda": "workspace:*",
     "@grlt-hub/app-compose": "workspace:*",
     "@monaco-editor/react": "4.7.0",
     "astro": "6.3.3",

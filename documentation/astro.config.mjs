@@ -83,6 +83,11 @@ export default defineConfig({
           ],
           collapsed: true,
         },
+        {
+          label: "App-Coda",
+          items: [{ slug: "app-coda" }, { slug: "app-coda/every" }, { slug: "app-coda/some" }],
+          collapsed: true,
+        },
         { slug: "sandbox" },
       ],
       customCss: ["./src/styles/custom.css"],

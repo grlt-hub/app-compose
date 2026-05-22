@@ -5,6 +5,7 @@ import {
   type SandpackOptions,
   type SandpackPredefinedTemplate,
 } from "@codesandbox/sandpack-react"
+import { APP_CODA_JS } from "virtual:app-coda-js"
 import { APP_COMPOSE_JS } from "virtual:app-compose-js"
 import { Editor } from "./editor/index"
 import { Output } from "./output"
@@ -68,6 +69,11 @@ const SandpackEditor = ({ code: __code, template = "react", options, files = {},
             code: JSON.stringify({ name: "@grlt-hub/app-compose", main: "index.cjs" }),
             hidden: true,
           },
+          "/node_modules/@grlt-hub/app-coda/index.cjs": { code: APP_CODA_JS, hidden: true },
+          "/node_modules/@grlt-hub/app-coda/package.json": {
+            code: JSON.stringify({ name: "@grlt-hub/app-coda", main: "index.cjs" }),
+            hidden: true,
+          },
           ...(isVite && {
             "/index.html": {
               code: `<!DOCTYPE html><html><body><div id="root"></div><script type="module" src="/entry.js"></script></body></html>`,
@@ -82,7 +88,8 @@ const SandpackEditor = ({ code: __code, template = "react", options, files = {},
             import App from "./App.vue";
             import "/sandboxStyle.css";
             import * as AppCompose from "@grlt-hub/app-compose";
-            Object.assign(window, AppCompose);
+            import * as AppCoda from "@grlt-hub/app-coda";
+            Object.assign(window, AppCompose, AppCoda);
             console.clear();
             createApp(App).mount("#app");
             `,
@@ -95,12 +102,14 @@ const SandpackEditor = ({ code: __code, template = "react", options, files = {},
                     ? `
             import "./sandboxStyle.css";
             import * as AppCompose from "@grlt-hub/app-compose";
-            Object.assign(window, AppCompose);
+            import * as AppCoda from "@grlt-hub/app-coda";
+            Object.assign(window, AppCompose, AppCoda);
             `
                     : `
             import "./sandboxStyle.css";
             import * as AppCompose from "@grlt-hub/app-compose";
-            Object.assign(window, AppCompose);
+            import * as AppCoda from "@grlt-hub/app-coda";
+            Object.assign(window, AppCompose, AppCoda);
             console.clear();
             import("./${fileName}").catch(err => console.error(err.message));
             `,

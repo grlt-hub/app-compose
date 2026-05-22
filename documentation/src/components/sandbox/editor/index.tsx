@@ -2,7 +2,7 @@ import { useSandpack, type SandpackPredefinedTemplate } from "@codesandbox/sandp
 import MonacoEditor, { type Monaco } from "@monaco-editor/react"
 import { useMemo } from "react"
 import { useTheme } from "../useTheme"
-import { APP_COMPOSE_DTS } from "./compose-types"
+import { APP_CODA_DTS, APP_COMPOSE_DTS } from "./compose-types"
 
 const useFileLanguage = (template: SandpackPredefinedTemplate, activeFile: string) =>
   useMemo(() => {
@@ -36,6 +36,11 @@ const beforeMount = (monaco: Monaco) => {
   monaco.languages.typescript.typescriptDefaults.addExtraLib(
     APP_COMPOSE_DTS,
     "file:///node_modules/@types/grlt-hub__app-compose/index.d.ts",
+  )
+
+  monaco.languages.typescript.typescriptDefaults.addExtraLib(
+    APP_CODA_DTS,
+    "file:///node_modules/@types/grlt-hub__app-coda/index.d.ts",
   )
 }
 

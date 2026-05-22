@@ -1,0 +1,51 @@
+---
+title: every
+description: All-of quantifier for Tasks, Tags, and Spots — by predicate or by Task status.
+---
+
+`every` checks a whole list of Tasks, Tags, or Spots against one condition. Without it, you'd build the same `shape` by hand:
+
+```ts
+// without every
+const allEven = shape([fetchUser.result, fetchOrder.result], (results) =>
+  results.every((result) => result.id % 2 === 0),
+)
+
+// with every
+const allEven = every([fetchUser, fetchOrder], (task) => task.result.id % 2 === 0)
+```
+
+## Arguments
+
+- `list` — Tasks, Tags, and Spots to check. A mix is fine.
+- `predicate` — runs once per item. A Task is unwrapped to `{ result, status, error }`; a Tag or Spot, to its value. Must return a `boolean`.
+
+## Returns
+
+`Spot<boolean>` — `true` when every item satisfies `predicate`; `false` otherwise.
+
+## every.status
+
+`every.status` checks that every Task in a list reached the same status. Without it, you'd write that as the `every` predicate by hand:
+
+```ts
+// without every
+const allDone = shape([fetchUser.status, fetchOrder.status], (statuses) =>
+  statuses.every((status) => status === "done"),
+)
+
+// with every
+const allDone = every([fetchUser, fetchOrder], (task) => task.status === "done")
+
+// with every.status
+const allDone = every.status([fetchUser, fetchOrder], "done")
+```
+
+### Arguments
+
+- `list` — Tasks
+- `status` — the `TaskStatus` every Task must reach.
+
+### Returns
+
+`Spot<boolean>` — `true` when every Task reached `status`; `false` otherwise.
