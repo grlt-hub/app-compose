@@ -9,6 +9,9 @@ import { appComposePlugin } from "./app-compose-plugin.mjs"
 export default defineConfig({
   vite: {
     plugins: [appComposePlugin()],
+    optimizeDeps: {
+      exclude: ["@nanostores/react", "@nanostores/vue", "nanostores", "vue"],
+    },
   },
   site: "https://app-compose.dev",
   integrations: [
@@ -85,7 +88,13 @@ export default defineConfig({
         },
         {
           label: "App-Coda",
-          items: [{ slug: "app-coda" }, { slug: "app-coda/every" }, { slug: "app-coda/some" }],
+          items: [
+            { slug: "app-coda" },
+            { slug: "app-coda/every" },
+            { slug: "app-coda/not" },
+            { slug: "app-coda/some" },
+            { slug: "app-coda/when" },
+          ],
           collapsed: true,
         },
         { slug: "sandbox" },

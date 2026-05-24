@@ -1,0 +1,195 @@
+---
+title: when
+description: "Bundles `every`, `some`, and `not` into a `{ context, fn: Boolean }` accepted by task.enabled or task.run."
+---
+
+`when` bundles `every`, `some`, and `not` into `{ context: Spot<boolean>, fn: typeof Boolean }` — accepted by `task.enabled` and `task.run`.
+
+## when.every
+
+Same as `every`.
+
+```ts del={4-7} ins={13}
+createTask({
+  name: "_",
+  run: { fn: console.log },
+  enabled: {
+    context: every([fetchUser, fetchOrder], (task) => task.result.id % 2 === 0),
+    fn: Boolean,
+  },
+})
+
+createTask({
+  name: "_",
+  run: { fn: console.log },
+  enabled: when.every([fetchUser, fetchOrder], (task) => task.result.id % 2 === 0),
+})
+```
+
+## when.every.status
+
+Same as `every.status`.
+
+```ts del={4-7} ins={13}
+createTask({
+  name: "_",
+  run: { fn: console.log },
+  enabled: {
+    context: every.status([fetchUser, fetchOrder], "done"),
+    fn: Boolean,
+  },
+})
+
+createTask({
+  name: "_",
+  run: { fn: console.log },
+  enabled: when.every.status([fetchUser, fetchOrder], "done"),
+})
+```
+
+## when.some
+
+Same as `some`.
+
+```ts del={4-7} ins={13}
+createTask({
+  name: "_",
+  run: { fn: console.log },
+  enabled: {
+    context: some([fetchUser, fetchOrder], (task) => task.result.id % 2 === 0),
+    fn: Boolean,
+  },
+})
+
+createTask({
+  name: "_",
+  run: { fn: console.log },
+  enabled: when.some([fetchUser, fetchOrder], (task) => task.result.id % 2 === 0),
+})
+```
+
+## when.some.status
+
+Same as `some.status`.
+
+```ts del={4-7} ins={13}
+createTask({
+  name: "_",
+  run: { fn: console.log },
+  enabled: {
+    context: some.status([fetchUser, fetchOrder], "fail"),
+    fn: Boolean,
+  },
+})
+
+createTask({
+  name: "_",
+  run: { fn: console.log },
+  enabled: when.some.status([fetchUser, fetchOrder], "fail"),
+})
+```
+
+## when.not
+
+Same as `not`.
+
+```ts del={4-7} ins={13}
+createTask({
+  name: "_",
+  run: { fn: console.log },
+  enabled: {
+    context: not(fetchUser.result),
+    fn: Boolean,
+  },
+})
+
+createTask({
+  name: "_",
+  run: { fn: console.log },
+  enabled: when.not(fetchUser.result),
+})
+```
+
+## when.not.every
+
+Inverts `every`.
+
+```ts del={4-7} ins={13}
+createTask({
+  name: "_",
+  run: { fn: console.log },
+  enabled: {
+    context: not(every([fetchUser, fetchOrder], (task) => task.result.id % 2 === 0)),
+    fn: Boolean,
+  },
+})
+
+createTask({
+  name: "_",
+  run: { fn: console.log },
+  enabled: when.not.every([fetchUser, fetchOrder], (task) => task.result.id % 2 === 0),
+})
+```
+
+## when.not.every.status
+
+Inverts `every.status`.
+
+```ts del={4-7} ins={13}
+createTask({
+  name: "_",
+  run: { fn: console.log },
+  enabled: {
+    context: not(every.status([fetchUser, fetchOrder], "done")),
+    fn: Boolean,
+  },
+})
+
+createTask({
+  name: "_",
+  run: { fn: console.log },
+  enabled: when.not.every.status([fetchUser, fetchOrder], "done"),
+})
+```
+
+## when.not.some
+
+Inverts `some`.
+
+```ts del={4-7} ins={13}
+createTask({
+  name: "_",
+  run: { fn: console.log },
+  enabled: {
+    context: not(some([fetchUser, fetchOrder], (task) => task.result.id % 2 === 0)),
+    fn: Boolean,
+  },
+})
+
+createTask({
+  name: "_",
+  run: { fn: console.log },
+  enabled: when.not.some([fetchUser, fetchOrder], (task) => task.result.id % 2 === 0),
+})
+```
+
+## when.not.some.status
+
+Inverts `some.status`.
+
+```ts del={4-7} ins={13}
+createTask({
+  name: "_",
+  run: { fn: console.log },
+  enabled: {
+    context: not(some.status([fetchUser, fetchOrder], "fail")),
+    fn: Boolean,
+  },
+})
+
+createTask({
+  name: "_",
+  run: { fn: console.log },
+  enabled: when.not.some.status([fetchUser, fetchOrder], "fail"),
+})
+```
