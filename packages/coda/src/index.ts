@@ -1,4 +1,4 @@
 export { every } from "./every"
 export { some } from "./some"
-export { whenEvery } from "./whenEvery"
-export { whenSome } from "./whenSome"
+export { not } from "./not"
+export { when } from "./when"
