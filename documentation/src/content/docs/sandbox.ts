@@ -2,7 +2,7 @@
 import {
 createWire, compose, tag, createTask, literal, optional, shape
 } from "@grlt-hub/app-compose"
-import { every, some, whenSome, whenEvery } from "@grlt-hub/app-coda"
+import { every, some, not, when } from "@grlt-hub/app-coda"
 
 const task = createTask({
   name: "task",
