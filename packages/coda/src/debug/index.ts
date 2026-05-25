@@ -31,7 +31,7 @@ function debug(...args: [DebugOptions, ...DebugTarget[]] | DebugTarget[]): Task<
           ),
         }
       : is.tag(target)
-        ? { title: literal(`[Tag]: ${target.name}`), output: target.value }
+        ? { title: literal(`[Tag]: ${target.name}`), output: optional(target.value) }
         : { title: literal("[Spot]"), output: target },
   )
 
