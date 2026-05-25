@@ -72,7 +72,12 @@ You can also configure it manually.
 
 ### no-coda-debug
 
-The `debug()` helper from `@grlt-hub/app-coda` prints task state to the console. The plugin reports every call to it, so it stays out of committed code.
+❗ This rule errors in the `recommended` config.
+
+<hr />
+
+The `debug()` helper from `@grlt-hub/app-coda` prints task state to the console. The plugin reports every call to
+it, so it stays out of committed code.
 
 ```ts
 import { compose } from "@grlt-hub/app-compose"
@@ -87,7 +92,14 @@ compose().step(login).run()
 
 ### task-options-order
 
-This order matches how a Task reads top-to-bottom: `name` first, then `run` before the optional `enabled`. Inside both, `context` comes before `fn`. The plugin warns when the order differs.
+⚠️ This rule warns in the `recommended` config.
+
+🔧 This rule is automatically fixable by the [`--fix` CLI option](https://eslint.org/docs/latest/user-guide/command-line-interface#--fix).
+
+<hr />
+
+This order matches how a Task reads top-to-bottom: `name` first, then `run` before the optional `enabled`. Inside both,
+`context` comes before `fn`. The plugin reports when the order differs.
 
 ```ts
 // ❌ Wrong
@@ -114,5 +126,30 @@ createTask({
     context: { authorized: authorizedTag },
     fn: check,
   },
+})
+```
+
+### wire-options-order
+
+⚠️ This rule warns in the `recommended` config.
+
+🔧 This rule is automatically fixable by the [`--fix` CLI option](https://eslint.org/docs/latest/user-guide/command-line-interface#--fix).
+
+<hr />
+
+A Wire carries data from a source to a destination tag, so `from` is listed before `to`. The plugin reports when
+the order differs.
+
+```ts
+// ❌ Wrong
+createWire({
+  to: apiUrl,
+  from: literal("https://api.example.com"),
+})
+
+// ✅ Correct
+createWire({
+  from: literal("https://api.example.com"),
+  to: apiUrl,
 })
 ```

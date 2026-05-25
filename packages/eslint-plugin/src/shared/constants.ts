@@ -5,6 +5,7 @@ const PACKAGE_NAME = {
 
 const UNITS = {
   CREATE_TASK: "createTask",
+  CREATE_WIRE: "createWire",
   DEBUG: "debug",
 }
 
