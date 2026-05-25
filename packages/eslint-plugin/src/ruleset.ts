@@ -1,6 +1,7 @@
 import type { TSESLint } from "@typescript-eslint/utils"
 
 const recommended = {
+  "app-compose/no-coda-debug": "error",
   "app-compose/task-options-order": "warn",
 } satisfies TSESLint.Linter.RulesRecord
 

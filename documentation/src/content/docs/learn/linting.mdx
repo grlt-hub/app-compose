@@ -70,6 +70,21 @@ You can also configure it manually.
 
 ## Rules
 
+### no-coda-debug
+
+The `debug()` helper from `@grlt-hub/app-coda` prints task state to the console. The plugin reports every call to it, so it stays out of committed code.
+
+```ts
+import { compose } from "@grlt-hub/app-compose"
+import { debug } from "@grlt-hub/app-coda"
+
+// ❌ Wrong
+compose().step(login).step(debug(login)).run()
+
+// ✅ Correct
+compose().step(login).run()
+```
+
 ### task-options-order
 
 This order matches how a Task reads top-to-bottom: `name` first, then `run` before the optional `enabled`. Inside both, `context` comes before `fn`. The plugin warns when the order differs.

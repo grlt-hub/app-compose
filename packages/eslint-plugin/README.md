@@ -40,9 +40,11 @@ Or wire the plugin manually:
 
 ## Rules
 
-⚠️ — set to `warn` in the `recommended` config
-🔧 — auto-fixable
+- ⚠️ — set to `warn` in the `recommended` config
+- ❗ — set to `error` in the `recommended` config
+- 🔧 — auto-fixable
 
-| Name                                                                            | Description                            | ⚠️  | 🔧  |
-| ------------------------------------------------------------------------------- | -------------------------------------- | --- | --- |
-| [task-options-order](https://app-compose.dev/learn/linting/#task-options-order) | Enforce options order for `createTask` | ⚠️  | 🔧  |
+| Name                                                                            | Description                                        | ⚠️  | ❗  | 🔧  |
+| ------------------------------------------------------------------------------- | -------------------------------------------------- | --- | --- | --- |
+| [no-coda-debug](https://app-compose.dev/learn/linting/#no-coda-debug)           | Disallow `debug()` calls from `@grlt-hub/app-coda` |     | ❗  |     |
+| [task-options-order](https://app-compose.dev/learn/linting/#task-options-order) | Enforce options order for `createTask`             | ⚠️  |     | 🔧  |

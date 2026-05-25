@@ -10,7 +10,7 @@ const GROUPS = [
 
 const TRUE_ORDER = GROUPS.flatMap((group) => (group.nested ? group.nested.map((n) => `${group.key}.${n}`) : group.key))
 
-const importSelector = `ImportDeclaration[source.value=${PACKAGE_NAME}]`
+const importSelector = `ImportDeclaration[source.value=${PACKAGE_NAME.CORE}]`
 const methodSelector = `ImportSpecifier[imported.name=${UNITS.CREATE_TASK}]`
 
 const callSelector = `[callee.type="Identifier"][arguments.length=1]`

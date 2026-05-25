@@ -113,6 +113,12 @@ importers:
         specifier: ^5.0.0 || ^6.0.0
         version: 6.0.3
     devDependencies:
+      '@grlt-hub/app-coda':
+        specifier: workspace:*
+        version: link:../coda
+      '@grlt-hub/app-compose':
+        specifier: workspace:*
+        version: link:../app-compose
       '@typescript-eslint/rule-tester':
         specifier: 8.59.3
         version: 8.59.3(eslint@10.4.0(jiti@2.7.0))(typescript@6.0.3)
