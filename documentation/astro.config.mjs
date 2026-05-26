@@ -65,6 +65,7 @@ export default defineConfig({
             { slug: "guides/code-splitting" },
             { slug: "guides/react" },
             { slug: "guides/vue" },
+            { slug: "guides/debug" },
             { slug: "guides/observability" },
             { slug: "guides/graph" },
           ],
@@ -90,6 +91,7 @@ export default defineConfig({
           label: "App-Coda",
           items: [
             { slug: "app-coda" },
+            { slug: "app-coda/debug" },
             { slug: "app-coda/every" },
             { slug: "app-coda/not" },
             { slug: "app-coda/some" },
