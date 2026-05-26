@@ -39,9 +39,9 @@ const sendAnalytics = createTask({
   run: { fn: () => {} },
 })
 
-// 👇 control-task pattern. More in /guides/
-const controlTask = createTask({
-  name: "control-task",
+// 👇 prints every task's status
+const debug = createTask({
+  name: "debug",
   run: {
     context: {
       [logIn.name]: logIn.status,
@@ -61,5 +61,5 @@ compose()
   .step(logIn)
   .step(createWire({ from: logIn.result.userId, to: userId }))
   .step([fetchUser, loadCart, sendAnalytics])
-  .step(controlTask)
+  .step(debug)
   .run()
