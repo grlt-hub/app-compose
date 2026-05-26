@@ -1,0 +1,141 @@
+---
+title: Community
+description: Channels for users and contributors of app-compose.
+tableOfContents: false
+prev: false
+next: false
+---
+
+import { Badge, Icon } from "@astrojs/starlight/components"
+
+Three channels — pick the one that fits how you want to talk.
+
+<div class="channels">
+  <a class="channel" href="https://github.com/grlt-hub/app-compose/discussions" target="_blank" rel="noopener">
+    <span class="channel-icon"><Icon name="comment-alt" /></span>
+    <span class="channel-body">
+      <span class="channel-head">
+        <strong>GitHub Discussions</strong>
+        <Badge text="searchable" variant="note" size="small" />
+      </span>
+      <span class="channel-desc">Open-ended questions and how-tos. Start here when you're not sure where to ask.</span>
+    </span>
+    <Icon name="right-arrow" class="channel-arrow" />
+  </a>
+
+  <a class="channel" href="https://github.com/grlt-hub/app-compose/issues/new" target="_blank" rel="noopener">
+    <span class="channel-icon"><Icon name="github" /></span>
+    <span class="channel-body">
+      <span class="channel-head">
+        <strong>GitHub Issues</strong>
+        <Badge text="bugs & features" variant="caution" size="small" />
+      </span>
+      <span class="channel-desc">Reproducible bugs, concrete feature requests. Include a minimal repro.</span>
+    </span>
+    <Icon name="right-arrow" class="channel-arrow" />
+  </a>
+
+  <a class="channel" href="https://t.me/app-compose" target="_blank" rel="noopener">
+    <span class="channel-icon"><Icon name="telegram" /></span>
+    <span class="channel-body">
+      <span class="channel-head">
+        <strong>Telegram</strong>
+        <Badge text="real-time" variant="tip" size="small" />
+      </span>
+      <span class="channel-desc">Live chat. Quick replies, less structure than a thread.</span>
+    </span>
+    <Icon name="right-arrow" class="channel-arrow" />
+  </a>
+</div>
+
+<style>{`
+  .sl-badge {
+    background-color: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: var(--sl-color-gray-2);
+  }
+  .sl-badge.tip {
+    border-color: rgba(168, 85, 247, 0.3);
+  }
+  .sl-badge.note {
+    border-color: rgba(56, 189, 248, 0.3);
+    color: var(--sl-color-text-accent);
+  }
+  .sl-badge.caution {
+    border-color: rgba(234, 179, 8, 0.3);
+  }
+
+  .sl-markdown-content .channels {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+
+  .sl-markdown-content .channel {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 1rem;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.75rem;
+    color: inherit;
+    text-decoration: none;
+    transition: border-color 0.15s, background-color 0.15s;
+  }
+
+  .sl-markdown-content .channel:hover {
+    border-color: var(--sl-color-text-accent);
+    background: rgba(56, 189, 248, 0.04);
+  }
+
+  .channel-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 0.5rem;
+    background: rgba(56, 189, 248, 0.06);
+    border: 1px solid rgba(56, 189, 248, 0.18);
+    color: var(--sl-color-text-accent);
+  }
+  .channel-icon svg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .channel-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    min-width: 0;
+  }
+
+  .channel-head {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--sl-color-white);
+    font-size: var(--sl-text-lg);
+  }
+
+  .channel-desc {
+    color: var(--sl-color-gray-3);
+    font-size: var(--sl-text-sm);
+    line-height: 1.5;
+  }
+
+  .channel-arrow {
+    color: var(--sl-color-gray-3);
+    width: 1.25rem;
+    height: 1.25rem;
+    transition: transform 0.15s;
+  }
+
+  .sl-markdown-content .channel:hover .channel-arrow {
+    color: var(--sl-color-text-accent);
+    transform: translateX(2px);
+  }
+`}</style>

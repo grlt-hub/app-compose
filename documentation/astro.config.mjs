@@ -35,8 +35,7 @@ export default defineConfig({
         { tag: "meta", attrs: { name: "twitter:image", content: "https://app-compose.dev/og.png" } },
       ],
       social: [
-        { icon: "open-book", label: "Learn", href: "/learn/quick-start/" },
-        { icon: "forward-slash", label: "Sandbox", href: "/sandbox/" },
+        { icon: "comment", label: "Community", href: "/community/" },
         { icon: "github", label: "GitHub", href: "https://github.com/grlt-hub/app-compose" },
         { icon: "document", label: "DeepWiki", href: "https://deepwiki.com/grlt-hub/app-compose" },
       ],
@@ -99,6 +98,7 @@ export default defineConfig({
           ],
           collapsed: true,
         },
+        { slug: "community" },
         { slug: "sandbox" },
       ],
       customCss: ["./src/styles/custom.css"],
