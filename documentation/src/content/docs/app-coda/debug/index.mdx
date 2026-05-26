@@ -2,3 +2,73 @@
 title: debug
 description: A runtime inspection Task — logs Tasks, Tags, and Spots to the console.
 ---
+
+`debug` returns a Task that prints state of Tasks, Tags, and Spots to the console — grouped per target. Without it, you'd write that Task by hand and wrap every read in `optional`:
+
+```ts del={1-21} ins={23}
+createTask({
+  name: "debug",
+  run: {
+    context: {
+      auth: {
+        status: auth.status,
+        result: optional(auth.result),
+        error: optional(auth.error),
+      },
+      userId: optional(userId.value),
+    },
+    fn: (ctx) => {
+      console.group("[Task]: auth")
+      console.info(ctx.auth)
+      console.groupEnd()
+      console.group("[Tag]: userId")
+      console.info(ctx.userId)
+      console.groupEnd()
+    },
+  },
+})
+
+debug(auth, userId)
+```
+
+## Console output
+
+```text
+▾ [app-coda] debug
+  ▾ [Task]: auth
+    { status: …, result: …, error: … }
+  ▾ [Tag]: userId
+    …
+```
+
+## Arguments
+
+`targets` — Tasks, Tags, and Spots to inspect. A mix is fine.
+
+## Returns
+
+`Task` — a Task you compose with `.step(...)`.
+
+## With options
+
+Pass an options object first to set the console group label:
+
+```ts del={1} ins={3}
+debug(auth, fetchOrder)
+
+debug({ name: "post-login" }, auth, fetchOrder)
+```
+
+```text
+▾ [app-coda] debug post-login
+  …
+```
+
+### Arguments
+
+- `options` — `{ name: string }` sets the group label in the console.
+- `targets` — Tasks, Tags, and Spots to inspect. A mix is fine.
+
+### Returns
+
+`Task` — a Task you compose with `.step(...)`.
