@@ -63,7 +63,7 @@ importers:
         version: 2.20.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@grlt-hub/app-coda':
         specifier: workspace:*
-        version: link:../packages/coda
+        version: link:../packages/app-coda
       '@grlt-hub/app-compose':
         specifier: workspace:*
         version: link:../packages/app-compose
@@ -96,13 +96,13 @@ importers:
         specifier: 19.2.3
         version: 19.2.3(@types/react@19.2.14)
 
-  packages/app-compose: {}
-
-  packages/coda:
+  packages/app-coda:
     devDependencies:
       '@grlt-hub/app-compose':
         specifier: workspace:*
         version: link:../app-compose
+
+  packages/app-compose: {}
 
   packages/eslint-plugin:
     dependencies:
@@ -115,7 +115,7 @@ importers:
     devDependencies:
       '@grlt-hub/app-coda':
         specifier: workspace:*
-        version: link:../coda
+        version: link:../app-coda
       '@grlt-hub/app-compose':
         specifier: workspace:*
         version: link:../app-compose
