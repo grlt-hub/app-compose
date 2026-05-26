@@ -1,14 +1,9 @@
 import { compose, createTask, shape } from "@grlt-hub/app-compose"
-import { beforeEach, describe, expect, it, vi } from "vitest"
+import { describe, expect, it } from "vitest"
 import { debug } from "../index"
+import { setupConsoleLog } from "./_console"
 
-const log = vi.fn()
-const methods = ["groupCollapsed", "group", "groupEnd", "info"] as const
-
-beforeEach(() => {
-  log.mockReset()
-  for (const m of methods) vi.spyOn(console, m).mockImplementation((...args: unknown[]) => log(`console.${m}`, ...args))
-})
+const log = setupConsoleLog()
 
 describe("debug — safe", () => {
   it("runs the debug task even when a shape spot throws", async () => {

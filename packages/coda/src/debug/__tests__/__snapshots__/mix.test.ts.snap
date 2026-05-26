@@ -1,0 +1,81 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`debug — mixed targets > renders task + tag + spot together 1`] = `
+[
+  [
+    "console.groupCollapsed",
+    "[app-coda] debug ",
+  ],
+  [
+    "console.group",
+    "[Task]: source",
+  ],
+  [
+    "console.info",
+    {
+      "error": undefined,
+      "result": {
+        "env": "dev",
+      },
+      "status": "done",
+    },
+  ],
+  [
+    "console.groupEnd",
+  ],
+  [
+    "console.group",
+    "[Tag]: api-url",
+  ],
+  [
+    "console.info",
+    "https://example.com",
+  ],
+  [
+    "console.groupEnd",
+  ],
+  [
+    "console.group",
+    "[Spot]",
+  ],
+  [
+    "console.info",
+    {
+      "flag": true,
+    },
+  ],
+  [
+    "console.groupEnd",
+  ],
+  [
+    "console.groupEnd",
+  ],
+]
+`;
+
+exports[`debug — mixed targets > threads options.name through the group header 1`] = `
+[
+  [
+    "console.groupCollapsed",
+    "[app-coda] debug post-login",
+  ],
+  [
+    "console.group",
+    "[Task]: source",
+  ],
+  [
+    "console.info",
+    {
+      "error": undefined,
+      "result": 1,
+      "status": "done",
+    },
+  ],
+  [
+    "console.groupEnd",
+  ],
+  [
+    "console.groupEnd",
+  ],
+]
+`;

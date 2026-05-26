@@ -1,0 +1,131 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`debug — spot target > renders a healthy spot alongside one with a missing source 1`] = `
+[
+  [
+    "console.groupCollapsed",
+    "[app-coda] debug ",
+  ],
+  [
+    "console.group",
+    "[Spot]",
+  ],
+  [
+    "console.info",
+    "present",
+  ],
+  [
+    "console.groupEnd",
+  ],
+  [
+    "console.group",
+    "[Spot]",
+  ],
+  [
+    "console.info",
+    undefined,
+  ],
+  [
+    "console.groupEnd",
+  ],
+  [
+    "console.groupEnd",
+  ],
+]
+`;
+
+exports[`debug — spot target > renders a literal spot 1`] = `
+[
+  [
+    "console.groupCollapsed",
+    "[app-coda] debug ",
+  ],
+  [
+    "console.group",
+    "[Spot]",
+  ],
+  [
+    "console.info",
+    {
+      "flag": true,
+    },
+  ],
+  [
+    "console.groupEnd",
+  ],
+  [
+    "console.groupEnd",
+  ],
+]
+`;
+
+exports[`debug — spot target > renders a raw task result spot 1`] = `
+[
+  [
+    "console.groupCollapsed",
+    "[app-coda] debug ",
+  ],
+  [
+    "console.group",
+    "[Spot]",
+  ],
+  [
+    "console.info",
+    {
+      "count": 42,
+    },
+  ],
+  [
+    "console.groupEnd",
+  ],
+  [
+    "console.groupEnd",
+  ],
+]
+`;
+
+exports[`debug — spot target > renders a shape spot combining multiple sources 1`] = `
+[
+  [
+    "console.groupCollapsed",
+    "[app-coda] debug ",
+  ],
+  [
+    "console.group",
+    "[Spot]",
+  ],
+  [
+    "console.info",
+    "localhost#7",
+  ],
+  [
+    "console.groupEnd",
+  ],
+  [
+    "console.groupEnd",
+  ],
+]
+`;
+
+exports[`debug — spot target > renders a shape spot derived from a single source 1`] = `
+[
+  [
+    "console.groupCollapsed",
+    "[app-coda] debug ",
+  ],
+  [
+    "console.group",
+    "[Spot]",
+  ],
+  [
+    "console.info",
+    "DEV",
+  ],
+  [
+    "console.groupEnd",
+  ],
+  [
+    "console.groupEnd",
+  ],
+]
+`;

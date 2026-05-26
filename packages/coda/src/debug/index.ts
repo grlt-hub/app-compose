@@ -17,9 +17,11 @@ const normalize = (head: DebugOptions | DebugTarget, tail: DebugTarget[]) =>
       }
     : { options: { name: "" }, targets: [head, ...tail] }
 
-function debug(opts: DebugOptions, ...targets: DebugTarget[]): Task<unknown>
-function debug(...targets: DebugTarget[]): Task<unknown>
-function debug(...args: [DebugOptions, ...DebugTarget[]] | DebugTarget[]): Task<unknown> {
+function debug(opts: DebugOptions, target: DebugTarget, ...targets: DebugTarget[]): Task<unknown>
+function debug(target: DebugTarget, ...targets: DebugTarget[]): Task<unknown>
+function debug(
+  ...args: [DebugOptions, DebugTarget, ...DebugTarget[]] | [DebugTarget, ...DebugTarget[]]
+): Task<unknown> {
   const [head, ...tail] = args
   const { options, targets } = normalize(head, tail as DebugTarget[])
 

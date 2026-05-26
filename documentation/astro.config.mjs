@@ -105,6 +105,15 @@ export default defineConfig({
       plugins: [
         starlightLlmsTxt({
           rawContent: false,
+          exclude: ["sandbox"],
+          customSets: [
+            {
+              label: "App-Coda",
+              description:
+                "Helper utilities for @grlt-hub/app-compose — reusable building blocks for tasks, wires, and context.",
+              paths: ["app-coda/**"],
+            },
+          ],
         }),
         starlightLinksValidator(),
       ],
