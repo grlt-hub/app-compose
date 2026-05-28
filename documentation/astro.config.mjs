@@ -22,6 +22,9 @@ export default defineConfig({
         src: "./src/assets/logo.svg",
         replacesTitle: true,
       },
+      expressiveCode: {
+        themes: ["dark-plus", "light-plus"],
+      },
       description:
         "A small TypeScript library for composing apps from independent pieces. Each piece declares what it needs; the runtime wires them together.",
       head: [
@@ -57,9 +60,9 @@ export default defineConfig({
             { slug: "guides" },
             { slug: "guides/optional" },
             { slug: "guides/mapping" },
+            { slug: "guides/managing-tags" },
             { slug: "guides/nesting" },
             { slug: "guides/fallback" },
-            { slug: "guides/sharing-tags" },
             { slug: "guides/guard" },
             { slug: "guides/code-splitting" },
             { slug: "guides/react" },
@@ -122,5 +125,6 @@ export default defineConfig({
   redirects: {
     "/app-compose/tutorials/getting-started": "/learn/quick-start",
     "/app-compose/tutorials/dependencies": "/learn/quick-start/#how-to-pass-data-to-a-task",
+    "/guides/sharing-tags": "/guides/managing-tags",
   },
 })

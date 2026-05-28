@@ -303,3 +303,34 @@ body:is(:has(.hero), :has([data-splash-bg])) {
   border-color: rgba(56, 189, 248, 0.3);
   background: rgba(56, 189, 248, 0.04);
 }
+
+/* ── 6.5 Sandbox — raised frame (distinct from static code blocks) ── */
+.sandbox {
+  background: #11161f;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 12px 32px rgba(0, 0, 0, 0.5),
+    0 3px 12px rgba(0, 0, 0, 0.35);
+}
+:root[data-theme="light"] .sandbox {
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 12px 32px rgba(15, 23, 42, 0.1),
+    0 3px 12px rgba(15, 23, 42, 0.06);
+}
+
+/* ── 7. Aside type="tip" — emerald/mint variant ── */
+.starlight-aside--tip {
+  background: rgba(134, 239, 172, 0.06);
+  border-color: rgba(134, 239, 172, 0.4);
+  border-left-width: 3px;
+}
+.starlight-aside--tip .starlight-aside__title {
+  color: #86efac;
+}
+.starlight-aside--tip .starlight-aside__icon svg {
+  color: #86efac;
+}
