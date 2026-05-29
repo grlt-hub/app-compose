@@ -43,6 +43,7 @@ const ShareButton = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ code }),
       })
+      if (res.status === 429) return notify({ ok: false, text: "Too many requests. Try again in a moment." })
       if (!res.ok) throw new Error(String(res.status))
       const { id } = (await res.json()) as { id: string }
       await navigator.clipboard.writeText(`${window.location.origin}${window.location.pathname}?s=${id}`)

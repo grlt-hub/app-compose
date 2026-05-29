@@ -3,9 +3,12 @@
 
 interface Env {
   SNIPPETS: KVNamespace
+  RATE_LIMITER: { limit: (opts: { key: string }) => Promise<{ success: boolean }> }
 }
 
-const MAX_BYTES = 100_000
+// ~64 KB ≈ 1000 lines of normal code (real sandbox examples are <1.5 KB); plenty of headroom
+// for a hand-pasted snippet while keeping the per-write abuse payload small.
+const MAX_BYTES = 65_536
 
 // nanoid (browser build), inlined — © Andrey Sitnik, MIT (github.com/ai/nanoid). Dropped its
 // `size |= 0` int-coercion (we always pass an integer size). The 64-char URL-safe alphabet makes
@@ -33,8 +36,9 @@ const putUnique = async (kv: KVNamespace, code: string, opts?: KVNamespacePutOpt
 }
 
 // Origin allowlist for writes — SOFT gate: blocks other sites' browser JS and lazy bots, but
-// `Origin` is spoofable by non-browser clients. Real abuse control = a Cloudflare Rate Limiting
-// rule / WAF on POST (see README); CF-Connecting-IP gives the trustworthy client IP if needed.
+// `Origin` is spoofable by non-browser clients. Hard abuse control = the RATE_LIMITER binding,
+// keyed on CF-Connecting-IP (the trustworthy client IP). A *.workers.dev route is not a zone, so
+// dashboard WAF / Rate Limiting rules can't touch it — the limit lives in code.
 const origins = () =>
   "https://app-compose.dev,http://localhost:4321"
     .split(",")
@@ -65,6 +69,10 @@ export default {
     if (req.method === "POST" && pathname === "/") {
       if (!origin || !allowed.includes(origin)) return json({ error: "forbidden_origin" }, 403, cors)
 
+      const ip = req.headers.get("CF-Connecting-IP") ?? "unknown"
+      const { success } = await env.RATE_LIMITER.limit({ key: ip })
+      if (!success) return json({ error: "rate_limited" }, 429, cors)
+
       let body: { code?: unknown }
       try {
         body = await req.json()
@@ -74,19 +82,11 @@ export default {
 
       const { code } = body
       if (typeof code !== "string" || code.length === 0) return json({ error: "code_required" }, 400, cors)
-      if (new TextEncoder().encode(code).length > Number(MAX_BYTES ?? 100_000))
-        return json({ error: "too_large" }, 413, cors)
+      if (new TextEncoder().encode(code).length > MAX_BYTES) return json({ error: "too_large" }, 413, cors)
 
       const ttlDays = Number(0)
       const id = await putUnique(env.SNIPPETS, code, ttlDays > 0 ? { expirationTtl: ttlDays * 86_400 } : undefined)
       return json({ id }, 201, cors)
-    }
-
-    // read-only stats — GET /_stats -> { count, complete } (best-effort: first list page; the
-    // Cloudflare dashboard shows exact KV key count + storage too)
-    if (req.method === "GET" && pathname === "/_stats") {
-      const list = await env.SNIPPETS.list({ limit: 1000 })
-      return json({ count: list.keys.length, complete: list.list_complete }, 200, cors)
     }
 
     // fetch — GET /:id -> { code }  (reads are open: anyone with a share link can resolve it)

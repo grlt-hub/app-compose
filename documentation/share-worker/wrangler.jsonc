@@ -10,4 +10,11 @@
       "id": "21540f706ead4cb68b67369cafc3ee8d",
     },
   ],
+  "ratelimits": [
+    {
+      "name": "RATE_LIMITER",
+      "namespace_id": "1001",
+      "simple": { "limit": 7, "period": 60 },
+    },
+  ],
 }
