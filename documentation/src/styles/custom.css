@@ -510,60 +510,56 @@ body:is(:has(.hero), :has([data-splash-bg])) {
   cursor: default;
 }
 
-/* Share result — toast in the top-right of the viewport (portaled to <body>) */
+/* Share result — centered pill (portaled to <body>), TS-playground style */
 .sandbox-toast {
   position: fixed;
-  top: 0.5rem;
-  right: 0.5rem;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(1);
   z-index: 1000;
-  display: flex;
-  align-items: center;
-  gap: 0.55rem;
-  padding: 0.7rem 0.95rem;
-  border: 1px solid #e2e8f0;
-  border-radius: 0.6rem;
-  background: #ffffff;
-  color: #1e293b;
-  font-size: 0.875rem;
-  font-weight: 500;
-  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.15);
-  animation: sandbox-toast-in 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+  padding: 20px 40px;
+  border-radius: 999px;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  /* success — green (default); .is-error overrides to red */
+  background: rgba(69, 201, 138, 0.16);
+  border: 1px solid rgba(69, 201, 138, 0.45);
+  color: #45c98a;
+  box-shadow: 0 20px 60px -14px rgba(69, 201, 138, 0.2);
+  animation: sandbox-toast-in 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
-.sandbox-toast__ico {
-  flex: none;
-  width: 1.05rem;
-  height: 1.05rem;
-  color: #15803d;
-}
-.sandbox-toast.is-error .sandbox-toast__ico {
-  color: #dc2626;
-}
-:root[data-theme="dark"] .sandbox-toast {
-  border-color: #313847;
-  background: #1e2532;
-  color: #e5e7eb;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
-}
-:root[data-theme="dark"] .sandbox-toast__ico {
-  color: #4ade80;
-}
-:root[data-theme="dark"] .sandbox-toast.is-error .sandbox-toast__ico {
+.sandbox-toast.is-error {
+  background: rgba(248, 113, 113, 0.14);
+  border-color: rgba(248, 113, 113, 0.4);
   color: #f87171;
+  box-shadow: 0 20px 60px -14px rgba(248, 113, 113, 0.18);
+}
+/* leave: React adds .is-leaving ~2s in, then unmounts after the transition */
+.sandbox-toast.is-leaving {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.92);
+  transition:
+    opacity 0.22s ease,
+    transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 @keyframes sandbox-toast-in {
   from {
     opacity: 0;
-    /* start off the right edge, then slide left into the corner */
-    transform: translateX(calc(100% + 0.5rem));
+    transform: translate(-50%, -50%) scale(0.92);
   }
   to {
     opacity: 1;
-    transform: none;
+    transform: translate(-50%, -50%) scale(1);
   }
 }
 @media (prefers-reduced-motion: reduce) {
   .sandbox-toast {
     animation: none;
+  }
+  .sandbox-toast.is-leaving {
+    transition: none;
   }
 }
 

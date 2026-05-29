@@ -1,5 +1,5 @@
 import { useActiveCode } from "@codesandbox/sandpack-react"
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { createPortal } from "react-dom"
 
 // Public URL of the snippet store (Cloudflare Worker). Not a secret — override per env if it moves.
@@ -18,7 +18,7 @@ const stripShareParam = () => {
 type Toast = { ok: boolean; text: string }
 
 // Share click: store the current file via the service, copy a /sandbox?s=<id> link.
-// Result is reported by a top-right toast (portaled to <body>), not by morphing the button.
+// Result is reported by a centered pill (portaled to <body>), not by morphing the button.
 const ShareButton = () => {
   // useActiveCode subscribes to the active file's content, so `code` is fresh on every render —
   // unlike a useSandpack() snapshot, which doesn't re-render this button on each keystroke and
@@ -26,12 +26,24 @@ const ShareButton = () => {
   const { code } = useActiveCode()
   const [busy, setBusy] = useState(false)
   const [toast, setToast] = useState<Toast | null>(null)
-  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+  const [leaving, setLeaving] = useState(false)
+  const timers = useRef<ReturnType<typeof setTimeout>[]>([])
 
+  const clearTimers = () => {
+    timers.current.forEach(clearTimeout)
+    timers.current = []
+  }
+  useEffect(() => clearTimers, [])
+
+  // Pop the pill, hold ~2s, then play the leave transition before unmounting.
   const notify = (next: Toast) => {
+    clearTimers()
+    setLeaving(false)
     setToast(next)
-    clearTimeout(timer.current)
-    timer.current = setTimeout(() => setToast(null), 2600)
+    timers.current.push(
+      setTimeout(() => setLeaving(true), 2000),
+      setTimeout(() => setToast(null), 2220),
+    )
   }
 
   const onShare = async () => {
@@ -86,36 +98,12 @@ const ShareButton = () => {
       {toast &&
         typeof document !== "undefined" &&
         createPortal(
-          <div className={`sandbox-toast${toast.ok ? "" : " is-error"}`} role="status" aria-live="polite">
-            {toast.ok ? (
-              <svg
-                className="sandbox-toast__ico"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <polyline points="20 6 9 17 4 12" />
-              </svg>
-            ) : (
-              <svg
-                className="sandbox-toast__ico"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <line x1="18" y1="6" x2="6" y2="18" />
-                <line x1="6" y1="6" x2="18" y2="18" />
-              </svg>
-            )}
-            <span>{toast.text}</span>
+          <div
+            className={`sandbox-toast${toast.ok ? "" : " is-error"}${leaving ? " is-leaving" : ""}`}
+            role="status"
+            aria-live="polite"
+          >
+            {toast.text}
           </div>,
           document.body,
         )}

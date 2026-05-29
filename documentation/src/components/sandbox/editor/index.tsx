@@ -1,5 +1,5 @@
 import { useSandpack, type SandpackPredefinedTemplate } from "@codesandbox/sandpack-react"
-import MonacoEditor, { type Monaco } from "@monaco-editor/react"
+import MonacoEditor, { type Monaco, type OnMount } from "@monaco-editor/react"
 import { useMemo } from "react"
 import { useTheme } from "../useTheme"
 import { APP_CODA_DTS, APP_COMPOSE_DTS } from "./compose-types"
@@ -44,6 +44,20 @@ const beforeMount = (monaco: Monaco) => {
   )
 }
 
+// Cmd/Ctrl+S formats the document with Monaco's built-in formatter instead of opening the
+// browser's "Save page" dialog. Monaco swallows the keydown while the editor is focused, so the
+// prompt never fires; pressed outside the editor, the browser default still applies.
+const onMount: OnMount = (editor, monaco) => {
+  editor.addAction({
+    id: "format-on-save",
+    label: "Format Document",
+    keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS],
+    run: (ed) => {
+      ed.getAction("editor.action.formatDocument")?.run()
+    },
+  })
+}
+
 const useEditorTheme = () => {
   const theme = useTheme()
 
@@ -78,6 +92,7 @@ const Editor = (props: Props) => {
       value={activeCode}
       onChange={onChange}
       beforeMount={beforeMount}
+      onMount={onMount}
       options={options}
     />
   )

@@ -56,6 +56,7 @@ export default defineConfig({
       social: [
         { icon: "comment", label: "Community", href: "/community/" },
         { icon: "github", label: "GitHub", href: "https://github.com/grlt-hub/app-compose" },
+        { icon: "forward-slash", label: "Sandbox", href: "/sandbox/" },
         { icon: "document", label: "DeepWiki", href: "https://deepwiki.com/grlt-hub/app-compose" },
       ],
       sidebar: [
