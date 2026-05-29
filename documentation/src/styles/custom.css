@@ -87,7 +87,7 @@ body:is(:has(.hero), :has([data-splash-bg])) site-search button[data-open-modal]
   background-color: rgba(15, 23, 42, 0.7);
 }
 
-body:is(:has(.hero), :has([data-splash-bg])) site-search button[data-open-modal] kbd {
+body:is(:has(.hero), :has([data-splash-bg])) site-search button[data-open-modal] > kbd {
   background-color: rgba(125, 211, 252, 0.06);
   color: var(--sl-color-gray-3);
 }
@@ -103,7 +103,7 @@ body:is(:has(.hero), :has([data-splash-bg])) site-search button[data-open-modal]
   background-color: rgba(255, 255, 255, 0.85);
 }
 
-:root[data-theme="light"] body:is(:has(.hero), :has([data-splash-bg])) site-search button[data-open-modal] kbd {
+:root[data-theme="light"] body:is(:has(.hero), :has([data-splash-bg])) site-search button[data-open-modal] > kbd {
   background-color: rgba(14, 165, 233, 0.08);
   color: var(--sl-color-gray-2);
 }
@@ -217,13 +217,13 @@ body:is(:has(.hero), :has([data-splash-bg])) {
     linear-gradient(90deg, rgba(12, 74, 110, 0.06) 1px, transparent 1px);
 }
 
-@media (min-width: 992px) {
+@media (min-width: 800px) {
   .sandbox-code {
     display: none;
   }
 }
 
-@media (max-width: 992px) {
+@media (max-width: 800px) {
   .sandbox {
     display: none;
   }
@@ -253,7 +253,7 @@ body:is(:has(.hero), :has([data-splash-bg])) {
 
 /* live examples run on desktop; the plaque is a mobile-only affordance.
    placed after the base rule so its display:none wins the cascade. */
-@media (min-width: 993px) {
+@media (min-width: 801px) {
   .desktop-hint {
     display: none;
   }
@@ -563,15 +563,45 @@ body:is(:has(.hero), :has([data-splash-bg])) {
   }
 }
 
-/* ── 7. Aside type="tip" — emerald/mint variant ── */
+/* ── 7. Asides — colored variants, no icons ── */
+.starlight-aside__icon {
+  display: none;
+}
+/* title: theme foreground (white on dark, black on light), not the accent tint */
+.starlight-aside__title {
+  color: var(--sl-color-white);
+}
+
+/* tip — emerald/mint */
 .starlight-aside--tip {
   background: rgba(134, 239, 172, 0.06);
   border-color: rgba(134, 239, 172, 0.4);
   border-left-width: 3px;
 }
-.starlight-aside--tip .starlight-aside__title {
-  color: #86efac;
+
+/* note — sky/blue */
+.starlight-aside--note {
+  background: rgba(90, 156, 245, 0.1);
+  border-left-color: #5a9cf5;
+  border-left-width: 3px;
 }
-.starlight-aside--tip .starlight-aside__icon svg {
-  color: #86efac;
+
+/* caution — amber */
+.starlight-aside--caution {
+  background: rgba(220, 160, 60, 0.1);
+  border-left-color: #dca03c;
+  border-left-width: 3px;
+}
+
+/* ── 8. Sidebar — active page link (sky/blue accent) ── */
+/* reserve border + inset on every link so switching pages doesn't shift layout */
+.sidebar-content a {
+  margin: 1px 4px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+}
+.sidebar-content a[aria-current='page'] {
+  background: rgba(90, 156, 245, 0.1);
+  color: #8ec7ff;
+  border-color: rgba(90, 156, 245, 0.28);
 }
