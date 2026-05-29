@@ -5,6 +5,7 @@
   "description": "Lightweight IoC for the front-end — structures your app around isolated tasks, explicit context, and predictable startup.",
   "keywords": [
     "app-compose",
+    "appcompose",
     "composition",
     "dependency-injection",
     "di",

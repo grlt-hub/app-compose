@@ -24,6 +24,18 @@ export default defineConfig({
       },
       expressiveCode: {
         themes: ["dark-plus", "light-plus"],
+        styleOverrides: {
+          textMarkers: {
+            markBackground: "rgba(90, 156, 245, 0.08)",
+            markBorderColor: "rgba(90, 156, 245, 0.5)",
+            lineMarkerAccentWidth: "3px",
+            // diff: del = removed, ins = added
+            delBackground: "rgba(255, 80, 80, 0.09)",
+            delBorderColor: "rgba(220, 80, 80, 0.55)",
+            insBackground: "rgba(70, 200, 100, 0.09)",
+            insBorderColor: "rgba(70, 200, 100, 0.55)",
+          },
+        },
       },
       components: {
         // re-pin #anchors while client-only sandboxes settle the layout
