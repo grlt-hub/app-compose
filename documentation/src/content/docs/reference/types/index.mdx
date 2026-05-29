@@ -16,7 +16,7 @@ Types exported from `@grlt-hub/app-compose`
 
 Type for compose lifecycle hooks: `onStart`, `onComplete`, `onTaskFail`.
 
-<Sandbox
+<Sandbox anchor="hooks-type"
   template="vanilla-ts"
   code={hooksType}
   options={{ layout: "console", showConsoleButton: false, hideOutput: true }}
@@ -26,7 +26,7 @@ Type for compose lifecycle hooks: `onStart`, `onComplete`, `onTaskFail`.
 
 The type returned by `compose()`.
 
-<Sandbox
+<Sandbox anchor="composer-type"
   template="vanilla-ts"
   code={composerType}
   options={{ layout: "console", showConsoleButton: false, hideOutput: true }}
@@ -40,7 +40,7 @@ The type of a value source — created by `literal`, `optional`, `shape`, or exp
 
 Extracts the value type from a Spot — `T` is the Spot type.
 
-<Sandbox
+<Sandbox anchor="spot-value"
   template="vanilla-ts"
   code={spotValue}
   options={{ layout: "console", showConsoleButton: false, hideOutput: true }}
@@ -50,7 +50,7 @@ Extracts the value type from a Spot — `T` is the Spot type.
 
 The type of a Task — `T` is its return type. Use it for parameters and variables that hold a Task.
 
-<Sandbox
+<Sandbox anchor="task-type"
   template="vanilla-ts"
   code={taskType}
   options={{ layout: "console", showConsoleButton: false, hideOutput: true }}
@@ -60,7 +60,7 @@ The type of a Task — `T` is its return type. Use it for parameters and variabl
 
 Extracts the return type from a Task — `T` is the Task type.
 
-<Sandbox
+<Sandbox anchor="task-result"
   template="vanilla-ts"
   code={taskResult}
   options={{ layout: "console", showConsoleButton: false, hideOutput: true }}

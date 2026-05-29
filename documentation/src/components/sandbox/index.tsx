@@ -7,9 +7,11 @@ import {
 } from "@codesandbox/sandpack-react"
 import { APP_CODA_JS } from "virtual:app-coda-js"
 import { APP_COMPOSE_JS } from "virtual:app-compose-js"
+import { useEffect, useState } from "react"
 import { Editor } from "./editor/index"
 import { Output } from "./output"
 import { sandboxStyle } from "./sandboxStyle"
+import { ShareButton, fetchSharedCode, readShareId, stripShareParam } from "./share"
 import { useTheme } from "./useTheme"
 
 type Props = {
@@ -17,17 +19,44 @@ type Props = {
   template?: SandpackPredefinedTemplate
   files?: Record<string, string>
   visibleFiles?: string[]
+  share?: boolean
   options?: Pick<SandpackOptions, "showConsole" | "editorHeight" | "editorWidthPercentage" | "showConsoleButton"> & {
     layout?: SandpackOptions["layout"] | "tests"
     hideOutput: boolean
-    storageKey?: string
   }
 }
 
-const SandpackEditor = ({ code: __code, template = "react", options, files = {}, visibleFiles }: Props) => {
-  const code = options?.storageKey ? (localStorage.getItem(options.storageKey) ?? __code) : __code
+const SandpackEditor = ({ code: defaultCode, template = "react", options, files = {}, visibleFiles, share = false }: Props) => {
+  // If the URL carries ?s=<id>, resolve that snippet BEFORE mounting Sandpack and use it as the
+  // initial file — so the preview compiles/runs the shared code (editor and console stay in sync).
+  const [shareId] = useState(() => (share ? readShareId() : null))
+  const [sharedCode, setSharedCode] = useState<string | null>(null)
+  const [resolving, setResolving] = useState(Boolean(shareId))
+
+  useEffect(() => {
+    if (!shareId) return
+    let alive = true
+    fetchSharedCode(shareId)
+      .then((c) => {
+        if (alive && c !== null) setSharedCode(c)
+      })
+      .finally(() => {
+        if (alive) {
+          setResolving(false)
+          stripShareParam()
+        }
+      })
+    return () => {
+      alive = false
+    }
+  }, [shareId])
 
   const theme = useTheme()
+
+  // hold off mounting until the shared snippet resolves, otherwise the preview runs the default first
+  if (resolving) return <div className="not-content sandbox" aria-busy="true" />
+
+  const code = sharedCode ?? defaultCode
   const isTests = options?.layout === "tests"
   const isVue = template === "vue" || template === "vue-ts" || template === "vite-vue" || template === "vite-vue-ts"
   const vueIsTs = template === "vue-ts" || template === "vite-vue-ts"
@@ -139,9 +168,10 @@ const SandpackEditor = ({ code: __code, template = "react", options, files = {},
         }}
       >
         <FileTabs />
+        {share && <ShareButton />}
         <SandpackLayout style={{ height: editorHeight, display: "flex", overflow: "visible" }}>
           <div style={{ width: `${editorWidthPercentage}%`, height: editorHeight }}>
-            <Editor template={template} storageKey={options?.storageKey} />
+            <Editor template={template} />
           </div>
           {!options?.hideOutput && (
             <Output

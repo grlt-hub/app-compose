@@ -16,7 +16,7 @@ A compose chain emits lifecycle events: start, complete, task failure. `.meta({ 
 
 Fires when the compose chain starts.
 
-<Sandbox
+<Sandbox anchor="start"
   template="vanilla-ts"
   code={start}
   options={{ layout: "console", showConsoleButton: false, editorWidthPercentage: 70 }}
@@ -26,7 +26,7 @@ Fires when the compose chain starts.
 
 Fires when the compose chain completes.
 
-<Sandbox
+<Sandbox anchor="complete"
   template="vanilla-ts"
   code={complete}
   options={{ layout: "console", showConsoleButton: false, editorWidthPercentage: 70 }}
@@ -36,7 +36,7 @@ Fires when the compose chain completes.
 
 Fires when a task inside the compose chain fails.
 
-<Sandbox
+<Sandbox anchor="fail"
   template="vanilla-ts"
   code={fail}
   options={{ layout: "console", showConsoleButton: false, editorWidthPercentage: 70 }}

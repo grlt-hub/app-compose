@@ -59,7 +59,6 @@ const options = {
 
 type Props = {
   template: SandpackPredefinedTemplate
-  storageKey?: string
 }
 
 const Editor = (props: Props) => {
@@ -70,7 +69,6 @@ const Editor = (props: Props) => {
   const theme = useEditorTheme()
   const onChange = (code: string | undefined) => {
     sandpack.updateFile(activeFile, code ?? "", true)
-    if (props.storageKey) localStorage.setItem(props.storageKey, code ?? "")
   }
 
   return (

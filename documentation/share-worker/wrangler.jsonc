@@ -1,0 +1,13 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "sandbox-share",
+  "main": "index.ts",
+  "compatibility_date": "2026-05-01",
+  "vars": {},
+  "kv_namespaces": [
+    {
+      "binding": "SNIPPETS",
+      "id": "21540f706ead4cb68b67369cafc3ee8d",
+    },
+  ],
+}

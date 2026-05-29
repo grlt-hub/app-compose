@@ -25,6 +25,10 @@ export default defineConfig({
       expressiveCode: {
         themes: ["dark-plus", "light-plus"],
       },
+      components: {
+        // re-pin #anchors while client-only sandboxes settle the layout
+        Head: "./src/components/Head.astro",
+      },
       description:
         "A small TypeScript library for composing apps from independent pieces. Each piece declares what it needs; the runtime wires them together.",
       head: [
@@ -120,6 +124,7 @@ export default defineConfig({
         }),
         starlightLinksValidator(),
       ],
+      lastUpdated: true,
     }),
   ],
   redirects: {
