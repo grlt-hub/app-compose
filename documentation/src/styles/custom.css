@@ -1,7 +1,8 @@
 .lead p {
   font-size: 1.25rem;
   line-height: 2rem;
-  text-align: center;
+  text-align: left;
+  max-width: 72ch;
 }
 
 .hero h1 {
@@ -392,9 +393,17 @@ body:is(:has(.hero), :has([data-splash-bg])) {
   opacity: 0.7;
 }
 
+/* ── 4.1 Home splash — let sections breathe before each heading.
+   Markdown `##` is wrapped in .sl-heading-wrapper, so target the wrapper. ── */
+body:has(.hero) .sl-markdown-content > * + .sl-heading-wrapper.level-h2 {
+  margin-top: 4.5rem;
+}
+
 /* ── 5. Prev/Next pagination — sky hover ── */
 .pagination-links a {
-  transition: border-color 0.15s, background 0.15s;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
 }
 .pagination-links a:hover {
   border-color: rgba(56, 189, 248, 0.3);
@@ -600,7 +609,7 @@ body:is(:has(.hero), :has([data-splash-bg])) {
   border: 1px solid transparent;
   border-radius: 8px;
 }
-.sidebar-content a[aria-current='page'] {
+.sidebar-content a[aria-current="page"] {
   background: rgba(90, 156, 245, 0.1);
   color: #8ec7ff;
   border-color: rgba(90, 156, 245, 0.28);

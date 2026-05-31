@@ -31,10 +31,19 @@ import { LinkCard, CardGrid, Card } from "@astrojs/starlight/components"
 import Sandbox from "../../../components/sandbox/index.astro"
 import example from "./example.ts?raw"
 
+## What it's for
+
+<div class="lead">
+  Features, services, and modules often know about each other directly. That makes them hard to test, reuse, and
+  maintain. With App-Compose, each part declares what it needs, and the runtime connects them — so you stay in control
+  as your app grows.
+</div>
+
+## What you get
+
 <CardGrid>
   <Card title="Simplicity" icon="puzzle">
-    A small API with zero dependencies: lightweight, no containers, providers, or decorators. Works with any UI or
-    server framework.
+    A small API with zero dependencies: lightweight, no containers, providers, or decorators. Framework-agnostic.
   </Card>
   <Card title="Clarity" icon="sun">
     No magic, no globals. Context moves through clear, typed wiring. Your app runs exactly as you composed it.
@@ -51,14 +60,19 @@ import example from "./example.ts?raw"
   </Card>
 </CardGrid>
 
-<h2 class="section-title">See it run</h2>
+## See it run
 
 <div class="lead">
   A minimal example built on the three key pieces: Task, Tag, and Wire (how they connect).
   <br /> Two features share data without knowing about each other.
 </div>
 
-<Sandbox anchor="example" template="vanilla-ts" code={example} options={{ layout: "console", showConsoleButton: false }} />
+<Sandbox
+  anchor="example"
+  template="vanilla-ts"
+  code={example}
+  options={{ layout: "console", showConsoleButton: false }}
+/>
 
 <br />
 <br />
