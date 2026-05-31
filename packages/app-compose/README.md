@@ -16,8 +16,8 @@ Lightweight IoC for the front-end. Compose apps you can control and trust.
 Features, services, and modules often know about each other directly. That makes them hard to test, reuse, and
 maintain.
 
-With App-Compose, each part declares what it needs, and the runtime connects them — so you stay in control
-as your app grows.
+With App-Compose, each part declares what it needs, and you supply it — so you stay in control as your app
+grows.
 
 ## What you get
 
