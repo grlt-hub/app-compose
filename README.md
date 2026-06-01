@@ -21,6 +21,10 @@ Lightweight IoC for the front-end. Compose apps you can control and trust.
 - **Testability** — missing context, duplicates, unused wires fail in CI.
 - **Observability** — your app as plain JSON; hooks for start, complete, fail.
 
+## Adopt it gradually
+
+If you want to use App-Compose for a part of your existing app, you don't have to rewrite the rest. Add it to your stack, and bring in more when you're ready.
+
 ## See it run
 
 A minimal example built on the three key pieces: Task, Tag, and Wire (how they connect).
