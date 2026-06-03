@@ -1,0 +1,26 @@
+---
+title: not
+description: Inverts a Spot into its boolean opposite.
+---
+
+`not` inverts a Spot into its boolean opposite. Without it, you'd build the same `shape` by hand:
+
+```ts
+// without not
+const userMissing = shape(fetchUser.result, (user) => !user)
+// with not
+const userMissing = not(fetchUser.result)
+
+// without not
+const notAllDone = shape(every.status([fetchUser, fetchOrder], "done"), (allDone) => !allDone)
+// with not
+const notAllDone = not(every.status([fetchUser, fetchOrder], "done"))
+```
+
+## Arguments
+
+- `value: Spot<T>` — a Spot, coerced to a boolean and inverted.
+
+## Returns
+
+`Spot<boolean>` — `true` when the input is falsy; `false` otherwise.

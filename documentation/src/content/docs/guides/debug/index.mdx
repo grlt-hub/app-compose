@@ -1,0 +1,45 @@
+---
+title: Debugging your composition
+description: Inspect Tasks, Tags, and Spots inside a compose chain — runtime state in the console.
+---
+
+import Sandbox from "../../../../components/sandbox/index.astro"
+import scopeGet from "./scope-get.ts?raw"
+import debugTask from "./debug-task.ts?raw"
+
+You don't see what happens inside a compose chain — what each Task returned, which were skipped, what your Tags carried, or what every Spot computed.
+
+When something goes wrong, you want to see inside — without scattering `console.log` across every Task. There are a few ways to do that.
+
+## scope.get
+
+`compose(...).run()` returns `Promise<Scope>` — `await` it to get a `Scope` with one method, `scope.get(spot)`, that reads any **Spot** computed during the run. A Spot is any readable source in the composition: `task.result`, `task.status`, `task.error`, `tag.value`, anything from `shape(...)`. The call returns `undefined` if the source wasn't computed (a skipped or failed Task).
+
+<Sandbox anchor="scope-get"
+  template="vanilla-ts"
+  code={scopeGet}
+  options={{ layout: "console", editorWidthPercentage: 60, showConsoleButton: false }}
+/>
+
+**Good for**
+
+- One place — all your reads cluster after the run.
+
+**Trade-offs**
+
+- Manual — you pick what to read and log, by hand.
+- End-only — you see the final state of each Spot, not snapshots from mid-run.
+
+## Debug Task
+
+Add a Task that reads any Tasks, Tags, or Spots via `context` and logs them. Place it between `.step(...)` calls to see state at that point in the chain.
+
+The catch: every `context` read must be wrapped in [`optional`](/reference/optional) — `optional(task.result)`, `optional(tag.value)`, and so on. Without it, the debug Task is skipped along with any source that fails or is skipped — and you get no log.
+
+[debug](/app-coda/debug) from `@grlt-hub/app-coda` handles this wrapping for you. Pass any Tasks, Tags, or Spots; it returns a Task you can `.step(...)`. A lint rule [no-coda-debug](/learn/linting/#no-coda-debug) flags every call so it doesn't reach a commit.
+
+<Sandbox anchor="debug-task"
+  template="vanilla-ts"
+  code={debugTask}
+  options={{ layout: "console", editorWidthPercentage: 60, showConsoleButton: false }}
+/>

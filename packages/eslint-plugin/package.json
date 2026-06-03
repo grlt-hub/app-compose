@@ -1,6 +1,6 @@
 {
   "name": "@grlt-hub/eslint-plugin-app-compose",
-  "version": "3.0.0-beta.4",
+  "version": "3.0.0-beta.5",
   "private": false,
   "description": "Enforcing best practices for @grlt-hub/app-compose",
   "keywords": [
@@ -60,6 +60,8 @@
     "@typescript-eslint/utils": "^8.59.3"
   },
   "devDependencies": {
+    "@grlt-hub/app-coda": "workspace:*",
+    "@grlt-hub/app-compose": "workspace:*",
     "@typescript-eslint/rule-tester": "8.59.3",
     "eslint": "10.4.0"
   },

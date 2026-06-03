@@ -3,6 +3,9 @@ title: Sandbox
 description: An in-browser playground for trying App-Compose. Edit the example and run it live.
 template: splash
 tableOfContents: false
+prev: false
+next: false
+lastUpdated: false
 head: [{ tag: "style", content: ".content-panel:has(h1) { display:none }" }]
 ---
 
@@ -11,14 +14,14 @@ import emptySandbox from "./sandbox.ts?raw"
 
 <div data-splash-bg hidden />
 
-<Sandbox
+<Sandbox anchor="empty-sandbox"
   template="vanilla-ts"
   code={emptySandbox}
+  share
   options={{
     editorHeight: 800,
     layout: "console",
     showConsoleButton: false,
     editorWidthPercentage: 65,
-    storageKey: "@app-compose::sandbox",
   }}
 />

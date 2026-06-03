@@ -1,0 +1,25 @@
+---
+import Default from "@astrojs/starlight/components/Head.astro"
+
+// Declare the merged "appcompose" spelling as a brand synonym for search engines.
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "App-Compose",
+  alternateName: ["appcompose", "app compose"],
+  applicationCategory: "DeveloperApplication",
+  operatingSystem: "Web",
+  url: "https://app-compose.dev",
+  description: "Lightweight IoC for the front-end. Compose apps you can control and trust.",
+}
+---
+
+<Default />
+
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+<script>
+  import { keepAnchorPinned } from "../scripts/anchor-pin"
+
+  keepAnchorPinned()
+</script>

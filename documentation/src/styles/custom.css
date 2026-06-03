@@ -1,7 +1,8 @@
 .lead p {
   font-size: 1.25rem;
   line-height: 2rem;
-  text-align: center;
+  text-align: left;
+  max-width: 72ch;
 }
 
 .hero h1 {
@@ -87,7 +88,7 @@ body:is(:has(.hero), :has([data-splash-bg])) site-search button[data-open-modal]
   background-color: rgba(15, 23, 42, 0.7);
 }
 
-body:is(:has(.hero), :has([data-splash-bg])) site-search button[data-open-modal] kbd {
+body:is(:has(.hero), :has([data-splash-bg])) site-search button[data-open-modal] > kbd {
   background-color: rgba(125, 211, 252, 0.06);
   color: var(--sl-color-gray-3);
 }
@@ -103,7 +104,7 @@ body:is(:has(.hero), :has([data-splash-bg])) site-search button[data-open-modal]
   background-color: rgba(255, 255, 255, 0.85);
 }
 
-:root[data-theme="light"] body:is(:has(.hero), :has([data-splash-bg])) site-search button[data-open-modal] kbd {
+:root[data-theme="light"] body:is(:has(.hero), :has([data-splash-bg])) site-search button[data-open-modal] > kbd {
   background-color: rgba(14, 165, 233, 0.08);
   color: var(--sl-color-gray-2);
 }
@@ -217,33 +218,130 @@ body:is(:has(.hero), :has([data-splash-bg])) {
     linear-gradient(90deg, rgba(12, 74, 110, 0.06) 1px, transparent 1px);
 }
 
-@media (min-width: 992px) {
+@media (min-width: 800px) {
   .sandbox-code {
     display: none;
   }
 }
 
-@media (max-width: 992px) {
+@media (max-width: 800px) {
   .sandbox {
     display: none;
   }
 }
 
-@media (min-width: 993px) {
+.desktop-hint {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  width: 100%;
+  /* space above the unit; flush with the code block below */
+  margin: 1.5rem 0 0;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid #d9d9d9;
+  border-bottom: 0;
+  background: #f3f4f6;
+  /* base = muted tone; icon inherits it, title overrides */
+  color: #64748b;
+  /* the whole plaque is the copy button */
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  transition: background-color 0.15s ease;
+}
+
+/* live examples run on desktop; the plaque is a mobile-only affordance.
+   placed after the base rule so its display:none wins the cascade. */
+@media (min-width: 801px) {
   .desktop-hint {
     display: none;
   }
 }
 
-.desktop-hint {
-  margin: 1rem 0;
-  padding: 0.75rem 1rem;
-  border-radius: 0.5rem;
-  border: 1px solid var(--sl-color-gray-5);
-  background: var(--sl-color-gray-7);
-  color: var(--sl-color-gray-2);
-  font-size: 0.9rem;
-  text-align: center;
+.desktop-hint:hover {
+  background: #eceef1;
+}
+
+.desktop-hint__icon {
+  flex: none;
+}
+
+.desktop-hint__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  flex: 1 1 auto;
+  min-width: 0;
+  line-height: 1.25;
+}
+
+.desktop-hint__title {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #1e293b;
+}
+
+.desktop-hint__subtitle {
+  font-size: 0.75rem;
+}
+
+.desktop-hint__copy {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--sl-color-text-accent);
+}
+
+.desktop-hint__copy-ico {
+  flex: none;
+  display: block;
+  width: 1.05em;
+  height: 1.05em;
+}
+
+.desktop-hint__copy-ico--check {
+  display: none;
+}
+
+.desktop-hint.is-copied .desktop-hint__copy {
+  color: #15803d;
+}
+
+.desktop-hint.is-copied .desktop-hint__copy-ico--link {
+  display: none;
+}
+
+.desktop-hint.is-copied .desktop-hint__copy-ico--check {
+  display: block;
+}
+
+/* The code block's own top border is the divider — kill the gap. */
+.desktop-hint + .sandbox-code {
+  margin-top: 0;
+}
+
+:root[data-theme="dark"] .desktop-hint {
+  border-color: #2d2d2d;
+  background: #252526;
+  color: #8b909a;
+}
+
+:root[data-theme="dark"] .desktop-hint:hover {
+  background: #2b2b2c;
+}
+
+:root[data-theme="dark"] .desktop-hint__title {
+  color: #e5e7eb;
+}
+
+:root[data-theme="dark"] .desktop-hint.is-copied .desktop-hint__copy {
+  color: #4ade80;
 }
 
 /* ════════════════════════════════════════════════════════════════
@@ -295,11 +393,224 @@ body:is(:has(.hero), :has([data-splash-bg])) {
   opacity: 0.7;
 }
 
+/* ── 4.1 Home splash — let sections breathe before each heading.
+   Markdown `##` is wrapped in .sl-heading-wrapper, so target the wrapper. ── */
+body:has(.hero) .sl-markdown-content > * + .sl-heading-wrapper.level-h2 {
+  margin-top: 4.5rem;
+}
+
 /* ── 5. Prev/Next pagination — sky hover ── */
 .pagination-links a {
-  transition: border-color 0.15s, background 0.15s;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
 }
 .pagination-links a:hover {
   border-color: rgba(56, 189, 248, 0.3);
   background: rgba(56, 189, 248, 0.04);
+}
+
+/* ── 6.5 Sandbox — raised frame (distinct from static code blocks) ── */
+.sandbox {
+  position: relative;
+  background: #11161f;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 12px 32px rgba(0, 0, 0, 0.5),
+    0 3px 12px rgba(0, 0, 0, 0.35);
+}
+:root[data-theme="light"] .sandbox {
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 12px 32px rgba(15, 23, 42, 0.1),
+    0 3px 12px rgba(15, 23, 42, 0.06);
+}
+
+/* ── 6.6 Sandbox page only — fill the viewport, header + editor, no page scroll ──
+   Scoped to `[data-splash-bg]` (present only in sandbox.mdx) and desktop, where
+   the live editor is the sole visible child. Header is fixed (var(--sl-nav-height));
+   the editor owns exactly the space beneath it. */
+@media (min-width: 993px) {
+  body:has([data-splash-bg]) {
+    overflow: hidden;
+  }
+  body:has([data-splash-bg]) .main-frame {
+    padding-top: var(--sl-nav-height);
+  }
+  /* full-bleed: drop the splash content padding + max-width on this page */
+  body:has([data-splash-bg]) .content-panel {
+    padding: 0;
+  }
+  body:has([data-splash-bg]) .sl-container {
+    max-width: none;
+    margin-inline: 0;
+  }
+  /* kill the 1rem inter-block gap (carried by the astro-island wrapper) so the editor sits flush under the nav */
+  body:has([data-splash-bg]) .sl-markdown-content {
+    --sl-content-gap-y: 0;
+  }
+  /* the editor fills the space under the nav; the raised frame is dropped at full bleed */
+  body:has([data-splash-bg]) .sandbox {
+    height: calc(100vh - var(--sl-nav-height));
+    margin: 0;
+    border: 0;
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+  }
+  body:has([data-splash-bg]) .sandbox .sp-wrapper {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  /* sp-layout + the editor column carry an inline px height from the prop — let them stretch instead */
+  body:has([data-splash-bg]) .sandbox .sp-layout {
+    flex: 1;
+    min-height: 0;
+    height: auto !important;
+  }
+  body:has([data-splash-bg]) .sandbox .sp-layout > div:first-child {
+    height: auto !important;
+  }
+}
+
+/* ── 6.7 Sandbox — Share button (opt-in via the `share` prop; rides the topbar, top-right) ── */
+.sandbox-share {
+  position: absolute;
+  top: 0.45rem;
+  right: 0.6rem;
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.36rem 0.72rem;
+  font-family: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--sl-color-text-accent);
+  background: color-mix(in srgb, var(--sl-color-accent) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--sl-color-accent) 35%, transparent);
+  border-radius: 9999px;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+.sandbox-share:hover {
+  background: color-mix(in srgb, var(--sl-color-accent) 20%, transparent);
+  border-color: color-mix(in srgb, var(--sl-color-accent) 55%, transparent);
+}
+.sandbox-share__ico {
+  flex: none;
+  display: block;
+  width: 0.95em;
+  height: 0.95em;
+}
+.sandbox-share:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+
+/* Share result — centered pill (portaled to <body>), TS-playground style */
+.sandbox-toast {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(1);
+  z-index: 1000;
+  padding: 20px 40px;
+  border-radius: 999px;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  /* success — green (default); .is-error overrides to red */
+  background: rgba(69, 201, 138, 0.16);
+  border: 1px solid rgba(69, 201, 138, 0.45);
+  color: #45c98a;
+  box-shadow: 0 20px 60px -14px rgba(69, 201, 138, 0.2);
+  animation: sandbox-toast-in 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.sandbox-toast.is-error {
+  background: rgba(248, 113, 113, 0.14);
+  border-color: rgba(248, 113, 113, 0.4);
+  color: #f87171;
+  box-shadow: 0 20px 60px -14px rgba(248, 113, 113, 0.18);
+}
+/* leave: React adds .is-leaving ~2s in, then unmounts after the transition */
+.sandbox-toast.is-leaving {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.92);
+  transition:
+    opacity 0.22s ease,
+    transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+@keyframes sandbox-toast-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sandbox-toast {
+    animation: none;
+  }
+  .sandbox-toast.is-leaving {
+    transition: none;
+  }
+}
+
+/* ── 7. Asides — colored variants, no icons ── */
+.starlight-aside__icon {
+  display: none;
+}
+/* title: theme foreground (white on dark, black on light), not the accent tint */
+.starlight-aside__title {
+  color: var(--sl-color-white);
+}
+
+/* tip — emerald/mint */
+.starlight-aside--tip {
+  background: rgba(134, 239, 172, 0.06);
+  border-color: rgba(134, 239, 172, 0.4);
+  border-left-width: 3px;
+}
+
+/* note — sky/blue */
+.starlight-aside--note {
+  background: rgba(90, 156, 245, 0.1);
+  border-left-color: #5a9cf5;
+  border-left-width: 3px;
+}
+
+/* caution — amber */
+.starlight-aside--caution {
+  background: rgba(220, 160, 60, 0.1);
+  border-left-color: #dca03c;
+  border-left-width: 3px;
+}
+
+/* ── 8. Sidebar — active page link (sky/blue accent) ── */
+/* reserve border + inset on every link so switching pages doesn't shift layout */
+.sidebar-content a {
+  margin: 1px 4px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+}
+.sidebar-content a[aria-current="page"] {
+  background: rgba(90, 156, 245, 0.1);
+  color: #8ec7ff;
+  border-color: rgba(90, 156, 245, 0.28);
 }

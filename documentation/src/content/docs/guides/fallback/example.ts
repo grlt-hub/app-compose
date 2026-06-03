@@ -1,6 +1,5 @@
 import { compose, createTask } from "@grlt-hub/app-compose"
 
-// critical to the app
 const auth = createTask({
   name: "auth",
   run: {
@@ -14,41 +13,28 @@ const auth = createTask({
   },
 })
 
-// reads critical Task statuses → { ok: boolean }
-const control = createTask({
-  name: "control",
-  run: {
-    context: [auth.status],
-    fn: (statuses) => {
-      // works for any number of statuses
-      const passed = statuses.every((status) => status === "done")
-
-      return { ok: passed }
-    },
-  },
-})
-
+// critical to the app
 const dashboard = createTask({
   name: "dashboard",
-  run: { fn: () => console.log("dashboard ready") },
-  enabled: {
-    context: control.result.ok,
-    fn: (ok) => ok,
+  run: {
+    context: auth.result,
+    fn: (user) => console.log(`#${user.id} dashboard is ready`),
   },
 })
 
+// runs when dashboard doesn't reach "done"
 const fallback = createTask({
   name: "fallback",
   run: { fn: () => console.log("fallback shown") },
   enabled: {
-    context: control.result.ok,
-    fn: (ok) => !ok,
+    context: dashboard.status,
+    fn: (status) => status !== "done",
   },
 })
 
 // oxfmt-ignore
 compose()
   .step(auth)
-  .step(control)
-  .step([dashboard, fallback])
+  .step(dashboard)
+  .step(fallback)
   .run()

@@ -67,7 +67,7 @@ alpha()
 
 Once all the Steps are listed, all that's left is to call `run()`.
 
-<Sandbox template="vanilla-ts" code={runTask} options={{ layout: "console", showConsoleButton: false }} />
+<Sandbox anchor="run-task" template="vanilla-ts" code={runTask} options={{ layout: "console", showConsoleButton: false }} />
 
 <br />
 
@@ -105,7 +105,7 @@ A _Tag_ is a placeholder for data. A Task reads it through `tag.value`. A `creat
 
 Have a look at the result:
 
-<Sandbox
+<Sandbox anchor="pass-data"
   template="vanilla-ts"
   code={passData}
   options={{ layout: "console", showConsoleButton: false, editorWidthPercentage: 65 }}
@@ -143,7 +143,7 @@ Keep `createWire` and Tasks in separate `.step()` calls. If they share a Step, A
 
 One Task reads another's result directly — no Tag, no Wire. The two are now coupled. Reasonable when they always run together; otherwise, prefer a Tag.
 
-<Sandbox
+<Sandbox anchor="task-to-task"
   template="vanilla-ts"
   code={taskToTask}
   options={{ layout: "console", showConsoleButton: false, editorWidthPercentage: 65 }}
@@ -168,7 +168,7 @@ Every Task is enabled by default. To skip one based on a feature flag, the curre
 
 `enabled` has the same shape as `run`, but `enabled.fn` returns `boolean | Promise<boolean>`. A `false` result skips the Task.
 
-<Sandbox template="vanilla-ts" code={disable} options={{ layout: "console", showConsoleButton: false }} />
+<Sandbox anchor="disable" template="vanilla-ts" code={disable} options={{ layout: "console", showConsoleButton: false }} />
 
 ## When a Task fails or is skipped
 
@@ -176,6 +176,7 @@ When a Task fails or is skipped, every Task that reads from it is **skipped** to
 Your app keeps running.
 
 <Sandbox
+  anchor="when-fail-or-skip"
   template="vanilla-ts"
   code={whenFailOrSkip}
   options={{ layout: "console", showConsoleButton: false, editorHeight: 666 }}

@@ -1,0 +1,5 @@
+export { debug } from "./debug"
+export { every } from "./every"
+export { some } from "./some"
+export { not } from "./not"
+export { when } from "./when"

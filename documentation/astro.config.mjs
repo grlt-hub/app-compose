@@ -9,6 +9,9 @@ import { appComposePlugin } from "./app-compose-plugin.mjs"
 export default defineConfig({
   vite: {
     plugins: [appComposePlugin()],
+    optimizeDeps: {
+      exclude: ["@nanostores/react", "@nanostores/vue", "nanostores", "vue"],
+    },
   },
   site: "https://app-compose.dev",
   integrations: [
@@ -18,6 +21,25 @@ export default defineConfig({
       logo: {
         src: "./src/assets/logo.svg",
         replacesTitle: true,
+      },
+      expressiveCode: {
+        themes: ["dark-plus", "light-plus"],
+        styleOverrides: {
+          textMarkers: {
+            markBackground: "rgba(90, 156, 245, 0.08)",
+            markBorderColor: "rgba(90, 156, 245, 0.5)",
+            lineMarkerAccentWidth: "3px",
+            // diff: del = removed, ins = added
+            delBackground: "rgba(255, 80, 80, 0.09)",
+            delBorderColor: "rgba(220, 80, 80, 0.55)",
+            insBackground: "rgba(70, 200, 100, 0.09)",
+            insBorderColor: "rgba(70, 200, 100, 0.55)",
+          },
+        },
+      },
+      components: {
+        // re-pin #anchors while client-only sandboxes settle the layout
+        Head: "./src/components/Head.astro",
       },
       description:
         "A small TypeScript library for composing apps from independent pieces. Each piece declares what it needs; the runtime wires them together.",
@@ -32,9 +54,9 @@ export default defineConfig({
         { tag: "meta", attrs: { name: "twitter:image", content: "https://app-compose.dev/og.png" } },
       ],
       social: [
-        { icon: "open-book", label: "Learn", href: "/learn/quick-start/" },
-        { icon: "forward-slash", label: "Sandbox", href: "/sandbox/" },
+        { icon: "comment", label: "Community", href: "/community/" },
         { icon: "github", label: "GitHub", href: "https://github.com/grlt-hub/app-compose" },
+        { icon: "forward-slash", label: "Sandbox", href: "/sandbox/" },
         { icon: "document", label: "DeepWiki", href: "https://deepwiki.com/grlt-hub/app-compose" },
       ],
       sidebar: [
@@ -55,13 +77,14 @@ export default defineConfig({
             { slug: "guides" },
             { slug: "guides/optional" },
             { slug: "guides/mapping" },
+            { slug: "guides/managing-tags" },
             { slug: "guides/nesting" },
             { slug: "guides/fallback" },
-            { slug: "guides/sharing-tags" },
             { slug: "guides/guard" },
             { slug: "guides/code-splitting" },
             { slug: "guides/react" },
             { slug: "guides/vue" },
+            { slug: "guides/debug" },
             { slug: "guides/observability" },
             { slug: "guides/graph" },
           ],
@@ -83,19 +106,43 @@ export default defineConfig({
           ],
           collapsed: true,
         },
+        {
+          label: "App-Coda",
+          items: [
+            { slug: "app-coda" },
+            { slug: "app-coda/debug" },
+            { slug: "app-coda/every" },
+            { slug: "app-coda/not" },
+            { slug: "app-coda/some" },
+            { slug: "app-coda/when" },
+          ],
+          collapsed: true,
+        },
+        { slug: "community" },
         { slug: "sandbox" },
       ],
       customCss: ["./src/styles/custom.css"],
       plugins: [
         starlightLlmsTxt({
           rawContent: false,
+          exclude: ["sandbox"],
+          customSets: [
+            {
+              label: "App-Coda",
+              description:
+                "Helper utilities for @grlt-hub/app-compose — reusable building blocks for tasks, wires, and context.",
+              paths: ["app-coda/**"],
+            },
+          ],
         }),
         starlightLinksValidator(),
       ],
+      lastUpdated: true,
     }),
   ],
   redirects: {
     "/app-compose/tutorials/getting-started": "/learn/quick-start",
     "/app-compose/tutorials/dependencies": "/learn/quick-start/#how-to-pass-data-to-a-task",
+    "/guides/sharing-tags": "/guides/managing-tags",
   },
 })

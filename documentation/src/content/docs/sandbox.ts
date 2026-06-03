@@ -1,15 +1,24 @@
-// oxfmt-ignore
-import {
-createWire, compose, tag, createTask, literal, optional, shape
-} from "@grlt-hub/app-compose"
+import { every, some, not, when, debug } from "@grlt-hub/app-coda"
+import { createWire, compose, tag, createTask, literal, optional, shape } from "@grlt-hub/app-compose"
 
-const task = createTask({
-  name: "task",
+const whoToGreet = tag<string>("whoToGreet")
+
+const greeting = createTask({
+  name: "greeting",
   run: {
-    fn: () => {
-      console.log("Hello, World!")
-    },
+    // greeting reads from it
+    context: whoToGreet.value,
+    fn: (name) => console.log(`Hello, ${name}!`),
   },
 })
 
-compose().step(task).run()
+const user = createTask({
+  name: "user",
+  run: { fn: () => ({ name: "World" }) },
+})
+
+compose()
+  .step(user)
+  .step(createWire({ from: user.result.name, to: whoToGreet }))
+  .step(greeting)
+  .run()

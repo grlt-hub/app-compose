@@ -11,13 +11,25 @@ Lightweight IoC for the front-end. Compose apps you can control and trust.
 
 [Learn](https://app-compose.dev/learn/quick-start/) | [Guides](https://app-compose.dev/guides/) | [Reference](https://app-compose.dev/reference/)
 
-## Features
+## What it's for
+
+Features, services, and modules often know about each other directly. That makes them hard to test, reuse, and
+maintain.
+
+With App-Compose, each part declares what it needs, and you supply it — so you stay in control as your app
+grows.
+
+## What you get
 
 - **Simplicity** — lightweight, no containers/providers/decorators, zero dependencies. Framework-agnostic.
 - **Clarity** — no magic, no globals; context flows through typed wiring.
 - **Reusability** — same code, different context per compose.
 - **Testability** — missing context, duplicates, unused wires fail in CI.
 - **Observability** — your app as plain JSON; hooks for start, complete, fail.
+
+## Adopt it gradually
+
+If you want to use App-Compose for a part of your existing app, you don't have to rewrite the rest. Add it to your stack, and bring in more when you're ready.
 
 ## See it run
 

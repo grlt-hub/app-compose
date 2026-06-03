@@ -1,11 +1,61 @@
 ---
 import SandpackEditor from './index.tsx';
-import { Code } from "@astrojs/starlight/components"
+import { Code, Icon } from "@astrojs/starlight/components"
 
-const { code: rawCode, template, options, files, visibleFiles } = Astro.props;
+const { anchor, code: rawCode, template, options, files, visibleFiles, share } = Astro.props;
 const sourceCode = rawCode.replace(/^[ \t]*\/\/\s*oxfmt-ignore[ \t]*\r?\n?/gm, '');
+// the example name is the anchor; prefix it so it can't collide with other anchors
+const anchorId = anchor ? `live-${anchor}` : undefined;
 ---
 
+<div id={anchorId} class="sandbox-block">
+<button class="desktop-hint not-content" type="button" data-anchor={anchorId} aria-label="Copy link to this example">
+  <Icon name="desktop" class="desktop-hint__icon" size="1.5rem" />
+  <span class="desktop-hint__text">
+    <span class="desktop-hint__title">Best on desktop</span>
+    <span class="desktop-hint__subtitle">edit & run it live</span>
+  </span>
+  <span class="desktop-hint__copy">
+    <span class="desktop-hint__copy-label">Copy link</span>
+    <svg class="desktop-hint__copy-ico desktop-hint__copy-ico--link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+      <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+    </svg>
+    <svg class="desktop-hint__copy-ico desktop-hint__copy-ico--check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <polyline points="20 6 9 17 4 12"></polyline>
+    </svg>
+  </span>
+</button>
 <Code class="sandbox-code" code={sourceCode} lang="ts" />
 
-<SandpackEditor client:only="react" code={sourceCode} template={template} options={options} files={files} visibleFiles={visibleFiles} />
+<SandpackEditor client:only="react" code={sourceCode} template={template} options={options} files={files} visibleFiles={visibleFiles} share={share} />
+</div>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>("button.desktop-hint").forEach((btn) => {
+    const label = btn.querySelector(".desktop-hint__copy-label");
+    let timer: ReturnType<typeof setTimeout>;
+
+    btn.addEventListener("click", async () => {
+      const anchor = btn.dataset.anchor;
+      const url = anchor
+        ? `${window.location.origin}${window.location.pathname}#${anchor}`
+        : window.location.href;
+
+      try {
+        await navigator.clipboard.writeText(url);
+      } catch {
+        return;
+      }
+
+      btn.classList.add("is-copied");
+      if (label) label.textContent = "Copied";
+
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        btn.classList.remove("is-copied");
+        if (label) label.textContent = "Copy link";
+      }, 700);
+    });
+  });
+</script>

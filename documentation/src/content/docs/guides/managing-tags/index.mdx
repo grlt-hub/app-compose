@@ -1,0 +1,94 @@
+---
+title: Managing Tags
+description: Find the right Tag count — reuse where meanings overlap, separate where they don't.
+---
+
+import { Aside } from "@astrojs/starlight/components"
+import Sandbox from "../../../../components/sandbox/index.astro"
+import example from "./example.ts?raw"
+
+When creating Tags, it's easy to slip into one of two extremes.
+
+One Tag per Task — every shared value becomes a duplicate.
+
+```ts
+const dashboardTag = tag<{
+  user: User
+  widgets: Widget[]
+}>("dashboard")
+
+const dashboard = createTask({
+  name: "dashboard",
+  run: { context: dashboardTag.value, fn: () => {} },
+})
+
+const profileTag = tag<{
+  user: User
+  settings: Setting[]
+}>("profile")
+
+const profile = createTask({
+  name: "profile",
+  run: { context: profileTag.value, fn: () => {} },
+})
+```
+
+One Tag per value — every new value means a new Tag and a new wire.
+
+```ts
+const dashboardUser = tag<User>("dashboard::user")
+const dashboardWidgets = tag<Widget[]>("dashboard::widgets")
+
+const dashboard = createTask({
+  name: "dashboard",
+  run: {
+    context: { user: dashboardUser.value, widgets: dashboardWidgets.value },
+    fn: () => {},
+  },
+})
+
+const profileUser = tag<User>("profile::user")
+const profileSettings = tag<Setting[]>("profile::settings")
+
+const profile = createTask({
+  name: "profile",
+  run: {
+    context: { user: profileUser.value, settings: profileSettings.value },
+    fn: () => {},
+  },
+})
+```
+
+The right count sits between them.
+
+<Aside type="tip" title="A simple rule" icon="approve-check-circle">
+  Start with **one Tag per Task**. When two Tasks need the same value, create a **shared Tag**.
+</Aside>
+
+The hybrid: one shared Tag, separate Tags for what differs.
+
+<Sandbox anchor="example"
+  template="vanilla-ts"
+  code={example}
+  options={{ layout: "console", showConsoleButton: false, editorWidthPercentage: 75 }}
+/>
+
+## Deep context types
+
+When a Task's context type is deeply nested, a Tag often carries the whole type minus a few internal fields. Writing that subtype by hand is painful — and it goes stale the moment the source changes. Use `OmitDeep` from [`type-fest`](https://github.com/sindresorhus/type-fest).
+
+```ts
+import type { OmitDeep } from "type-fest"
+
+type DashboardCtx = {
+  user: { id: string }
+  navigation: {
+    sidebarApi: SidebarApi
+    title: string
+  }
+  widgets: Widgets[]
+}
+
+const dashboardTag = tag<OmitDeep<DashboardCtx, "navigation.sidebarApi">>("dashboard")
+// same as { user: { id: string }; navigation: { title: string }; widgets: Widgets[] }
+```

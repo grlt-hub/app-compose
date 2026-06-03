@@ -1,0 +1,51 @@
+---
+title: some
+description: Any-of quantifier for Tasks, Tags, and Spots — by predicate or by Task status.
+---
+
+`some` checks a list of Tasks, Tags, or Spots for any item that matches one condition. Without it, you'd build the same `shape` by hand:
+
+```ts
+// without some
+const anyEven = shape([fetchUser.result, fetchOrder.result], (results) =>
+  results.some((result) => result.id % 2 === 0),
+)
+
+// with some
+const anyEven = some([fetchUser, fetchOrder], (task) => task.result.id % 2 === 0)
+```
+
+## Arguments
+
+- `list` — Tasks, Tags, and Spots to check. A mix is fine.
+- `predicate` — runs once per item. A Task is unwrapped to `{ result, status, error }`; a Tag or Spot, to its value. Must return a `boolean`.
+
+## Returns
+
+`Spot<boolean>` — `true` when any item satisfies `predicate`; `false` otherwise.
+
+## some.status
+
+`some.status` checks whether any Task in a list reached a given status. Without it, you'd write that as the `some` predicate by hand:
+
+```ts
+// without some
+const anyDone = shape([fetchUser.status, fetchOrder.status], (statuses) =>
+  statuses.some((status) => status === "done"),
+)
+
+// with some
+const anyDone = some([fetchUser, fetchOrder], (task) => task.status === "done")
+
+// with some.status
+const anyDone = some.status([fetchUser, fetchOrder], "done")
+```
+
+### Arguments
+
+- `list` — Tasks
+- `status` — the `TaskStatus` at least one Task must reach.
+
+### Returns
+
+`Spot<boolean>` — `true` when any Task reached `status`; `false` otherwise.

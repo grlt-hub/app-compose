@@ -1,16 +1,15 @@
 import { readFileSync } from "node:fs"
 import { fileURLToPath } from "node:url"
 
-const VIRTUAL_DTS_ID = "virtual:app-compose-dts"
-const RESOLVED_DTS_ID = "\0" + VIRTUAL_DTS_ID
+const PACKAGES = [
+  { pkg: "@grlt-hub/app-compose", dir: "app-compose", constName: "APP_COMPOSE", virtualName: "app-compose" },
+  { pkg: "@grlt-hub/app-coda", dir: "app-coda", constName: "APP_CODA", virtualName: "app-coda" },
+]
 
-const VIRTUAL_JS_ID = "virtual:app-compose-js"
-const RESOLVED_JS_ID = "\0" + VIRTUAL_JS_ID
+const dist = (dir, file) => fileURLToPath(new URL(`../packages/${dir}/dist/${file}`, import.meta.url))
 
-const dist = (file) => fileURLToPath(new URL(`../packages/app-compose/dist/${file}`, import.meta.url))
-
-const buildDts = () => {
-  const raw = readFileSync(dist("index.d.ts"), "utf-8")
+const buildDts = ({ pkg, dir, constName }) => {
+  const raw = readFileSync(dist(dir, "index.d.ts"), "utf-8")
 
   const exportBlock = raw.match(/^export \{([^}]*)\};?\s*$/m)?.[1] ?? ""
   const aliases = exportBlock
@@ -30,28 +29,35 @@ const buildDts = () => {
     .trim()
 
   const body = aliases ? `${content}\n${aliases}` : content
-  return `export const APP_COMPOSE_DTS = ${JSON.stringify(`declare module "@grlt-hub/app-compose" {\n${body}\n}`)}`
+  return `export const ${constName}_DTS = ${JSON.stringify(`declare module "${pkg}" {\n${body}\n}`)}`
 }
 
-const buildJs = () => {
-  const js = readFileSync(dist("index.cjs"), "utf-8")
-  return `export const APP_COMPOSE_JS = ${JSON.stringify(js)}`
+const buildJs = ({ dir, constName }) => {
+  const js = readFileSync(dist(dir, "index.cjs"), "utf-8")
+  return `export const ${constName}_JS = ${JSON.stringify(js)}`
 }
 
 const appComposePlugin = () => {
-  const modules = {
-    [RESOLVED_DTS_ID]: buildDts(),
-    [RESOLVED_JS_ID]: buildJs(),
+  const modules = {}
+
+  for (const entry of PACKAGES) {
+    const dtsId = `virtual:${entry.virtualName}-dts`
+    const jsId = `virtual:${entry.virtualName}-js`
+    modules["\0" + dtsId] = { code: buildDts(entry), virtualId: dtsId }
+    modules["\0" + jsId] = { code: buildJs(entry), virtualId: jsId }
   }
+
+  const virtualToResolved = Object.fromEntries(
+    Object.entries(modules).map(([resolved, { virtualId }]) => [virtualId, resolved]),
+  )
 
   return {
     name: "app-compose",
     resolveId(id) {
-      if (id === VIRTUAL_DTS_ID) return RESOLVED_DTS_ID
-      if (id === VIRTUAL_JS_ID) return RESOLVED_JS_ID
+      return virtualToResolved[id]
     },
     load(id) {
-      return modules[id]
+      return modules[id]?.code
     },
   }
 }

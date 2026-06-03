@@ -1,12 +1,16 @@
 import type { TSESLint } from "@typescript-eslint/utils"
 import { name, version } from "../package.json"
+import noCodaDebug from "./rules/no-coda-debug/no-coda-debug"
 import taskOptionsOrder from "./rules/task-options-order/task-options-order"
+import wireOptionsOrder from "./rules/wire-options-order/wire-options-order"
 import { ruleset } from "./ruleset"
 
 const base = {
   meta: { name, version, namespace: "app-compose" },
   rules: {
+    "no-coda-debug": noCodaDebug,
     "task-options-order": taskOptionsOrder,
+    "wire-options-order": wireOptionsOrder,
   },
 }
 

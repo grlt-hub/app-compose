@@ -18,3 +18,7 @@ storybook-static
 
 # Coverage
 /coverage
+
+# cf
+.wrangler
+.dev.vars

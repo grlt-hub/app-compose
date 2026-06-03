@@ -14,7 +14,7 @@ Values flow between Tasks and Wires. Every value a Task reads is required by def
 
 `optional` works in both `run.context` and `enabled.context`.
 
-<Sandbox
+<Sandbox anchor="context"
   template="vanilla-ts"
   code={context}
   options={{ layout: "console", showConsoleButton: false, editorWidthPercentage: 70 }}
@@ -24,7 +24,7 @@ Values flow between Tasks and Wires. Every value a Task reads is required by def
 
 `optional` works in `createWire.from`. The destination tag carries `T | undefined`.
 
-<Sandbox
+<Sandbox anchor="wire"
   template="vanilla-ts"
   code={wire}
   options={{ layout: "console", showConsoleButton: false, editorWidthPercentage: 70 }}
@@ -34,7 +34,7 @@ Values flow between Tasks and Wires. Every value a Task reads is required by def
 
 `optional` works in `shape`. The callback receives `T | undefined`.
 
-<Sandbox
+<Sandbox anchor="shape"
   template="vanilla-ts"
   code={shape}
   options={{ layout: "console", showConsoleButton: false, editorWidthPercentage: 70 }}

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Node, the app-compose mascot, looking puzzled">
+  <title>Node — 404</title>
+
+  <defs>
+    <linearGradient id="nf-body" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#dff3fd"></stop>
+      <stop offset="100%" stop-color="#38bdf8"></stop>
+    </linearGradient>
+    <radialGradient id="nf-highlight" cx="35%" cy="30%" r="40%">
+      <stop offset="0%" stop-color="#fff" stop-opacity="0.55"></stop>
+      <stop offset="60%" stop-color="#fff" stop-opacity="0.05"></stop>
+      <stop offset="100%" stop-color="#fff" stop-opacity="0"></stop>
+    </radialGradient>
+  </defs>
+
+  <ellipse cx="50" cy="92" rx="22" ry="3" fill="#0c1018" opacity="0.35"></ellipse>
+
+  <circle cx="50" cy="52" r="30" fill="url(#nf-body)"></circle>
+  <circle cx="50" cy="52" r="30" fill="url(#nf-highlight)"></circle>
+
+  <line x1="50" y1="22" x2="50" y2="14" stroke="#7dd3fc" stroke-width="2.8" stroke-linecap="round"></line>
+  <circle cx="50" cy="11" r="3.2" fill="#7dd3fc"></circle>
+
+  <circle cx="40" cy="47" r="3.2" fill="#0c1018"></circle>
+  <circle cx="60" cy="47" r="3.2" fill="#0c1018"></circle>
+
+  <path d="M 44 60 L 56 60" stroke="#0c1018" stroke-width="2.4" stroke-linecap="round" fill="none"></path>
+
+  <circle cx="78" cy="30" r="6" fill="#ffffff"></circle>
+  <circle cx="71" cy="38" r="2.5" fill="#ffffff"></circle>
+  <text x="78" y="34" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="8" font-weight="700" fill="#0c1018">?</text>
+</svg>
