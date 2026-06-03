@@ -55,7 +55,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build packages
-        run: pnpm --filter ./packages/app-compose build
+        run: pnpm build
 
       - name: Build docs
         run: pnpm --filter ./documentation build
