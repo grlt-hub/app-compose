@@ -38,13 +38,12 @@ const SandpackEditor = ({ code: defaultCode, template = "react", options, files 
     let alive = true
     fetchSharedCode(shareId)
       .then((c) => {
-        if (alive && c !== null) setSharedCode(c)
-      })
-      .finally(() => {
-        if (alive) {
-          setResolving(false)
-          stripShareParam()
-        }
+        if (!alive) return
+        // On a hit, keep ?s in the URL — ShareButton owns it from here and drops it on the first
+        // edit. On a miss the link is dead, so clear it now rather than advertise a broken snippet.
+        if (c !== null) setSharedCode(c)
+        else stripShareParam()
+        setResolving(false)
       })
     return () => {
       alive = false
