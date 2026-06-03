@@ -1,6 +1,6 @@
 {
   "name": "@grlt-hub/app-compose",
-  "version": "3.0.0-beta.4",
+  "version": "3.0.0-beta.5",
   "private": false,
   "description": "Lightweight IoC for the front-end — structures your app around isolated tasks, explicit context, and predictable startup.",
   "keywords": [
