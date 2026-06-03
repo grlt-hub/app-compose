@@ -478,23 +478,24 @@ body:has(.hero) .sl-markdown-content > * + .sl-heading-wrapper.level-h2 {
   }
 }
 
-/* ── 6.7 Sandbox — Share button (opt-in via the `share` prop; rides the topbar, top-right) ── */
+/* ── 6.7 Sandbox — Share button (opt-in via the `share` prop; portaled into the site header next
+   to the search box — see share.tsx). Ghost button: same fill/border/radius as the splash search
+   control (see the site-search rules above), muted grey at rest, brighter on hover — so it reads
+   as a twin of search rather than a loud CTA. */
 .sandbox-share {
-  position: absolute;
-  top: 0.45rem;
-  right: 0.6rem;
-  z-index: 4;
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  padding: 0.36rem 0.72rem;
+  margin-left: 0.5rem;
+  padding: 0.4rem 0.85rem;
   font-family: inherit;
-  font-size: 0.8125rem;
-  font-weight: 600;
+  font-size: 0.875rem;
+  font-weight: 500;
   line-height: 1;
-  color: var(--sl-color-text-accent);
-  background: color-mix(in srgb, var(--sl-color-accent) 12%, transparent);
-  border: 1px solid color-mix(in srgb, var(--sl-color-accent) 35%, transparent);
+  white-space: nowrap;
+  color: var(--sl-color-gray-2);
+  background-color: rgba(15, 23, 42, 0.55);
+  border: 1px solid rgba(125, 211, 252, 0.12);
   border-radius: 9999px;
   cursor: pointer;
   appearance: none;
@@ -504,9 +505,23 @@ body:has(.hero) .sl-markdown-content > * + .sl-heading-wrapper.level-h2 {
     border-color 0.15s ease,
     color 0.15s ease;
 }
-.sandbox-share:hover {
-  background: color-mix(in srgb, var(--sl-color-accent) 20%, transparent);
-  border-color: color-mix(in srgb, var(--sl-color-accent) 55%, transparent);
+.sandbox-share:hover,
+.sandbox-share:focus-visible {
+  color: var(--sl-color-white);
+  background-color: rgba(15, 23, 42, 0.7);
+  border-color: rgba(125, 211, 252, 0.25);
+  outline: none;
+}
+:root[data-theme="light"] .sandbox-share {
+  color: var(--sl-color-gray-2);
+  background-color: rgba(255, 255, 255, 0.6);
+  border-color: rgba(14, 165, 233, 0.18);
+}
+:root[data-theme="light"] .sandbox-share:hover,
+:root[data-theme="light"] .sandbox-share:focus-visible {
+  color: var(--sl-color-gray-1);
+  background-color: rgba(255, 255, 255, 0.85);
+  border-color: rgba(14, 165, 233, 0.32);
 }
 .sandbox-share__ico {
   flex: none;
@@ -517,6 +532,13 @@ body:has(.hero) .sl-markdown-content > * + .sl-heading-wrapper.level-h2 {
 .sandbox-share:disabled {
   opacity: 0.7;
   cursor: default;
+}
+/* mobile (≤800px) swaps the live editor for the static code block (.sandbox is hidden there),
+   so there's nothing to share — hide the header button too. Matches the .sandbox breakpoint. */
+@media (max-width: 800px) {
+  .sandbox-share {
+    display: none;
+  }
 }
 
 /* Share result — centered pill (portaled to <body>), TS-playground style */
@@ -613,4 +635,11 @@ body:has(.hero) .sl-markdown-content > * + .sl-heading-wrapper.level-h2 {
   background: rgba(90, 156, 245, 0.1);
   color: #8ec7ff;
   border-color: rgba(90, 156, 245, 0.28);
+}
+/* Community / Sandbox are standalone top-level links (rendered as <a>), but the
+   section groups above them are <summary> elements the inset above never touches.
+   Drop the inline inset so these links line up with the group labels instead of
+   sitting ~5px to their right. */
+.sidebar-content .top-level > li > a {
+  margin-inline: 0;
 }
