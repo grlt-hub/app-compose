@@ -1,3 +1,4 @@
+import { isPromiseLike } from "@typescript-eslint/type-utils"
 import { ESLintUtils, type TSESTree as Node } from "@typescript-eslint/utils"
 import { PACKAGE_NAME, UNITS } from "@/shared/constants"
 import { createRule } from "@/shared/create"
@@ -30,7 +31,7 @@ export default createRule({
     }
 
     return {
-      [`${importSelector} > ${specifierSelector}`]: (node: Node.ImportSpecifier) => imports.add(node.local.name),
+      [`${importSelector} > ${specifierSelector}`]: (node: Node.ImportSpecifier) => void imports.add(node.local.name),
 
       [`CallExpression${callSelector}`]: (node: ShapeCall) => {
         if (!imports.has(node.callee.name)) return
@@ -39,7 +40,9 @@ export default createRule({
         const returnsPromise = services
           .getTypeAtLocation(fn)
           .getCallSignatures()
-          .some((signature) => signature.getReturnType().getSymbol()?.name === "Promise")
+          .map((signature) => signature.getReturnType())
+          .flatMap((returned) => (returned.isUnion() ? returned.types : [returned]))
+          .some((type) => isPromiseLike(services.program, type))
 
         if (!returnsPromise) return
 

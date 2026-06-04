@@ -29,7 +29,7 @@ export default createRule({
     type MethodCall = Node.CallExpression & { callee: Node.Identifier; arguments: [Node.ObjectExpression] }
 
     return {
-      [`${importSelector} > ${methodSelector}`]: (node: Node.ImportSpecifier) => imports.add(node.local.name),
+      [`${importSelector} > ${methodSelector}`]: (node: Node.ImportSpecifier) => void imports.add(node.local.name),
 
       [`CallExpression${callSelector}:has(${argumentSelector})`]: (node: MethodCall) => {
         if (!imports.has(node.callee.name)) return

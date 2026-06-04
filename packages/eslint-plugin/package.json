@@ -57,12 +57,13 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@typescript-eslint/utils": "^8.59.3"
+    "@typescript-eslint/type-utils": "^8.60.0",
+    "@typescript-eslint/utils": "^8.60.0"
   },
   "devDependencies": {
     "@grlt-hub/app-coda": "workspace:*",
     "@grlt-hub/app-compose": "workspace:*",
-    "@typescript-eslint/rule-tester": "8.59.3",
+    "@typescript-eslint/rule-tester": "8.60.0",
     "eslint": "10.4.0"
   },
   "peerDependencies": {
