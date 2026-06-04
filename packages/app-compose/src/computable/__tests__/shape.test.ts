@@ -8,7 +8,7 @@ const registry = new Map<symbol, unknown>()
 const { compute } = createComputer(registry)
 
 describe("shape", () => {
-  it("maps spot -> spot", () => {
+  it("maps spot + fn -> spot", () => {
     const source = literal<string>("test")
     const target = shape(source, (x) => x.length)
 
@@ -17,13 +17,27 @@ describe("shape", () => {
     expect(result).toBe(4)
   })
 
-  it("maps shape -> spot", () => {
+  it("maps shape + fn -> spot", () => {
     const source = literal<string>("test")
     const target = shape({ a: source }, ({ a }) => a.length)
 
     const result = compute(target as SpotInternal)
 
     expect(result).toBe(4)
+  })
+
+  it("maps spot -> spot", () => {
+    const source = shape(literal(42))
+    const result = compute(source as SpotInternal)
+
+    expect(result).toBe(42)
+  })
+
+  it("maps shape -> spot", () => {
+    const source = shape({ a: literal(42), b: literal("other") })
+    const result = compute(source as SpotInternal)
+
+    expect(result).toStrictEqual({ a: 42, b: "other" })
   })
 
   it("catches userland errors", () => {
@@ -41,7 +55,6 @@ describe("shape", () => {
     const fn = vi.fn((x: unknown) => x)
     const value = shape(literal(0), fn) as SpotInternal
 
-    // note: unrealistic, computer does not run `fn` if `build` is missing
     value[Compute$].unshift(() => Missing$)
 
     const result = compute(value as SpotInternal)

@@ -7,14 +7,9 @@ type DebugOptions = {
 
 type DebugTarget = Task<unknown> | Tag<unknown> | Spot<unknown>
 
-const safe = <T>(spot: Spot<T>) => optional(shape(spot, (x) => x))
-
 const normalize = (head: DebugOptions | DebugTarget, tail: DebugTarget[]) =>
   !is.task(head) && !is.tag(head) && "name" in head
-    ? {
-        options: head,
-        targets: tail,
-      }
+    ? { options: head, targets: tail }
     : { options: { name: "" }, targets: [head, ...tail] }
 
 function debug(opts: DebugOptions, target: DebugTarget, ...targets: DebugTarget[]): Task<unknown>
@@ -36,10 +31,10 @@ function debug(
         }
       : is.tag(target)
         ? { title: literal(`[Tag]: ${target.name}`), output: optional(target.value) }
-        : { title: literal("[Spot]"), output: safe(target) },
+        : { title: literal("[Spot]"), output: optional(target) },
   )
 
-  const taskName = `${LIBRARY_NAME} debug ${options.name}`
+  const taskName = `${LIBRARY_NAME} debug ${options.name}`.trimEnd()
 
   return createTask({
     name: taskName,

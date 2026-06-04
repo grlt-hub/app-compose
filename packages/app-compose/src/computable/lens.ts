@@ -1,5 +1,5 @@
 import { LIBRARY_NAME } from "@shared"
-import { Compute$, type SpotInternal } from "./definition"
+import { Compute$, Missing$, type SpotInternal } from "./definition"
 
 const Self$ = Symbol(/* internal */)
 
@@ -7,9 +7,11 @@ const raise = () => {
   throw new Error(`${LIBRARY_NAME} Modifying a Reference is not allowed.`)
 }
 
+const reader = (property: string) => (value: any) => (value === Missing$ ? Missing$ : value?.[property])
+
 const get: ProxyHandler<SpotInternal>["get"] = (target, property, recv) =>
   typeof property === "string"
-    ? proxy({ ...target, [Compute$]: target[Compute$].concat((value: any) => value?.[property]) })
+    ? proxy({ ...target, [Compute$]: target[Compute$].concat(reader(property)) })
     : property === Self$
       ? target
       : Reflect.get(target, property, recv)

@@ -1,8 +1,9 @@
-import { describe, expect, it } from "vitest"
+import { describe, expect, it, vi } from "vitest"
 import { createComputer } from "../computer"
 import { Optional$, type SpotInternal } from "../definition"
 import { optional } from "../optional"
 import { reference } from "../reference"
+import { shape } from "../shape"
 
 describe("optional", () => {
   it("marks spot as optional", () => {
@@ -12,7 +13,7 @@ describe("optional", () => {
     expect(target[Optional$]).toBe(true)
   })
 
-  it("replaces missing value with undefined during compute", () => {
+  it("coerces a missing input value to undefined", () => {
     const map = new Map<symbol, unknown>()
     const { compute } = createComputer(map)
 
@@ -22,6 +23,24 @@ describe("optional", () => {
 
     const result = compute(target as SpotInternal)
 
+    expect(result).toBeUndefined()
+  })
+
+  it("coerces a missing mapped value to undefined", () => {
+    const symbol = Symbol()
+    const map = new Map<symbol, unknown>().set(symbol, 42)
+
+    const raise = vi.fn().mockThrowOnce(new Error("test"))
+
+    const { compute } = createComputer(map)
+
+    const source = reference<number>(symbol)
+    const mapped = shape(source, raise)
+    const target = optional(mapped)
+
+    const result = compute(target as SpotInternal)
+
+    expect(raise).toHaveBeenCalledWith(42)
     expect(result).toBeUndefined()
   })
 })

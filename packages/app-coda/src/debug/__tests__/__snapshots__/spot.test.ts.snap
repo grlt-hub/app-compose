@@ -4,7 +4,7 @@ exports[`debug — spot target > renders a healthy spot alongside one with a mis
 [
   [
     "console.groupCollapsed",
-    "[app-coda] debug ",
+    "[app-coda] debug",
   ],
   [
     "console.group",
@@ -38,7 +38,7 @@ exports[`debug — spot target > renders a literal spot 1`] = `
 [
   [
     "console.groupCollapsed",
-    "[app-coda] debug ",
+    "[app-coda] debug",
   ],
   [
     "console.group",
@@ -63,7 +63,7 @@ exports[`debug — spot target > renders a raw task result spot 1`] = `
 [
   [
     "console.groupCollapsed",
-    "[app-coda] debug ",
+    "[app-coda] debug",
   ],
   [
     "console.group",
@@ -88,7 +88,7 @@ exports[`debug — spot target > renders a shape spot combining multiple sources
 [
   [
     "console.groupCollapsed",
-    "[app-coda] debug ",
+    "[app-coda] debug",
   ],
   [
     "console.group",
@@ -111,7 +111,7 @@ exports[`debug — spot target > renders a shape spot derived from a single sour
 [
   [
     "console.groupCollapsed",
-    "[app-coda] debug ",
+    "[app-coda] debug",
   ],
   [
     "console.group",

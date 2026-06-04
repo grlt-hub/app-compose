@@ -4,7 +4,7 @@ exports[`debug — tag target > renders a filled tag alongside an unfilled one 1
 [
   [
     "console.groupCollapsed",
-    "[app-coda] debug ",
+    "[app-coda] debug",
   ],
   [
     "console.group",
@@ -38,7 +38,7 @@ exports[`debug — tag target > renders a filled tag with its value 1`] = `
 [
   [
     "console.groupCollapsed",
-    "[app-coda] debug ",
+    "[app-coda] debug",
   ],
   [
     "console.group",
@@ -61,7 +61,7 @@ exports[`debug — tag target > renders a tag fed by a task result 1`] = `
 [
   [
     "console.groupCollapsed",
-    "[app-coda] debug ",
+    "[app-coda] debug",
   ],
   [
     "console.group",
@@ -86,7 +86,7 @@ exports[`debug — tag target > renders an unfilled tag as undefined 1`] = `
 [
   [
     "console.groupCollapsed",
-    "[app-coda] debug ",
+    "[app-coda] debug",
   ],
   [
     "console.group",

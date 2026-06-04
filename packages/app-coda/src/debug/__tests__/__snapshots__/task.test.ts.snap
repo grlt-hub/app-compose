@@ -4,7 +4,7 @@ exports[`debug — task target > renders a done task with status and result 1`] 
 [
   [
     "console.groupCollapsed",
-    "[app-coda] debug ",
+    "[app-coda] debug",
   ],
   [
     "console.group",
@@ -33,7 +33,7 @@ exports[`debug — task target > renders a failed task with status and error 1`]
 [
   [
     "console.groupCollapsed",
-    "[app-coda] debug ",
+    "[app-coda] debug",
   ],
   [
     "console.group",
@@ -60,7 +60,7 @@ exports[`debug — task target > renders a healthy task alongside a failing one 
 [
   [
     "console.groupCollapsed",
-    "[app-coda] debug ",
+    "[app-coda] debug",
   ],
   [
     "console.group",
@@ -102,7 +102,7 @@ exports[`debug — task target > renders a skipped task 1`] = `
 [
   [
     "console.groupCollapsed",
-    "[app-coda] debug ",
+    "[app-coda] debug",
   ],
   [
     "console.group",
