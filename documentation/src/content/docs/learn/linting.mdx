@@ -70,6 +70,25 @@ You can also configure it manually.
 
 ## Rules
 
+### no-async-shape-callback
+
+❗ This rule errors in the `recommended` config.
+
+💭 This rule requires [typed linting](https://typescript-eslint.io/getting-started/typed-linting/).
+
+<hr />
+
+In a `shape()` callback, async work runs outside the chain, and App-Compose cannot order it. The plugin reports
+every callback that returns a `Promise`.
+
+```ts
+// ❌ Wrong
+shape(user.result, async (u) => await fetchAvatar(u.id))
+
+// ✅ Correct
+shape(fetchAvatar.result, (a) => a.url)
+```
+
 ### no-coda-debug
 
 ❗ This rule errors in the `recommended` config.

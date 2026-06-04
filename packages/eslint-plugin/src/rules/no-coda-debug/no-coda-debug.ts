@@ -26,7 +26,7 @@ export default createRule({
     type DebugCall = Node.CallExpression & { callee: Node.Identifier }
 
     return {
-      [`${importSelector} > ${specifierSelector}`]: (node: Node.ImportSpecifier) => imports.add(node.local.name),
+      [`${importSelector} > ${specifierSelector}`]: (node: Node.ImportSpecifier) => void imports.add(node.local.name),
 
       [`CallExpression${callSelector}`]: (node: DebugCall) => {
         if (!imports.has(node.callee.name)) return

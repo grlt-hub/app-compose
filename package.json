@@ -29,18 +29,18 @@
     "publish-ci": "node ./scripts/publish-ci.ts"
   },
   "devDependencies": {
-    "@types/node": "25.8.0",
+    "@types/node": "25.9.1",
     "@types/semver": "7.7.1",
-    "@typescript/native-preview": "7.0.0-dev.20260517.1",
-    "bumpp": "10.4.1",
-    "knip": "6.14.1",
-    "lefthook": "2.1.6",
-    "oxfmt": "0.50.0",
-    "oxlint": "1.65.0",
-    "semver": "7.8.0",
-    "tsdown": "0.22.0",
+    "@typescript/native-preview": "7.0.0-dev.20260601.1",
+    "bumpp": "11.1.0",
+    "knip": "6.15.0",
+    "lefthook": "2.1.9",
+    "oxfmt": "0.53.0",
+    "oxlint": "1.68.0",
+    "semver": "7.8.1",
+    "tsdown": "0.22.1",
     "typescript": "6.0.3",
-    "vitest": "4.1.6"
+    "vitest": "4.1.8"
   },
   "packageManager": "pnpm@10.24.0+sha512.01ff8ae71b4419903b65c60fb2dc9d34cf8bb6e06d03bde112ef38f7a34d6904c424ba66bea5cdcf12890230bf39f9580473140ed9c946fef328b6e5238a345a"
 }
