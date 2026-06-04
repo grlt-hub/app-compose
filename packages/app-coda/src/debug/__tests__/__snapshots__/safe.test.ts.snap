@@ -4,7 +4,7 @@ exports[`debug — safe > renders healthy spots alongside failing ones 1`] = `
 [
   [
     "console.groupCollapsed",
-    "[app-coda] debug ",
+    "[app-coda] debug",
   ],
   [
     "console.group",
@@ -38,7 +38,7 @@ exports[`debug — safe > runs the debug task even when a shape spot throws 1`] 
 [
   [
     "console.groupCollapsed",
-    "[app-coda] debug ",
+    "[app-coda] debug",
   ],
   [
     "console.group",

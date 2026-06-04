@@ -2,7 +2,7 @@ import type { ContextToSpot } from "./context"
 import { build } from "./build"
 import { Compute$, Missing$, type ComputeStep, type Spot } from "./definition"
 
-const wrap =
+const safe =
   <Fn extends (value: any) => any>(fn: Fn): ComputeStep =>
   (value) => {
     try {
@@ -14,12 +14,13 @@ const wrap =
 
 function shape<S, T>(spot: Spot<S>, fn: (from: S) => T): Spot<T>
 
+function shape<T>(ctx: ContextToSpot<T>): Spot<T>
 function shape<S, T>(ctx: ContextToSpot<S>, fn: (from: NoInfer<S>) => T): Spot<T>
 
-function shape<S, T>(ctxOrSpot: ContextToSpot<S> | Spot<S>, fn: (from: NoInfer<S>) => T): Spot<T> {
+function shape<S, T>(ctxOrSpot: ContextToSpot<S> | Spot<S>, fn?: (from: NoInfer<S>) => T): Spot<T> {
   const spot = build<S>(ctxOrSpot)
 
-  spot[Compute$].push(wrap(fn))
+  if (fn) spot[Compute$].push(safe(fn))
 
   return spot as Spot<T>
 }

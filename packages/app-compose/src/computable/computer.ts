@@ -33,15 +33,14 @@ const createComputer = (registry: Map<symbol, unknown>): Computer => {
    * Resolves the spot's underlying value (`Build$`, `Literal$`, or `Read$`),
    * then applies all `Compute$` transformations in order.
    *
-   * `Missing$` propagation rules:
-   *  - If resolved value is `Missing$` and spot is non-`Optional$`, return `Missing$`
-   *    (propagates incompleteness up the chain)
-   *  - If resolved value is `Missing$` and spot is `Optional$`, substitute undefined
-   *    and continue through `Compute$` normally
-   *  - Otherwise, resolved value passes through `Compute$` as-is
+   * `Missing$` flow is three-step `read -> compute -> optional`
+   *
+   * 1. Read `source` value (either literal, built, or from registry) as-is
+   * 2. Map the `source` value through the `Compute$` pipeline, preserving `Missing$` and delegating to internal-land
+   * 3. Guard `Missing$` according to `Optional$`, coercing to `undefined` if optional, or propagating as-is if not
    *
    * @param spot The `Spot` to evaluate
-   * @returns The resolved value or `Missing$` if resolution failed
+   * @returns The resolved value, or `Missing$` when non-optional spot resolution fails
    */
   const compute = <T = unknown>(spot: SpotInternal<T>): T | typeof Missing$ => {
     let resolved: unknown
@@ -51,13 +50,10 @@ const createComputer = (registry: Map<symbol, unknown>): Computer => {
     else if (Read$ in spot) resolved = registry.has(spot[Read$]) ? registry.get(spot[Read$]) : Missing$
     else throw /* unknown unit */ new Error(`${LIBRARY_NAME} Invalid Unit.`)
 
-    if (resolved === Missing$)
-      if (!spot[Optional$]) return Missing$
-      else resolved = undefined
-
     for (const step of spot[Compute$]) resolved = step(resolved)
 
-    return resolved as T
+    if (resolved === Missing$ && spot[Optional$]) return undefined as T
+    else return resolved as T
   }
 
   const computeSafe = <T = unknown>(spot: SpotInternal<T>): T | undefined => {

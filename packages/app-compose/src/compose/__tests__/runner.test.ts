@@ -16,7 +16,7 @@ describe("runner", () => {
 
       await run(app[Node$])
 
-      expect(fn).toBeCalledWith(undefined)
+      expect(fn).toHaveBeenCalledWith(undefined)
     })
 
     it("void contexts | both", async () => {
@@ -28,8 +28,8 @@ describe("runner", () => {
 
       await run(app[Node$])
 
-      expect(fn).toBeCalledWith(undefined)
-      expect(enabled).toBeCalledWith(undefined)
+      expect(fn).toHaveBeenCalledWith(undefined)
+      expect(enabled).toHaveBeenCalledWith(undefined)
     })
 
     it("simple contexts | run.fn", async () => {
@@ -40,7 +40,7 @@ describe("runner", () => {
 
       await run(app[Node$])
 
-      expect(fn).toBeCalledWith("alpha_api")
+      expect(fn).toHaveBeenCalledWith("alpha_api")
     })
 
     it("simple contexts | enabled.fn", async () => {
@@ -57,8 +57,8 @@ describe("runner", () => {
 
       await run(app[Node$])
 
-      expect(fn).toBeCalledWith(undefined)
-      expect(enabled).toBeCalledWith("alpha_api")
+      expect(fn).toHaveBeenCalledWith(undefined)
+      expect(enabled).toHaveBeenCalledWith("alpha_api")
     })
 
     it("simple contexts | both", async () => {
@@ -75,8 +75,8 @@ describe("runner", () => {
 
       await run(app[Node$])
 
-      expect(fn).toBeCalledWith("alpha_api")
-      expect(enabled).toBeCalledWith("alpha_api")
+      expect(fn).toHaveBeenCalledWith("alpha_api")
+      expect(enabled).toHaveBeenCalledWith("alpha_api")
     })
 
     it("literal | run.fn", async () => {
@@ -87,7 +87,7 @@ describe("runner", () => {
 
       await run(app[Node$])
 
-      expect(fn).toBeCalledWith("str")
+      expect(fn).toHaveBeenCalledWith("str")
     })
 
     it("literal | enabled.fn", async () => {
@@ -104,8 +104,8 @@ describe("runner", () => {
 
       await run(app[Node$])
 
-      expect(fn).toBeCalledWith(undefined)
-      expect(enabled).toBeCalledWith("str")
+      expect(fn).toHaveBeenCalledWith(undefined)
+      expect(enabled).toHaveBeenCalledWith("str")
     })
 
     it("literal | both", async () => {
@@ -122,8 +122,8 @@ describe("runner", () => {
 
       await run(app[Node$])
 
-      expect(fn).toBeCalledWith(7)
-      expect(enabled).toBeCalledWith("str")
+      expect(fn).toHaveBeenCalledWith(7)
+      expect(enabled).toHaveBeenCalledWith("str")
     })
 
     it("status | run.fn", async () => {
@@ -138,7 +138,7 @@ describe("runner", () => {
 
       await run(app[Node$])
 
-      expect(fn).toBeCalledWith("done")
+      expect(fn).toHaveBeenCalledWith("done")
     })
 
     it("status | enabled.fn", async () => {
@@ -155,8 +155,8 @@ describe("runner", () => {
 
       await run(app[Node$])
 
-      expect(fn).toBeCalledWith(undefined)
-      expect(enabled).toBeCalledWith("done")
+      expect(fn).toHaveBeenCalledWith(undefined)
+      expect(enabled).toHaveBeenCalledWith("done")
     })
 
     it("status | both", async () => {
@@ -188,8 +188,8 @@ describe("runner", () => {
 
       await run(app[Node$])
 
-      expect(fn).toBeCalledWith({ name: "fail", error })
-      expect(enabled).toBeCalledWith({ name: "done" })
+      expect(fn).toHaveBeenCalledWith({ name: "fail", error })
+      expect(enabled).toHaveBeenCalledWith({ name: "done" })
 
       warn.mockRestore()
     })
@@ -206,7 +206,7 @@ describe("runner", () => {
 
       await run(app[Node$])
 
-      expect(fn).toBeCalledWith(undefined)
+      expect(fn).toHaveBeenCalledWith(undefined)
     })
 
     it("optional | enabled.fn", async () => {
@@ -223,8 +223,8 @@ describe("runner", () => {
 
       await run(app[Node$])
 
-      expect(fn).toBeCalledWith(undefined)
-      expect(enabled).toBeCalledWith(undefined)
+      expect(fn).toHaveBeenCalledWith(undefined)
+      expect(enabled).toHaveBeenCalledWith(undefined)
     })
   })
 
@@ -289,7 +289,7 @@ describe("runner", () => {
 
       await run(outer[Node$])
 
-      expect(fn).toBeCalledWith("alpha_api")
+      expect(fn).toHaveBeenCalledWith("alpha_api")
     })
   })
 })
