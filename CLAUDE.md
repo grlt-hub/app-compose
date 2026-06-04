@@ -13,11 +13,12 @@ This file provides context for AI assistants working in this repository.
 
 This is a pnpm workspace. The packages are:
 
-| Path                     | Package                               | Role                               |
-| ------------------------ | ------------------------------------- | ---------------------------------- |
-| `packages/app-compose`   | `@grlt-hub/app-compose`               | Core library                       |
-| `packages/eslint-plugin` | `@grlt-hub/eslint-plugin-app-compose` | ESLint rules for the library       |
-| `documentation`          | —                                     | Astro/Starlight documentation site |
+| Path                     | Package                               | Role                                                 |
+| ------------------------ | ------------------------------------- | ---------------------------------------------------- |
+| `packages/app-compose`   | `@grlt-hub/app-compose`               | Core library                                         |
+| `packages/app-coda`      | `@grlt-hub/app-coda`                  | Helper utilities for the core: tasks, wires, context |
+| `packages/eslint-plugin` | `@grlt-hub/eslint-plugin-app-compose` | ESLint rules for the library                         |
+| `documentation`          | —                                     | Astro/Starlight documentation site                   |
 
 ## Common commands
 
@@ -37,6 +38,18 @@ pnpm --filter ./packages/app-compose test
 pnpm --filter ./packages/app-compose build
 pnpm --filter ./packages/eslint-plugin lint
 ```
+
+## Workflow
+
+### Git hooks (lefthook)
+
+- `pre-commit` runs `oxfmt --write` and `oxlint` on staged files only, excluding `documentation/**` and `pnpm-lock.yaml`.
+- `commit-msg` enforces Conventional Commits (`.lefthook/commit-msg/commit_linter.ts`): `<type>[(scope)][!]: <description>`, scope is lowercase `[a-z0-9-]`. Types: `build`, `chore`, `ci`, `docs`, `feat`, `fix`, `perf`, `refactor`, `revert`, `style`, `test`.
+
+### Dependencies
+
+- pnpm `minimumReleaseAge` is 4320 minutes (3 days, set in `pnpm-workspace.yaml`): versions published more recently fail to resolve. When bumping, pick the newest version that is at least 3 days old.
+- Root `devDependencies` are pinned exactly (no `^`). Match the pin style of the `package.json` you are editing.
 
 ## Code conventions
 

@@ -1,4 +1,4 @@
-import { type Spot } from "@computable"
+import type { Spot } from "@computable"
 import { describe, expectTypeOf, it } from "vitest"
 import type { ContextToSpot } from "../context"
 

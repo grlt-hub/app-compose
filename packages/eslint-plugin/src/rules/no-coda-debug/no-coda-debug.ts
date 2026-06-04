@@ -1,4 +1,4 @@
-import { type TSESTree as Node } from "@typescript-eslint/utils"
+import type { TSESTree as Node } from "@typescript-eslint/utils"
 import { PACKAGE_NAME, UNITS } from "@/shared/constants"
 import { createRule } from "@/shared/create"
 

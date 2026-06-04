@@ -15,6 +15,8 @@
     "vitest/require-local-test-context-for-concurrent-snapshots": "error",
     "vitest/valid-describe-callback": "error",
     "vitest/valid-expect": "error",
-    "vitest/require-mock-type-parameters": "off"
+    "vitest/require-mock-type-parameters": "off",
+    "typescript/consistent-type-imports": ["error", { "fixStyle": "inline-type-imports" }],
+    "typescript/no-import-type-side-effects": "error"
   }
 }
