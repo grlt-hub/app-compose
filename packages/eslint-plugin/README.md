@@ -44,8 +44,9 @@ Or wire the plugin manually:
 - ❗ — set to `error` in the `recommended` config
 - 🔧 — auto-fixable
 
-| Name                                                                            | Description                                        | ⚠️  | ❗  | 🔧  |
-| ------------------------------------------------------------------------------- | -------------------------------------------------- | --- | --- | --- |
-| [no-coda-debug](https://app-compose.dev/learn/linting/#no-coda-debug)           | Disallow `debug()` calls from `@grlt-hub/app-coda` |     | ❗  |     |
-| [task-options-order](https://app-compose.dev/learn/linting/#task-options-order) | Enforce options order for `createTask`             | ⚠️  |     | 🔧  |
-| [wire-options-order](https://app-compose.dev/learn/linting/#wire-options-order) | Enforce options order for `createWire`             | ⚠️  |     | 🔧  |
+| Name                                                                                      | Description                                        | ⚠️  | ❗  | 🔧  |
+| ----------------------------------------------------------------------------------------- | -------------------------------------------------- | --- | --- | --- |
+| [no-async-shape-callback](https://app-compose.dev/learn/linting/#no-async-shape-callback) | Disallow async callbacks in `shape()`              |     | ❗  |     |
+| [no-coda-debug](https://app-compose.dev/learn/linting/#no-coda-debug)                     | Disallow `debug()` calls from `@grlt-hub/app-coda` |     | ❗  |     |
+| [task-options-order](https://app-compose.dev/learn/linting/#task-options-order)           | Enforce options order for `createTask`             | ⚠️  |     | 🔧  |
+| [wire-options-order](https://app-compose.dev/learn/linting/#wire-options-order)           | Enforce options order for `createWire`             | ⚠️  |     | 🔧  |
