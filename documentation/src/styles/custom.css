@@ -664,10 +664,12 @@ body:has(.hero) .sl-markdown-content > * + .sl-heading-wrapper.level-h2 {
   color: var(--sl-color-gray-3);
 }
 
-/* the "On this page" heading matches the sidebar group openers */
+/* the "On this page" heading: group-opener metrics, but neutral — the same
+   gray as the links it holds */
 .right-sidebar .right-sidebar-panel h2 {
   font-size: var(--sl-text-base);
   font-weight: 500;
+  color: var(--sl-color-gray-3);
 }
 
 /* current page: accent text only (Starlight default paints an accent pill) */
