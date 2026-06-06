@@ -56,6 +56,14 @@ h2.section-title {
   --sl-color-accent: #0284c7;
   --sl-color-accent-high: #bae6fd;
   --sl-color-text-accent: #7dd3fc;
+
+  /* sidebar shares the page background (vitest.dev-style) — the separation
+     is the pane's own hairline border alone */
+  --sl-color-bg-sidebar: var(--sl-color-bg);
+
+  /* the mobile "On this page" bar is removed (MobileTableOfContents override
+     in astro.config.mjs) — don't reserve its 3rem under the header */
+  --sl-mobile-toc-height: 0rem;
 }
 
 :root[data-theme="light"] {
@@ -65,7 +73,9 @@ h2.section-title {
   --sl-color-text-accent: #0c4a6e;
 }
 
-body:is(:has(.hero), :has([data-splash-bg])) header {
+/* glassy translucent header on every page (was splash-only; the search-pill
+   styling below stays scoped to the splash pages) */
+header.header {
   background: color-mix(in srgb, var(--sl-color-bg) 65%, transparent);
   backdrop-filter: blur(14px) saturate(140%);
   -webkit-backdrop-filter: blur(14px) saturate(140%);
@@ -624,22 +634,92 @@ body:has(.hero) .sl-markdown-content > * + .sl-heading-wrapper.level-h2 {
   border-left-width: 3px;
 }
 
-/* ── 8. Sidebar — active page link (sky/blue accent) ── */
-/* reserve border + inset on every link so switching pages doesn't shift layout */
-.sidebar-content a {
-  margin: 1px 4px;
-  border: 1px solid transparent;
-  border-radius: 8px;
+/* ── 8. Sidebar — vitest.dev-style list: open groups with hairline dividers
+   between sections, quiet links, accent-colored current page (no fill) ── */
+
+/* the pane shares the page bg (token override in :root), so its default
+   hairline-shade border vanishes in dark — use the same hairline as the line
+   left of the table of contents (.right-sidebar) for symmetry */
+.sidebar-pane {
+  border-inline-end-color: var(--sl-color-hairline);
 }
-.sidebar-content a[aria-current="page"] {
-  background: rgba(90, 156, 245, 0.1);
-  color: #8ec7ff;
-  border-color: rgba(90, 156, 245, 0.28);
+
+/* on desktop the fixed pane paints its (page-colored) bg over the content
+   shadow (§9) — make it transparent so the left edge reads elevation like the
+   right one; the mobile dropdown keeps the opaque bg from the token */
+@media (min-width: 50rem) {
+  .sidebar-pane {
+    background-color: transparent;
+  }
 }
-/* Community / Sandbox are standalone top-level links (rendered as <a>), but the
-   section groups above them are <summary> elements the inset above never touches.
-   Drop the inline inset so these links line up with the group labels instead of
-   sitting ~5px to their right. */
-.sidebar-content .top-level > li > a {
-  margin-inline: 0;
+
+/* group labels: 500 instead of Starlight's 600 */
+.sidebar-content summary .large {
+  font-weight: 500;
 }
+
+/* links nested in a section match the TOC's inactive color (hover stays white
+   via the shared rule below) */
+.sidebar-content .top-level ul a:not([aria-current="page"]) {
+  color: var(--sl-color-gray-3);
+}
+
+/* the "On this page" heading matches the sidebar group openers */
+.right-sidebar .right-sidebar-panel h2 {
+  font-size: var(--sl-text-base);
+  font-weight: 500;
+}
+
+/* current page: accent text only (Starlight default paints an accent pill) */
+.sidebar-content a[aria-current="page"],
+.sidebar-content a[aria-current="page"]:hover,
+.sidebar-content a[aria-current="page"]:focus {
+  background: transparent;
+  color: var(--sl-color-text-accent);
+  font-weight: 400;
+}
+
+/* hairline above the bottom-links block: drawn on the first non-group entry
+   that follows a group (= Community), vitest.dev-style */
+.sidebar-content .top-level > li:has(details) + li:not(:has(details)) {
+  border-top: 1px solid var(--sl-color-hairline-light);
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+}
+
+/* standalone bottom links (Community / Sandbox / Privacy) match the nested
+   section links: TOC inactive color, regular weight, link size */
+.sidebar-content .top-level > li > a.large {
+  font-size: var(--sl-text-base);
+}
+.sidebar-content .top-level > li > a.large:not([aria-current="page"]) {
+  color: var(--sl-color-gray-3);
+  font-weight: 400;
+}
+@media (min-width: 50rem) {
+  .sidebar-content .top-level > li > a.large {
+    font-size: var(--sl-text-sm);
+  }
+}
+
+/* hover: white, for nested and bottom links alike */
+.sidebar-content .top-level a:not([aria-current="page"]):is(:hover, :focus) {
+  color: var(--sl-color-white);
+}
+
+/* ── 9. Content elevation — shadow only, the article keeps the page color;
+   the depth cue is the soft darkening it casts on the side panes. Splash pages
+   excluded: their body carries the brand backdrop. ── */
+
+/* short pages: stretch the surface to the fold so its bottom edge (and the
+   shadow seam) never cuts across mid-screen */
+body:not(:is(:has(.hero), :has([data-splash-bg]))) .main-pane {
+  min-height: calc(100vh - var(--sl-nav-height));
+}
+:root[data-theme="dark"] body:not(:is(:has(.hero), :has([data-splash-bg]))) .main-pane {
+  box-shadow: 0 0 48px rgba(0, 0, 0, 0.45);
+}
+:root[data-theme="light"] body:not(:is(:has(.hero), :has([data-splash-bg]))) .main-pane {
+  box-shadow: 0 0 32px rgba(15, 23, 42, 0.06);
+}
+
