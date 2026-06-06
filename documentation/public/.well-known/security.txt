@@ -1,0 +1,4 @@
+Contact: https://github.com/grlt-hub/app-compose/security/advisories/new
+Expires: 2027-06-01T00:00:00Z
+Preferred-Languages: en, ru
+Canonical: https://app-compose.dev/.well-known/security.txt

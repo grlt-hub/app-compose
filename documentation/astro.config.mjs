@@ -48,6 +48,10 @@ export default defineConfig({
           tag: "meta",
           attrs: { name: "google-site-verification", content: "Bc3PhqZ8n4SZHdKTHQPj_vr8XPQKL50Ns7Q8GE8u-xc" },
         },
+        { tag: "link", attrs: { rel: "apple-touch-icon", href: "/apple-touch-icon.png" } },
+        { tag: "meta", attrs: { name: "color-scheme", content: "dark light" } },
+        { tag: "meta", attrs: { name: "theme-color", media: "(prefers-color-scheme: dark)", content: "#17181c" } },
+        { tag: "meta", attrs: { name: "theme-color", media: "(prefers-color-scheme: light)", content: "#ffffff" } },
         { tag: "meta", attrs: { property: "og:image", content: "https://app-compose.dev/og.png" } },
         { tag: "meta", attrs: { property: "og:image:width", content: "1200" } },
         { tag: "meta", attrs: { property: "og:image:height", content: "630" } },
@@ -120,12 +124,13 @@ export default defineConfig({
         },
         { slug: "community" },
         { slug: "sandbox" },
+        { slug: "privacy" },
       ],
       customCss: ["./src/styles/custom.css"],
       plugins: [
         starlightLlmsTxt({
           rawContent: false,
-          exclude: ["sandbox"],
+          exclude: ["sandbox", "privacy"],
           customSets: [
             {
               label: "App-Coda",
