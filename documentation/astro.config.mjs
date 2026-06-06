@@ -132,6 +132,22 @@ export default defineConfig({
       plugins: [
         starlightLlmsTxt({
           rawContent: false,
+          // the landing page is a splash template and never lands in the
+          // generated files — carry its positioning over by hand, verbatim
+          description: "Lightweight IoC for the front-end. Compose apps you can control and trust.",
+          details: [
+            "App-Compose is a small TypeScript library for composing apps from independent pieces. Features, services, and modules often know about each other directly. That makes them hard to test, reuse, and maintain. With App-Compose, each part declares what it needs, and you supply it — so you stay in control as your app grows.",
+            "",
+            "What you get:",
+            "",
+            "- **Simplicity** — A small API with zero dependencies: lightweight, no containers, providers, or decorators. Framework-agnostic.",
+            "- **Clarity** — No magic, no globals. Context moves through clear, typed wiring. Your app runs exactly as you composed it.",
+            "- **Reusability** — Same code, different context per compose. Reuse across apps, tests, and environments — no copy-paste.",
+            "- **Testability** — Validate your composition in tests. Missing context, duplicates, and unused wires fail in CI — not at startup.",
+            "- **Observability** — Inspect your app as plain JSON — log it, render it, diff it across environments. Hook into start, complete, and fail events for timing, logs, or traces.",
+            "",
+            "If you want to use App-Compose for a part of your existing app, you don't have to rewrite the rest. Add it to your stack, and bring in more when you're ready.",
+          ].join("\n"),
           exclude: ["sandbox", "privacy", "404"],
           customSets: [
             {
