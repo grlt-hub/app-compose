@@ -40,6 +40,8 @@ export default defineConfig({
       components: {
         // re-pin #anchors while client-only sandboxes settle the layout
         Head: "./src/components/Head.astro",
+        // no sticky "On this page" bar on mobile; desktop TOC stays
+        MobileTableOfContents: "./src/components/MobileTableOfContents.astro",
       },
       description:
         "A small TypeScript library for composing apps from independent pieces. Each piece declares what it needs; the runtime wires them together.",
