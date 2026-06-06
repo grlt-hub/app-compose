@@ -1,5 +1,5 @@
 diff --git a/entryToSimpleMarkdown.ts b/entryToSimpleMarkdown.ts
-index d0ce19a6abed550fe3a4eb09fa186815055daa15..72cb36ed1149cd58bea92c1368299d2b3e23931b 100644
+index 5fdc6c54ae6edc5874db921dde4b89ed9e15dc3c..e993ad1c3e90e96d5b39dec590aa870c1a5d1737 100644
 --- a/entryToSimpleMarkdown.ts
 +++ b/entryToSimpleMarkdown.ts
 @@ -29,7 +29,7 @@ const selectors = [...minify.customSelectors];
@@ -11,3 +11,21 @@ index d0ce19a6abed550fe3a4eb09fa186815055daa15..72cb36ed1149cd58bea92c1368299d2b
  });
  
  const htmlToMarkdownPipeline = unified()
+diff --git a/llms-full.txt.ts b/llms-full.txt.ts
+index 03f408bf7106a64f1730c381d422ac4a911aeea9..9907aed55358cab7e652991f2946a6e4ecbbccde 100644
+--- a/llms-full.txt.ts
++++ b/llms-full.txt.ts
+@@ -1,4 +1,5 @@
+ import type { APIRoute } from 'astro';
++import { starlightLllmsTxtContext } from 'virtual:starlight-llms-txt/context';
+ import { generateLlmsTxt } from './generator';
+ import { getSiteTitle } from './utils';
+ 
+@@ -13,6 +14,7 @@ export const GET: APIRoute = async (context) => {
+ 	const body = await generateLlmsTxt(context, {
+ 		minify: false,
+ 		description: `This is the full developer documentation for ${getSiteTitle()}`,
++		exclude: starlightLllmsTxtContext.exclude,
+ 	});
+ 	return new Response(body);
+ };
