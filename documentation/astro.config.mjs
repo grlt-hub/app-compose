@@ -130,7 +130,7 @@ export default defineConfig({
       plugins: [
         starlightLlmsTxt({
           rawContent: false,
-          exclude: ["sandbox", "privacy"],
+          exclude: ["sandbox", "privacy", "404"],
           customSets: [
             {
               label: "App-Coda",

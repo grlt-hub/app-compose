@@ -6,7 +6,7 @@ settings:
 
 patchedDependencies:
   starlight-llms-txt:
-    hash: 859ca4060cee3297c58ab0f6542d60a74417084392ffb2c53f1cda3c3fe22b70
+    hash: bf2c5450cd33996d6db51bcab7f276c17d1a2e91b5dfbd7c045ad5624179a648
     path: patches/starlight-llms-txt.patch
 
 importers:
@@ -87,7 +87,7 @@ importers:
         version: 0.24.0(@astrojs/starlight@0.39.2(astro@6.3.3(@types/node@25.9.1)(jiti@2.7.0)(rollup@4.60.3)(tsx@4.21.0)(yaml@2.9.0))(typescript@6.0.3))(astro@6.3.3(@types/node@25.9.1)(jiti@2.7.0)(rollup@4.60.3)(tsx@4.21.0)(yaml@2.9.0))
       starlight-llms-txt:
         specifier: 0.8.1
-        version: 0.8.1(patch_hash=859ca4060cee3297c58ab0f6542d60a74417084392ffb2c53f1cda3c3fe22b70)(@astrojs/starlight@0.39.2(astro@6.3.3(@types/node@25.9.1)(jiti@2.7.0)(rollup@4.60.3)(tsx@4.21.0)(yaml@2.9.0))(typescript@6.0.3))(astro@6.3.3(@types/node@25.9.1)(jiti@2.7.0)(rollup@4.60.3)(tsx@4.21.0)(yaml@2.9.0))
+        version: 0.8.1(patch_hash=bf2c5450cd33996d6db51bcab7f276c17d1a2e91b5dfbd7c045ad5624179a648)(@astrojs/starlight@0.39.2(astro@6.3.3(@types/node@25.9.1)(jiti@2.7.0)(rollup@4.60.3)(tsx@4.21.0)(yaml@2.9.0))(typescript@6.0.3))(astro@6.3.3(@types/node@25.9.1)(jiti@2.7.0)(rollup@4.60.3)(tsx@4.21.0)(yaml@2.9.0))
     devDependencies:
       '@cloudflare/workers-types':
         specifier: 4.20260526.1
@@ -8209,7 +8209,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  starlight-llms-txt@0.8.1(patch_hash=859ca4060cee3297c58ab0f6542d60a74417084392ffb2c53f1cda3c3fe22b70)(@astrojs/starlight@0.39.2(astro@6.3.3(@types/node@25.9.1)(jiti@2.7.0)(rollup@4.60.3)(tsx@4.21.0)(yaml@2.9.0))(typescript@6.0.3))(astro@6.3.3(@types/node@25.9.1)(jiti@2.7.0)(rollup@4.60.3)(tsx@4.21.0)(yaml@2.9.0)):
+  starlight-llms-txt@0.8.1(patch_hash=bf2c5450cd33996d6db51bcab7f276c17d1a2e91b5dfbd7c045ad5624179a648)(@astrojs/starlight@0.39.2(astro@6.3.3(@types/node@25.9.1)(jiti@2.7.0)(rollup@4.60.3)(tsx@4.21.0)(yaml@2.9.0))(typescript@6.0.3))(astro@6.3.3(@types/node@25.9.1)(jiti@2.7.0)(rollup@4.60.3)(tsx@4.21.0)(yaml@2.9.0)):
     dependencies:
       '@astrojs/mdx': 5.0.4(astro@6.3.3(@types/node@25.9.1)(jiti@2.7.0)(rollup@4.60.3)(tsx@4.21.0)(yaml@2.9.0))
       '@astrojs/starlight': 0.39.2(astro@6.3.3(@types/node@25.9.1)(jiti@2.7.0)(rollup@4.60.3)(tsx@4.21.0)(yaml@2.9.0))(typescript@6.0.3)
