@@ -27,3 +27,25 @@ Requires `@grlt-hub/app-compose` 3+.
 | [some](https://app-compose.dev/app-coda/some)   | Any-of quantifier for Tasks, Tags, and Spots — by predicate or Task status. |
 | [not](https://app-compose.dev/app-coda/not)     | Inverts a Spot into its boolean opposite.                                   |
 | [when](https://app-compose.dev/app-coda/when)   | Wraps `every`, `some`, and `not` into `{ context, fn: Boolean }`.           |
+
+## AI tools
+
+App-Coda ships an LLM-friendly subset of the docs.
+
+### Cursor
+
+1. Open chat and type `@docs`
+2. Click **Add new doc**
+3. Paste the URL and confirm:
+
+```
+https://app-compose.dev/_llms-txt/app-coda.txt
+```
+
+### Claude / ChatGPT / Copilot
+
+Paste this URL into the chat — most assistants accept URLs as context:
+
+```
+https://app-compose.dev/_llms-txt/app-coda.txt
+```
