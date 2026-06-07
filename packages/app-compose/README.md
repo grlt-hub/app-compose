@@ -8,6 +8,7 @@ Lightweight IoC for the front-end. Compose apps you can control and trust.
 ![zero dependencies](https://img.shields.io/badge/dependencies-0-blue)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/grlt-hub/app-compose)
 [![npm provenance](https://img.shields.io/badge/provenance-yes-brightgreen?logo=npm)](https://www.npmjs.com/@grlt-hub/app-compose)
+[![llms.txt](https://img.shields.io/badge/llms.txt-ready-blue)](https://app-compose.dev/llms.txt)
 
 [Learn](https://app-compose.dev/learn/quick-start/) | [Guides](https://app-compose.dev/guides/) | [Reference](https://app-compose.dev/reference/)
 

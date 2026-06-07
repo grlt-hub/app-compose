@@ -7,6 +7,7 @@ Helper utilities for [App-Compose](https://app-compose.dev). Named helpers for T
 ![bundle size](https://deno.bundlejs.com/badge?q=@grlt-hub/app-coda&treeshake=[*])
 ![zero dependencies](https://img.shields.io/badge/dependencies-0-blue)
 [![npm provenance](https://img.shields.io/badge/provenance-yes-brightgreen?logo=npm)](https://www.npmjs.com/package/@grlt-hub/app-coda)
+[![llms.txt](https://img.shields.io/badge/llms.txt-ready-blue)](https://app-compose.dev/_llms-txt/app-coda.txt)
 
 [Docs](https://app-compose.dev/app-coda) | [App-Compose](https://app-compose.dev)
 
