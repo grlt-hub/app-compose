@@ -11,7 +11,12 @@ Lightweight IoC for the front-end. Compose apps you can control and trust.
 
 [Learn](https://app-compose.dev/learn/quick-start/) | [Guides](https://app-compose.dev/guides/) | [Reference](https://app-compose.dev/reference/)
 
+> [!NOTE]
 > **Beta:** This project is currently in beta. The API may change before the stable release.
+>
+> - `@grlt-hub/app-compose@3.0.0-beta.6`
+> - `@grlt-hub/eslint-plugin-app-compose@3.0.0-beta.6`
+> - `@grlt-hub/app-coda@3.0.0-beta.6`
 
 ## Features
 
@@ -57,6 +62,34 @@ compose()
   .step(greeting)
   .run()
 ```
+
+## AI tools
+
+App-Compose publishes LLM-friendly docs and is available on [DeepWiki](https://deepwiki.com/grlt-hub/app-compose).
+
+### Cursor
+
+1. Open chat and type `@docs`
+2. Click **Add new doc**
+3. Paste the URL and confirm:
+
+```
+https://app-compose.dev/llms-full.txt
+```
+
+### Claude / ChatGPT / Copilot
+
+Paste this URL into the chat — most assistants accept URLs as context:
+
+```
+https://app-compose.dev/llms-full.txt
+```
+
+Use [`llms-small.txt`](https://app-compose.dev/llms-small.txt) for models with a smaller context window (e.g. GPT-3.5, free-tier plans).
+
+### DeepWiki
+
+Open [deepwiki.com/grlt-hub/app-compose](https://deepwiki.com/grlt-hub/app-compose) and ask anything about the codebase.
 
 ## Ready to try it?
 
