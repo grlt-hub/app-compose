@@ -29,6 +29,15 @@ ruleTester.run("wire-options-order", rule, {
         createWire({ from: literal("https://api.example.com") })
       `,
     },
+    {
+      name: "argument is a factory call, not an object literal",
+      code: ts`
+        ${commonCode}
+
+        declare const buildWire: (opts: Parameters<typeof createWire>[0]) => Parameters<typeof createWire>[0];
+        createWire(buildWire({ to: apiUrl, from: literal("https://api.example.com"), }))
+      `,
+    },
   ],
   invalid: [
     {

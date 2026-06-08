@@ -5,7 +5,6 @@ import { createRule } from "@/shared/create"
 const importSelector = `ImportDeclaration[source.value=${PACKAGE_NAME.CORE}]`
 const methodSelector = `ImportSpecifier[imported.name=${UNITS.CREATE_WIRE}]`
 const callSelector = `[callee.type="Identifier"][arguments.length=1]`
-const argumentSelector = `ObjectExpression.arguments`
 
 export default createRule({
   name: "wire-options-order",
@@ -26,15 +25,16 @@ export default createRule({
     const source = context.sourceCode
     const imports = new Set<string>()
 
-    type MethodCall = Node.CallExpression & { callee: Node.Identifier; arguments: [Node.ObjectExpression] }
+    type MethodCall = Node.CallExpression & { callee: Node.Identifier; arguments: [Node.CallExpressionArgument] }
 
     return {
       [`${importSelector} > ${methodSelector}`]: (node: Node.ImportSpecifier) => void imports.add(node.local.name),
 
-      [`CallExpression${callSelector}:has(${argumentSelector})`]: (node: MethodCall) => {
+      [`CallExpression${callSelector}`]: (node: MethodCall) => {
         if (!imports.has(node.callee.name)) return
 
         const [config] = node.arguments
+        if (config.type !== NodeType.ObjectExpression) return
         if (config.properties.length !== 2) return
 
         const [first, second] = config.properties
