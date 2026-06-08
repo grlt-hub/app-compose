@@ -164,8 +164,8 @@ export default defineConfig({
     }),
   ],
   redirects: {
-    "/app-compose/tutorials/getting-started": "/learn/quick-start",
+    "/app-compose/tutorials/getting-started": "/learn/quick-start/",
     "/app-compose/tutorials/dependencies": "/learn/quick-start/#how-to-pass-data-to-a-task",
-    "/guides/sharing-tags": "/guides/managing-tags",
+    "/guides/sharing-tags": "/guides/managing-tags/",
   },
 })
