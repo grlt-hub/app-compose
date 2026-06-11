@@ -116,19 +116,15 @@ const isOrdered = (keys: string[]) => {
 // at the head (-Infinity) or tail (Infinity); an unknown key sorts to the end (Infinity); an inline
 // `run`/`enabled` is rebuilt recursively (null if its own keys would cross a spread); the rest is
 // emitted verbatim, so shorthand and comments survive.
-const entryOf = ({
-  prop,
-  index,
-  props,
-  group,
-  source,
-}: {
+type EntryOfParams = {
   prop: Element
   index: number
   props: Element[]
   group: string | null
   source: Readonly<TSESLint.SourceCode>
-}): Entry | null => {
+}
+
+const entryOf = ({ prop, index, props, group, source }: EntryOfParams): Entry | null => {
   if (isSpread(prop)) {
     if (isTrailingSpread(props, index)) return { rank: Infinity, text: source.getText(prop) }
     if (isLeadingSpread(props, index)) return { rank: -Infinity, text: source.getText(prop) }
