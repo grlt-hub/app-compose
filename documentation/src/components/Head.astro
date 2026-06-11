@@ -1,17 +1,82 @@
 ---
 import Default from "@astrojs/starlight/components/Head.astro"
 
-// Declare the merged "appcompose" spelling as a brand synonym for search engines.
-const schema = {
-  "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
-  name: "App-Compose",
-  alternateName: ["appcompose", "app compose"],
-  applicationCategory: "DeveloperApplication",
-  operatingSystem: "Web",
-  url: "https://app-compose.dev",
-  description: "Lightweight IoC for the front-end. Compose apps you can control and trust.",
+const SITE = "https://app-compose.dev"
+const ORG_ID = "https://github.com/grlt-hub"
+const WEBSITE_ID = `${SITE}/#website`
+const TAGLINE = "Lightweight IoC for the front-end. Compose apps you can control and trust."
+
+// grlt-hub as the publishing entity; `withId` defines the node once so other nodes can reference it.
+const org = (withId) => ({ "@type": "Organization", ...(withId && { "@id": ORG_ID }), name: "grlt-hub", url: ORG_ID })
+
+const route = Astro.locals.starlightRoute
+const pathname = Astro.url.pathname
+const canonical = new URL(pathname, Astro.site).href
+const isHome = pathname === "/"
+
+// Walk the sidebar to the current page, keeping the groups passed through on the way.
+const findTrail = (entries, trail) => {
+  for (const entry of entries) {
+    if (entry.type === "group") {
+      const found = findTrail(entry.entries, [...trail, entry])
+      if (found) return found
+    } else if (entry.isCurrent) {
+      return [...trail, entry]
+    }
+  }
+  return null
 }
+
+const breadcrumb = () => {
+  const items = [{ name: "Home", url: `${SITE}/` }]
+  const group = findTrail(route.sidebar, [])?.find((entry) => entry.type === "group")
+  const segment = pathname.split("/").filter(Boolean)[0]
+  // Only add a section crumb when that section has its own index page, and it is not the current page.
+  const section = group?.entries.find((entry) => entry.type === "link" && entry.href === `/${segment}/`)
+  const sectionUrl = section && new URL(section.href, Astro.site).href
+  if (sectionUrl && sectionUrl !== canonical) items.push({ name: group.label, url: sectionUrl })
+  items.push({ name: route.entry.data.title, url: canonical })
+
+  return {
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, index) => ({ "@type": "ListItem", position: index + 1, name: item.name, item: item.url })),
+  }
+}
+
+const graph = isHome
+  ? [
+      org(true),
+      { "@type": "WebSite", "@id": WEBSITE_ID, name: "App-Compose", url: SITE, description: TAGLINE, inLanguage: "en", publisher: { "@id": ORG_ID } },
+      {
+        "@type": "SoftwareApplication",
+        name: "App-Compose",
+        alternateName: ["appcompose", "app compose"],
+        applicationCategory: "DeveloperApplication",
+        operatingSystem: "Web",
+        url: SITE,
+        description: TAGLINE,
+        author: { "@id": ORG_ID },
+        sameAs: ["https://github.com/grlt-hub/app-compose", "https://www.npmjs.com/package/@grlt-hub/app-compose"],
+      },
+    ]
+  : [
+      {
+        "@type": "TechArticle",
+        "@id": `${canonical}#article`,
+        headline: route.entry.data.title,
+        description: route.entry.data.description,
+        url: canonical,
+        image: `${SITE}/og.png`,
+        inLanguage: "en",
+        isPartOf: { "@id": WEBSITE_ID },
+        author: org(false),
+        publisher: org(false),
+        ...(route.lastUpdated && { dateModified: route.lastUpdated.toISOString() }),
+      },
+      breadcrumb(),
+    ]
+
+const schema = { "@context": "https://schema.org", "@graph": graph }
 ---
 
 <Default />
