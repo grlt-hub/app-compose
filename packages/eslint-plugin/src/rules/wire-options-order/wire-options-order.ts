@@ -1,4 +1,5 @@
-import { AST_NODE_TYPES as NodeType, type TSESTree as Node } from "@typescript-eslint/utils"
+import type { TSESTree as Node } from "@typescript-eslint/utils"
+import { isPlainProp } from "@/shared/ast"
 import { PACKAGE_NAME, UNITS } from "@/shared/constants"
 import { createRule } from "@/shared/create"
 
@@ -42,13 +43,7 @@ export default createRule({
         const [config] = node.arguments
         const [first, second] = config.properties
 
-        if (
-          first?.type !== NodeType.Property ||
-          first.key.type !== NodeType.Identifier ||
-          second?.type !== NodeType.Property ||
-          second.key.type !== NodeType.Identifier
-        )
-          return
+        if (!first || !second || !isPlainProp(first) || !isPlainProp(second)) return
 
         if (first.key.name === "from") return
 

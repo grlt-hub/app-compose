@@ -1,23 +1,19 @@
 import { type TSESTree as Node, AST_NODE_TYPES as NodeType, type TSESLint } from "@typescript-eslint/utils"
+import { isPlainProp, isSpread } from "@/shared/ast"
 import { PACKAGE_NAME, UNITS } from "@/shared/constants"
 import { createRule } from "@/shared/create"
 
-const GROUPS = [
-  { key: "name" },
-  { key: "run", nested: ["context", "fn"] } as const,
-  { key: "enabled", nested: ["context", "fn"] } as const,
-]
-
-// Canonical key order: each group key, immediately followed by its nested keys. A `run`/`enabled`
-// ranks at its group slot when opaque (shorthand, variable, …) and at the leaf slots when inline;
-// a config holds one form or the other, so the two never collide.
-const CANONICAL_KEYS = GROUPS.flatMap((group) => [group.key, ...(group.nested ?? []).map((n) => `${group.key}.${n}`)])
-const RANK = new Map(CANONICAL_KEYS.map((key, index): [string, number] => [key, index]))
-const rankOf = (key: string) => RANK.get(key) ?? Infinity
-
-const TOP_KEYS = new Set<string>(GROUPS.map((group) => group.key))
-const NESTED_ORDER = GROUPS.find((group) => group.nested)?.nested ?? []
-const NESTED_KEYS = new Set<string>(NESTED_ORDER)
+// Canonical key order, flat: every option, top-level groups and their nested keys, in one list. A
+// `run`/`enabled` ranks at its group slot when opaque (shorthand, variable, …) and at its leaf slots
+// when inline; a config holds one form or the other, so the two never collide.
+const ORDER = ["name", "run", "run.context", "run.fn", "enabled", "enabled.context", "enabled.fn"]
+const rankOf = (key: string) => {
+  const index = ORDER.indexOf(key)
+  return index === -1 ? Infinity : index
+}
+// `run`/`enabled` carry nested keys; `name` does not. An inline group is rebuilt from its leaves, an
+// opaque one (shorthand, variable) ranks at its group slot and stays whole.
+const hasNested = (key: string) => ORDER.some((entry) => entry.startsWith(`${key}.`))
 
 const importSelector = `ImportDeclaration[source.value=${PACKAGE_NAME.CORE}]`
 const methodSelector = `ImportSpecifier[imported.name=${UNITS.CREATE_TASK}]`
@@ -56,127 +52,108 @@ export default createRule({
         if (!imports.has(node.callee.name)) return
 
         const [config] = node.arguments
-        // Bail when the order is undeterminable: a top-level spread / computed / getter / unknown key
-        // hides where the real options sit.
-        if (!hasKnownShape(config)) return
+        // The order is undeterminable when a spread sits between options (it could inject any key) or
+        // an exotic entry (computed key, getter, method) hides a name — so we don't report. Unknown
+        // plain keys are fine: they just sort to the end.
+        if (!isReorderable(config)) return
 
-        const keys = currentKeys(config.properties as TopProperty[])
-        if (isCorrectOrder(keys)) return
+        const keys = orderKeys(config)
+        if (isOrdered(keys)) return
 
-        const correctOrder = keys.toSorted((a, b) => rankOf(a) - rankOf(b)).join(" -> ")
-        const data = { correctOrder, currentOrder: keys.join(" -> ") }
-
-        // Reorder by relocating the real property nodes, so shorthand/spread/comments survive. Attach the
-        // fix only when it fully resolves the violation; if a nested key would have to move across a spread
-        // (where position is semantically load-bearing), report it but leave the code for a human.
-        if (isFullyFixable(config)) {
-          context.report({
-            node: config,
-            messageId: "invalidOrder",
-            data,
-            fix: (fixer) => [fixer.replaceText(config, reorder(config, source))],
-          })
-          return
+        const data = {
+          correctOrder: keys.toSorted((a, b) => rankOf(a) - rankOf(b)).join(" -> "),
+          currentOrder: keys.join(" -> "),
         }
 
-        context.report({ node: config, messageId: "invalidOrder", data })
+        // One pass relocates the real nodes, so shorthand/spread/comments survive. `rebuild` returns
+        // null when a nested key would have to cross a spread (position is load-bearing there): we
+        // report the violation but leave the fix to a human.
+        const fixed = rebuild(config, null, source)
+        context.report({
+          node: config,
+          messageId: "invalidOrder",
+          data,
+          fix: fixed === null ? undefined : (fixer) => fixer.replaceText(config, fixed),
+        })
       },
     }
   },
 })
 
-type TopProperty = Node.Property & { key: Node.Identifier }
+type Element = Node.ObjectExpression["properties"][number]
+type Entry = { rank: number; text: string }
 
-// A plain `key: value` (or shorthand) property — the only shape we relocate/rebuild by name.
-// Spreads, getters/setters, methods and computed keys are not plain props.
-const isPlainProp = (prop: Node.ObjectLiteralElement): prop is Node.Property & { key: Node.Identifier } =>
-  prop.type === NodeType.Property &&
-  prop.kind === "init" &&
-  !prop.method &&
-  !prop.computed &&
-  prop.key.type === NodeType.Identifier
+// A spread anchors a boundary — keys never cross it — so it only fits at the head or tail of a config.
+const isLeadingSpread = (props: Element[], index: number) => props.slice(0, index).every(isSpread)
+const isTrailingSpread = (props: Element[], index: number) => props.slice(index + 1).every(isSpread)
 
-// The order is determinable when every top-level entry is a plain, known key. A spread / computed /
-// getter / unknown key hides where the real options sit, so we can't reason about order at all.
-const hasKnownShape = (config: Node.ObjectExpression) =>
-  config.properties.every((prop) => isPlainProp(prop) && TOP_KEYS.has(prop.key.name))
+// Can we reason about the top-level order? Every entry must be a plain key (known or unknown) or a
+// spread anchored at the head/tail. An interior spread or an exotic entry hides where options sit.
+const isReorderable = (config: Node.ObjectExpression) =>
+  config.properties.every((prop, index, props) =>
+    isSpread(prop) ? isLeadingSpread(props, index) || isTrailingSpread(props, index) : isPlainProp(prop),
+  )
 
-const isRunGroup = (name: string) => name === "run" || name === "enabled"
+// The visible dotted keys in source order, for the message and the ordered check. A `run`/`enabled`
+// object expands into its nested keys; every other plain key contributes its own; spreads carry none.
+const orderKeys = (config: Node.ObjectExpression): string[] =>
+  config.properties.flatMap((prop) =>
+    !isPlainProp(prop)
+      ? []
+      : prop.value.type === NodeType.ObjectExpression
+        ? prop.value.properties.filter(isPlainProp).map((nested) => `${prop.key.name}.${nested.key.name}`)
+        : [prop.key.name],
+  )
 
-// A `run`/`enabled` object we can rebuild key-by-key: only plain, known nested keys (no spread/unknown).
-const isReconstructable = (obj: Node.ObjectExpression) =>
-  obj.properties.every((p) => isPlainProp(p) && NESTED_KEYS.has(p.key.name))
-
-// Are the visible nested keys already in canonical order? (Used for objects we can't rebuild.)
-const isNestedOrdered = (group: string, obj: Node.ObjectExpression) => {
-  let seen = -1
-  for (const p of obj.properties) {
-    if (!isPlainProp(p) || !NESTED_KEYS.has(p.key.name)) continue
-    const placement = rankOf(`${group}.${p.key.name}`)
-    if (placement <= seen) return false
-    seen = placement
-  }
-  return true
+// Already canonical? A stable sort leaves equal ranks (unknown keys, multiple spreads) in place, so an
+// ordered config sorts to itself.
+const isOrdered = (keys: string[]) => {
+  const sorted = keys.toSorted((a, b) => rankOf(a) - rankOf(b))
+  return keys.every((key, index) => key === sorted[index])
 }
 
-// Top-level is always relocatable here (hasKnownShape ⇒ no top-level spread). The only blocker is a
-// `run`/`enabled` we must emit verbatim (it holds a spread/unknown nested key) whose own nested keys are
-// out of order — we can't reorder across a spread, so that violation can't be fixed without changing
-// semantics. In that case we report without a fix rather than apply a non-converging partial fix.
-const isFullyFixable = (config: Node.ObjectExpression) =>
-  config.properties.every((prop) => {
-    if (!isPlainProp(prop) || !isRunGroup(prop.key.name) || prop.value.type !== NodeType.ObjectExpression) return true
-    return isReconstructable(prop.value) || isNestedOrdered(prop.key.name, prop.value)
-  })
+// Sort rank and source text for one entry, or null when it can't be reordered safely. A spread anchors
+// at the head (-Infinity) or tail (Infinity); an unknown key sorts to the end (Infinity); an inline
+// `run`/`enabled` is rebuilt recursively (null if its own keys would cross a spread); the rest is
+// emitted verbatim, so shorthand and comments survive.
+const entryOf = (
+  prop: Element,
+  index: number,
+  props: Element[],
+  group: string | null,
+  source: Readonly<TSESLint.SourceCode>,
+): Entry | null => {
+  if (isSpread(prop)) {
+    if (isTrailingSpread(props, index)) return { rank: Infinity, text: source.getText(prop) }
+    if (isLeadingSpread(props, index)) return { rank: -Infinity, text: source.getText(prop) }
+    return null
+  }
+  if (!isPlainProp(prop)) return null
 
-const currentKeys = (properties: TopProperty[]) => {
-  const keys = new Set<string>()
+  const key = group === null ? prop.key.name : `${group}.${prop.key.name}`
 
-  for (const prop of properties) {
-    if (prop.value.type !== NodeType.ObjectExpression) {
-      keys.add(prop.key.name)
-      continue
-    }
-
-    for (const p of prop.value.properties) {
-      if (isPlainProp(p)) keys.add(`${prop.key.name}.${p.key.name}`)
-    }
+  if (group === null && hasNested(prop.key.name) && prop.value.type === NodeType.ObjectExpression) {
+    const inner = rebuild(prop.value, prop.key.name, source)
+    return inner === null ? null : { rank: rankOf(key), text: `${prop.key.name}: ${inner}` }
   }
 
-  return [...keys]
+  return { rank: rankOf(key), text: source.getText(prop) }
 }
 
-const isCorrectOrder = (current: string[]) => {
-  let seen = -1
-
-  for (const item of current) {
-    const placement = rankOf(item)
-    if (placement <= seen) return false
-    seen = placement
+// Canonical source text for an object literal, or null when an entry can't be reordered safely. The top
+// level (group null) prints one entry per line; a nested `run`/`enabled` stays inline.
+const rebuild = (
+  obj: Node.ObjectExpression,
+  group: string | null,
+  source: Readonly<TSESLint.SourceCode>,
+): string | null => {
+  const entries: Entry[] = []
+  for (const [index, prop] of obj.properties.entries()) {
+    const entry = entryOf(prop, index, obj.properties, group, source)
+    if (entry === null) return null
+    entries.push(entry)
   }
 
-  return true
-}
-
-// Text for one top-level property in the reordered config: a rebuildable `run`/`enabled` is normalized
-// into canonical nested order; everything else (name, shorthand, spread-holding objects) is emitted
-// verbatim so nothing is lost.
-const propText = (prop: TopProperty, source: Readonly<TSESLint.SourceCode>) => {
-  if (isRunGroup(prop.key.name) && prop.value.type === NodeType.ObjectExpression && isReconstructable(prop.value)) {
-    const obj = prop.value
-    const parts = NESTED_ORDER.flatMap((nested) => {
-      const node = obj.properties.find((p): p is TopProperty => isPlainProp(p) && p.key.name === nested)
-      return node ? [`${nested}: ${source.getText(node.value)}`] : []
-    })
-    if (parts.length) return `${prop.key.name}: { ${parts.join(", ")} }`
-  }
-
-  return source.getText(prop)
-}
-
-const reorder = (config: Node.ObjectExpression, source: Readonly<TSESLint.SourceCode>) => {
-  const properties = config.properties as TopProperty[]
-  const ordered = properties.toSorted((a, b) => rankOf(a.key.name) - rankOf(b.key.name))
-
-  return `{\n${ordered.map((prop) => propText(prop, source)).join(",\n")}\n}`
+  const texts = entries.toSorted((a, b) => a.rank - b.rank).map((entry) => entry.text)
+  return group === null ? `{\n${texts.join(",\n")}\n}` : `{ ${texts.join(", ")} }`
 }

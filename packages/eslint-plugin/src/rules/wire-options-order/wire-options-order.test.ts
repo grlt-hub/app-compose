@@ -38,6 +38,15 @@ ruleTester.run("wire-options-order", rule, {
         createWire(buildWire({ to: apiUrl, from: literal("https://api.example.com"), }))
       `,
     },
+    {
+      name: "leading spread — shape undeterminable, left untouched",
+      code: ts`
+        ${commonCode}
+
+        declare const rest: Parameters<typeof createWire>[0];
+        createWire({ ...rest, to: apiUrl })
+      `,
+    },
   ],
   invalid: [
     {

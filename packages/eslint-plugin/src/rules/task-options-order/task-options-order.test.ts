@@ -88,6 +88,33 @@ ruleTester.run("task-options-order", rule, {
         createTask(factory({ name: 'alpha' }))
       `,
     },
+    {
+      name: "leading spread, known keys already ordered after it",
+      code: ts`
+        ${commonCode}
+
+        const base = {};
+        createTask({ ...base, name: 'alpha', run })
+      `,
+    },
+    {
+      name: "trailing spread, known keys already ordered before it",
+      code: ts`
+        ${commonCode}
+
+        const rest = {};
+        createTask({ name: 'alpha', run, ...rest })
+      `,
+    },
+    {
+      name: "spread between known keys — order undeterminable, not reported",
+      code: ts`
+        ${commonCode}
+
+        const mid = {};
+        createTask({ run, ...mid, name: 'alpha' })
+      `,
+    },
   ],
   invalid: [
     {
@@ -294,6 +321,79 @@ ruleTester.run("task-options-order", rule, {
       `,
       output: null,
       errors: [{ messageId: "invalidOrder" }],
+    },
+    {
+      name: "leading spread — known keys after it are reordered, spread stays first",
+      code: ts`
+        ${commonCode}
+
+        const base = {};
+        createTask({ ...base, run, name: 'alpha' })
+      `,
+      output: ts`
+        ${commonCode}
+
+        const base = {};
+        createTask({
+        ...base,
+        name: 'alpha',
+        run
+        })
+      `,
+      errors: [
+        {
+          messageId: "invalidOrder",
+          data: { correctOrder: "name -> run", currentOrder: "run -> name" },
+        },
+      ],
+    },
+    {
+      name: "trailing spread — known keys before it are reordered, spread stays last",
+      code: ts`
+        ${commonCode}
+
+        const rest = {};
+        createTask({ run, name: 'alpha', ...rest })
+      `,
+      output: ts`
+        ${commonCode}
+
+        const rest = {};
+        createTask({
+        name: 'alpha',
+        run,
+        ...rest
+        })
+      `,
+      errors: [
+        {
+          messageId: "invalidOrder",
+          data: { correctOrder: "name -> run", currentOrder: "run -> name" },
+        },
+      ],
+    },
+    {
+      name: "unknown key is moved to the end, known keys sorted",
+      code: ts`
+        ${commonCode}
+
+        createTask({ foo: 1, run, name: 'alpha' })
+      `,
+      output: ts`
+        ${commonCode}
+
+        createTask({
+        name: 'alpha',
+        run,
+        foo: 1
+        })
+      `,
+      errors: [
+        {
+          messageId: "invalidOrder",
+          data: { correctOrder: "name -> run -> foo", currentOrder: "foo -> run -> name" },
+        },
+      ],
     },
   ],
 })
