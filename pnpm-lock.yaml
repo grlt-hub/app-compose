@@ -118,6 +118,9 @@ importers:
       '@typescript-eslint/utils':
         specifier: ^8.60.0
         version: 8.60.0(eslint@10.4.1(jiti@2.7.0))(typescript@6.0.3)
+      esquery:
+        specifier: ^1.7.0
+        version: 1.7.0
       typescript:
         specifier: ^5.0.0 || ^6.0.0
         version: 6.0.3
@@ -128,6 +131,9 @@ importers:
       '@grlt-hub/app-compose':
         specifier: workspace:*
         version: link:../app-compose
+      '@types/esquery':
+        specifier: 1.5.4
+        version: 1.5.4
       '@typescript-eslint/rule-tester':
         specifier: 8.60.0
         version: 8.60.0(eslint@10.4.1(jiti@2.7.0))(typescript@6.0.3)
@@ -1976,6 +1982,9 @@ packages:
 
   '@types/deep-eql@4.0.2':
     resolution: {integrity: sha512-c9h9dVVMigMPc4bwTvC5dxqtqJZwQPePsWjPlpSOnojbor6pGqdk541lfA7AqFQr5pB1BRdq0juY9db81BwyFw==}
+
+  '@types/esquery@1.5.4':
+    resolution: {integrity: sha512-yYO4Q8H+KJHKW1rEeSzHxcZi90durqYgWVfnh5K6ZADVBjBv2e1NEveYX5yT2bffgN7RqzH3k9930m+i2yBoMA==}
 
   '@types/esrecurse@4.3.1':
     resolution: {integrity: sha512-xJBAbDifo5hpffDBuHl0Y8ywswbiAp/Wi7Y/GtAgSlZyIABppyurxVueOPE8LUQOxdlgi6Zqce7uoEpqNTeiUw==}
@@ -5729,6 +5738,10 @@ snapshots:
       '@types/ms': 2.1.0
 
   '@types/deep-eql@4.0.2': {}
+
+  '@types/esquery@1.5.4':
+    dependencies:
+      '@types/estree': 1.0.9
 
   '@types/esrecurse@4.3.1': {}
 

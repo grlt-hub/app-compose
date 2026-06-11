@@ -12,5 +12,10 @@ ignoredBuiltDependencies:
 
 minimumReleaseAge: 4320
 
+onlyBuiltDependencies:
+  - esbuild
+  - lefthook
+  - workerd
+
 patchedDependencies:
   starlight-llms-txt: patches/starlight-llms-txt.patch
