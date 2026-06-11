@@ -13,7 +13,6 @@ ignoredBuiltDependencies:
 minimumReleaseAge: 4320
 
 onlyBuiltDependencies:
-  - es5-ext
   - esbuild
   - lefthook
   - workerd
