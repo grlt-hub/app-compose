@@ -8,24 +8,24 @@ const GROUPS = [
   { key: "enabled", nested: ["context", "fn"] } as const,
 ]
 
-// Canonical rank of every key — top-level groups and their nested keys. A `run`/`enabled` that is
-// opaque (shorthand, variable, …) ranks at its group position; an inline one ranks at the leaf level.
-// A config holds one or the other, never both, so the two never collide.
-const RANK = new Map<string, number>()
-GROUPS.forEach((group, groupIndex) => {
-  RANK.set(group.key, groupIndex * 10)
-  group.nested?.forEach((nested, nestedIndex) => RANK.set(`${group.key}.${nested}`, groupIndex * 10 + nestedIndex + 1))
-})
+// Canonical key order: each group key, immediately followed by its nested keys. A `run`/`enabled`
+// ranks at its group slot when opaque (shorthand, variable, …) and at the leaf slots when inline;
+// a config holds one form or the other, so the two never collide.
+const CANONICAL_KEYS = GROUPS.flatMap((group) => [group.key, ...(group.nested ?? []).map((n) => `${group.key}.${n}`)])
+const RANK = new Map(CANONICAL_KEYS.map((key, index): [string, number] => [key, index]))
 const rankOf = (key: string) => RANK.get(key) ?? Infinity
 
 const TOP_KEYS = new Set<string>(GROUPS.map((group) => group.key))
-const NESTED_KEYS = new Set<string>(GROUPS.flatMap((group) => group.nested ?? []))
 const NESTED_ORDER = GROUPS.find((group) => group.nested)?.nested ?? []
+const NESTED_KEYS = new Set<string>(NESTED_ORDER)
 
 const importSelector = `ImportDeclaration[source.value=${PACKAGE_NAME.CORE}]`
 const methodSelector = `ImportSpecifier[imported.name=${UNITS.CREATE_TASK}]`
 
 const callSelector = `[callee.type="Identifier"][arguments.length=1]`
+// Direct child, not a descendant: matches `createTask({ … })` but not `createTask(factory({ … }))`,
+// where the object literal sits inside a nested call's arguments rather than createTask's own.
+const argumentSelector = `ObjectExpression.arguments`
 
 export default createRule({
   name: "task-options-order",
@@ -46,23 +46,24 @@ export default createRule({
     const source = context.sourceCode
     const imports = new Set<string>()
 
-    type MethodCall = Node.CallExpression & { callee: Node.Identifier; arguments: [Node.CallExpressionArgument] }
+    // The selector guarantees a single object-literal argument, so `config` is an ObjectExpression.
+    type MethodCall = Node.CallExpression & { callee: Node.Identifier; arguments: [Node.ObjectExpression] }
 
     return {
       [`${importSelector} > ${methodSelector}`]: (node: Node.ImportSpecifier) => void imports.add(node.local.name),
 
-      [`CallExpression${callSelector}`]: (node: MethodCall) => {
+      [`CallExpression${callSelector}:has(> ${argumentSelector})`]: (node: MethodCall) => {
         if (!imports.has(node.callee.name)) return
 
         const [config] = node.arguments
-        // Bail only when the order is genuinely undeterminable (non-object arg, or a top-level spread /
-        // computed / getter / unknown key — anything that hides where the real options sit).
-        if (config.type !== NodeType.ObjectExpression || !hasKnownShape(config)) return
+        // Bail when the order is undeterminable: a top-level spread / computed / getter / unknown key
+        // hides where the real options sit.
+        if (!hasKnownShape(config)) return
 
         const keys = currentKeys(config.properties as TopProperty[])
         if (isCorrectOrder(keys)) return
 
-        const correctOrder = [...keys].sort((a, b) => rankOf(a) - rankOf(b)).join(" -> ")
+        const correctOrder = keys.toSorted((a, b) => rankOf(a) - rankOf(b)).join(" -> ")
         const data = { correctOrder, currentOrder: keys.join(" -> ") }
 
         // Reorder by relocating the real property nodes, so shorthand/spread/comments survive. Attach the
@@ -129,20 +130,20 @@ const isFullyFixable = (config: Node.ObjectExpression) =>
   })
 
 const currentKeys = (properties: TopProperty[]) => {
-  const keys = new Map<string, true>()
+  const keys = new Set<string>()
 
   for (const prop of properties) {
     if (prop.value.type !== NodeType.ObjectExpression) {
-      keys.set(prop.key.name, true)
+      keys.add(prop.key.name)
       continue
     }
 
     for (const p of prop.value.properties) {
-      if (isPlainProp(p)) keys.set(`${prop.key.name}.${p.key.name}`, true)
+      if (isPlainProp(p)) keys.add(`${prop.key.name}.${p.key.name}`)
     }
   }
 
-  return [...keys.keys()]
+  return [...keys]
 }
 
 const isCorrectOrder = (current: string[]) => {
@@ -175,7 +176,7 @@ const propText = (prop: TopProperty, source: Readonly<TSESLint.SourceCode>) => {
 
 const reorder = (config: Node.ObjectExpression, source: Readonly<TSESLint.SourceCode>) => {
   const properties = config.properties as TopProperty[]
-  const ordered = [...properties].sort((a, b) => rankOf(a.key.name) - rankOf(b.key.name))
+  const ordered = properties.toSorted((a, b) => rankOf(a.key.name) - rankOf(b.key.name))
 
   return `{\n${ordered.map((prop) => propText(prop, source)).join(",\n")}\n}`
 }
