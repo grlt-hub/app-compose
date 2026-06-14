@@ -1,6 +1,6 @@
 {
   "name": "@app-compose/core",
-  "version": "3.0.0-beta.7",
+  "version": "3.0.0-beta.8",
   "private": false,
   "description": "Lightweight IoC for the front-end — structures your app around isolated tasks, explicit context, and predictable startup.",
   "keywords": [
