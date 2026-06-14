@@ -91,7 +91,7 @@ Use [`llms-small.txt`](https://app-compose.dev/llms-small.txt) for models with a
 
 ### DeepWiki
 
-Open [deepwiki.com/grlt-hub/app-compose](https://deepwiki.com/grlt-hub/app-compose) and ask anything about the codebase.
+Open [deepwiki](https://deepwiki.com/grlt-hub/app-compose) and ask anything about the codebase.
 
 ## Ready to try it?
 
