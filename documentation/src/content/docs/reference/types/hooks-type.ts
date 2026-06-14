@@ -1,4 +1,4 @@
-import { type ComposeHookMap } from "@grlt-hub/app-compose"
+import { type ComposeHookMap } from "@app-compose/core"
 
 const hookMap: ComposeHookMap = {
   onStart: (event) => console.log(event.meta),

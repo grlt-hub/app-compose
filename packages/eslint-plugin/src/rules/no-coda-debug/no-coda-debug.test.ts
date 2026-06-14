@@ -9,14 +9,14 @@ ruleTester.run("no-coda-debug", rule, {
     {
       name: "no debug import",
       code: ts`
-        import { createTask } from "@grlt-hub/app-compose"
+        import { createTask } from "@app-compose/core"
         createTask({ name: "x", run: { fn: () => 1 } })
       `,
     },
     {
       name: "imported but never called",
       code: ts`
-        import { debug } from "@grlt-hub/app-coda"
+        import { debug } from "@app-compose/coda"
       `,
     },
     {
@@ -31,7 +31,7 @@ ruleTester.run("no-coda-debug", rule, {
     {
       name: "direct call",
       code: ts`
-        import { debug } from "@grlt-hub/app-coda"
+        import { debug } from "@app-compose/coda"
         debug("x")
       `,
       errors: [{ messageId: "unexpectedDebug" }],
@@ -39,7 +39,7 @@ ruleTester.run("no-coda-debug", rule, {
     {
       name: "aliased import",
       code: ts`
-        import { debug as dbg } from "@grlt-hub/app-coda"
+        import { debug as dbg } from "@app-compose/coda"
         dbg("x")
       `,
       errors: [{ messageId: "unexpectedDebug" }],
@@ -47,8 +47,8 @@ ruleTester.run("no-coda-debug", rule, {
     {
       name: "inside compose chain",
       code: ts`
-        import { compose } from "@grlt-hub/app-compose"
-        import { debug } from "@grlt-hub/app-coda"
+        import { compose } from "@app-compose/core"
+        import { debug } from "@app-compose/coda"
         compose().step(debug("x")).run()
       `,
       errors: [{ messageId: "unexpectedDebug" }],

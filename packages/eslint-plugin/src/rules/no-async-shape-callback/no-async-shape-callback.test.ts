@@ -18,21 +18,21 @@ ruleTester.run("no-async-shape-callback", rule, {
     {
       name: "sync callback",
       code: ts`
-        import { shape } from "@grlt-hub/app-compose"
+        import { shape } from "@app-compose/core"
         shape({ user }, (x) => x.user)
       `,
     },
     {
       name: "no callback",
       code: ts`
-        import { shape } from "@grlt-hub/app-compose"
+        import { shape } from "@app-compose/core"
         shape({ user })
       `,
     },
     {
       name: "sync callback passed by reference",
       code: ts`
-        import { shape } from "@grlt-hub/app-compose"
+        import { shape } from "@app-compose/core"
         const pickUser = (x: { user: string }) => x.user
         shape({ user }, pickUser)
       `,
@@ -47,7 +47,7 @@ ruleTester.run("no-async-shape-callback", rule, {
     {
       name: "callback returning a union without a promise",
       code: ts`
-        import { shape } from "@grlt-hub/app-compose"
+        import { shape } from "@app-compose/core"
         const pickUser = (x: { user: string }) => (x.user ? x.user : null)
         shape({ user }, pickUser)
       `,
@@ -55,7 +55,7 @@ ruleTester.run("no-async-shape-callback", rule, {
     {
       name: "callback returning a user-defined type named Promise",
       code: ts`
-        import { shape } from "@grlt-hub/app-compose"
+        import { shape } from "@app-compose/core"
         interface Promise {
           user: string
         }
@@ -68,7 +68,7 @@ ruleTester.run("no-async-shape-callback", rule, {
     {
       name: "async arrow callback",
       code: ts`
-        import { shape } from "@grlt-hub/app-compose"
+        import { shape } from "@app-compose/core"
         shape({ user }, async (x) => x.user)
       `,
       errors: [{ messageId: "asyncCallback" }],
@@ -76,7 +76,7 @@ ruleTester.run("no-async-shape-callback", rule, {
     {
       name: "async function expression",
       code: ts`
-        import { shape } from "@grlt-hub/app-compose"
+        import { shape } from "@app-compose/core"
         shape({ user }, async function (x) {
           return x.user
         })
@@ -86,7 +86,7 @@ ruleTester.run("no-async-shape-callback", rule, {
     {
       name: "async callback passed by reference",
       code: ts`
-        import { shape } from "@grlt-hub/app-compose"
+        import { shape } from "@app-compose/core"
         const pickUser = async (x: { user: string }) => x.user
         shape({ user }, pickUser)
       `,
@@ -95,7 +95,7 @@ ruleTester.run("no-async-shape-callback", rule, {
     {
       name: "sync callback returning a promise",
       code: ts`
-        import { shape } from "@grlt-hub/app-compose"
+        import { shape } from "@app-compose/core"
         shape({ user }, (x) => Promise.resolve(x.user))
       `,
       errors: [{ messageId: "asyncCallback" }],
@@ -103,7 +103,7 @@ ruleTester.run("no-async-shape-callback", rule, {
     {
       name: "aliased import",
       code: ts`
-        import { shape as sh } from "@grlt-hub/app-compose"
+        import { shape as sh } from "@app-compose/core"
         sh({ user }, async (x) => x.user)
       `,
       errors: [{ messageId: "asyncCallback" }],
@@ -111,7 +111,7 @@ ruleTester.run("no-async-shape-callback", rule, {
     {
       name: "callback returning a union with a promise",
       code: ts`
-        import { shape } from "@grlt-hub/app-compose"
+        import { shape } from "@app-compose/core"
         const pickUser = (x: { user: string }) => (x.user ? Promise.resolve(x.user) : x.user)
         shape({ user }, pickUser)
       `,
@@ -120,7 +120,7 @@ ruleTester.run("no-async-shape-callback", rule, {
     {
       name: "callback returning a promise subclass",
       code: ts`
-        import { shape } from "@grlt-hub/app-compose"
+        import { shape } from "@app-compose/core"
         class Lazy extends Promise<string> {}
         const pickUser = (x: { user: string }) => Lazy.resolve(x.user)
         shape({ user }, pickUser)

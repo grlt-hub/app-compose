@@ -1,4 +1,4 @@
-import { createTask, tag } from "@grlt-hub/app-compose"
+import { createTask, tag } from "@app-compose/core"
 import { useStore } from "@nanostores/react"
 import { selectedLanguage } from "./shared-tags"
 

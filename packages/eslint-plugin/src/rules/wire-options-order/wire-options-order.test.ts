@@ -5,7 +5,7 @@ import rule from "./wire-options-order"
 const ruleTester = new RuleTester()
 
 const commonCode = ts`
-  import { createWire, tag, literal } from "@grlt-hub/app-compose"
+  import { createWire, tag, literal } from "@app-compose/core"
 
   const apiUrl = tag<string>("apiUrl")
 `

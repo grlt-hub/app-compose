@@ -3,6 +3,6 @@
   "ignore": ["*.config.ts"],
   "entry": ["./src/index.ts!"],
   "ignoreBinaries": ["tsdown", "knip", "oxlint", "vitest"],
-  "ignoreDependencies": ["@grlt-hub/app-coda", "@grlt-hub/app-compose", "vitest"],
+  "ignoreDependencies": ["@app-compose/coda", "@app-compose/core", "vitest"],
   "vitest": { "config": "vitest.config.ts", "entry": "src/**/*.test.ts" }
 }

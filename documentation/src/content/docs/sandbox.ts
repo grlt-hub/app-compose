@@ -1,5 +1,5 @@
-import { every, some, not, when, debug } from "@grlt-hub/app-coda"
-import { createWire, compose, tag, createTask, literal, optional, shape } from "@grlt-hub/app-compose"
+import { every, some, not, when, debug } from "@app-compose/coda"
+import { createWire, compose, tag, createTask, literal, optional, shape } from "@app-compose/core"
 
 const whoToGreet = tag<string>("whoToGreet")
 

@@ -1,4 +1,4 @@
-import { createTask } from "@grlt-hub/app-compose"
+import { createTask } from "@app-compose/core"
 import { atom } from "nanostores"
 import { h } from "vue"
 import LanguageSelectView from "./language-select.vue"

@@ -1,4 +1,4 @@
-import { compose, createTask, shape } from "@grlt-hub/app-compose"
+import { compose, createTask, shape } from "@app-compose/core"
 
 const user = createTask({
   name: "user",

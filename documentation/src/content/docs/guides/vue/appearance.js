@@ -1,4 +1,4 @@
-import { createTask, tag } from "@grlt-hub/app-compose"
+import { createTask, tag } from "@app-compose/core"
 import { h } from "vue"
 import AppearanceView from "./appearance.vue"
 import { selectedLanguage } from "./shared-tags.js"

@@ -12,10 +12,11 @@ In the example, `dashboard` is the critical Task — it reads `auth.result`. If 
 
 Uncomment the `throw` to see it:
 
-<Sandbox anchor="example"
+<Sandbox
+  anchor="example"
   template="vanilla-ts"
   code={example}
   options={{ layout: "console", showConsoleButton: false, editorWidthPercentage: 80 }}
 />
 
-For shorter `enabled` blocks, [`when`](/app-coda/when) from `@grlt-hub/app-coda` returns the `{ context, fn: Boolean }` pair in a single call.
+For shorter `enabled` blocks, [`when`](/coda/when) from `@app-compose/coda` returns the `{ context, fn: Boolean }` pair in a single call.

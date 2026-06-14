@@ -5,9 +5,9 @@ import {
   type SandpackOptions,
   type SandpackPredefinedTemplate,
 } from "@codesandbox/sandpack-react"
-import { APP_CODA_JS } from "virtual:app-coda-js"
-import { APP_COMPOSE_JS } from "virtual:app-compose-js"
 import { useEffect, useState } from "react"
+import { APP_COMPOSE_JS } from "virtual:app-compose-js"
+import { APP_CODA_JS } from "virtual:coda-js"
 import { Editor } from "./editor/index"
 import { Output } from "./output"
 import { sandboxStyle } from "./sandboxStyle"
@@ -26,7 +26,14 @@ type Props = {
   }
 }
 
-const SandpackEditor = ({ code: defaultCode, template = "react", options, files = {}, visibleFiles, share = false }: Props) => {
+const SandpackEditor = ({
+  code: defaultCode,
+  template = "react",
+  options,
+  files = {},
+  visibleFiles,
+  share = false,
+}: Props) => {
   // If the URL carries ?s=<id>, resolve that snippet BEFORE mounting Sandpack and use it as the
   // initial file — so the preview compiles/runs the shared code (editor and console stay in sync).
   const [shareId] = useState(() => (share ? readShareId() : null))
@@ -36,15 +43,14 @@ const SandpackEditor = ({ code: defaultCode, template = "react", options, files 
   useEffect(() => {
     if (!shareId) return
     let alive = true
-    fetchSharedCode(shareId)
-      .then((c) => {
-        if (!alive) return
-        // On a hit, keep ?s in the URL — ShareButton owns it from here and drops it on the first
-        // edit. On a miss the link is dead, so clear it now rather than advertise a broken snippet.
-        if (c !== null) setSharedCode(c)
-        else stripShareParam()
-        setResolving(false)
-      })
+    fetchSharedCode(shareId).then((c) => {
+      if (!alive) return
+      // On a hit, keep ?s in the URL — ShareButton owns it from here and drops it on the first
+      // edit. On a miss the link is dead, so clear it now rather than advertise a broken snippet.
+      if (c !== null) setSharedCode(c)
+      else stripShareParam()
+      setResolving(false)
+    })
     return () => {
       alive = false
     }
@@ -92,14 +98,14 @@ const SandpackEditor = ({ code: defaultCode, template = "react", options, files 
           [fileName]: { code },
           ...files,
           "/sandboxStyle.css": { code: sandboxStyle, hidden: true },
-          "/node_modules/@grlt-hub/app-compose/index.cjs": { code: APP_COMPOSE_JS, hidden: true },
-          "/node_modules/@grlt-hub/app-compose/package.json": {
-            code: JSON.stringify({ name: "@grlt-hub/app-compose", main: "index.cjs" }),
+          "/node_modules/@app-compose/core/index.cjs": { code: APP_COMPOSE_JS, hidden: true },
+          "/node_modules/@app-compose/core/package.json": {
+            code: JSON.stringify({ name: "@app-compose/core", main: "index.cjs" }),
             hidden: true,
           },
-          "/node_modules/@grlt-hub/app-coda/index.cjs": { code: APP_CODA_JS, hidden: true },
-          "/node_modules/@grlt-hub/app-coda/package.json": {
-            code: JSON.stringify({ name: "@grlt-hub/app-coda", main: "index.cjs" }),
+          "/node_modules/@app-compose/coda/index.cjs": { code: APP_CODA_JS, hidden: true },
+          "/node_modules/@app-compose/coda/package.json": {
+            code: JSON.stringify({ name: "@app-compose/coda", main: "index.cjs" }),
             hidden: true,
           },
           ...(isVite && {
@@ -115,8 +121,8 @@ const SandpackEditor = ({ code: defaultCode, template = "react", options, files 
             import { createApp } from "vue";
             import App from "./App.vue";
             import "/sandboxStyle.css";
-            import * as AppCompose from "@grlt-hub/app-compose";
-            import * as AppCoda from "@grlt-hub/app-coda";
+            import * as AppCompose from "@app-compose/core";
+            import * as AppCoda from "@app-compose/coda";
             Object.assign(window, AppCompose, AppCoda);
             console.clear();
             createApp(App).mount("#app");
@@ -129,14 +135,14 @@ const SandpackEditor = ({ code: defaultCode, template = "react", options, files 
                   code: isTests
                     ? `
             import "./sandboxStyle.css";
-            import * as AppCompose from "@grlt-hub/app-compose";
-            import * as AppCoda from "@grlt-hub/app-coda";
+            import * as AppCompose from "@app-compose/core";
+            import * as AppCoda from "@app-compose/coda";
             Object.assign(window, AppCompose, AppCoda);
             `
                     : `
             import "./sandboxStyle.css";
-            import * as AppCompose from "@grlt-hub/app-compose";
-            import * as AppCoda from "@grlt-hub/app-coda";
+            import * as AppCompose from "@app-compose/core";
+            import * as AppCoda from "@app-compose/coda";
             Object.assign(window, AppCompose, AppCoda);
             console.clear();
             import("./${fileName}").catch(err => console.error(err.message));

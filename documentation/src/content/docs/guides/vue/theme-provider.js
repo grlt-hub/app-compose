@@ -1,4 +1,4 @@
-import { createTask } from "@grlt-hub/app-compose"
+import { createTask } from "@app-compose/core"
 import { h } from "vue"
 import { selectedTheme } from "./shared-tags.js"
 import ThemeProviderView from "./theme-provider.vue"

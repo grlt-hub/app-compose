@@ -1,4 +1,4 @@
-import { compose, createTask, optional } from "@grlt-hub/app-compose"
+import { compose, createTask, optional } from "@app-compose/core"
 
 const user = createTask({
   name: "user",

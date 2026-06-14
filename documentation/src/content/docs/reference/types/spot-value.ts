@@ -1,4 +1,4 @@
-import { type SpotValue, createTask, literal, optional } from "@grlt-hub/app-compose"
+import { type SpotValue, createTask, literal, optional } from "@app-compose/core"
 
 const apiUrl = literal("https://api.example.com")
 type ApiUrlValue = SpotValue<typeof apiUrl> // => "https://api.example.com"

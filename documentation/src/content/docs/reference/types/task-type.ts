@@ -1,4 +1,4 @@
-import { type Task, createTask } from "@grlt-hub/app-compose"
+import { type Task, createTask } from "@app-compose/core"
 
 const alpha = createTask({
   name: "alpha",

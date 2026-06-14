@@ -1,4 +1,4 @@
-import { compose, createTask } from "@grlt-hub/app-compose"
+import { compose, createTask } from "@app-compose/core"
 import { themeSelectFeature } from "./theme-select"
 
 const themeSelect = createTask({

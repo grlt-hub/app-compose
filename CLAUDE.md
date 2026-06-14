@@ -4,21 +4,21 @@ This file provides context for AI assistants working in this repository.
 
 ## What is this project?
 
-`@grlt-hub/app-compose` is a TypeScript library for composing modular applications. It lets developers wire together features, services, and entities — managing their dependencies and startup order — as a single coherent system.
+`@app-compose/core` is a TypeScript library for composing modular applications. It lets developers wire together features, services, and entities — managing their dependencies and startup order — as a single coherent system.
 
 - Docs: https://app-compose.dev/
-- npm: https://www.npmjs.com/package/@grlt-hub/app-compose
+- npm: https://www.npmjs.com/package/@app-compose/core
 
 ## Monorepo structure
 
 This is a pnpm workspace. The packages are:
 
-| Path                     | Package                               | Role                                                 |
-| ------------------------ | ------------------------------------- | ---------------------------------------------------- |
-| `packages/app-compose`   | `@grlt-hub/app-compose`               | Core library                                         |
-| `packages/app-coda`      | `@grlt-hub/app-coda`                  | Helper utilities for the core: tasks, wires, context |
-| `packages/eslint-plugin` | `@grlt-hub/eslint-plugin-app-compose` | ESLint rules for the library                         |
-| `documentation`          | —                                     | Astro/Starlight documentation site                   |
+| Path                     | Package                      | Role                                                 |
+| ------------------------ | ---------------------------- | ---------------------------------------------------- |
+| `packages/app-compose`   | `@app-compose/core`          | Core library                                         |
+| `packages/coda`          | `@app-compose/coda`          | Helper utilities for the core: tasks, wires, context |
+| `packages/eslint-plugin` | `@app-compose/eslint-plugin` | ESLint rules for the library                         |
+| `documentation`          | —                            | Astro/Starlight documentation site                   |
 
 ## Common commands
 

@@ -15,7 +15,8 @@ When something goes wrong, you want to see inside — without scattering `consol
 
 `compose(...).run()` returns `Promise<Scope>` — `await` it to get a `Scope` with one method, `scope.get(spot)`, that reads any **Spot** computed during the run. A Spot is any readable source in the composition: `task.result`, `task.status`, `task.error`, `tag.value`, anything from `shape(...)`. The call returns `undefined` if the source wasn't computed (a skipped or failed Task).
 
-<Sandbox anchor="scope-get"
+<Sandbox
+  anchor="scope-get"
   template="vanilla-ts"
   code={scopeGet}
   options={{ layout: "console", editorWidthPercentage: 60, showConsoleButton: false }}
@@ -36,9 +37,10 @@ Add a Task that reads any Tasks, Tags, or Spots via `context` and logs them. Pla
 
 The catch: every `context` read must be wrapped in [`optional`](/reference/optional) — `optional(task.result)`, `optional(tag.value)`, and so on. Without it, the debug Task is skipped along with any source that fails or is skipped — and you get no log.
 
-[debug](/app-coda/debug) from `@grlt-hub/app-coda` handles this wrapping for you. Pass any Tasks, Tags, or Spots; it returns a Task you can `.step(...)`. A lint rule [no-coda-debug](/learn/linting/#no-coda-debug) flags every call so it doesn't reach a commit.
+[debug](/coda/debug) from `@app-compose/coda` handles this wrapping for you. Pass any Tasks, Tags, or Spots; it returns a Task you can `.step(...)`. A lint rule [no-coda-debug](/learn/linting/#no-coda-debug) flags every call so it doesn't reach a commit.
 
-<Sandbox anchor="debug-task"
+<Sandbox
+  anchor="debug-task"
   template="vanilla-ts"
   code={debugTask}
   options={{ layout: "console", editorWidthPercentage: 60, showConsoleButton: false }}
