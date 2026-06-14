@@ -15,9 +15,9 @@ Lightweight IoC for the front-end. Compose apps you can control and trust.
 > [!NOTE]
 > **Beta:** This project is currently in beta. The API may change before the stable release.
 >
-> - `@app-compose/core@3.0.0-beta.7`
-> - `@app-compose/eslint-plugin@3.0.0-beta.7`
-> - `@app-compose/coda@3.0.0-beta.7`
+> - `@app-compose/core@3.0.0-beta.8`
+> - `@app-compose/eslint-plugin@3.0.0-beta.8`
+> - `@app-compose/coda@3.0.0-beta.8`
 
 ## Features
 
