@@ -35,12 +35,12 @@ const beforeMount = (monaco: Monaco) => {
 
   monaco.languages.typescript.typescriptDefaults.addExtraLib(
     APP_COMPOSE_DTS,
-    "file:///node_modules/@types/grlt-hub__app-compose/index.d.ts",
+    "file:///node_modules/@types/app-compose__core/index.d.ts",
   )
 
   monaco.languages.typescript.typescriptDefaults.addExtraLib(
     APP_CODA_DTS,
-    "file:///node_modules/@types/grlt-hub__app-coda/index.d.ts",
+    "file:///node_modules/@types/app-compose__coda/index.d.ts",
   )
 }
 

@@ -1,6 +1,6 @@
 const PACKAGE_NAME = {
-  CORE: "@grlt-hub/app-compose",
-  CODA: "@grlt-hub/app-coda",
+  CORE: "@app-compose/core",
+  CODA: "@app-compose/coda",
 }
 
 const UNITS = {

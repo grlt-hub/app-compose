@@ -2,8 +2,8 @@ import { readFileSync } from "node:fs"
 import { fileURLToPath } from "node:url"
 
 const PACKAGES = [
-  { pkg: "@grlt-hub/app-compose", dir: "app-compose", constName: "APP_COMPOSE", virtualName: "app-compose" },
-  { pkg: "@grlt-hub/app-coda", dir: "app-coda", constName: "APP_CODA", virtualName: "app-coda" },
+  { pkg: "@app-compose/core", dir: "app-compose", constName: "APP_COMPOSE", virtualName: "app-compose" },
+  { pkg: "@app-compose/coda", dir: "coda", constName: "APP_CODA", virtualName: "coda" },
 ]
 
 const dist = (dir, file) => fileURLToPath(new URL(`../packages/${dir}/dist/${file}`, import.meta.url))

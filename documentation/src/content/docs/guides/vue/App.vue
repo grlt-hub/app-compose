@@ -1,5 +1,5 @@
 <script setup>
-import { compose, createTask, createWire, literal } from "@grlt-hub/app-compose"
+import { compose, createTask, createWire, literal } from "@app-compose/core"
 import { createApp, h, onMounted } from "vue"
 import { Appearance, appearanceWidgets } from "./appearance.js"
 import { LanguageSelect, ThemeSelect } from "./features.js"

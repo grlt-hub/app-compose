@@ -1,5 +1,5 @@
 // oxfmt-ignore
-import { createTask, createWire, compose, tag } from "@grlt-hub/app-compose"
+import { createTask, createWire, compose, tag } from "@app-compose/core"
 
 // where the name to greet will live
 const whoToGreet = tag<string>("whoToGreet")

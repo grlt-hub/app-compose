@@ -1,7 +1,7 @@
 // oxfmt-ignore
 import {
 createWire, compose, tag, createTask, optional
-} from "@grlt-hub/app-compose"
+} from "@app-compose/core"
 
 const title = tag<string>("title")
 

@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-This file provides context for AI assistants working on the ESLint plugin (`@grlt-hub/eslint-plugin-app-compose`). It extends the root `CLAUDE.md`.
+This file provides context for AI assistants working on the ESLint plugin (`@app-compose/eslint-plugin`). It extends the root `CLAUDE.md`.
 
 ## Rule conventions
 

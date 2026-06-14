@@ -1,4 +1,4 @@
-import { createTask } from "@grlt-hub/app-compose"
+import { createTask } from "@app-compose/core"
 import { useStore } from "@nanostores/react"
 import { useEffect } from "react"
 import { selectedTheme } from "./shared-tags"

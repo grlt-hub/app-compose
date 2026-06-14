@@ -1,5 +1,5 @@
-import { debug } from "@grlt-hub/app-coda"
-import { compose, createTask, createWire, tag } from "@grlt-hub/app-compose"
+import { debug } from "@app-compose/coda"
+import { compose, createTask, createWire, tag } from "@app-compose/core"
 
 const userId = tag<number>("userId")
 

@@ -117,14 +117,14 @@ export default defineConfig({
           collapsed: true,
         },
         {
-          label: "App-Coda",
+          label: "Coda",
           items: [
-            { slug: "app-coda" },
-            { slug: "app-coda/debug" },
-            { slug: "app-coda/every" },
-            { slug: "app-coda/not" },
-            { slug: "app-coda/some" },
-            { slug: "app-coda/when" },
+            { slug: "coda" },
+            { slug: "coda/debug" },
+            { slug: "coda/every" },
+            { slug: "coda/not" },
+            { slug: "coda/some" },
+            { slug: "coda/when" },
           ],
           collapsed: true,
         },
@@ -155,10 +155,10 @@ export default defineConfig({
           exclude: ["sandbox", "privacy", "404"],
           customSets: [
             {
-              label: "App-Coda",
+              label: "Coda",
               description:
-                "Helper utilities for @grlt-hub/app-compose - reusable building blocks for tasks, wires, and context.",
-              paths: ["app-coda/**"],
+                "Helper utilities for @app-compose/core - reusable building blocks for tasks, wires, and context.",
+              paths: ["coda/**"],
             },
           ],
         }),
@@ -171,5 +171,11 @@ export default defineConfig({
     "/app-compose/tutorials/getting-started": "/learn/quick-start/",
     "/app-compose/tutorials/dependencies": "/learn/quick-start/#how-to-pass-data-to-a-task",
     "/guides/sharing-tags": "/guides/managing-tags/",
+    "/app-coda": "/coda/",
+    "/app-coda/debug": "/coda/debug/",
+    "/app-coda/every": "/coda/every/",
+    "/app-coda/not": "/coda/not/",
+    "/app-coda/some": "/coda/some/",
+    "/app-coda/when": "/coda/when/",
   },
 })

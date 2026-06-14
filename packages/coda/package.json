@@ -1,0 +1,71 @@
+{
+  "name": "@app-compose/coda",
+  "version": "3.0.0-beta.7",
+  "private": false,
+  "description": "Helper utilities for @app-compose/core — reusable building blocks for tasks, wires, and context.",
+  "keywords": [
+    "app-compose",
+    "grlt",
+    "grlt-hub",
+    "helpers",
+    "tasks",
+    "typescript",
+    "utilities",
+    "utils",
+    "wire"
+  ],
+  "homepage": "https://app-compose.dev/coda",
+  "license": "MIT",
+  "contributors": [
+    {
+      "name": "Mikhail Kireev",
+      "url": "https://github.com/kireevmp"
+    },
+    {
+      "name": "Viktor Pasynok",
+      "url": "https://github.com/binjospookie"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/grlt-hub/app-compose.git"
+  },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc --noEmit -p tsconfig.json && tsdown",
+    "dev": "tsdown --watch",
+    "prepack": "pnpm build",
+    "bench": "vitest bench",
+    "test": "vitest run",
+    "lint": "knip && oxlint ./src"
+  },
+  "devDependencies": {
+    "@app-compose/core": "workspace:*"
+  },
+  "peerDependencies": {
+    "@app-compose/core": "^3.0.0"
+  },
+  "packageManager": "pnpm@11.5.3+sha512.7ac1c919341c213a34dc0d02afb7143c5c26ac26ee8c4782deea821b8ac64d2134a081fd8941dae6e29bbb48f58dfc2b7fbceeccc07cb2f09d219d342a4969ed"
+}

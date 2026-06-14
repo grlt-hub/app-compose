@@ -1,4 +1,4 @@
-import { compose, createTask, createWire, literal } from "@grlt-hub/app-compose"
+import { compose, createTask, createWire, literal } from "@app-compose/core"
 import { createRoot } from "react-dom/client"
 import { Appearance, appearanceWidgets } from "./appearance"
 import { LanguageSelect, ThemeSelect } from "./features"

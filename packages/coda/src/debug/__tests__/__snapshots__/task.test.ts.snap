@@ -1,0 +1,126 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`debug — task target > renders a done task with status and result 1`] = `
+[
+  [
+    "console.groupCollapsed",
+    "[coda] debug",
+  ],
+  [
+    "console.group",
+    "[Task]: source",
+  ],
+  [
+    "console.info",
+    {
+      "error": undefined,
+      "result": {
+        "env": "dev",
+      },
+      "status": "done",
+    },
+  ],
+  [
+    "console.groupEnd",
+  ],
+  [
+    "console.groupEnd",
+  ],
+]
+`;
+
+exports[`debug — task target > renders a failed task with status and error 1`] = `
+[
+  [
+    "console.groupCollapsed",
+    "[coda] debug",
+  ],
+  [
+    "console.group",
+    "[Task]: source",
+  ],
+  [
+    "console.info",
+    {
+      "error": [Error: boom],
+      "result": undefined,
+      "status": "fail",
+    },
+  ],
+  [
+    "console.groupEnd",
+  ],
+  [
+    "console.groupEnd",
+  ],
+]
+`;
+
+exports[`debug — task target > renders a healthy task alongside a failing one 1`] = `
+[
+  [
+    "console.groupCollapsed",
+    "[coda] debug",
+  ],
+  [
+    "console.group",
+    "[Task]: good",
+  ],
+  [
+    "console.info",
+    {
+      "error": undefined,
+      "result": "ok",
+      "status": "done",
+    },
+  ],
+  [
+    "console.groupEnd",
+  ],
+  [
+    "console.group",
+    "[Task]: bad",
+  ],
+  [
+    "console.info",
+    {
+      "error": [Error: boom],
+      "result": undefined,
+      "status": "fail",
+    },
+  ],
+  [
+    "console.groupEnd",
+  ],
+  [
+    "console.groupEnd",
+  ],
+]
+`;
+
+exports[`debug — task target > renders a skipped task 1`] = `
+[
+  [
+    "console.groupCollapsed",
+    "[coda] debug",
+  ],
+  [
+    "console.group",
+    "[Task]: source",
+  ],
+  [
+    "console.info",
+    {
+      "error": undefined,
+      "result": undefined,
+      "status": "skip",
+    },
+  ],
+  [
+    "console.groupEnd",
+  ],
+  [
+    "console.groupEnd",
+  ],
+]
+`;

@@ -5,7 +5,7 @@ import rule from "./task-options-order"
 const ruleTester = new RuleTester()
 
 const commonCode = ts`
-  import { createTask, literal } from "@grlt-hub/app-compose"
+  import { createTask, literal } from "@app-compose/core"
 
   const run = (x: number) => x + 1;
   const enabled = (x: boolean) => !x;

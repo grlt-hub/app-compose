@@ -1,4 +1,4 @@
-import { compose, createTask, tag, createWire, literal } from "@grlt-hub/app-compose"
+import { compose, createTask, tag, createWire, literal } from "@app-compose/core"
 
 /** preset */
 

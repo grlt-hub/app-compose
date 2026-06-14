@@ -15,28 +15,28 @@ Use your preferred package manager.
   <TabItem label="npm">
 
     ```bash
-    npm install --save-dev --save-exact @grlt-hub/eslint-plugin-app-compose
+    npm install --save-dev --save-exact @app-compose/eslint-plugin
     ```
 
   </TabItem>
   <TabItem label="pnpm">
 
     ```bash
-    pnpm add --save-dev --save-exact @grlt-hub/eslint-plugin-app-compose
+    pnpm add --save-dev --save-exact @app-compose/eslint-plugin
     ```
 
   </TabItem>
   <TabItem label="yarn">
    
     ```bash
-    yarn add --dev --exact @grlt-hub/eslint-plugin-app-compose
+    yarn add --dev --exact @app-compose/eslint-plugin
     ```
 
   </TabItem>
   <TabItem label="bun">
 
     ```bash
-    bun add --dev --exact @grlt-hub/eslint-plugin-app-compose
+    bun add --dev --exact @app-compose/eslint-plugin
     ```
 
   </TabItem>
@@ -49,7 +49,7 @@ Import the plugin and add it to your config. Use the recommended preset for a qu
 {/* oxfmt-ignore */}
 
 ```js
-import appCompose from "@grlt-hub/eslint-plugin-app-compose"
+import appCompose from "@app-compose/eslint-plugin"
 import tseslint from "typescript-eslint"
 
 export default tseslint.config(appCompose.configs.recommended)
@@ -95,12 +95,12 @@ shape(fetchAvatar.result, (a) => a.url)
 
 <hr />
 
-The `debug()` helper from `@grlt-hub/app-coda` prints task state to the console. The plugin reports every call to
+The `debug()` helper from `@app-compose/coda` prints task state to the console. The plugin reports every call to
 it, so it stays out of committed code.
 
 ```ts
-import { compose } from "@grlt-hub/app-compose"
-import { debug } from "@grlt-hub/app-coda"
+import { compose } from "@app-compose/core"
+import { debug } from "@app-compose/coda"
 
 // ❌ Wrong
 compose().step(login).step(debug(login)).run()

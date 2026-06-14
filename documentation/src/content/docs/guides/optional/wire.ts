@@ -1,4 +1,4 @@
-import { compose, createTask, createWire, optional, tag } from "@grlt-hub/app-compose"
+import { compose, createTask, createWire, optional, tag } from "@app-compose/core"
 
 const userName = tag<string | undefined>("userName")
 

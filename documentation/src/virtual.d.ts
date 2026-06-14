@@ -6,10 +6,10 @@ declare module "virtual:app-compose-js" {
   export const APP_COMPOSE_JS: string
 }
 
-declare module "virtual:app-coda-dts" {
+declare module "virtual:coda-dts" {
   export const APP_CODA_DTS: string
 }
 
-declare module "virtual:app-coda-js" {
+declare module "virtual:coda-js" {
   export const APP_CODA_JS: string
 }

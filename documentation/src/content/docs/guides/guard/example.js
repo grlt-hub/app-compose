@@ -1,4 +1,4 @@
-import { createWire, literal, compose, tag, createTask } from "@grlt-hub/app-compose"
+import { createWire, literal, compose, tag, createTask } from "@app-compose/core"
 
 const apiUrl = tag("apiUrl")
 

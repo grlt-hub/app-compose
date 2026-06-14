@@ -1,4 +1,4 @@
-import { createTask } from "@grlt-hub/app-compose"
+import { createTask } from "@app-compose/core"
 import { atom } from "nanostores"
 
 const ThemeSelect = createTask({
