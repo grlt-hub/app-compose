@@ -3,19 +3,13 @@ packages:
   - documentation
 
 allowBuilds:
+  es5-ext: true
   esbuild: true
   lefthook: true
+  sharp: true
   workerd: true
 
-ignoredBuiltDependencies:
-  - sharp
-
 minimumReleaseAge: 4320
-
-onlyBuiltDependencies:
-  - esbuild
-  - lefthook
-  - workerd
 
 patchedDependencies:
   starlight-llms-txt: patches/starlight-llms-txt.patch

@@ -58,20 +58,20 @@
     "lint": "knip && oxlint ./src"
   },
   "dependencies": {
-    "@typescript-eslint/type-utils": "^8.60.0",
-    "@typescript-eslint/utils": "^8.60.0",
+    "@typescript-eslint/type-utils": "^8.61.0",
+    "@typescript-eslint/utils": "^8.61.0",
     "esquery": "^1.7.0"
   },
   "devDependencies": {
     "@grlt-hub/app-coda": "workspace:*",
     "@grlt-hub/app-compose": "workspace:*",
-    "@types/esquery": "1.5.4",
-    "@typescript-eslint/rule-tester": "8.60.0",
-    "eslint": "10.4.1"
+    "@types/esquery": "^1.5.4",
+    "@typescript-eslint/rule-tester": "8.61.0",
+    "eslint": "^10.4.1"
   },
   "peerDependencies": {
     "eslint": "^9.0.0 || ^10.0.0",
     "typescript": "^5.0.0 || ^6.0.0"
   },
-  "packageManager": "pnpm@10.24.0+sha512.01ff8ae71b4419903b65c60fb2dc9d34cf8bb6e06d03bde112ef38f7a34d6904c424ba66bea5cdcf12890230bf39f9580473140ed9c946fef328b6e5238a345a"
+  "packageManager": "pnpm@11.5.3+sha512.7ac1c919341c213a34dc0d02afb7143c5c26ac26ee8c4782deea821b8ac64d2134a081fd8941dae6e29bbb48f58dfc2b7fbceeccc07cb2f09d219d342a4969ed"
 }
