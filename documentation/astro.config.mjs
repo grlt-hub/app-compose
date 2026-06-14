@@ -1,3 +1,4 @@
+import { satteri } from "@astrojs/markdown-satteri"
 // @ts-check
 import react from "@astrojs/react"
 import starlight from "@astrojs/starlight"
@@ -7,6 +8,9 @@ import starlightLlmsTxt from "starlight-llms-txt"
 import { appComposePlugin } from "./app-compose-plugin.mjs"
 
 export default defineConfig({
+  markdown: {
+    processor: satteri(),
+  },
   vite: {
     plugins: [appComposePlugin()],
     optimizeDeps: {
@@ -153,7 +157,7 @@ export default defineConfig({
             {
               label: "App-Coda",
               description:
-                "Helper utilities for @grlt-hub/app-compose — reusable building blocks for tasks, wires, and context.",
+                "Helper utilities for @grlt-hub/app-compose - reusable building blocks for tasks, wires, and context.",
               paths: ["app-coda/**"],
             },
           ],

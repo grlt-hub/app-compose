@@ -21,16 +21,17 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/react": "5.0.5",
-    "@astrojs/starlight": "0.39.2",
+    "@astrojs/markdown-satteri": "^0.3.0",
+    "@astrojs/react": "5.0.7",
+    "@astrojs/starlight": "0.40.0",
     "@codesandbox/sandpack-react": "2.20.0",
     "@grlt-hub/app-coda": "workspace:*",
     "@grlt-hub/app-compose": "workspace:*",
     "@monaco-editor/react": "4.7.0",
-    "astro": "6.3.3",
+    "astro": "6.4.5",
     "react": "19.2.6",
     "react-dom": "19.2.6",
-    "sharp": "0.34.5",
+    "sharp": "0.35.0",
     "starlight-links-validator": "0.24.0",
     "starlight-llms-txt": "0.8.1"
   },
