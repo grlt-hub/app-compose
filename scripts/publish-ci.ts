@@ -25,7 +25,7 @@ const tag = semver.prerelease(version)?.[0]
 console.log("Publishing version", version, "with tag", tag || "latest")
 
 if (tag) {
-  execSync(`pnpm -r publish --access public --no-git-checks --tag ${tag}`, { stdio: "inherit" })
+  execSync(`pnpm -r publish --provenance --access public --no-git-checks --tag ${tag}`, { stdio: "inherit" })
 } else {
-  execSync(`pnpm -r publish --access public --no-git-checks`, { stdio: "inherit" })
+  execSync(`pnpm -r publish --provenance --access public --no-git-checks`, { stdio: "inherit" })
 }

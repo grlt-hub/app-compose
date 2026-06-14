@@ -5,5 +5,5 @@ export default defineConfig({
     setupFiles: ["src/setup.ts"],
   },
 
-  resolve: { alias: { "@": "./src" } },
+  resolve: { tsconfigPaths: true },
 })

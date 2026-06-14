@@ -6,12 +6,6 @@ export default defineConfig({
   },
 
   resolve: {
-    alias: {
-      "@computable": "./src/computable",
-      "@runnable": "./src/runnable",
-      "@compose": "./src/compose",
-      "@shared": "./src/shared",
-      "@is": "./src/is",
-    },
+    tsconfigPaths: true,
   },
 })
