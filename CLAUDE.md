@@ -15,7 +15,7 @@ This is a pnpm workspace. The packages are:
 
 | Path                     | Package                      | Role                                                 |
 | ------------------------ | ---------------------------- | ---------------------------------------------------- |
-| `packages/app-compose`   | `@app-compose/core`          | Core library                                         |
+| `packages/core`          | `@app-compose/core`          | Core library                                         |
 | `packages/coda`          | `@app-compose/coda`          | Helper utilities for the core: tasks, wires, context |
 | `packages/eslint-plugin` | `@app-compose/eslint-plugin` | ESLint rules for the library                         |
 | `documentation`          | —                            | Astro/Starlight documentation site                   |
@@ -34,8 +34,8 @@ pnpm doc:dev     # start docs dev server
 To target a single package:
 
 ```sh
-pnpm --filter ./packages/app-compose test
-pnpm --filter ./packages/app-compose build
+pnpm --filter ./packages/core test
+pnpm --filter ./packages/core build
 pnpm --filter ./packages/eslint-plugin lint
 ```
 

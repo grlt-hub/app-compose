@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs"
 import { fileURLToPath } from "node:url"
 
 const PACKAGES = [
-  { pkg: "@app-compose/core", dir: "app-compose", constName: "APP_COMPOSE", virtualName: "app-compose" },
+  { pkg: "@app-compose/core", dir: "core", constName: "APP_COMPOSE", virtualName: "app-compose" },
   { pkg: "@app-compose/coda", dir: "coda", constName: "APP_CODA", virtualName: "coda" },
 ]
 

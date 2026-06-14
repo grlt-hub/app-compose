@@ -58,7 +58,7 @@ importers:
         version: link:../packages/coda
       '@app-compose/core':
         specifier: workspace:*
-        version: link:../packages/app-compose
+        version: link:../packages/core
       '@astrojs/markdown-satteri':
         specifier: ^0.3.0
         version: 0.3.0
@@ -106,13 +106,13 @@ importers:
         specifier: 4.95.0
         version: 4.95.0(@cloudflare/workers-types@4.20260526.1)
 
-  packages/app-compose: {}
-
   packages/coda:
     devDependencies:
       '@app-compose/core':
         specifier: workspace:*
-        version: link:../app-compose
+        version: link:../core
+
+  packages/core: {}
 
   packages/eslint-plugin:
     dependencies:
@@ -134,7 +134,7 @@ importers:
         version: link:../coda
       '@app-compose/core':
         specifier: workspace:*
-        version: link:../app-compose
+        version: link:../core
       '@types/esquery':
         specifier: ^1.5.4
         version: 1.5.4
