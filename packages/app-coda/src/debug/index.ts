@@ -24,10 +24,11 @@ function debug(
     is.task(target)
       ? {
           title: literal(`[Task]: ${target.name}`),
-          output: shape(
-            { status: optional(target.status), result: optional(target.result), error: optional(target.error) },
-            (x) => x,
-          ),
+          output: shape({
+            status: optional(target.status),
+            result: optional(target.result),
+            error: optional(target.error),
+          }),
         }
       : is.tag(target)
         ? { title: literal(`[Tag]: ${target.name}`), output: optional(target.value) }
