@@ -23,8 +23,8 @@
     "doc:dev": "pnpm build && pnpm --dir ./documentation run dev",
     "doc:build": "pnpm build && pnpm --dir ./documentation run build",
     "build": "pnpm -r --filter='!./documentation' build",
-    "test": "pnpm -r test",
-    "lint": "pnpm -r lint",
+    "test": "pnpm -r --parallel test",
+    "lint": "pnpm -r --parallel lint",
     "release": "node ./scripts/release.ts",
     "publish-ci": "node ./scripts/publish-ci.ts"
   },
@@ -38,7 +38,7 @@
     "oxfmt": "0.55.0",
     "oxlint": "1.70.0",
     "semver": "7.8.4",
-    "tsdown": "0.22.2",
+    "tsdown": "0.22.3",
     "typescript": "6.0.3",
     "vite": "8.0.16",
     "vitest": "4.1.9"
