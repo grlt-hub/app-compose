@@ -480,7 +480,7 @@ describe("graph", () => {
       expect(result).toStrictEqual(expected)
     })
 
-    it("marks guard-failing neighbor borrow as missing", () => {
+    it("marks guard-failing dependency on con-neighbor as missing", () => {
       const betaTask = createTask({ name: "beta", run: { fn: vi.fn(), context: alphaTask.result.value } })
 
       const app = compose().step([alphaTask, betaTask])
@@ -504,7 +504,174 @@ describe("graph", () => {
                 type: "run",
                 id: 1,
                 meta: { name: "beta", kind: "task" },
-                dependencies: { required: [0 /* should probably be -1 */], optional: [] },
+                dependencies: { required: [-1], optional: [] },
+              },
+            ],
+          },
+        ],
+      }
+
+      expect(result).toStrictEqual(expected)
+    })
+
+    it("omits optional dependency on a con-neighbor", () => {
+      const betaTask = createTask({ name: "beta", run: { fn: vi.fn(), context: optional(alphaTask.result.value) } })
+
+      const app = compose().step([alphaTask, betaTask])
+      const result = graph(app[Node$])
+
+      const empty = { required: [], optional: [] }
+
+      const expected = {
+        type: "seq",
+        meta: { name: undefined },
+        children: [
+          {
+            type: "con",
+            meta: { name: undefined },
+            children: [
+              { type: "run", id: 0, meta: { name: "alpha", kind: "task" }, dependencies: empty },
+              { type: "run", id: 1, meta: { name: "beta", kind: "task" }, dependencies: empty },
+            ],
+          },
+        ],
+      }
+
+      expect(result).toStrictEqual(expected)
+    })
+
+    it("isolates scope across concurrent branches (deep)", () => {
+      const betaTask = createTask({ name: "beta", run: { fn: vi.fn(), context: alphaTask.result.value } })
+
+      const app = compose().step([compose().step(alphaTask), compose().step(betaTask)])
+      const result = graph(app[Node$])
+
+      const expected = {
+        type: "seq",
+        meta: { name: undefined },
+        children: [
+          {
+            type: "con",
+            meta: { name: undefined },
+            children: [
+              {
+                type: "seq",
+                meta: { name: undefined },
+                children: [
+                  {
+                    type: "run",
+                    id: 0,
+                    meta: { name: "alpha", kind: "task" },
+                    dependencies: { required: [], optional: [] },
+                  },
+                ],
+              },
+              {
+                type: "seq",
+                meta: { name: undefined },
+                children: [
+                  {
+                    type: "run",
+                    id: 1,
+                    meta: { name: "beta", kind: "task" },
+                    dependencies: { required: [-1], optional: [] },
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      }
+
+      expect(result).toStrictEqual(expected)
+    })
+
+    it("exposes con writes to a subsequent seq step", () => {
+      const betaTask = createTask({ name: "beta", run: { fn: vi.fn(), context: alphaTask.result.value } })
+
+      const app = compose().step([alphaTask]).step(betaTask)
+      const result = graph(app[Node$])
+
+      const expected = {
+        type: "seq",
+        meta: { name: undefined },
+        children: [
+          {
+            type: "con",
+            meta: { name: undefined },
+            children: [
+              {
+                type: "run",
+                id: 0,
+                meta: { name: "alpha", kind: "task" },
+                dependencies: { required: [], optional: [] },
+              },
+            ],
+          },
+          {
+            type: "run",
+            id: 1,
+            meta: { name: "beta", kind: "task" },
+            dependencies: { required: [0], optional: [] },
+          },
+        ],
+      }
+
+      expect(result).toStrictEqual(expected)
+    })
+
+    it("double-applies autoincr id to guard-failing duplicated run-steps", () => {
+      /* we're okay that guard-failing `app` produces illogical IDs */
+
+      const a = createTask({ name: "a", run: { fn: vi.fn() } })
+      const b = createTask({ name: "b", run: { fn: vi.fn() } })
+
+      const app = compose().step([compose().step(a).step(b), compose().step(b).step(a)])
+      const result = graph(app[Node$])
+
+      const expected = {
+        type: "seq",
+        meta: { name: undefined },
+        children: [
+          {
+            type: "con",
+            meta: { name: undefined },
+            children: [
+              {
+                type: "seq",
+                meta: { name: undefined },
+                children: [
+                  {
+                    type: "run",
+                    id: 0,
+                    meta: { name: "a", kind: "task" },
+                    dependencies: { required: [], optional: [] },
+                  },
+                  {
+                    type: "run",
+                    id: 1,
+                    meta: { name: "b", kind: "task" },
+                    dependencies: { required: [], optional: [] },
+                  },
+                ],
+              },
+              {
+                type: "seq",
+                meta: { name: undefined },
+                children: [
+                  {
+                    type: "run",
+                    id: 2,
+                    meta: { name: "b", kind: "task" },
+                    dependencies: { required: [], optional: [] },
+                  },
+                  {
+                    type: "run",
+                    id: 3,
+                    meta: { name: "a", kind: "task" },
+                    dependencies: { required: [], optional: [] },
+                  },
+                ],
               },
             ],
           },
