@@ -2,7 +2,7 @@
   "$schema": "https://unpkg.com/knip@6/schema.json",
   "ignore": ["*.config.ts"],
   "entry": ["./src/index.ts!"],
-  "ignoreBinaries": ["tsdown", "knip", "oxlint", "vitest"],
+  "ignoreBinaries": ["tsdown", "knip", "oxlint", "vitest", "tsgo"],
   "ignoreDependencies": ["@app-compose/coda", "@app-compose/core", "vitest"],
   "vitest": { "config": "vitest.config.ts", "entry": "src/**/*.test.ts" }
 }

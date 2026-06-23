@@ -54,7 +54,7 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsc --noEmit -p tsconfig.json && tsdown",
+    "build": "tsgo --noEmit -p tsconfig.json && tsdown",
     "dev": "tsdown --watch",
     "prepack": "pnpm build",
     "bench": "vitest bench",
