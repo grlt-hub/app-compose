@@ -84,4 +84,4 @@ const createTask = <Result, RunContext = void, EnabledContext = void>(
   return runnable
 }
 
-export { createTask, type Task, type TaskExecutionValue, type TaskResult, type TaskStatus }
+export { createTask, type Task, type TaskResult, type TaskStatus }

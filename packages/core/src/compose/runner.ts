@@ -1,7 +1,7 @@
 import { createComputer, type Computer, type Spot, type SpotInternal } from "@computable"
 import { Context$, Dispatch$, Execute$, type RunnableInternal } from "@runnable"
 import type { ComposeNode, Registry } from "./definition"
-import { observe } from "./observer"
+import { dispatch } from "./observer"
 
 type Context = { computer: Computer; registry: Registry }
 type Scope = { get: <T>(spot: Spot<T>) => T | undefined }
@@ -19,7 +19,7 @@ const execute = (ctx: Context, runnable: RunnableInternal): Promise<unknown> =>
 const traverse = async (ctx: Context, stack: ComposeNode[]) => {
   const current = stack.at(-1)!
 
-  observe({ type: "node:start", stack })
+  dispatch(stack, "enter")
 
   switch (current.type) {
     case "seq":
@@ -31,14 +31,11 @@ const traverse = async (ctx: Context, stack: ComposeNode[]) => {
       break
 
     case "run":
-      const runnable = current.value as RunnableInternal
-
-      await execute(ctx, runnable).then((value) => observe({ type: "execute:complete", stack, runnable, value }))
-
+      await execute(ctx, current.value as RunnableInternal)
       break
   }
 
-  observe({ type: "node:complete", stack })
+  dispatch(stack, "exit")
 }
 
 const run = async (node: ComposeNode): Promise<Scope> => {

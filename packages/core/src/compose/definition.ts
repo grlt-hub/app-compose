@@ -1,7 +1,7 @@
 import type { Runnable } from "@runnable"
-import type { ComposeHookMap } from "./observer"
+import type { ComposeObserver } from "./observer"
 
-type ComposeMeta = { name?: string; hooks?: Partial<ComposeHookMap> }
+type ComposeMeta = { name?: string; observe?: ComposeObserver }
 
 type ComposeNodeSeq = { type: "seq"; meta?: ComposeMeta; children: ComposeNode[] }
 type ComposeNodeCon = { type: "con"; meta?: ComposeMeta; children: ComposeNode[] }
