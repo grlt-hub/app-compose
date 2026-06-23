@@ -1,7 +1,6 @@
 import { execSync } from "node:child_process"
-import { readFileSync } from "node:fs"
-import { join } from "node:path"
 import semver from "semver"
+import pkg from "../package.json" with { type: "json" }
 
 let version = process.argv[2]
 
@@ -12,9 +11,6 @@ if (version.startsWith("v")) {
 }
 
 if (!semver.valid(version)) throw new Error(`Cannot parse version: "${version}"`)
-
-const pkgPath = join(import.meta.dirname, "..", "package.json")
-const pkg = JSON.parse(readFileSync(pkgPath, "utf-8"))
 
 if (pkg.version !== version) {
   throw new Error(`Package version from tag "${version}" mismatches with the current version "${pkg.version}"`)
