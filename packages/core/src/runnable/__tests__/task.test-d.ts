@@ -4,7 +4,7 @@ import { createTask, type Task, type TaskStatus } from "../task"
 
 describe("createTask", () => {
   describe("run.context", () => {
-    it("optional when fn has no params", () => {
+    it("is optional when fn has no params", () => {
       const task = createTask({ name: "test", run: { fn: () => null } })
       expectTypeOf(task).toExtend<Task<null>>()
     })
@@ -121,7 +121,7 @@ describe("createTask", () => {
   describe("enabled.context", () => {
     const fn = () => null
 
-    it("optional when fn has no params", () => {
+    it("is optional when fn has no params", () => {
       const task = createTask({ name: "test", run: { fn }, enabled: { fn: () => true } })
 
       expectTypeOf(task).toExtend<Task<null>>()
