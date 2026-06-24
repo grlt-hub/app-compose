@@ -1,4 +1,3 @@
-import type { RunnableInternal } from "@runnable"
 import type { ComposableKind, ComposeNode } from "./definition"
 import { createAnalyzer } from "./analyze"
 
@@ -24,7 +23,7 @@ const graph = (root: ComposeNode): GraphNode => {
   const analyzer = createAnalyzer()
 
   const toRun = (current: Extract<ComposeNode, { type: "run" }>, outer: Scope): GraphState => {
-    const { type, display, writes, dependencies } = analyzer.get(current.value as RunnableInternal)
+    const { type, display, writes, dependencies } = analyzer.get(current.value)
 
     const wrote = writes.reduce((acc, sym) => acc.set(sym, entryID), new Scope())
 

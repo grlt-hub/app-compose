@@ -1,4 +1,4 @@
-import type { Runnable } from "@runnable"
+import type { Runnable, Task, Wire } from "@runnable"
 import type { ComposeObserver } from "./observer"
 
 type ComposeMeta = { name?: string; observe?: ComposeObserver }
@@ -13,4 +13,6 @@ type ComposeInner = ComposeNodeCon | ComposeNodeSeq
 type Registry = Map<symbol, unknown>
 type ComposableKind = "task" | "wire"
 
-export type { ComposableKind, ComposeInner, ComposeMeta, ComposeNode, Registry }
+type KnownRunnable = Record<ComposableKind, Runnable> & { task: Task<unknown>; wire: Wire }
+
+export type { ComposableKind, ComposeInner, ComposeMeta, ComposeNode, KnownRunnable, Registry }

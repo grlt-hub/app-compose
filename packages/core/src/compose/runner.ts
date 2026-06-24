@@ -31,7 +31,7 @@ const traverse = async (ctx: Context, stack: ComposeNode[]) => {
       break
 
     case "run":
-      await execute(ctx, current.value as RunnableInternal)
+      await execute(ctx, current.value as unknown as RunnableInternal) // safety: Execute$
       break
   }
 

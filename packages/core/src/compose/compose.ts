@@ -27,7 +27,7 @@ type Composer = {
 
 const normalize = (arg: Composable): ComposeNode => {
   if (Node$ in arg) return arg[Node$]
-  else if (Execute$ in arg) return { type: "run", value: arg as Runnable }
+  else if (Execute$ in arg) return { type: "run", value: arg }
   else throw new Error(`${LIBRARY_NAME} Invalid argument passed to step.`)
 }
 
@@ -48,7 +48,7 @@ const builder = (node: ComposeInner): Composer => {
     },
 
     run: () => {
-      const handler: GuardHandler = { warn: console.warn.bind(console, LIBRARY_NAME), error: raiseOnGuard }
+      const handler: GuardHandler = { warn: (message) => console.warn(LIBRARY_NAME, message), error: raiseOnGuard }
       const guard = createGuard({ handler })
 
       return (guard(node), run(node))

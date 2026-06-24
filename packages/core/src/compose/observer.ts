@@ -1,20 +1,20 @@
-import type { Runnable, RunnableKind } from "@runnable"
+import type { Runnable } from "@runnable"
 import { LIBRARY_NAME } from "@shared"
-import type { ComposableKind, ComposeMeta, ComposeNode } from "./definition"
+import type { ComposeMeta, ComposeNode } from "./definition"
 
 type ComposePhase = "enter" | "exit"
 
-type RunnableEvent = Runnable & RunnableKind<ComposableKind>
+type ReadonlyMeta = Readonly<ComposeMeta>
 
 type ComposeEvent =
-  | { node: "seq"; phase: "enter"; meta?: ComposeMeta }
-  | { node: "seq"; phase: "exit"; meta?: ComposeMeta }
-  | { node: "con"; phase: "enter"; meta?: ComposeMeta }
-  | { node: "con"; phase: "exit"; meta?: ComposeMeta }
-  | { node: "run"; phase: "enter"; runnable: RunnableEvent }
-  | { node: "run"; phase: "exit"; runnable: RunnableEvent }
+  | { node: "seq"; phase: "enter"; meta?: ReadonlyMeta }
+  | { node: "seq"; phase: "exit"; meta?: ReadonlyMeta }
+  | { node: "con"; phase: "enter"; meta?: ReadonlyMeta }
+  | { node: "con"; phase: "exit"; meta?: ReadonlyMeta }
+  | { node: "run"; phase: "enter"; runnable: Runnable }
+  | { node: "run"; phase: "exit"; runnable: Runnable }
 
-type ComposeObserver = (event: ComposeEvent, path: readonly ComposeMeta[]) => void
+type ComposeObserver = (event: ComposeEvent, path: readonly ReadonlyMeta[]) => void
 
 const toEvent = (node: ComposeNode, phase: ComposePhase): ComposeEvent => {
   switch (node.type) {
@@ -22,13 +22,13 @@ const toEvent = (node: ComposeNode, phase: ComposePhase): ComposeEvent => {
     case "con":
       return { node: node.type, phase, meta: node.meta }
     case "run":
-      return { node: "run", phase, runnable: node.value as RunnableEvent }
+      return { node: "run", phase, runnable: node.value }
   }
 }
 
-const notify = (observe: ComposeObserver, event: ComposeEvent, path: readonly ComposeMeta[]): void => {
+const notify = (observe: ComposeObserver, event: ComposeEvent, path: readonly ReadonlyMeta[]): void => {
   try {
-    observe(event, path)
+    /* USERLAND */ observe(event, path)
   } catch (error) {
     console.error(LIBRARY_NAME, error)
   }
@@ -36,13 +36,13 @@ const notify = (observe: ComposeObserver, event: ComposeEvent, path: readonly Co
 
 const dispatch = (stack: ComposeNode[], phase: ComposePhase): void => {
   const event = toEvent(stack.at(-1)!, phase)
-  const path: ComposeMeta[] = []
+  const path: ReadonlyMeta[] = []
 
   for (const node of [...stack].reverse()) {
     const meta = "meta" in node ? node.meta : undefined
 
     if (meta) path.push(meta)
-    if (meta?.observe) notify(meta.observe, event, /* copy to prevent our mutation from leaking out */ [...path])
+    if (meta?.observe) notify(meta.observe, event, /* copy, since we mutate */ [...path])
   }
 }
 
