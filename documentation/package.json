@@ -23,23 +23,23 @@
   "dependencies": {
     "@app-compose/coda": "workspace:*",
     "@app-compose/core": "workspace:*",
-    "@astrojs/markdown-satteri": "^0.3.0",
-    "@astrojs/react": "5.0.7",
-    "@astrojs/starlight": "0.40.0",
+    "@astrojs/markdown-satteri": "^0.3.2",
+    "@astrojs/react": "6.0.0",
+    "@astrojs/starlight": "0.41.1",
     "@codesandbox/sandpack-react": "2.20.0",
     "@monaco-editor/react": "4.7.0",
-    "astro": "6.4.5",
-    "react": "19.2.6",
-    "react-dom": "19.2.6",
-    "sharp": "0.35.0",
-    "starlight-links-validator": "0.24.0",
+    "astro": "7.0.3",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
+    "sharp": "0.35.2",
+    "starlight-links-validator": "0.25.1",
     "starlight-llms-txt": "0.8.1"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "4.20260526.1",
-    "@types/react": "19.2.14",
+    "@cloudflare/workers-types": "4.20260626.1",
+    "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
-    "wrangler": "4.101.0"
+    "wrangler": "4.105.0"
   },
   "packageManager": "pnpm@11.6.0+sha512.9a36518224080c6fe5165afdcfe79bfa118c29be703f3f462b1e32efe1e98e47e8750b148e08286250aad4113cc7993ca413c4e2cd447752708c2ee5751bc95f"
 }
