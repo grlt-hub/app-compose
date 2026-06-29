@@ -1,9 +1,9 @@
 diff --git a/entryToSimpleMarkdown.ts b/entryToSimpleMarkdown.ts
-index 5fdc6c54ae6edc5874db921dde4b89ed9e15dc3c..e993ad1c3e90e96d5b39dec590aa870c1a5d1737 100644
+index 0354f11fb5fd294ba494c02c7cb1f794f957a707..8687a83c1662f79514866f568cd754f42ae315ea 100644
 --- a/entryToSimpleMarkdown.ts
 +++ b/entryToSimpleMarkdown.ts
-@@ -29,7 +29,7 @@ const selectors = [...minify.customSelectors];
- if (minify.details) selectors.unshift('details');
+@@ -51,7 +51,7 @@ if (minify.details) smallSelectors.unshift('details');
+ const fullSelectors = [...userCustomFull];
  
  const astroContainer = await experimental_AstroContainer.create({
 -	renderers: [{ name: 'astro:jsx', ssr: mdxServer }],

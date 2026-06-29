@@ -12,4 +12,4 @@ allowBuilds:
 minimumReleaseAge: 4320
 
 patchedDependencies:
-  starlight-llms-txt: patches/starlight-llms-txt.patch
+  starlight-llms-txt@0.10.0: patches/starlight-llms-txt@0.10.0.patch
