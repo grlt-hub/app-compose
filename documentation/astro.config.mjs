@@ -1,11 +1,22 @@
 import { satteri } from "@astrojs/markdown-satteri"
-// @ts-check
 import react from "@astrojs/react"
 import starlight from "@astrojs/starlight"
 import { defineConfig } from "astro/config"
 import starlightLinksValidator from "starlight-links-validator"
 import starlightLlmsTxt from "starlight-llms-txt"
 import { appComposePlugin } from "./app-compose-plugin.mjs"
+import { sidebar } from "./sidebar.mjs"
+
+// pages kept out of the llms-*.txt outputs
+const llmsExclude = ["sandbox", "privacy", "404"]
+
+// flatten the sidebar (nested groups + top-level links) to page slugs in menu order
+/** @param {any[]} entries */
+const collectSlugs = (entries) =>
+  entries.flatMap((entry) => (entry.items ? collectSlugs(entry.items) : entry.slug ? [entry.slug] : []))
+
+// promote pages in exactly the menu order; drop the ones excluded from output
+const promote = collectSlugs(sidebar).filter((slug) => !llmsExclude.includes(slug))
 
 export default defineConfig({
   markdown: {
@@ -69,69 +80,7 @@ export default defineConfig({
         { icon: "forward-slash", label: "Sandbox", href: "/sandbox/" },
         { icon: "document", label: "DeepWiki", href: "https://deepwiki.com/grlt-hub/app-compose" },
       ],
-      sidebar: [
-        {
-          label: "Learn",
-          items: [
-            { slug: "learn/quick-start" },
-            { slug: "learn/installation" },
-            { slug: "learn/typescript" },
-            { slug: "learn/linting" },
-            { slug: "learn/ai-tools" },
-          ],
-          collapsed: true,
-        },
-        {
-          label: "Guides",
-          items: [
-            { slug: "guides" },
-            { slug: "guides/optional" },
-            { slug: "guides/mapping" },
-            { slug: "guides/managing-tags" },
-            { slug: "guides/nesting" },
-            { slug: "guides/fallback" },
-            { slug: "guides/guard" },
-            { slug: "guides/code-splitting" },
-            { slug: "guides/react" },
-            { slug: "guides/vue" },
-            { slug: "guides/debug" },
-            { slug: "guides/observability" },
-            { slug: "guides/graph" },
-          ],
-          collapsed: true,
-        },
-        {
-          label: "Reference",
-          items: [
-            { slug: "reference" },
-            { slug: "reference/compose" },
-            { slug: "reference/create-task" },
-            { slug: "reference/create-wire" },
-            { slug: "reference/is" },
-            { slug: "reference/literal" },
-            { slug: "reference/optional" },
-            { slug: "reference/shape" },
-            { slug: "reference/tag" },
-            { slug: "reference/types" },
-          ],
-          collapsed: true,
-        },
-        {
-          label: "Coda",
-          items: [
-            { slug: "coda" },
-            { slug: "coda/debug" },
-            { slug: "coda/every" },
-            { slug: "coda/not" },
-            { slug: "coda/some" },
-            { slug: "coda/when" },
-          ],
-          collapsed: true,
-        },
-        { slug: "community" },
-        { slug: "sandbox" },
-        { slug: "privacy" },
-      ],
+      sidebar,
       customCss: ["./src/styles/custom.css"],
       plugins: [
         starlightLlmsTxt({
@@ -152,7 +101,12 @@ export default defineConfig({
             "",
             "If you want to use App-Compose for a part of your existing app, you don't have to rewrite the rest. Add it to your stack, and bring in more when you're ready.",
           ].join("\n"),
-          exclude: ["sandbox", "privacy", "404"],
+          exclude: llmsExclude,
+          // derived from the sidebar above, so the generated files follow the
+          // menu order instead of falling back to alphabetical
+          promote,
+          // strip the sandbox's "Best on desktop / edit & run it live / Copy link"
+          customSelectors: { all: [".desktop-hint"] },
           customSets: [
             {
               label: "Coda",
