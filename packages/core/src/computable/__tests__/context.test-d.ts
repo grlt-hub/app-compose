@@ -10,7 +10,7 @@ describe("ContextToSpot", () => {
 
     it("rejects bare values", () => {
       // @ts-expect-error - bare primitive not assignable
-      expectTypeOf<number>().toEqualTypeOf<ContextToSpot<number>>()
+      expectTypeOf<ContextToSpot<number>>().toEqualTypeOf<number>()
     })
   })
 
