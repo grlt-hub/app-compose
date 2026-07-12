@@ -1,3 +1,4 @@
+import type { Spot } from "@computable"
 import type { Runnable, Task, Wire } from "@runnable"
 import type { ComposeObserver } from "./observer"
 
@@ -13,6 +14,9 @@ type ComposeInner = ComposeNodeCon | ComposeNodeSeq
 type Registry = Map<symbol, unknown>
 type ComposableKind = "task" | "wire"
 
-type KnownRunnable = Record<ComposableKind, Runnable> & { task: Task<unknown>; wire: Wire }
+type KnownRunnableMap = Record<ComposableKind, Runnable> & { task: Task<unknown>; wire: Wire }
+type KnownRunnable = KnownRunnableMap[ComposableKind]
 
-export type { ComposableKind, ComposeInner, ComposeMeta, ComposeNode, KnownRunnable, Registry }
+type Scope = { get: <T>(spot: Spot<T>) => T | undefined }
+
+export type { ComposableKind, ComposeInner, ComposeMeta, ComposeNode, KnownRunnable, Registry, Scope }

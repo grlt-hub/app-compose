@@ -1,6 +1,5 @@
-import type { Runnable } from "@runnable"
 import { describe, expectTypeOf, it } from "vitest"
-import type { ComposeMeta } from "../definition"
+import type { ComposeMeta, KnownRunnable } from "../definition"
 import type { ComposeEvent, ComposeObserver } from "../observer"
 
 describe("observer", () => {
@@ -14,7 +13,7 @@ describe("observer", () => {
 
   describe("ComposeEvent", () => {
     it("narrows a run node to its runnable", () => {
-      expectTypeOf<ComposeEvent>().extract<{ node: "run" }>().toHaveProperty("runnable").toEqualTypeOf<Runnable>()
+      expectTypeOf<ComposeEvent>().extract<{ node: "run" }>().toHaveProperty("runnable").toEqualTypeOf<KnownRunnable>()
     })
 
     it("narrows a container node to its meta", () => {

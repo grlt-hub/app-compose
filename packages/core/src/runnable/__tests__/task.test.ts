@@ -1,8 +1,23 @@
+import { Missing$ } from "@computable"
 import { describe, expect, it, vi } from "vitest"
 import { Execute$, type RunnableInternal } from "../definition"
 import { createTask } from "../task"
 
 describe("task", () => {
+  describe("execute.context", () => {
+    it("skips on missing context", async () => {
+      const fn = vi.fn()
+
+      const task = createTask({ name: "test", run: { fn } })
+      const runnable = task as unknown as RunnableInternal<unknown>
+
+      const result = await runnable[Execute$](Missing$)
+
+      expect(fn).not.toHaveBeenCalled()
+      expect(result).toStrictEqual({ status: "skip" })
+    })
+  })
+
   describe("execute.enabled", () => {
     it("skips on false result", async () => {
       const task = createTask({ name: "test", run: { fn: vi.fn() }, enabled: { fn: () => false } })

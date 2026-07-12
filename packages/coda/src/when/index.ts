@@ -1,7 +1,7 @@
 import type { Spot } from "@app-compose/core"
 import type { Quantifier } from "../createQuantifier"
 import { every } from "../every"
-import { not, type Not } from "../not"
+import { not } from "../not"
 import { some } from "../some"
 
 type Result = { context: Spot<boolean>; fn: typeof Boolean }
@@ -15,7 +15,7 @@ const whenSome: WhenQuantifier = (list, predicate) => ({ context: some(list, pre
 whenSome.status = (items, status) => ({ context: some.status(items, status), fn: Boolean })
 
 type WhenNot = {
-  (spot: Parameters<Not>[0]): Result
+  (spot: Spot<unknown>): Result
   every: WhenQuantifier
   some: WhenQuantifier
 }

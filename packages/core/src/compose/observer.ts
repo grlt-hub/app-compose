@@ -1,28 +1,29 @@
-import type { Runnable } from "@runnable"
 import { LIBRARY_NAME } from "@shared"
-import type { ComposeMeta, ComposeNode } from "./definition"
+import type { ComposeMeta, ComposeNode, KnownRunnable, Scope } from "./definition"
 
 type ComposePhase = "enter" | "exit"
 
 type ReadonlyMeta = Readonly<ComposeMeta>
 
 type ComposeEvent =
-  | { node: "seq"; phase: "enter"; meta?: ReadonlyMeta }
-  | { node: "seq"; phase: "exit"; meta?: ReadonlyMeta }
-  | { node: "con"; phase: "enter"; meta?: ReadonlyMeta }
-  | { node: "con"; phase: "exit"; meta?: ReadonlyMeta }
-  | { node: "run"; phase: "enter"; runnable: Runnable }
-  | { node: "run"; phase: "exit"; runnable: Runnable }
+  | { node: "seq"; scope: Scope; phase: "enter"; meta?: ReadonlyMeta }
+  | { node: "seq"; scope: Scope; phase: "exit"; meta?: ReadonlyMeta }
+  | { node: "con"; scope: Scope; phase: "enter"; meta?: ReadonlyMeta }
+  | { node: "con"; scope: Scope; phase: "exit"; meta?: ReadonlyMeta }
+  | { node: "run"; scope: Scope; phase: "enter"; runnable: KnownRunnable }
+  | { node: "run"; scope: Scope; phase: "exit"; runnable: KnownRunnable }
 
+type Dispatch = (stack: ComposeNode[], phase: ComposePhase) => void
 type ComposeObserver = (event: ComposeEvent, path: readonly ReadonlyMeta[]) => void
 
-const toEvent = (node: ComposeNode, phase: ComposePhase): ComposeEvent => {
+const toEvent = (node: ComposeNode, scope: Scope, phase: ComposePhase): ComposeEvent => {
   switch (node.type) {
     case "seq":
+      return { node: "seq", scope, phase, meta: node.meta }
     case "con":
-      return { node: node.type, phase, meta: node.meta }
+      return { node: "con", scope, phase, meta: node.meta }
     case "run":
-      return { node: "run", phase, runnable: node.value }
+      return { node: "run", scope, phase, runnable: node.value as KnownRunnable }
   }
 }
 
@@ -34,16 +35,18 @@ const notify = (observe: ComposeObserver, event: ComposeEvent, path: readonly Re
   }
 }
 
-const dispatch = (stack: ComposeNode[], phase: ComposePhase): void => {
-  const event = toEvent(stack.at(-1)!, phase)
-  const path: ReadonlyMeta[] = []
+const createObserver =
+  (scope: Scope): Dispatch =>
+  (stack, phase): void => {
+    const event = toEvent(stack.at(-1)!, scope, phase)
+    const path: ReadonlyMeta[] = []
 
-  for (const node of [...stack].reverse()) {
-    const meta = "meta" in node ? node.meta : undefined
+    for (const node of [...stack].reverse()) {
+      const meta = "meta" in node ? node.meta : undefined
 
-    if (meta) path.push(meta)
-    if (meta?.observe) notify(meta.observe, event, /* copy, since we mutate */ [...path])
+      if (meta) path.push(meta)
+      if (meta?.observe) notify(meta.observe, event, /* copy, since we mutate */ [...path])
+    }
   }
-}
 
-export { dispatch, type ComposeEvent, type ComposeObserver }
+export { createObserver, type ComposeEvent, type ComposeObserver, type Dispatch }

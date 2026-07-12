@@ -1,9 +1,9 @@
 import { Execute$, type Runnable } from "@runnable"
 import { LIBRARY_NAME } from "@shared"
-import type { ComposeInner, ComposeMeta, ComposeNode } from "./definition"
+import type { ComposeInner, ComposeMeta, ComposeNode, Scope } from "./definition"
 import { graph, type GraphNode } from "./graph"
 import { createGuard, type GuardHandler } from "./guard"
-import { run, type Scope } from "./runner"
+import { run } from "./runner"
 
 const Node$ = Symbol("$node")
 

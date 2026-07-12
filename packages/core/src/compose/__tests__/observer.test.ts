@@ -12,12 +12,12 @@ describe("observer", () => {
 
       const task = createTask({ name: "alpha", run: { fn: () => "okay" } })
 
-      await compose().meta(meta).step(task).run()
+      const scope = await compose().meta(meta).step(task).run()
 
-      expect(observe).toHaveBeenNthCalledWith(1, { node: "seq", phase: "enter", meta }, [meta])
-      expect(observe).toHaveBeenNthCalledWith(2, { node: "run", phase: "enter", runnable: task }, [meta])
-      expect(observe).toHaveBeenNthCalledWith(3, { node: "run", phase: "exit", runnable: task }, [meta])
-      expect(observe).toHaveBeenNthCalledWith(4, { node: "seq", phase: "exit", meta }, [meta])
+      expect(observe).toHaveBeenNthCalledWith(1, { node: "seq", scope, phase: "enter", meta }, [meta])
+      expect(observe).toHaveBeenNthCalledWith(2, { node: "run", scope, phase: "enter", runnable: task }, [meta])
+      expect(observe).toHaveBeenNthCalledWith(3, { node: "run", scope, phase: "exit", runnable: task }, [meta])
+      expect(observe).toHaveBeenNthCalledWith(4, { node: "seq", scope, phase: "exit", meta }, [meta])
     })
 
     it("emits a concurrent step and its children", async () => {
@@ -27,12 +27,12 @@ describe("observer", () => {
       const a = createTask({ name: "a", run: { fn: () => "a" } })
       const b = createTask({ name: "b", run: { fn: () => "b" } })
 
-      await compose().meta(meta).step([a, b]).run()
+      const scope = await compose().meta(meta).step([a, b]).run()
 
-      expect(observe).toHaveBeenNthCalledWith(2 /* seq outer */, { node: "con", phase: "enter" }, [meta])
-      expect(observe).toHaveBeenNthCalledWith(3, { node: "run", phase: "enter", runnable: a }, [meta])
-      expect(observe).toHaveBeenNthCalledWith(4, { node: "run", phase: "enter", runnable: b }, [meta])
-      expect(observe).toHaveBeenNthCalledWith(5 + 2 /* run exit */, { node: "con", phase: "exit" }, [meta])
+      expect(observe).toHaveBeenNthCalledWith(2 /* seq outer */, { node: "con", scope, phase: "enter" }, [meta])
+      expect(observe).toHaveBeenNthCalledWith(3, { node: "run", scope, phase: "enter", runnable: a }, [meta])
+      expect(observe).toHaveBeenNthCalledWith(4, { node: "run", scope, phase: "enter", runnable: b }, [meta])
+      expect(observe).toHaveBeenNthCalledWith(5 + 2 /* run exit */, { node: "con", scope, phase: "exit" }, [meta])
     })
 
     it("emits when a task fails", async () => {
@@ -43,8 +43,8 @@ describe("observer", () => {
 
       const scope = await compose().meta(meta).step(task).run()
 
-      expect(observe).toHaveBeenNthCalledWith(2, { node: "run", phase: "enter", runnable: task }, [meta])
-      expect(observe).toHaveBeenNthCalledWith(3, { node: "run", phase: "exit", runnable: task }, [meta])
+      expect(observe).toHaveBeenNthCalledWith(2, { node: "run", scope, phase: "enter", runnable: task }, [meta])
+      expect(observe).toHaveBeenNthCalledWith(3, { node: "run", scope, phase: "exit", runnable: task }, [meta])
 
       expect(scope.get(task.status)).toBe("fail")
     })
@@ -59,10 +59,10 @@ describe("observer", () => {
       const outside = createTask({ name: "outside", run: { fn: () => "out" } })
 
       const step = compose().meta(meta).step(inside)
-      await compose().step(step).step(outside).run()
+      const scope = await compose().step(step).step(outside).run()
 
-      expect(observe).toHaveBeenCalledWith({ node: "run", phase: "enter", runnable: inside }, [meta])
-      expect(observe).not.toHaveBeenCalledWith({ node: "run", phase: "enter", runnable: outside }, [meta])
+      expect(observe).toHaveBeenCalledWith({ node: "run", scope, phase: "enter", runnable: inside }, [meta])
+      expect(observe).not.toHaveBeenCalledWith({ node: "run", scope, phase: "enter", runnable: outside }, [meta])
     })
 
     it("captures bottom-up ordered path", async () => {
@@ -71,9 +71,9 @@ describe("observer", () => {
 
       const task = createTask({ name: "alpha", run: { fn: () => "okay" } })
 
-      await compose().meta(outer).step(compose().meta(inner).step(task)).run()
+      const scope = await compose().meta(outer).step(compose().meta(inner).step(task)).run()
 
-      const enter: ComposeEvent = { node: "run", phase: "enter", runnable: task }
+      const enter: ComposeEvent = { node: "run", scope, phase: "enter", runnable: task }
 
       expect(inner.observe).toHaveBeenCalledWith(enter, [inner])
       expect(outer.observe).toHaveBeenCalledWith(enter, [inner, outer])
@@ -99,6 +99,26 @@ describe("observer", () => {
 
       expect(status).toBe("done")
       expect(error).toHaveBeenCalledWith(LIBRARY_NAME, boom)
+    })
+  })
+
+  describe("scope", () => {
+    describe("on run exit", () => {
+      it("provides access to result", async () => {
+        let result: unknown
+
+        const task = createTask({ name: "alpha", run: { fn: () => "okay" } })
+
+        const observe: ComposeObserver = (event) =>
+          event.node === "run" &&
+          event.phase === "exit" &&
+          event.runnable.kind == "task" &&
+          (result = event.scope.get(event.runnable.result))
+
+        await compose().meta({ observe }).step(task).run()
+
+        expect(result).toBe("okay")
+      })
     })
   })
 })

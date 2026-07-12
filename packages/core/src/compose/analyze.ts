@@ -8,7 +8,7 @@ type RunnableRepr = Runnable | RunnableInternal
 type ComposeAnalyzer = { get: (runnable: RunnableRepr) => RunnableMeta }
 
 const analyze = (runnable: RunnableRepr): RunnableMeta => {
-  const internal = runnable as RunnableInternal & KnownRunnable[ComposableKind]
+  const internal = runnable as RunnableInternal & KnownRunnable
 
   const writes = Object.getOwnPropertySymbols(internal[Dispatch$])
   const dependencies = resolve(internal[Context$])
