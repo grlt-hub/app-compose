@@ -27,13 +27,10 @@ const toEvent = (node: ComposeNode, scope: Scope, phase: ComposePhase): ComposeE
   }
 }
 
-const notify = (observe: ComposeObserver, event: ComposeEvent, path: readonly ReadonlyMeta[]): void => {
-  try {
-    /* USERLAND */ observe(event, path)
-  } catch (error) {
-    console.error(LIBRARY_NAME, error)
-  }
-}
+const notify = (observe: ComposeObserver, event: ComposeEvent, path: readonly ReadonlyMeta[]): void =>
+  void Promise.resolve()
+    .then(() => /* USERLAND */ observe(event, path))
+    .catch((error) => console.error(LIBRARY_NAME, error))
 
 const createObserver =
   (scope: Scope): Dispatch =>

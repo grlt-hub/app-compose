@@ -14,7 +14,7 @@ type ComposeInner = ComposeNodeCon | ComposeNodeSeq
 type Registry = Map<symbol, unknown>
 type ComposableKind = "task" | "wire"
 
-type KnownRunnableMap = Record<ComposableKind, Runnable> & { task: Task<unknown>; wire: Wire }
+type KnownRunnableMap = { task: Task<unknown>; wire: Wire }
 type KnownRunnable = KnownRunnableMap[ComposableKind]
 
 type Scope = { get: <T>(spot: Spot<T>) => T | undefined }

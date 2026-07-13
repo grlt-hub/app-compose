@@ -1,6 +1,7 @@
-import { createTask } from "@runnable"
+import { literal } from "@computable"
+import { createTask, createWire, tag } from "@runnable"
 import { identity, LIBRARY_NAME } from "@shared"
-import { afterAll, describe, expect, it, vi } from "vitest"
+import { afterAll, beforeEach, describe, expect, it, vi } from "vitest"
 import type { ComposeEvent, ComposeObserver } from "../observer"
 import { compose } from "../compose"
 
@@ -35,7 +36,7 @@ describe("observer", () => {
       expect(observe).toHaveBeenNthCalledWith(5 + 2 /* run exit */, { node: "con", scope, phase: "exit" }, [meta])
     })
 
-    it("emits when a task fails", async () => {
+    it("emits on a task failure", async () => {
       const observe = vi.fn<ComposeObserver>()
       const meta = { observe }
 
@@ -47,6 +48,17 @@ describe("observer", () => {
       expect(observe).toHaveBeenNthCalledWith(3, { node: "run", scope, phase: "exit", runnable: task }, [meta])
 
       expect(scope.get(task.status)).toBe("fail")
+    })
+
+    it("emits on a wire success", async () => {
+      const observe = vi.fn<ComposeObserver>()
+      const meta = { observe }
+
+      const wire = createWire({ from: literal(1), to: tag<number>("alpha") })
+
+      const scope = await compose().meta(meta).step(wire).run()
+
+      expect(observe).toHaveBeenCalledWith({ node: "run", scope, phase: "exit", runnable: wire }, [meta])
     })
   })
 
@@ -83,6 +95,7 @@ describe("observer", () => {
   describe("safety", () => {
     const error = vi.spyOn(console, "error").mockImplementation(identity)
 
+    beforeEach(() => error.mockClear())
     afterAll(() => error.mockRestore())
 
     it("swallows observer error", async () => {
@@ -95,6 +108,19 @@ describe("observer", () => {
 
       const scope = await compose().meta({ observe }).step(task).run()
 
+      const status = scope.get(task.status)
+
+      expect(status).toBe("done")
+      expect(error).toHaveBeenCalledWith(LIBRARY_NAME, boom)
+    })
+
+    it("swallows observer rejection", async () => {
+      const boom = new Error("boom")
+      const observe = vi.fn<ComposeObserver>().mockRejectedValue(boom)
+
+      const task = createTask({ name: "alpha", run: { fn: () => "okay" } })
+
+      const scope = await compose().meta({ observe }).step(task).run()
       const status = scope.get(task.status)
 
       expect(status).toBe("done")
@@ -118,6 +144,23 @@ describe("observer", () => {
         await compose().meta({ observe }).step(task).run()
 
         expect(result).toBe("okay")
+      })
+
+      it("provides access to error", async () => {
+        let error: unknown
+
+        const boom = new Error("boom")
+        const task = createTask({ name: "alpha", run: { fn: () => Promise.reject(boom) } })
+
+        const observe: ComposeObserver = (event) =>
+          event.node === "run" &&
+          event.phase === "exit" &&
+          event.runnable.kind == "task" &&
+          (error = event.scope.get(event.runnable.error))
+
+        await compose().meta({ observe }).step(task).run()
+
+        expect(error).toBe(boom)
       })
     })
   })

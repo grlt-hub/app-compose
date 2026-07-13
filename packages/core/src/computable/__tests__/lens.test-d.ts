@@ -1,9 +1,9 @@
-import { describe, expectTypeOf, test } from "vitest"
+import { describe, expectTypeOf, it } from "vitest"
 import type { Spot } from "../definition"
 import { reference } from "../reference"
 
 describe("lens", () => {
-  test("is readonly", () => {
+  it("is readonly", () => {
     const id = Symbol()
 
     const x = reference.lensed<{ a: number }>(id)
