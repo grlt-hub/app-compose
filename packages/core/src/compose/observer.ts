@@ -1,47 +1,49 @@
-import type { RunnableInternal, RunnableKind, Task, TaskExecutionValue } from "@runnable"
-import type { ComposableKind, ComposeMeta, ComposeNode } from "./definition"
+import { LIBRARY_NAME } from "@shared"
+import type { ComposeMeta, ComposeNode, KnownRunnable, Scope } from "./definition"
 
-type ObserverEvent =
-  | { type: "node:start"; stack: ComposeNode[] }
-  | { type: "node:complete"; stack: ComposeNode[] }
-  | { type: "execute:complete"; stack: ComposeNode[]; runnable: RunnableInternal; value: unknown }
+type ComposePhase = "enter" | "exit"
 
-type ComposeHookMap = {
-  onStart: (event: { meta?: ComposeMeta }) => void
-  onComplete: (event: { meta?: ComposeMeta }) => void
+type ReadonlyMeta = Readonly<ComposeMeta>
 
-  onTaskFail: (event: { task: Task<unknown>; error: unknown }) => void
-}
+type ComposeEvent =
+  | { node: "seq"; scope: Scope; phase: "enter"; meta?: ReadonlyMeta }
+  | { node: "seq"; scope: Scope; phase: "exit"; meta?: ReadonlyMeta }
+  | { node: "con"; scope: Scope; phase: "enter"; meta?: ReadonlyMeta }
+  | { node: "con"; scope: Scope; phase: "exit"; meta?: ReadonlyMeta }
+  | { node: "run"; scope: Scope; phase: "enter"; runnable: KnownRunnable }
+  | { node: "run"; scope: Scope; phase: "exit"; runnable: KnownRunnable }
 
-const eventToUserland = {
-  onTaskFail: (event: ObserverEvent & { type: "execute:complete" }) => {
-    const runnable = event.runnable as RunnableInternal & RunnableKind<ComposableKind>
-    const result = event.value as TaskExecutionValue<unknown>
+type Dispatch = (stack: ComposeNode[], phase: ComposePhase) => void
+type ComposeObserver = (event: ComposeEvent, path: readonly ReadonlyMeta[]) => void
 
-    if (runnable.kind === "task" && result.status === "fail")
-      return { task: runnable as unknown as Task<unknown>, error: result.error }
-    else return null
-  },
-}
-
-const observe = (event: ObserverEvent) => {
-  let userland
-  const current = event.stack.at(-1)!
-
-  switch (event.type) {
-    case "node:start":
-      if ("meta" in current) current.meta?.hooks?.onStart?.({ meta: current.meta })
-      break
-
-    case "node:complete":
-      if ("meta" in current) current.meta?.hooks?.onComplete?.({ meta: current.meta })
-      break
-
-    case "execute:complete":
-      if ((userland = eventToUserland.onTaskFail(event)))
-        for (const node of event.stack) if ("meta" in node) node.meta?.hooks?.onTaskFail?.(userland)
-      break
+const toEvent = (node: ComposeNode, scope: Scope, phase: ComposePhase): ComposeEvent => {
+  switch (node.type) {
+    case "seq":
+      return { node: "seq", scope, phase, meta: node.meta }
+    case "con":
+      return { node: "con", scope, phase, meta: node.meta }
+    case "run":
+      return { node: "run", scope, phase, runnable: node.value as KnownRunnable }
   }
 }
 
-export { observe, type ComposeHookMap }
+const notify = (observe: ComposeObserver, event: ComposeEvent, path: readonly ReadonlyMeta[]): void =>
+  void Promise.resolve()
+    .then(() => /* USERLAND */ observe(event, path))
+    .catch((error) => console.error(LIBRARY_NAME, error))
+
+const createObserver =
+  (scope: Scope): Dispatch =>
+  (stack, phase): void => {
+    const event = toEvent(stack.at(-1)!, scope, phase)
+    const path: ReadonlyMeta[] = []
+
+    for (const node of [...stack].reverse()) {
+      const meta = "meta" in node ? node.meta : undefined
+
+      if (meta) path.push(meta)
+      if (meta?.observe) notify(meta.observe, event, /* copy, since we mutate */ [...path])
+    }
+  }
+
+export { createObserver, type ComposeEvent, type ComposeObserver, type Dispatch }

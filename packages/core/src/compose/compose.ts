@@ -1,9 +1,9 @@
 import { Execute$, type Runnable } from "@runnable"
 import { LIBRARY_NAME } from "@shared"
-import type { ComposeInner, ComposeMeta, ComposeNode } from "./definition"
+import type { ComposeInner, ComposeMeta, ComposeNode, Scope } from "./definition"
 import { graph, type GraphNode } from "./graph"
 import { createGuard, type GuardHandler } from "./guard"
-import { run, type Scope } from "./runner"
+import { run } from "./runner"
 
 const Node$ = Symbol("$node")
 
@@ -27,7 +27,7 @@ type Composer = {
 
 const normalize = (arg: Composable): ComposeNode => {
   if (Node$ in arg) return arg[Node$]
-  else if (Execute$ in arg) return { type: "run", value: arg as Runnable }
+  else if (Execute$ in arg) return { type: "run", value: arg }
   else throw new Error(`${LIBRARY_NAME} Invalid argument passed to step.`)
 }
 
@@ -48,7 +48,7 @@ const builder = (node: ComposeInner): Composer => {
     },
 
     run: () => {
-      const handler: GuardHandler = { warn: console.warn.bind(console, LIBRARY_NAME), error: raiseOnGuard }
+      const handler: GuardHandler = { warn: (message) => console.warn(LIBRARY_NAME, message), error: raiseOnGuard }
       const guard = createGuard({ handler })
 
       return (guard(node), run(node))

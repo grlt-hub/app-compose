@@ -1,15 +1,14 @@
-import { Context$, Dispatch$, type Runnable, type RunnableInternal, type Task, type Wire } from "@runnable"
-import type { ComposableKind } from "./definition"
+import { Context$, Dispatch$, type Runnable, type RunnableInternal } from "@runnable"
+import type { ComposableKind, KnownRunnable } from "./definition"
 import { resolve, type Dependency } from "./resolver"
 
 type RunnableMeta = { type: ComposableKind; display: { name: string }; writes: symbol[]; dependencies: Dependency }
 
-type ComposeAnalyzer = {
-  get: (runnable: RunnableInternal) => RunnableMeta
-}
+type RunnableRepr = Runnable | RunnableInternal
+type ComposeAnalyzer = { get: (runnable: RunnableRepr) => RunnableMeta }
 
-const analyze = (runnable: RunnableInternal): RunnableMeta => {
-  const internal = runnable as RunnableInternal & (Task<unknown> | Wire)
+const analyze = (runnable: RunnableRepr): RunnableMeta => {
+  const internal = runnable as RunnableInternal & KnownRunnable
 
   const writes = Object.getOwnPropertySymbols(internal[Dispatch$])
   const dependencies = resolve(internal[Context$])
@@ -18,10 +17,10 @@ const analyze = (runnable: RunnableInternal): RunnableMeta => {
 }
 
 const createAnalyzer = (): ComposeAnalyzer => {
-  const cache = new WeakMap<Runnable, RunnableMeta>()
+  const cache = new WeakMap<RunnableRepr, RunnableMeta>()
 
-  const get = (runnable: Runnable): RunnableMeta => {
-    const analysis = cache.get(runnable) ?? analyze(runnable as RunnableInternal)
+  const get = (runnable: RunnableRepr): RunnableMeta => {
+    const analysis = cache.get(runnable) ?? analyze(runnable)
     return (cache.set(runnable, analysis), analysis)
   }
 

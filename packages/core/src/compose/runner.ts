@@ -1,10 +1,10 @@
-import { createComputer, type Computer, type Spot, type SpotInternal } from "@computable"
+import { createComputer, type Computer } from "@computable"
 import { Context$, Dispatch$, Execute$, type RunnableInternal } from "@runnable"
-import type { ComposeNode, Registry } from "./definition"
-import { observe } from "./observer"
+import type { ComposeNode, Registry, Scope } from "./definition"
+import { createObserver, type Dispatch } from "./observer"
+import { createScope } from "./scope"
 
-type Context = { computer: Computer; registry: Registry }
-type Scope = { get: <T>(spot: Spot<T>) => T | undefined }
+type Context = { computer: Computer; registry: Registry; dispatch: Dispatch }
 
 const execute = (ctx: Context, runnable: RunnableInternal): Promise<unknown> =>
   Promise.resolve()
@@ -19,7 +19,7 @@ const execute = (ctx: Context, runnable: RunnableInternal): Promise<unknown> =>
 const traverse = async (ctx: Context, stack: ComposeNode[]) => {
   const current = stack.at(-1)!
 
-  observe({ type: "node:start", stack })
+  ctx.dispatch(stack, "enter")
 
   switch (current.type) {
     case "seq":
@@ -31,27 +31,25 @@ const traverse = async (ctx: Context, stack: ComposeNode[]) => {
       break
 
     case "run":
-      const runnable = current.value as RunnableInternal
-
-      await execute(ctx, runnable).then((value) => observe({ type: "execute:complete", stack, runnable, value }))
-
+      await execute(ctx, current.value as unknown as RunnableInternal) // safety: Execute$
       break
   }
 
-  observe({ type: "node:complete", stack })
+  ctx.dispatch(stack, "exit")
 }
 
 const run = async (node: ComposeNode): Promise<Scope> => {
   const registry: Registry = new Map()
-  const computer = createComputer(registry)
 
-  const ctx: Context = { computer, registry }
+  const computer = createComputer(registry)
+  const scope = createScope(computer)
+  const dispatch = createObserver(scope)
+
+  const ctx: Context = { computer, registry, dispatch }
 
   await traverse(ctx, [node])
 
-  return {
-    get: <T>(spot: Spot<T>): T | undefined => computer.computeSafe(spot as SpotInternal<T>),
-  }
+  return scope
 }
 
-export { run, type Scope }
+export { run }

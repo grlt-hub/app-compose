@@ -3,86 +3,62 @@ import { describe, expectTypeOf, it } from "vitest"
 import { createWire, tag, type Wire } from "../wire"
 
 describe("createWire", () => {
-  it("single tag (baseline)", () => {
-    const a = tag<number>("a")
+  const a = tag<number>("a")
+  const b = tag<string>("b")
 
+  it("maps a single tag", () => {
     const wire = createWire({ from: literal(1), to: a })
 
     expectTypeOf(wire).toEqualTypeOf<Wire>()
   })
 
-  it("shape of tags with individual spots", () => {
-    const a = tag<number>("a")
-    const b = tag<string>("b")
-
+  it("maps a built value into individual tags", () => {
     const wire = createWire({ from: { a: literal(1), b: literal("x") }, to: { a, b } })
 
     expectTypeOf(wire).toEqualTypeOf<Wire>()
   })
 
-  it("shape of tags with a single spot covering the whole shape", () => {
-    const a = tag<number>("a")
-    const b = tag<string>("b")
-
-    const wire = createWire({ from: literal({ a: 1, b: "x" }), to: { a, b } })
-
-    expectTypeOf(wire).toEqualTypeOf<Wire>()
-  })
-
-  it("array spot to array of tags", () => {
-    const a = tag<number>("a")
-    const b = tag<string>("b")
-
-    const wire = createWire({ from: literal([1, "x"]), to: [a, b] })
-
-    expectTypeOf(wire).toEqualTypeOf<Wire>()
-  })
-
-  it("array spot to nested array of tags", () => {
-    const a = tag<number>("a")
-    const b = tag<string>("b")
-
-    const wire = createWire({ from: { b: literal([1, "x"]) }, to: { b: [a, b] } })
-
-    expectTypeOf(wire).toEqualTypeOf<Wire>()
-  })
-
-  it("nested shape of tags", () => {
-    const a = tag<number>("a")
-    const b = tag<string>("b")
-
+  it("maps a nested built value into individual tags", () => {
     const wire = createWire({ from: { x: { a: literal(1) }, b: literal("hi") }, to: { x: { a }, b } })
 
     expectTypeOf(wire).toEqualTypeOf<Wire>()
   })
 
-  it("rejects mismatched types", () => {
-    const a = tag<number>("a")
-
-    const wire = createWire({
-      // @ts-expect-error - string is not assignable to number
-      from: literal("x"),
-      to: a,
-    })
+  it("spreads top-level shape into multiple tags", () => {
+    const wire = createWire({ from: literal({ a: 1, b: "x" }), to: { a, b } })
 
     expectTypeOf(wire).toEqualTypeOf<Wire>()
   })
 
-  it("rejects wider from into narrower to", () => {
+  it("spreads top-level tuple into multiple tags", () => {
+    const wire = createWire({ from: literal([1, "x"]), to: [a, b] })
+
+    expectTypeOf(wire).toEqualTypeOf<Wire>()
+  })
+
+  it("spreads nested tuple into multiple tags", () => {
+    const wire = createWire({ from: { b: literal([1, "x"]) }, to: { b: [a, b] } })
+
+    expectTypeOf(wire).toEqualTypeOf<Wire>()
+  })
+
+  it("rejects mismatched types", () => {
+    // @ts-expect-error - string is not assignable to number
+    const wire = createWire({ from: literal("x"), to: a })
+
+    expectTypeOf(wire).toEqualTypeOf<Wire>()
+  })
+
+  it("rejects wider source into narrower target", () => {
     const a = tag<1 | 2>("a")
 
-    const wire = createWire({
-      // @ts-expect-error - number is wider than 1 | 2
-      from: literal<number>(1),
-      to: a,
-    })
+    // @ts-expect-error - number is wider than 1 | 2
+    const wire = createWire({ from: literal<number>(1), to: a })
 
     expectTypeOf(wire).toEqualTypeOf<Wire>()
   })
 
-  it("accepts narrower from into wider to", () => {
-    const a = tag<number>("a")
-
+  it("accepts narrower source into wider target", () => {
     const wire = createWire({ from: literal<1 | 2>(1), to: a })
 
     expectTypeOf(wire).toEqualTypeOf<Wire>()

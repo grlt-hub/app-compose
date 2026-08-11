@@ -1,4 +1,3 @@
-import type { RunnableInternal } from "@runnable"
 import type { ComposableKind, ComposeMeta, ComposeNode } from "./definition"
 import { createAnalyzer } from "./analyze"
 
@@ -61,7 +60,7 @@ const createGuard = ({ handler }: GuardConfig) => {
         return current.children.forEach((node, index) => traverse([...stack, { node, index }]))
 
       if (current.type === "run") {
-        const { type, display, writes } = analyzer.get(current.value as RunnableInternal)
+        const { type, display, writes } = analyzer.get(current.value)
 
         if (writes.some((write) => seen.has(write))) notify.duplicate({ type, name: display.name, stack })
 
@@ -82,7 +81,7 @@ const createGuard = ({ handler }: GuardConfig) => {
         return current.children.forEach((node, index) => traverse([...stack, { node, index }]))
 
       if (current.type === "run") {
-        const { type, display, writes, dependencies } = analyzer.get(current.value as RunnableInternal)
+        const { type, display, writes, dependencies } = analyzer.get(current.value)
 
         if (type === "wire") writes.forEach((id) => candidates.set(id, { id, type, name: display.name, stack }))
 
@@ -102,7 +101,7 @@ const createGuard = ({ handler }: GuardConfig) => {
 
       switch (current.type) {
         case "run":
-          const { type, display, writes, dependencies } = analyzer.get(current.value as RunnableInternal)
+          const { type, display, writes, dependencies } = analyzer.get(current.value)
 
           const missing = new Set<symbol>()
           for (const id of dependencies.required) if (!available.has(id)) missing.add(id)

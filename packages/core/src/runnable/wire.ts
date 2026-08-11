@@ -2,7 +2,7 @@ import type { ContextToSpot } from "@computable"
 import { build, reference, type SpotProvider } from "@computable"
 import { is } from "@is"
 import { identity, isObject, LIBRARY_NAME } from "@shared"
-import { Context$, Dispatch$, Execute$, type Runnable, type RunnableInternal, type RunnableKind } from "./definition"
+import { Context$, Dispatch$, Execute$, type Runnable, type RunnableInternal } from "./definition"
 
 const Tag$ = Symbol("$tag")
 
@@ -14,7 +14,7 @@ const tag = <T = never>(name: string): Tag<T> => {
   return { [Tag$]: id, name, value: reference.lensed<T>(id) }
 }
 
-type Wire = { readonly name: string } & Runnable & RunnableKind<"wire">
+type Wire = { readonly name: string } & Runnable<"wire">
 
 type TagShape<T> =
   T extends Tag<unknown>

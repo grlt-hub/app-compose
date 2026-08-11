@@ -5,8 +5,7 @@ const Context$ = Symbol("$context")
 const Execute$ = Symbol("$execute")
 const Dispatch$ = Symbol("$dispatch")
 
-type Runnable = { [Execute$]: unknown }
-type RunnableKind<T extends string> = { readonly kind: T }
+type Runnable<T extends string = string> = { readonly [Execute$]: unknown; readonly kind: T }
 
 type RunnableInternal<T = unknown> = {
   [Context$]: SpotInternal<unknown>
@@ -15,4 +14,4 @@ type RunnableInternal<T = unknown> = {
 }
 
 export { Context$, Dispatch$, Execute$ }
-export type { Runnable, RunnableInternal, RunnableKind }
+export type { Runnable, RunnableInternal }

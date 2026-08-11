@@ -1,7 +1,7 @@
 import { literal } from "@computable"
 import { createTask, createWire, tag } from "@runnable"
-import { LIBRARY_NAME } from "@shared"
-import { describe, expect, it } from "vitest"
+import { identity, LIBRARY_NAME } from "@shared"
+import { afterAll, describe, expect, it, vi } from "vitest"
 import { compose } from "../compose"
 
 describe("compose", () => {
@@ -13,7 +13,7 @@ describe("compose", () => {
       expect(
         // @ts-expect-error
         () => app.step({ value: 123 }),
-      ).toThrowError(message)
+      ).toThrow(message)
     })
   })
 
@@ -26,7 +26,7 @@ describe("compose", () => {
 
       const message = `Unused Wire found with name Wire[alpha] for Tag[alpha] in step root > #1.`
 
-      expect(() => app.guard()).toThrowError(message)
+      expect(() => app.guard()).toThrow(message)
     })
 
     it("throws on error graph", () => {
@@ -38,7 +38,7 @@ describe("compose", () => {
 
       const message = `A duplicate Wire found with name Wire[alpha] in step root > #2.`
 
-      expect(() => app.guard()).toThrowError(message)
+      expect(() => app.guard()).toThrow(message)
     })
   })
 
@@ -53,6 +53,22 @@ describe("compose", () => {
 
       const result = { type: "seq", meta: { name: "app" }, children: [{ type: "run" }, { type: "run" }] }
       expect(graph).toMatchObject(result)
+    })
+  })
+
+  describe("run", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(identity)
+
+    afterAll(() => warn.mockRestore())
+
+    it("warns on guard warning", async () => {
+      const alpha = tag<number>("alpha")
+      const wire = createWire({ from: literal(1), to: alpha })
+
+      await compose().step(wire).run()
+
+      const message = "Unused Wire found with name Wire[alpha] for Tag[alpha] in step root > #1."
+      expect(warn).toHaveBeenCalledWith(LIBRARY_NAME, message)
     })
   })
 })

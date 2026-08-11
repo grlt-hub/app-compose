@@ -1,7 +1,7 @@
 import type { IsSpot, SpotToContext } from "@computable"
 import { build, literal, Missing$, reference, type Spot, type SpotProvider } from "@computable"
 import { T, type Eventual } from "@shared"
-import { Context$, Dispatch$, Execute$, type Runnable, type RunnableInternal, type RunnableKind } from "./definition"
+import { Context$, Dispatch$, Execute$, type Runnable, type RunnableInternal } from "./definition"
 
 type WithContext<Context, Return> = Context extends void
   ? { fn: () => Eventual<Return>; context?: never }
@@ -21,8 +21,7 @@ type Task<R> = {
   readonly result: SpotProvider<R>
   readonly status: Spot<TaskStatus>
   readonly error: Spot<unknown>
-} & Runnable &
-  RunnableKind<"task">
+} & Runnable<"task">
 
 type TaskResult<T> = T extends Task<infer R> ? R : never
 type TaskStatus = "done" | "fail" | "skip"
@@ -84,4 +83,4 @@ const createTask = <Result, RunContext = void, EnabledContext = void>(
   return runnable
 }
 
-export { createTask, type Task, type TaskExecutionValue, type TaskResult, type TaskStatus }
+export { createTask, type Task, type TaskResult, type TaskStatus }
