@@ -2,6 +2,17 @@
   "$schema": "../../node_modules/oxlint/configuration_schema.json",
   "plugins": ["vitest", "eslint", "typescript", "unicorn", "oxc"],
   "rules": {
+    "no-unused-vars": [
+      "error",
+      {
+        "args": "all",
+        "argsIgnorePattern": "^_",
+        "caughtErrors": "all",
+        "caughtErrorsIgnorePattern": "^_",
+        "destructuredArrayIgnorePattern": "^_",
+        "ignoreRestSiblings": true
+      }
+    ],
     "vitest/expect-expect": "error",
     "vitest/no-commented-out-tests": "error",
     "vitest/no-conditional-expect": "error",

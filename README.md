@@ -1,13 +1,10 @@
 # App Compose
 
-Lightweight IoC for the front-end. Compose apps you can control and trust.
+App Compose helps you build front-end applications from isolated tasks with explicit dependencies and predictable execution order—without containers, decorators, or framework-specific APIs.
 
 [![npm version](https://img.shields.io/npm/v/%40app-compose%2Fcore?color=orange)](https://www.npmjs.com/package/@app-compose/core)
-![npm license](https://img.shields.io/npm/l/%40app-compose%2Fcore?color=blue)
 ![bundle size](https://deno.bundlejs.com/badge?q=@app-compose/core&treeshake=[*])
-![zero dependencies](https://img.shields.io/badge/dependencies-0-blue)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/grlt-hub/app-compose)
-[![npm provenance](https://img.shields.io/badge/provenance-yes-brightgreen?logo=npm)](https://www.npmjs.com/@app-compose/core)
 [![llms.txt](https://img.shields.io/badge/llms.txt-ready-blue)](https://app-compose.dev/llms.txt)
 
 [Learn](https://app-compose.dev/learn/quick-start/) | [Guides](https://app-compose.dev/guides/) | [Reference](https://app-compose.dev/reference/)
@@ -37,61 +34,47 @@ A minimal example built on the three key pieces: Task, Tag, and Wire (how they c
 Two features share data without knowing about each other.
 
 ```ts
-import { createTask, createWire, compose, tag } from "@app-compose/core"
+import { compose, createTask, createWire, tag } from "@app-compose/core"
 
-// where the name to greet will live
-const whoToGreet = tag<string>("whoToGreet")
-
-const greeting = createTask({
-  name: "greeting",
-  run: {
-    // greeting reads from it
-    context: whoToGreet.value,
-    fn: (name) => console.log(`Hello, ${name}!`),
-  },
-})
-
+const name = tag<string>("name")
 const user = createTask({
   name: "user",
   run: { fn: () => ({ name: "World" }) },
 })
+const greeting = createTask({
+  name: "greeting",
+  run: {
+    context: name.value,
+    fn: (name) => console.log(`Hello, ${name}!`),
+  },
+})
 
-compose()
+await compose()
   .step(user)
-  // filled by the user task
-  .step(createWire({ from: user.result.name, to: whoToGreet }))
+  .step(createWire({ from: user.result.name, to: name }))
   .step(greeting)
-  .run()
+  .run() // Hello, World!
 ```
+
+## Get started
+
+Try App Compose in the [online sandbox](https://app-compose.dev/sandbox/) without installing anything, or add `@app-compose/core` with your package manager:
+
+- npm: `npm install --save-exact @app-compose/core`
+- pnpm: `pnpm add --save-exact @app-compose/core`
+- Yarn: `yarn add --exact @app-compose/core`
+- Bun: `bun add --exact @app-compose/core`
+
+Continue with the [Quick Start](https://app-compose.dev/learn/quick-start/).
 
 ## AI tools
 
-App-Compose publishes LLM-friendly docs and is available on [DeepWiki](https://deepwiki.com/grlt-hub/app-compose).
-
-### Cursor
-
-1. Open chat and type `@docs`
-2. Click **Add new doc**
-3. Paste the URL and confirm:
-
-```
-https://app-compose.dev/llms-full.txt
-```
-
-### Claude / ChatGPT / Copilot
-
-Paste this URL into the chat — most assistants accept URLs as context:
-
-```
-https://app-compose.dev/llms-full.txt
-```
-
-Use [`llms-small.txt`](https://app-compose.dev/llms-small.txt) for models with a smaller context window (e.g. GPT-3.5, free-tier plans).
+Give your coding assistant the [complete documentation](https://app-compose.dev/llms-full.txt) as context, or use the [compact version](https://app-compose.dev/llms-small.txt) for smaller context windows.
 
 ### DeepWiki
 
 Open [deepwiki](https://deepwiki.com/grlt-hub/app-compose) and ask anything about the codebase.
 
-## Ready to try it?
+## License
 
-[Quick start](https://app-compose.dev/learn/quick-start/) — a step-by-step guide to the core concepts. Or browse the full [docs](https://app-compose.dev) and [guides](https://app-compose.dev/guides/).
+App Compose is available under the [MIT License](LICENSE).

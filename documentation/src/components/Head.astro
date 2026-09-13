@@ -4,7 +4,8 @@ import Default from "@astrojs/starlight/components/Head.astro"
 const SITE = "https://app-compose.dev"
 const ORG_ID = "https://github.com/grlt-hub"
 const WEBSITE_ID = `${SITE}/#website`
-const TAGLINE = "Lightweight IoC for the front-end. Compose apps you can control and trust."
+const TAGLINE =
+  "Build front-end applications from isolated tasks with explicit dependencies and predictable execution order—without containers, decorators, or framework-specific APIs."
 
 // grlt-hub as the publishing entity; `withId` defines the node once so other nodes can reference it.
 const org = (withId) => ({ "@type": "Organization", ...(withId && { "@id": ORG_ID }), name: "grlt-hub", url: ORG_ID })
