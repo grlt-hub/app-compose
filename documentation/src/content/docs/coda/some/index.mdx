@@ -7,9 +7,7 @@ description: Any-of quantifier for Tasks, Tags, and Spots — by predicate or by
 
 ```ts
 // without some
-const anyEven = shape([fetchUser.result, fetchOrder.result], (results) =>
-  results.some((result) => result.id % 2 === 0),
-)
+const anyEven = shape([fetchUser.result, fetchOrder.result], (results) => results.some((result) => result.id % 2 === 0))
 
 // with some
 const anyEven = some([fetchUser, fetchOrder], (task) => task.result.id % 2 === 0)
@@ -30,9 +28,7 @@ const anyEven = some([fetchUser, fetchOrder], (task) => task.result.id % 2 === 0
 
 ```ts
 // without some
-const anyDone = shape([fetchUser.status, fetchOrder.status], (statuses) =>
-  statuses.some((status) => status === "done"),
-)
+const anyDone = shape([fetchUser.status, fetchOrder.status], (statuses) => statuses.some((status) => status === "done"))
 
 // with some
 const anyDone = some([fetchUser, fetchOrder], (task) => task.status === "done")

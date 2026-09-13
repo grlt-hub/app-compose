@@ -23,8 +23,11 @@
     "doc:dev": "pnpm build && pnpm --dir ./documentation run dev",
     "doc:build": "pnpm build && pnpm --dir ./documentation run build",
     "build": "pnpm -r --filter='!./documentation' build",
+    "typecheck": "pnpm -r --parallel typecheck",
     "test": "pnpm -r --parallel test",
     "lint": "pnpm -r --parallel lint",
+    "lint:fix": "pnpm -r --parallel lint:fix",
+    "fmt": "oxfmt .",
     "release": "node ./scripts/release.ts",
     "publish-ci": "node ./scripts/publish-ci.ts"
   },

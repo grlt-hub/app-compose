@@ -3,22 +3,22 @@
 // Re-pin the target while the layout is still settling, then hand control back
 // to the user on their first deliberate scroll.
 export const keepAnchorPinned = () => {
-  const id = window.location.hash.slice(1);
-  const el = id ? document.getElementById(id) : null;
-  if (!el) return;
+  const id = window.location.hash.slice(1)
+  const el = id ? document.getElementById(id) : null
+  if (!el) return
 
-  let active = true;
+  let active = true
   const ro = new ResizeObserver(() => {
-    if (active) el.scrollIntoView();
-  });
+    if (active) el.scrollIntoView()
+  })
   const release = () => {
-    active = false;
-    ro.disconnect();
-  };
-
-  ro.observe(document.body);
-  for (const evt of ["wheel", "touchstart", "keydown", "pointerdown"]) {
-    window.addEventListener(evt, release, { once: true, passive: true });
+    active = false
+    ro.disconnect()
   }
-  setTimeout(release, 3000);
-};
+
+  ro.observe(document.body)
+  for (const evt of ["wheel", "touchstart", "keydown", "pointerdown"]) {
+    window.addEventListener(evt, release, { once: true, passive: true })
+  }
+  setTimeout(release, 3000)
+}

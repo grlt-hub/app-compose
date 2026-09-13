@@ -51,11 +51,13 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsgo --noEmit -p tsconfig.json && tsdown",
+    "build": "pnpm typecheck && tsdown",
+    "typecheck": "tsgo --noEmit -p tsconfig.json",
     "dev": "tsdown --watch",
     "prepack": "pnpm build",
     "test": "vitest run",
-    "lint": "knip && oxlint ./src"
+    "lint": "knip && oxlint ./src",
+    "lint:fix": "oxlint --fix ./src"
   },
   "dependencies": {
     "@typescript-eslint/type-utils": "^8.58.0",

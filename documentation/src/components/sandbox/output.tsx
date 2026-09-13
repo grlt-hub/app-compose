@@ -39,7 +39,9 @@ const Output = (props: Props) => {
   return (
     <SandpackStack style={{ height: "100%", width }}>
       <SandpackPreview showRefreshButton showSandpackErrorOverlay style={{ height: "100%" }} />
-      {props.showConsole && <SandpackConsole style={{ height: "100%" }} showHeader showSyntaxError showResetConsoleButton={false} />}
+      {props.showConsole && (
+        <SandpackConsole style={{ height: "100%" }} showHeader showSyntaxError showResetConsoleButton={false} />
+      )}
     </SandpackStack>
   )
 }
