@@ -54,12 +54,14 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsgo --noEmit -p tsconfig.json && tsdown",
+    "build": "pnpm typecheck && tsdown",
+    "typecheck": "tsgo --noEmit -p tsconfig.json",
     "dev": "tsdown --watch",
     "prepack": "pnpm build",
     "bench": "vitest bench",
     "test": "vitest run",
-    "lint": "knip && oxlint ./src"
+    "lint": "knip && oxlint ./src",
+    "lint:fix": "oxlint --fix ./src"
   },
   "devDependencies": {
     "@app-compose/core": "workspace:*"

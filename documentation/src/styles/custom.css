@@ -726,4 +726,3 @@ body:not(:is(:has(.hero), :has([data-splash-bg]))) .main-pane {
 :root[data-theme="light"] body:not(:is(:has(.hero), :has([data-splash-bg]))) .main-pane {
   box-shadow: 0 0 32px rgba(15, 23, 42, 0.06);
 }
-
