@@ -2,7 +2,7 @@
   "name": "@app-compose/core",
   "version": "3.0.0-beta.9",
   "private": false,
-  "description": "Lightweight IoC for the front-end — structures your app around isolated tasks, explicit context, and predictable startup.",
+  "description": "Build front-end applications from isolated tasks with explicit dependencies and predictable execution order—without containers, decorators, or framework-specific APIs.",
   "keywords": [
     "app-compose",
     "appcompose",

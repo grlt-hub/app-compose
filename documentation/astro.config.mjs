@@ -87,7 +87,8 @@ export default defineConfig({
           rawContent: false,
           // the landing page is a splash template and never lands in the
           // generated files — carry its positioning over by hand, verbatim
-          description: "Lightweight IoC for the front-end. Compose apps you can control and trust.",
+          description:
+            "Build front-end applications from isolated tasks with explicit dependencies and predictable execution order—without containers, decorators, or framework-specific APIs.",
           details: [
             "App-Compose is a small TypeScript library for composing apps from independent pieces. Features, services, and modules often know about each other directly. That makes them hard to test, reuse, and maintain. With App-Compose, each part declares what it needs, and you supply it — so you stay in control as your app grows.",
             "",
