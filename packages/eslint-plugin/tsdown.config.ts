@@ -13,5 +13,5 @@ export default defineConfig({
     neverBundle: ["typescript", "@typescript-eslint/utils"],
   },
 
-  dts: { tsgo: true },
+  dts: { generator: "tsgo" },
 })

@@ -1,7 +1,7 @@
 import { compose } from "@compose"
 import { literal, shape, type Spot } from "@computable"
 import { createTask, createWire, tag } from "@runnable"
-import { bench, describe, vi } from "vitest"
+import { describe, expect, test, vi } from "vitest"
 
 const double = (x: number) => x * 2
 
@@ -38,11 +38,19 @@ describe("multi layer, compute shapes", () => {
   }
 
   describe("compose.guard", () => {
-    bench("app", () => void app.guard(), { time: 1000 })
+    test("app", async ({ bench }) => {
+      await expect(bench("app", () => void app.guard()).run({ time: 1000 })).resolves.toMatchObject({
+        state: "completed",
+      })
+    })
   })
 
   describe("compose.graph", () => {
-    bench("app", () => void app.graph(), { time: 1000 })
+    test("app", async ({ bench }) => {
+      await expect(bench("app", () => void app.graph()).run({ time: 1000 })).resolves.toMatchObject({
+        state: "completed",
+      })
+    })
   })
 })
 
@@ -58,11 +66,19 @@ describe("single layer, wide sequence", () => {
   const app = compose().meta({ name: "bench" }).step(layer)
 
   describe("compose.guard", () => {
-    bench("app", () => void app.guard(), { time: 1000 })
+    test("app", async ({ bench }) => {
+      await expect(bench("app", () => void app.guard()).run({ time: 1000 })).resolves.toMatchObject({
+        state: "completed",
+      })
+    })
   })
 
   describe("compose.graph", () => {
-    bench("app", () => void app.graph(), { time: 1000 })
+    test("app", async ({ bench }) => {
+      await expect(bench("app", () => void app.graph()).run({ time: 1000 })).resolves.toMatchObject({
+        state: "completed",
+      })
+    })
   })
 })
 
@@ -84,10 +100,18 @@ describe("multi layer, deep nesting", () => {
   const app = current
 
   describe("compose.guard", () => {
-    bench("app", () => void app.guard(), { time: 1000 })
+    test("app", async ({ bench }) => {
+      await expect(bench("app", () => void app.guard()).run({ time: 1000 })).resolves.toMatchObject({
+        state: "completed",
+      })
+    })
   })
 
   describe("compose.graph", () => {
-    bench("app", () => void app.graph(), { time: 1000 })
+    test("app", async ({ bench }) => {
+      await expect(bench("app", () => void app.graph()).run({ time: 1000 })).resolves.toMatchObject({
+        state: "completed",
+      })
+    })
   })
 })

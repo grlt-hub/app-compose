@@ -6,5 +6,5 @@ export default defineConfig({
   platform: "neutral",
   minify: "dce-only",
   hash: false,
-  dts: { tsgo: true },
+  dts: { generator: "tsgo" },
 })
