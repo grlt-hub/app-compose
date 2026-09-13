@@ -62,7 +62,7 @@
     "typecheck": "tsgo --noEmit -p tsconfig.json",
     "dev": "tsdown --watch",
     "prepack": "pnpm build",
-    "bench": "vitest bench",
+    "bench": "vitest bench --reporter=tree",
     "test": "vitest run",
     "lint": "knip && oxlint ./src",
     "lint:fix": "oxlint --fix ./src"
