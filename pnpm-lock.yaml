@@ -8,7 +8,7 @@ overrides:
   monaco-editor@0.56.0>dompurify: 3.4.15
 
 patchedDependencies:
-  monaco-editor@0.56.0: 68027eb849d067a0dd490502a379de9a8bc3a0f18ab82212a02f7013e9e1ac00
+  monaco-editor@0.56.0: f28f46610a2b59f09a233fdfab37d39676f2aa4e6bf46874c29ea606fc411f2b
   starlight-llms-txt@0.11.0: a85461a3e21f580365cac4de29d368cb99a3d2a081f530f57d8bde0c97523de7
 
 importers:
@@ -77,13 +77,13 @@ importers:
         version: 2.20.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@monaco-editor/react':
         specifier: 4.7.0
-        version: 4.7.0(monaco-editor@0.56.0(patch_hash=68027eb849d067a0dd490502a379de9a8bc3a0f18ab82212a02f7013e9e1ac00))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+        version: 4.7.0(monaco-editor@0.56.0(patch_hash=f28f46610a2b59f09a233fdfab37d39676f2aa4e6bf46874c29ea606fc411f2b))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       astro:
         specifier: 7.3.2
         version: 7.3.2(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.3)(@types/node@26.5.1)(jiti@2.7.0)(yaml@2.9.0)
       monaco-editor:
         specifier: 0.56.0
-        version: 0.56.0(patch_hash=68027eb849d067a0dd490502a379de9a8bc3a0f18ab82212a02f7013e9e1ac00)
+        version: 0.56.0(patch_hash=f28f46610a2b59f09a233fdfab37d39676f2aa4e6bf46874c29ea606fc411f2b)
       react:
         specifier: 19.3.0
         version: 19.3.0
@@ -5255,10 +5255,10 @@ snapshots:
     dependencies:
       state-local: 1.0.7
 
-  '@monaco-editor/react@4.7.0(monaco-editor@0.56.0(patch_hash=68027eb849d067a0dd490502a379de9a8bc3a0f18ab82212a02f7013e9e1ac00))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
+  '@monaco-editor/react@4.7.0(monaco-editor@0.56.0(patch_hash=f28f46610a2b59f09a233fdfab37d39676f2aa4e6bf46874c29ea606fc411f2b))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
     dependencies:
       '@monaco-editor/loader': 1.7.0
-      monaco-editor: 0.56.0(patch_hash=68027eb849d067a0dd490502a379de9a8bc3a0f18ab82212a02f7013e9e1ac00)
+      monaco-editor: 0.56.0(patch_hash=f28f46610a2b59f09a233fdfab37d39676f2aa4e6bf46874c29ea606fc411f2b)
       react: 19.3.0
       react-dom: 19.3.0(react@19.3.0)
 
@@ -7703,7 +7703,7 @@ snapshots:
     dependencies:
       brace-expansion: 5.0.9
 
-  monaco-editor@0.56.0(patch_hash=68027eb849d067a0dd490502a379de9a8bc3a0f18ab82212a02f7013e9e1ac00):
+  monaco-editor@0.56.0(patch_hash=f28f46610a2b59f09a233fdfab37d39676f2aa4e6bf46874c29ea606fc411f2b):
     dependencies:
       dompurify: 3.4.15
       marked: 14.0.0
