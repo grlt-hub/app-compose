@@ -1,8 +1,10 @@
 import { useSandpack, type SandpackPredefinedTemplate } from "@codesandbox/sandpack-react"
-import MonacoEditor, { type Monaco, type OnMount } from "@monaco-editor/react"
+import MonacoEditor, { type OnMount } from "@monaco-editor/react"
+import { typescript } from "monaco-editor"
 import { useMemo } from "react"
 import { useTheme } from "../useTheme"
 import { APP_CODA_DTS, APP_COMPOSE_DTS } from "./compose-types"
+import "./monaco"
 
 const useFileLanguage = (template: SandpackPredefinedTemplate, activeFile: string) =>
   useMemo(() => {
@@ -25,23 +27,17 @@ const useFileLanguage = (template: SandpackPredefinedTemplate, activeFile: strin
     }
   }, [template, activeFile])
 
-const beforeMount = (monaco: Monaco) => {
-  const currentOptions = monaco.languages.typescript.typescriptDefaults.getCompilerOptions()
+const beforeMount = () => {
+  const currentOptions = typescript.typescriptDefaults.getCompilerOptions()
 
-  monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
+  typescript.typescriptDefaults.setCompilerOptions({
     ...currentOptions,
-    jsx: true,
+    jsx: typescript.JsxEmit.Preserve,
   })
 
-  monaco.languages.typescript.typescriptDefaults.addExtraLib(
-    APP_COMPOSE_DTS,
-    "file:///node_modules/@types/app-compose__core/index.d.ts",
-  )
+  typescript.typescriptDefaults.addExtraLib(APP_COMPOSE_DTS, "file:///node_modules/@types/app-compose__core/index.d.ts")
 
-  monaco.languages.typescript.typescriptDefaults.addExtraLib(
-    APP_CODA_DTS,
-    "file:///node_modules/@types/app-compose__coda/index.d.ts",
-  )
+  typescript.typescriptDefaults.addExtraLib(APP_CODA_DTS, "file:///node_modules/@types/app-compose__coda/index.d.ts")
 }
 
 // Cmd/Ctrl+S formats the document with Monaco's built-in formatter instead of opening the
