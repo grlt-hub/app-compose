@@ -109,6 +109,46 @@ compose().step(login).step(debug(login)).run()
 compose().step(login).run()
 ```
 
+### no-scope-get
+
+This rule is not enabled in the `recommended` config. Enable it explicitly to keep application work inside the
+composition.
+
+💭 This rule requires [typed linting](https://typescript-eslint.io/getting-started/typed-linting/).
+
+```js
+{
+  rules: {
+    'app-compose/no-scope-get': 'warn',
+  },
+}
+```
+
+<hr />
+
+`scope.get()` can lead to imperative work outside the composition: surrounding code reads a value and decides what
+runs next. Put the work in a Task and pass the values it needs through the Task's `context`.
+
+The plugin reports every call to `scope.get()` on the App-Compose `Scope` type, including values returned by `run()`
+and values received by observers. Other objects with a method named `get` are not reported.
+
+```ts
+// ❌ Wrong
+const scope = await compose().step(login).run()
+renderUser(scope.get(login.result))
+
+// ✅ Correct
+const showUser = createTask({
+  name: "show-user",
+  run: {
+    context: login.result,
+    fn: (user) => renderUser(user),
+  },
+})
+
+await compose().step(login).step(showUser).run()
+```
+
 ### task-options-order
 
 ⚠️ This rule warns in the `recommended` config.
