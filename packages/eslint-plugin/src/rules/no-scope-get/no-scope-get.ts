@@ -7,10 +7,11 @@ export default createRule({
   meta: {
     type: "suggestion",
     docs: {
-      description: "Disallow `scope.get()` calls",
+      description: "Disallow imperative `scope.get()` calls",
     },
     messages: {
-      unexpectedScopeGet: "Unexpected `scope.get()` call.",
+      unexpectedScopeGet:
+        "`scope.get()` can lead to imperative work outside the composition. Put the work in a Task and pass values through its context.",
     },
     schema: [],
     hasSuggestions: false,
