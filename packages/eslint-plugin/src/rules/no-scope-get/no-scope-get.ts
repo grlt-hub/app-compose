@@ -7,7 +7,7 @@ export default createRule({
   meta: {
     type: "suggestion",
     docs: {
-      description: "Disallow imperative `scope.get()` calls",
+      description: "Disallow `scope.get()` calls",
     },
     messages: {
       unexpectedScopeGet:

@@ -48,6 +48,6 @@ Or wire the plugin manually:
 | ----------------------------------------------------------------------------------------- | ------------------------------------------------- | --- | --- | --- |
 | [no-async-shape-callback](https://app-compose.dev/learn/linting/#no-async-shape-callback) | Disallow async callbacks in `shape()`             |     | ❗  |     |
 | [no-coda-debug](https://app-compose.dev/learn/linting/#no-coda-debug)                     | Disallow `debug()` calls from `@app-compose/coda` |     | ❗  |     |
-| [no-scope-get](https://app-compose.dev/learn/linting/#no-scope-get)                       | Disallow imperative `scope.get()` calls           |     |     |     |
+| [no-scope-get](https://app-compose.dev/learn/linting/#no-scope-get)                       | Disallow `scope.get()` calls                      |     |     |     |
 | [task-options-order](https://app-compose.dev/learn/linting/#task-options-order)           | Enforce options order for `createTask`            | ⚠️  |     | 🔧  |
 | [wire-options-order](https://app-compose.dev/learn/linting/#wire-options-order)           | Enforce options order for `createWire`            | ⚠️  |     | 🔧  |
