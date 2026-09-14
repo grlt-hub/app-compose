@@ -25,6 +25,7 @@ export default defineConfig({
   vite: {
     plugins: [appComposePlugin()],
     optimizeDeps: {
+      include: ["@codesandbox/sandpack-react", "@monaco-editor/react", "monaco-editor"],
       exclude: ["@nanostores/react", "@nanostores/vue", "nanostores", "vue"],
     },
   },
