@@ -1,6 +1,6 @@
 import { useSandpack, type SandpackPredefinedTemplate } from "@codesandbox/sandpack-react"
 import MonacoEditor, { type OnMount } from "@monaco-editor/react"
-import { typescript } from "monaco-editor"
+import * as typescript from "monaco-editor/languages/features/typescript/register"
 import { useMemo } from "react"
 import { useTheme } from "../useTheme"
 import { APP_CODA_DTS, APP_COMPOSE_DTS } from "./compose-types"
