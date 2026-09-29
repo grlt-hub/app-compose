@@ -16,4 +16,3 @@ overrides:
 
 patchedDependencies:
   monaco-editor@0.56.0: patches/monaco-editor@0.56.0.patch
-  starlight-llms-txt@0.11.0: patches/starlight-llms-txt@0.11.0.patch

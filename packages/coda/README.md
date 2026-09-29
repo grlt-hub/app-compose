@@ -7,7 +7,7 @@ Helper utilities for [App-Compose](https://app-compose.dev). Named helpers for T
 ![bundle size](https://deno.bundlejs.com/badge?q=@app-compose/coda&treeshake=[*])
 ![zero dependencies](https://img.shields.io/badge/dependencies-0-blue)
 [![npm provenance](https://img.shields.io/badge/provenance-yes-brightgreen?logo=npm)](https://www.npmjs.com/package/@app-compose/coda)
-[![llms.txt](https://img.shields.io/badge/llms.txt-ready-blue)](https://app-compose.dev/_llms-txt/coda.txt)
+[![llms.txt](https://img.shields.io/badge/llms.txt-ready-blue)](https://app-compose.dev/llms.txt)
 
 [Docs](https://app-compose.dev/coda) | [App-Compose](https://app-compose.dev)
 
@@ -31,7 +31,7 @@ Requires `@app-compose/core` 3+.
 
 ## AI tools
 
-coda ships an LLM-friendly subset of the docs.
+The documentation index includes links to Coda helpers.
 
 ### Cursor
 
@@ -40,7 +40,7 @@ coda ships an LLM-friendly subset of the docs.
 3. Paste the URL and confirm:
 
 ```
-https://app-compose.dev/_llms-txt/coda.txt
+https://app-compose.dev/llms.txt
 ```
 
 ### Claude / ChatGPT / Copilot
@@ -48,5 +48,5 @@ https://app-compose.dev/_llms-txt/coda.txt
 Paste this URL into the chat — most assistants accept URLs as context:
 
 ```
-https://app-compose.dev/_llms-txt/coda.txt
+https://app-compose.dev/llms.txt
 ```
