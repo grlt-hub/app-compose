@@ -6,6 +6,8 @@ const { anchor, code: rawCode, template, options, files, visibleFiles, share } =
 const sourceCode = rawCode.replace(/^[ \t]*\/\/\s*oxfmt-ignore[ \t]*\r?\n?/gm, '');
 // the example name is the anchor; prefix it so it can't collide with other anchors
 const anchorId = anchor ? `live-${anchor}` : undefined;
+const textExport = Astro.locals.llms;
+const language = template === "vite-vue" ? "vue" : template === "vite-react" ? "jsx" : template === "vanilla" ? "js" : "ts";
 ---
 
 <div id={anchorId} class="sandbox-block">
@@ -26,9 +28,11 @@ const anchorId = anchor ? `live-${anchor}` : undefined;
     </svg>
   </span>
 </button>
-<Code class="sandbox-code" code={sourceCode} lang="ts" />
+<Code class="sandbox-code" code={sourceCode} lang={language} />
 
-<SandpackEditor client:only="react" code={sourceCode} template={template} options={options} files={files} visibleFiles={visibleFiles} share={share} />
+{textExport ? Object.entries((files ?? {}) as Record<string, string>).map(([filename, code]) => (
+  <Code code={code.replace(/^[ \t]*\/\/\s*oxfmt-ignore[ \t]*\r?\n?/gm, '')} lang={filename.split('.').pop() ?? 'text'} title={filename} />
+)) : <SandpackEditor client:only="react" code={sourceCode} template={template} options={options} files={files} visibleFiles={visibleFiles} share={share} />}
 </div>
 
 <script>

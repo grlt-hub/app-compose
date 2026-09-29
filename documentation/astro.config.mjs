@@ -3,20 +3,9 @@ import react from "@astrojs/react"
 import starlight from "@astrojs/starlight"
 import { defineConfig } from "astro/config"
 import starlightLinksValidator from "starlight-links-validator"
-import starlightLlmsTxt from "starlight-llms-txt"
 import { appComposePlugin } from "./app-compose-plugin.mjs"
 import { sidebar } from "./sidebar.mjs"
-
-// pages kept out of the llms-*.txt outputs
-const llmsExclude = ["sandbox", "privacy", "404"]
-
-// flatten the sidebar (nested groups + top-level links) to page slugs in menu order
-/** @param {any[]} entries */
-const collectSlugs = (entries) =>
-  entries.flatMap((entry) => (entry.items ? collectSlugs(entry.items) : entry.slug ? [entry.slug] : []))
-
-// promote pages in exactly the menu order; drop the ones excluded from output
-const promote = collectSlugs(sidebar).filter((slug) => !llmsExclude.includes(slug))
+import { llmsPlugin } from "./src/plugins/llms"
 
 export default defineConfig({
   markdown: {
@@ -37,6 +26,7 @@ export default defineConfig({
   site: "https://app-compose.dev",
   integrations: [
     react(),
+    llmsPlugin(),
     starlight({
       title: "App-Compose",
       logo: {
@@ -88,43 +78,7 @@ export default defineConfig({
       ],
       sidebar,
       customCss: ["./src/styles/custom.css"],
-      plugins: [
-        starlightLlmsTxt({
-          rawContent: false,
-          // the landing page is a splash template and never lands in the
-          // generated files — carry its positioning over by hand, verbatim
-          description:
-            "Build front-end applications from isolated tasks with explicit dependencies and predictable execution order—without containers, decorators, or framework-specific APIs.",
-          details: [
-            "App-Compose is a small TypeScript library for composing apps from independent pieces. Features, services, and modules often know about each other directly. That makes them hard to test, reuse, and maintain. With App-Compose, each part declares what it needs, and you supply it — so you stay in control as your app grows.",
-            "",
-            "What you get:",
-            "",
-            "- **Simplicity** — A small API with zero dependencies: lightweight, no containers, providers, or decorators. Framework-agnostic.",
-            "- **Clarity** — No magic, no globals. Context moves through clear, typed wiring. Your app runs exactly as you composed it.",
-            "- **Reusability** — Same code, different context per compose. Reuse across apps, tests, and environments — no copy-paste.",
-            "- **Testability** — Validate your composition in tests. Missing context, duplicates, and unused wires fail in CI — not at startup.",
-            "- **Observability** — Inspect your app as plain JSON — log it, render it, diff it across environments. Hook into start, complete, and fail events for timing, logs, or traces.",
-            "",
-            "If you want to use App-Compose for a part of your existing app, you don't have to rewrite the rest. Add it to your stack, and bring in more when you're ready.",
-          ].join("\n"),
-          exclude: llmsExclude,
-          // derived from the sidebar above, so the generated files follow the
-          // menu order instead of falling back to alphabetical
-          promote,
-          // strip the sandbox's "Best on desktop / edit & run it live / Copy link"
-          customSelectors: { all: [".desktop-hint"] },
-          customSets: [
-            {
-              label: "Coda",
-              description:
-                "Helper utilities for @app-compose/core - reusable building blocks for tasks, wires, and context.",
-              paths: ["coda/**"],
-            },
-          ],
-        }),
-        starlightLinksValidator(),
-      ],
+      plugins: [starlightLinksValidator()],
       lastUpdated: true,
     }),
   ],

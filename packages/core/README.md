@@ -69,7 +69,7 @@ Continue with the [Quick Start](https://app-compose.dev/learn/quick-start/).
 
 ## AI tools
 
-Give your coding assistant the [complete documentation](https://app-compose.dev/llms-full.txt) as context, or use the [compact version](https://app-compose.dev/llms-small.txt) for smaller context windows.
+Give your coding assistant the [documentation index](https://app-compose.dev/llms.txt) to find the pages relevant to your task.
 
 ### DeepWiki
 
