@@ -28,8 +28,7 @@
     "lint": "pnpm -r --parallel lint",
     "lint:fix": "pnpm -r --parallel lint:fix",
     "fmt": "oxfmt .",
-    "release": "node ./scripts/release.ts",
-    "publish-ci": "node ./scripts/publish-ci.ts"
+    "release": "node ./scripts/release.ts"
   },
   "devDependencies": {
     "@types/node": "26.6.3",
