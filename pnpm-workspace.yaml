@@ -11,8 +11,9 @@ allowBuilds:
 
 minimumReleaseAge: 4320
 
-overrides:
-  monaco-editor@0.56.0>dompurify: 3.4.15
+minimumReleaseAgeExclude:
+  - wrangler@4.144.0
+  - miniflare@5.20260926.1-alpha
 
 patchedDependencies:
-  monaco-editor@0.56.0: patches/monaco-editor@0.56.0.patch
+  monaco-editor@0.57.0: patches/monaco-editor@0.57.0.patch

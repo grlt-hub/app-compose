@@ -1,10 +1,11 @@
 diff --git a/esm/vs/base/browser/domSanitize.js b/esm/vs/base/browser/domSanitize.js
-index 95061a20c8ecd48ff3ca732dbb1848cd213f7965..4bbb061da3fc2115cfc1917759b1660959dd308f 100644
+index 20c502413be001528668111286986258b7ad84a8..3459b8044975c6eb98beb89025aec085cd0d3a5a 100644
 --- a/esm/vs/base/browser/domSanitize.js
 +++ b/esm/vs/base/browser/domSanitize.js
-@@ -1,6 +1,6 @@
+@@ -1,7 +1,7 @@
  import { Schemas } from '../common/network.js';
  import { reset } from './dom.js';
+ import { createTrustedTypesPolicy } from './trustedTypes.js';
 -import purify from './dompurify/dompurify.js';
 +import purify from 'dompurify';
  
@@ -14,7 +15,7 @@ diff --git a/esm/vs/internal/common/workers.js b/esm/vs/internal/common/workers.
 index 488ad6fad27dff025dd8a1cb6ee48ace12457b73..a606c93c33c1f0cf3080efb31c6bed17eae235b2 100644
 --- a/esm/vs/internal/common/workers.js
 +++ b/esm/vs/internal/common/workers.js
-@@ -1,74 +1 @@
+@@ -1,74 +1,1 @@
 -import '../../editor/browser/coreCommands.js';
 -import '../../editor/browser/widget/codeEditor/codeEditorWidget.js';
 -import '../../editor/browser/widget/diffEditor/diffEditor.contribution.js';
