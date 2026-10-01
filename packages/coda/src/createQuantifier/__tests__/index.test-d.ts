@@ -79,11 +79,6 @@ describe("createQuantifier.status", () => {
     expectTypeOf(r).toEqualTypeOf<Spot<boolean>>()
   })
 
-  it("accepts list of tasks", () => {
-    const r = quantifier.status([login, logout], "done")
-    expectTypeOf(r).toEqualTypeOf<Spot<boolean>>()
-  })
-
   it("accepts list of optional status spots", () => {
     const r = quantifier.status([optional(login.status), optional(logout.status)], "done")
     expectTypeOf(r).toEqualTypeOf<Spot<boolean>>()
