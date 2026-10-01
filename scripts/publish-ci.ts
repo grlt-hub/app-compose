@@ -1,27 +1,24 @@
 import { execSync } from "node:child_process"
-import semver from "semver"
-import pkg from "../package.json" with { type: "json" }
+import { readdirSync } from "node:fs"
+import { resolve } from "node:path"
 
-let version = process.argv[2]
+const artifactDirectory = process.argv[2]
+const tag = process.argv[3]
 
-if (!version) throw new Error("No tag specified")
+if (!artifactDirectory) throw new Error("No artifact directory specified")
+if (!tag) throw new Error("No npm tag specified")
 
-if (version.startsWith("v")) {
-  version = version.slice(1)
-}
+const tarballs = readdirSync(artifactDirectory)
+  .filter((file) => file.endsWith(".tgz"))
+  .map((file) => resolve(artifactDirectory, file))
 
-if (!semver.valid(version)) throw new Error(`Cannot parse version: "${version}"`)
+if (tarballs.length === 0) throw new Error("No package tarballs found")
 
-if (pkg.version !== version) {
-  throw new Error(`Package version from tag "${version}" mismatches with the current version "${pkg.version}"`)
-}
+for (const tarball of tarballs) {
+  console.log("Staging", tarball, "with tag", tag)
 
-const tag = semver.prerelease(version)?.[0]
-
-console.log("Publishing version", version, "with tag", tag || "latest")
-
-if (tag) {
-  execSync(`pnpm -r publish --provenance --access public --no-git-checks --tag ${tag}`, { stdio: "inherit" })
-} else {
-  execSync(`pnpm -r publish --provenance --access public --no-git-checks`, { stdio: "inherit" })
+  execSync('npm stage publish "$PACKAGE_TARBALL" --tag "$NPM_TAG" --access public --provenance --ignore-scripts', {
+    stdio: "inherit",
+    env: { ...process.env, PACKAGE_TARBALL: tarball, NPM_TAG: tag },
+  })
 }
