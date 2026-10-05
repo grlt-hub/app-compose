@@ -11,7 +11,7 @@ output_name="${2:-}"
 [[ -n "$version" ]] || fail "No tag specified"
 [[ -n "$output_name" ]] || fail "No output name specified"
 version="${version#v}"
-repo_directory="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd)"
+repo_directory="$(git rev-parse --show-toplevel)"
 
 if ! normalized_version="$(pnpm --dir "$repo_directory" exec semver --version "$version")"; then
   fail "Cannot parse version: \"$version\""
