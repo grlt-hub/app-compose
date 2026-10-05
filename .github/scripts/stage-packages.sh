@@ -14,7 +14,7 @@ if [[ -z "$tag" ]]; then
   exit 1
 fi
 
-artifact_directory="$(cd -- "$artifact_directory" && pwd -P)"
+artifact_directory="$(realpath -- "$artifact_directory")"
 shopt -s nullglob
 tarballs=("$artifact_directory"/*.tgz)
 
