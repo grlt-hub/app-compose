@@ -15,5 +15,9 @@ minimumReleaseAgeExclude:
   - wrangler@4.144.0
   - miniflare@5.20260926.1-alpha
 
+# Monaco pins DOMPurify 3.4.15, which is vulnerable to GHSA-p98j-92pf-mc4p.
+overrides:
+  monaco-editor>dompurify: 3.4.16
+
 patchedDependencies:
   monaco-editor@0.57.0: patches/monaco-editor@0.57.0.patch
