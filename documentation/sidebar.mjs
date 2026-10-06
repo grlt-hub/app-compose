@@ -49,6 +49,7 @@ export const sidebar = [
     label: "Coda",
     items: [
       { slug: "coda" },
+      { slug: "coda/installation" },
       { slug: "coda/debug" },
       { slug: "coda/every" },
       { slug: "coda/not" },
