@@ -7,7 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org).
 
 ### Added
 
-- every
-- some
-- whenWvery
-- whenSome
+- [debug](https://app-compose.dev/coda/debug)
+- [defaultTo](https://app-compose.dev/coda/default-to)
+- [every](https://app-compose.dev/coda/every)
+- [some](https://app-compose.dev/coda/some)
+- [not](https://app-compose.dev/coda/not)
+- [optionalOr](https://app-compose.dev/coda/optional-or)
+- [when](https://app-compose.dev/coda/when)

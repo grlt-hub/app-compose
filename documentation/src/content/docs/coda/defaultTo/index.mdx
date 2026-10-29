@@ -1,0 +1,31 @@
+---
+title: defaultTo
+slug: coda/default-to
+description: Uses a fallback value when a Spot resolves to null or undefined.
+---
+
+`defaultTo` uses a fallback value when a Spot resolves to `null` or `undefined`. Without it, you'd build the same `shape` by hand:
+
+```ts
+// without defaultTo
+const userName = shape(fetchUser.result.name, (name) => name ?? "Guest")
+// with defaultTo
+const userName = defaultTo(fetchUser.result.name, "Guest")
+
+// without defaultTo
+const userName = shape(
+  { name: fetchUser.result.name, fallback: defaultName.value },
+  ({ name, fallback }) => name ?? fallback,
+)
+// with defaultTo
+const userName = defaultTo(fetchUser.result.name, defaultName.value)
+```
+
+## Arguments
+
+- `spot: Spot<T>` — the source Spot.
+- `fallback: P | Spot<P>` — a fallback value, or a Spot that provides it.
+
+## Returns
+
+`Spot<NonNullable<T> | P>` — the source value when it is not `null` or `undefined`; otherwise, the fallback value.
