@@ -31,17 +31,17 @@
     "release": "node ./scripts/release.ts"
   },
   "devDependencies": {
-    "@types/node": "26.6.3",
+    "@types/node": "26.6.5",
     "@typescript/native-preview": "7.0.0-dev.20260707.2",
     "bumpp": "12.3.0",
-    "knip": "6.38.0",
-    "lefthook": "2.1.14",
-    "oxfmt": "0.70.0",
-    "oxlint": "1.85.0",
+    "knip": "6.43.0",
+    "lefthook": "2.2.2",
+    "oxfmt": "0.74.0",
+    "oxlint": "1.89.0",
     "semver": "7.8.5",
-    "tsdown": "0.23.0",
+    "tsdown": "0.23.1",
     "typescript": "6.0.3",
-    "vitest": "5.0.2"
+    "vitest": "5.0.5"
   },
   "packageManager": "pnpm@11.6.0+sha512.9a36518224080c6fe5165afdcfe79bfa118c29be703f3f462b1e32efe1e98e47e8750b148e08286250aad4113cc7993ca413c4e2cd447752708c2ee5751bc95f"
 }
