@@ -1,0 +1,28 @@
+---
+title: optionalOr
+slug: coda/optional-or
+description: Uses a fallback value when the source is missing or its value is null or undefined.
+---
+
+`optionalOr` is [`defaultTo`](/coda/default-to) with the source Spot wrapped in [`optional`](/reference/optional). It uses the fallback when the source is missing or its value is `null` or `undefined`.
+
+```ts
+// without optionalOr
+const userName = defaultTo(optional(fetchUser.result.name), "Guest")
+// with optionalOr
+const userName = optionalOr(fetchUser.result.name, "Guest")
+
+// without optionalOr
+const userName = defaultTo(optional(fetchUser.result.name), defaultName.value)
+// with optionalOr
+const userName = optionalOr(fetchUser.result.name, defaultName.value)
+```
+
+## Arguments
+
+- `spot: Spot<T>` — the source Spot, treated as optional.
+- `fallback: P | Spot<P>` — a fallback value, or a Spot that provides it.
+
+## Returns
+
+`Spot<NonNullable<T> | P>` — the source value when available and not `null` or `undefined`; otherwise, the fallback value.

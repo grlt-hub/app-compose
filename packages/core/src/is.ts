@@ -1,7 +1,10 @@
+import { Spot$, type Spot } from "@computable"
 import { Execute$, type Runnable, type Tag, Tag$, type Task, type Wire } from "@runnable"
 import { isObject } from "@shared"
 
 const is = {
+  spot: (x: unknown): x is Spot<unknown> => isObject(x) && Spot$ in x,
+
   tag: (x: unknown): x is Tag<unknown> => isObject(x) && Tag$ in x,
 
   runnable: (x: unknown): x is Runnable => isObject(x) && Execute$ in x,

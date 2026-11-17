@@ -21,13 +21,15 @@ Requires `@app-compose/core` 3+.
 
 ## Utilities
 
-| Name                                        | Description                                                                 |
-| ------------------------------------------- | --------------------------------------------------------------------------- |
-| [debug](https://app-compose.dev/coda/debug) | A runtime inspection Task — logs Tasks, Tags, and Spots to the console.     |
-| [every](https://app-compose.dev/coda/every) | All-of quantifier for Tasks, Tags, and Spots — by predicate or Task status. |
-| [some](https://app-compose.dev/coda/some)   | Any-of quantifier for Tasks, Tags, and Spots — by predicate or Task status. |
-| [not](https://app-compose.dev/coda/not)     | Inverts a Spot into its boolean opposite.                                   |
-| [when](https://app-compose.dev/coda/when)   | Wraps `every`, `some`, and `not` into `{ context, fn: Boolean }`.           |
+| Name                                                   | Description                                                                         |
+| ------------------------------------------------------ | ----------------------------------------------------------------------------------- |
+| [debug](https://app-compose.dev/coda/debug)            | A runtime inspection Task — logs Tasks, Tags, and Spots to the console.             |
+| [defaultTo](https://app-compose.dev/coda/default-to)   | Uses a fallback value when a Spot resolves to null or undefined.                    |
+| [every](https://app-compose.dev/coda/every)            | All-of quantifier for Tasks, Tags, and Spots — by predicate or Task status.         |
+| [some](https://app-compose.dev/coda/some)              | Any-of quantifier for Tasks, Tags, and Spots — by predicate or Task status.         |
+| [not](https://app-compose.dev/coda/not)                | Inverts a Spot into its boolean opposite.                                           |
+| [optionalOr](https://app-compose.dev/coda/optional-or) | Uses a fallback value when the source is missing or its value is null or undefined. |
+| [when](https://app-compose.dev/coda/when)              | Wraps `every`, `some`, and `not` into `{ context, fn: Boolean }`.                   |
 
 ## AI tools
 

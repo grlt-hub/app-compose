@@ -1,4 +1,4 @@
-import { literal } from "@computable"
+import { literal, optional, shape } from "@computable"
 import { createTask, createWire, tag } from "@runnable"
 import { describe, expect, it } from "vitest"
 import { is } from "../is"
@@ -48,5 +48,29 @@ describe("is.wire", () => {
 
   it("returns false for an object", () => {
     expect(is.wire({})).toBe(false)
+  })
+})
+
+describe("is.spot", () => {
+  const task = createTask({ name: "_", run: { fn: () => ({ value: 1 }) } })
+  const target = tag<number>("_")
+
+  it.each([
+    { kind: "literal", value: literal(1) },
+    { kind: "shape", value: shape(literal(1), (value) => value + 1) },
+    { kind: "optional", value: optional(literal(1)) },
+    { kind: "tag value", value: target.value },
+    { kind: "task result", value: task.result },
+    { kind: "task result value", value: task.result.value },
+  ])("returns true for a $kind Spot", ({ value }) => {
+    expect(is.spot(value)).toBe(true)
+  })
+
+  it("returns false for a non object", () => {
+    expect(is.spot(1)).toBe(false)
+  })
+
+  it("returns false for an object", () => {
+    expect(is.spot({})).toBe(false)
   })
 })

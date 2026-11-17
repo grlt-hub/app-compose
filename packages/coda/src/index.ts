@@ -1,5 +1,7 @@
 export { debug } from "./debug"
+export { defaultTo } from "./defaultTo"
 export { every } from "./every"
 export { some } from "./some"
 export { not } from "./not"
+export { optionalOr } from "./optionalOr"
 export { when } from "./when"
