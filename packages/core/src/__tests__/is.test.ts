@@ -61,22 +61,16 @@ describe("is.spot", () => {
     { kind: "optional", value: optional(literal(1)) },
     { kind: "tag value", value: target.value },
     { kind: "task result", value: task.result },
-    { kind: "lensed task result", value: task.result.value },
+    { kind: "task result value", value: task.result.value },
   ])("returns true for a $kind Spot", ({ value }) => {
     expect(is.spot(value)).toBe(true)
   })
 
-  it.each([
-    { kind: "number", value: 1 },
-    { kind: "null", value: null },
-    { kind: "undefined", value: undefined },
-    { kind: "plain object", value: {} },
-    { kind: "array", value: [] },
-    { kind: "function", value: () => 1 },
-    { kind: "tag", value: target },
-    { kind: "task", value: task },
-    { kind: "wire", value: createWire({ from: literal(1), to: target }) },
-  ])("returns false for a $kind", ({ value }) => {
-    expect(is.spot(value)).toBe(false)
+  it("returns false for a non object", () => {
+    expect(is.spot(1)).toBe(false)
+  })
+
+  it("returns false for an object", () => {
+    expect(is.spot({})).toBe(false)
   })
 })

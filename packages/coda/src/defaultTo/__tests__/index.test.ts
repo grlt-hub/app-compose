@@ -3,20 +3,39 @@ import { describe, expect, it, vi } from "vitest"
 import { defaultTo } from "../index"
 
 describe("defaultTo", () => {
-  it.each([null, undefined])("uses a value fallback for %s", async (value) => {
-    const result = defaultTo(literal(value), "fallback")
-    const scope = await compose().run()
+  describe.each([null, undefined])("with a %s source", (value) => {
+    it("uses a value fallback", async () => {
+      const result = defaultTo(literal(value), "fallback")
+      const scope = await compose().run()
 
-    expect(scope.get(result)).toBe("fallback")
+      expect(scope.get(result)).toBe("fallback")
+    })
+
+    it("reads a tag fallback for a task result", async () => {
+      const source = createTask({ name: "source", run: { fn: () => value } })
+      const fallback = tag<string>("fallback")
+      const result = defaultTo(source.result, fallback.value)
+      const consumer = createTask({ name: "consumer", run: { context: result, fn: (value) => value } })
+      const scope = await compose()
+        .step(source)
+        .step(createWire({ from: literal("fallback"), to: fallback }))
+        .step(consumer)
+        .run()
+
+      expect(scope.get(consumer.result)).toBe("fallback")
+    })
   })
 
-  it.each([0, false, "", NaN, "source"])("preserves a non-nullish source %s", async (value) => {
-    const valueFallback = defaultTo(literal(value), "fallback")
-    const spotFallback = defaultTo(literal(value), literal("fallback"))
-    const scope = await compose().run()
+  describe.each([0, false, "", NaN, "source"])("with a non-nullish source %s", (value) => {
+    it.each([
+      { kind: "value", fallback: "fallback" },
+      { kind: "spot", fallback: literal("fallback") },
+    ])("preserves the source with a $kind fallback", async ({ fallback }) => {
+      const result = defaultTo(literal(value), fallback)
+      const scope = await compose().run()
 
-    expect(scope.get(valueFallback)).toBe(value)
-    expect(scope.get(spotFallback)).toBe(value)
+      expect(scope.get(result)).toBe(value)
+    })
   })
 
   it.each([
@@ -36,20 +55,6 @@ describe("defaultTo", () => {
 
     expect(scope.get(result)).toBe(fallback)
     expect(fallback).not.toHaveBeenCalled()
-  })
-
-  it.each([null, undefined])("reads a tag fallback for a task result of %s", async (value) => {
-    const source = createTask({ name: "source", run: { fn: () => value } })
-    const fallback = tag<string>("fallback")
-    const result = defaultTo(source.result, fallback.value)
-    const consumer = createTask({ name: "consumer", run: { context: result, fn: (value) => value } })
-    const scope = await compose()
-      .step(source)
-      .step(createWire({ from: literal("fallback"), to: fallback }))
-      .step(consumer)
-      .run()
-
-    expect(scope.get(consumer.result)).toBe("fallback")
   })
 
   it.each([null, undefined])("preserves a spot fallback of %s", async (value) => {
