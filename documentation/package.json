@@ -23,13 +23,13 @@
   "dependencies": {
     "@app-compose/coda": "workspace:*",
     "@app-compose/core": "workspace:*",
-    "@astrojs/markdown-satteri": "^0.4.5",
-    "@astrojs/mdx": "8.1.1",
-    "@astrojs/react": "7.1.1",
-    "@astrojs/starlight": "0.42.7",
+    "@astrojs/markdown-satteri": "^0.4.10",
+    "@astrojs/mdx": "8.1.6",
+    "@astrojs/react": "7.1.9",
+    "@astrojs/starlight": "0.43.1",
     "@codesandbox/sandpack-react": "2.20.0",
     "@monaco-editor/react": "4.7.0",
-    "astro": "7.4.2",
+    "astro": "7.4.12",
     "hast-util-select": "6.0.4",
     "monaco-editor": "0.57.0",
     "react": "19.3.1",
@@ -44,11 +44,11 @@
     "unist-util-remove": "4.0.0"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "5.20261026.1",
+    "@cloudflare/workers-types": "5.20261115.1",
     "@types/hast": "^3.0.5",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
-    "wrangler": "4.153.0"
+    "wrangler": "4.162.0"
   },
   "packageManager": "pnpm@11.6.0+sha512.9a36518224080c6fe5165afdcfe79bfa118c29be703f3f462b1e32efe1e98e47e8750b148e08286250aad4113cc7993ca413c4e2cd447752708c2ee5751bc95f"
 }
