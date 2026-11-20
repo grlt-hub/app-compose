@@ -60,16 +60,16 @@
     "lint:fix": "oxlint --fix ./src"
   },
   "dependencies": {
-    "@typescript-eslint/type-utils": "^8.58.0",
-    "@typescript-eslint/utils": "^8.58.0",
+    "@typescript-eslint/type-utils": "^8.73.0",
+    "@typescript-eslint/utils": "^8.73.0",
     "esquery": "^1"
   },
   "devDependencies": {
     "@app-compose/coda": "workspace:*",
     "@app-compose/core": "workspace:*",
     "@types/esquery": "^1.5.4",
-    "@typescript-eslint/rule-tester": "8.70.1",
-    "eslint": "^10.13.0"
+    "@typescript-eslint/rule-tester": "8.73.0",
+    "eslint": "^10.15.0"
   },
   "peerDependencies": {
     "eslint": "^9.0.0 || ^10.0.0",
